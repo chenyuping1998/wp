@@ -13,25 +13,25 @@
 	const T = socialTerms();
 	const social = T.social;
 
-	// Controls guide, in the order the controls sit on the bet bar (bar v4,
-	// ui/SplitBar.svelte): the buy tile and the menu in the bottom-left corner,
-	// the menu panel's rows, the readouts and stake controls along the foot,
-	// then Spin with Turbo and Auto Spin in the bottom-right corner. Each row
-	// shows the control as the bar draws it (ui/BarIcon.svelte), so a player
-	// matches what they read to what they see. Every pressable control is
-	// listed — a guide that leaves one out fails the engine guideline.
-	type Icon = { kind: 'buy' | 'menu' | 'info' | 'paytable' | 'settings' | 'sfx' | 'music' | 'plate' | 'step' | 'spin' | 'auto' | 'turbo'; label?: string; levelLine?: boolean };
+	// Controls guide, in the order the controls sit on the bet bar (bar v3,
+	// ui/MummyBar.svelte): the buy tile, then along the console the menu bars
+	// (and the menu panel's rows), BALANCE, the BET box and its arrows, Spin,
+	// and Auto Spin over Turbo at the right end. Each row shows the control as
+	// the bar draws it (ui/BarIcon.svelte), so a player matches what they read
+	// to what they see. Every pressable control is listed — a guide that leaves
+	// one out fails the engine guideline.
+	type Icon = { kind: 'buy' | 'menu' | 'info' | 'paytable' | 'settings' | 'sfx' | 'music' | 'readout' | 'bet' | 'step' | 'spin' | 'auto' | 'turbo'; label?: string };
 	type Control = { icons: Icon[]; name: string; text: string };
 	const controls: Control[] = [
 		{
 			icons: [{ kind: 'buy' }],
 			name: T.buyBonusName,
-			text: `The yellow tile in the bottom-left corner, marked with the Hypnotist's pocket watch. Opens the feature menu, where Free Spins can be ${T.bought} outright for the stated multiple of your ${T.bet}; the amount is shown before you confirm, and the ${T.bet} can still be changed from the strip at the foot of that menu. It is unlit while a round is playing and hidden during Free Spins.`,
+			text: `The yellow tile at the left end of the bar, marked with the Hypnotist's pocket watch. Opens the feature menu, where Free Spins can be ${T.bought} outright for the stated multiple of your ${T.bet}; the amount is shown before you confirm, and the ${T.bet} can still be changed from the strip at the foot of that menu. It is unlit while a round is playing and hidden during Free Spins.`,
 		},
 		{
 			icons: [{ kind: 'menu' }],
 			name: 'Menu',
-			text: `The round button above it. Opens a panel with Info, the ${T.payTable} and Settings, and sliders for the sound and music volume. While the panel is open the button shows an X: press it again, or Esc, to close it.`,
+			text: `The three bars at the left of the console. Opens a panel with Info, the ${T.payTable} and Settings, and sliders for the sound and music volume. While the panel is open the bars show an X: press it again, or Esc, to close it.`,
 		},
 		{
 			icons: [{ kind: 'info' }],
@@ -54,34 +54,34 @@
 			text: 'The two sliders in the menu panel: the speaker sets the volume of the sound effects, the note the music. Drag a slider all the way to the left to silence it.',
 		},
 		{
-			icons: [{ kind: 'plate', label: 'WIN' }],
+			icons: [{ kind: 'readout', label: 'BALANCE' }],
 			name: 'Balance and win',
-			text: `Along the foot of the screen, BALANCE shows what you have and WIN, in the centre, shows what the current round has ${T.paid} so far, counted up as each chain and multiplier lands.`,
+			text: 'BALANCE, beside the menu bars, shows what you have. While a round has a win to show, WIN appears next to it in gold and counts up as each chain and multiplier lands.',
+		},
+		{
+			icons: [{ kind: 'bet', label: T.betPanel.toUpperCase() }],
+			name: social ? 'Amount' : 'Bet amount',
+			text: `The box on the console shows the current ${T.bet}; the line along its foot shows where it sits among the ${T.betLevels}. Press it to open the ${T.betMenu} beside it and choose any level directly.`,
 		},
 		{
 			icons: [{ kind: 'step' }],
 			name: 'Decrease / increase',
-			text: `The two arrows beside the ${T.bet} readout step the ${T.bet} up or down one level per press, through the available ${T.betLevels}.`,
-		},
-		{
-			icons: [{ kind: 'plate', label: T.betPanel.toUpperCase(), levelLine: true }],
-			name: social ? 'Amount' : 'Bet amount',
-			text: `Shows the current ${T.bet}; the line along its foot shows where it sits among the ${T.betLevels}. Tap it to open the ${T.betMenu} and choose any level directly.`,
+			text: `The two arrows right of that box step the ${T.bet} up or down one level per press, through the available ${T.betLevels}.`,
 		},
 		{
 			icons: [{ kind: 'spin' }],
 			name: 'Spin',
-			text: `The large white button in the bottom-right corner. Starts a round for the current ${T.bet}; the space bar does the same. Its arrows turn while the board is moving — press it again then to play the rest of the round at Turbo speed.`,
-		},
-		{
-			icons: [{ kind: 'turbo' }],
-			name: 'Turbo',
-			text: "The small bolt button above Spin. Press once for Turbo (the button turns black with a gold bolt): quicker drops and win presentations. Press again for Turbo 2 (two gold bolts): the board drops quicker still and each chain step is shorter. A third press turns turbo off. The Hypnotist's watches are always shown at a readable speed.",
+			text: `The large white button near the right end of the console. Starts a round for the current ${T.bet}; the space bar does the same. Its arrows turn while the board is moving — press it again then to play the rest of the round at Turbo speed.`,
 		},
 		{
 			icons: [{ kind: 'auto' }],
 			name: 'Auto Spin',
-			text: 'The small button beside Turbo. Opens a panel to choose how many rounds to play automatically, from 10 up to 1000 or unlimited (∞); pick a number, then press Spin to start. While it runs, Spin counts down the rounds left. Press Auto Spin or Spin again to stop.',
+			text: 'The upper small button at the right end of the console. Opens a panel to choose how many rounds to play automatically, from 10 up to 1000 or unlimited (∞); pick a number, then press START or Spin. While it runs, Spin counts down the rounds left. Press Auto Spin or Spin again to stop.',
+		},
+		{
+			icons: [{ kind: 'turbo' }],
+			name: 'Turbo',
+			text: "The lower small button at the right end of the console. Press once for Turbo (the button turns black with a gold bolt): quicker drops and win presentations. Press again for Turbo 2 (two gold bolts): the board drops quicker still and each chain step is shorter. A third press turns turbo off. The Hypnotist's watches are always shown at a readable speed.",
 		},
 	];
 
@@ -165,8 +165,8 @@
 						<li>
 							<span class="wp-control-icons" aria-hidden="true">
 								{#each control.icons as icon, i (i)}
-									<span class={icon.kind === 'plate' ? 'wp-bar-icon wp-bar-plate' : 'wp-bar-icon'}
-										><BarIcon kind={icon.kind} label={icon.label} levelLine={icon.levelLine} /></span
+									<span class={icon.kind === 'readout' ? 'wp-bar-icon wp-bar-plate' : 'wp-bar-icon'}
+										><BarIcon kind={icon.kind} label={icon.label} /></span
 									>
 								{/each}
 							</span>
@@ -424,7 +424,7 @@
 		gap: 0.3rem;
 	}
 
-	/* the bar's own controls (ui/BarIcon.svelte), drawn as the v4 bar draws them */
+	/* the bar's own controls (ui/BarIcon.svelte), drawn as the v3 bar draws them */
 	.wp-bar-icon {
 		width: 2.2rem;
 		height: 2.2rem;
@@ -433,7 +433,7 @@
 		margin-top: -0.1rem;
 	}
 
-	/* a readout plate is wider than it is tall: give it the whole column */
+	/* the BALANCE readout is wider than it is tall: give it the whole column */
 	.wp-bar-plate {
 		width: 4.4rem;
 	}

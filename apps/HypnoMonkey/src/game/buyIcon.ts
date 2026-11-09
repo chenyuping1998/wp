@@ -1,5 +1,5 @@
-// Buy-tile glyph for Hypno Monkey (bar v4 trial, 2026-11-09), drawn by the bar
-// (ui/SplitBar.svelte). viewBox -50..50; 'ink' is the black stamp, 'tile' is
+// Buy-tile glyph for Hypno Monkey (2026-11-09), drawn by the bet bar
+// (ui/MummyBar.svelte, bar v3). viewBox -50..50; 'ink' is the black stamp, 'tile' is
 // cut back out in the tile's own colour. Shapes: d = filled path, c = circle
 // [cx, cy, r], s = round-capped stroke of width w. Template and rules:
 // wp/tools/ui-bar-v4 (README 「買入按鈕圖示」).

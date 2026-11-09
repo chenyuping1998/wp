@@ -60,7 +60,7 @@
 	import { medusaAnchors } from '../game/medusaAnchors.svelte';
 	import BoardContainer from './BoardContainer.svelte';
 	import InkText from './InkText.svelte';
-	import { medusaEyes } from './Medusa.svelte';
+	import { fromBase, frameTop } from '../game/stageLayout';
 
 	/** Multipliers occupy reserved cells during the drop; chain end only settles them. */
 	const context = getContext();
@@ -180,7 +180,7 @@
 	const portrait = $derived(context.stateLayoutDerived.layoutType() === 'portrait');
 
 	// orbs leave from Medusa's eyes (Medusa.svelte owns where she stands)
-	const origin = $derived(medusaAnchors.ready?medusaAnchors.center:medusaEyes(portrait, BOARD_SIZES.width, BOARD_SIZES.height));
+	const origin = $derived(medusaAnchors.ready?medusaAnchors.center:context.stateGameDerived.castLayout(context.stateGame.gameType==='freegame').eyes);
 	const eyePoints=$derived(medusaAnchors.ready?[medusaAnchors.left,medusaAnchors.right]:[{x:origin.x-7,y:origin.y},{x:origin.x+7,y:origin.y}]);
 	const center = { x: BOARD_SIZES.width / 2, y: BOARD_SIZES.height / 2 };
 	// drawMultiplierReadout's plaque: 416 x 238 around the board centre
@@ -192,14 +192,22 @@
 	const PLATE_HEIGHT = PLATE_WIDTH * (320 / 512);
 	// Landscape: left of the board, below the free-spin counter. Portrait: above
 	// the wordmark on the frame's top-left, clear of the counter centred above it.
+	// The game's bet bar grows the portrait board downward from a fixed top beam
+	// (stageLayout.ts): the plate keeps its screen size and its gap above the
+	// (grown) wordmark instead of growing with the board.
+	const stage = $derived(context.stateGameDerived.stage());
+	const plateScale = $derived(portrait ? 1 / stage.grow : 1);
 	const plate = $derived(
 		portrait
-			? { x: PLATE_WIDTH * 0.2, y: -PLATE_HEIGHT * 1.35 }
+			? {
+					x: fromBase(stage, { x: PLATE_WIDTH * 0.2, y: 0 }).x,
+					y: frameTop(true) + (-PLATE_HEIGHT * 1.35 - frameTop(true)) * plateScale,
+				}
 			: { x: -PLATE_WIDTH * 0.62, y: BOARD_SIZES.height * 0.45 },
 	);
 	// the ×N sits on the right-hand two thirds; the cameo is on the left
 	// Writable art area: source x198..476, y124..225 on the 512×320 plate.
-	const plateValue = $derived({ x: plate.x + PLATE_WIDTH * (337 / 512 - 0.5), y: plate.y + 11 });
+	const plateValue = $derived({ x: plate.x + PLATE_WIDTH * (337 / 512 - 0.5) * plateScale, y: plate.y + 11 * plateScale });
 
 	// A hidden tab must complete each beat exactly once, even without rAF.
 	const tween = (ms: number, step: (t: number) => void) =>
@@ -638,10 +646,10 @@
 	<MultiplierFx bind:controller={fx} snapshot={{orbs,eyes:eyePoints,gaze,gazeProgress,target:beamTarget,transfer:plateBeam,plate:plateValue,score:center}}/>
 	{#if totalShown}
 		<Container
-			x={plate.x - (1 - totalEnter) * 120}
+			x={plate.x - (1 - totalEnter) * 120 * plateScale}
 			y={plate.y}
 			alpha={totalEnter}
-			scale={1 + 0.08 * totalBump}
+			scale={(1 + 0.08 * totalBump) * plateScale}
 		>
 			{#if plateLevel >= 3}
 				<!-- level 3 lights a fire behind the plate, level 4 a hotter, faster one -->

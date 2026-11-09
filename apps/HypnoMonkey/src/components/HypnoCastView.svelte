@@ -6,9 +6,8 @@
 	import { createHypnoCastScene } from '../game/hypnoCastScene';
 	import assistantRig from '../game/hypnoAssistantData.json';
 	import assistantAtlas from '../game/hypnoAssistantAtlas.json';
-	import { BOARD_SIZES } from '../game/constants';
 	import { medusaAnchors, publishMedusaAnchors } from '../game/medusaAnchors.svelte';
-	const props=$props<{mode?:'mg'|'fg';portrait:boolean;eyes:{x:number;y:number};figureHeight:number;action:{name:string;token:number;hold?:boolean;rate?:number}}>();
+	const props=$props<{mode?:'mg'|'fg';portrait:boolean;eyes:{x:number;y:number};scale:number;clipY:number;action:{name:string;token:number;hold?:boolean;rate?:number}}>();
 	const context=getContext(),parent=getContextParent();
 	let scene=$state.raw<ReturnType<typeof createHypnoCastScene>>();
 	let ticker:Ticker|undefined,last=0,disposed=false,media:MediaQueryList|undefined,removeInspection:(()=>void)|undefined;
@@ -23,21 +22,21 @@
 			const current=scene;void import('../dev/castControls').then(({installCastControls})=>{if(!disposed)removeInspection=installCastControls(current,props.mode);});
 		}
 	});
-	// Portrait has no side strip: like Capo Nostra, the whole figure stands above
-	// the board's right half with everything below the hips tucked behind the
-	// frame, so hands, hat and monocle still act. Board coordinates.
-	const PORTRAIT_SCALE=.5, PORTRAIT_CLIP_Y=-34, HIP_BELOW_EYES=491; // joints.json hip.y - glasses.y
+	// Placement comes from game/stageLayout.ts (castPlacement): eyes = where the
+	// rig's glasses go, scale = root scale, board units. Portrait has no side
+	// strip: like Capo Nostra, the whole figure stands above the board's right
+	// half with everything below the hips tucked behind the frame (clipY), so
+	// hands, hat and monocle still act.
 	let clip:Graphics|undefined;
 	$effect(()=>{
 		if(!scene)return;
-		const assistant=props.mode==='fg';
-		const scale=props.portrait?PORTRAIT_SCALE:props.figureHeight/(assistant?1430:1376);
-		const eyes=props.portrait?{x:BOARD_SIZES.width-(assistant?230:96),y:PORTRAIT_CLIP_Y-(assistant?533:HIP_BELOW_EYES)*PORTRAIT_SCALE}:props.eyes;
+		const {scale,eyes}=props;
 		// the tail curls up beside the hips and would show as a cut stub
 		scene.setHidden(props.portrait?['tail_1','tail_2','tail_3']:[]);
 		scene.root.scale.set(scale);scene.root.position.set(eyes.x-scene.setupEyes.x*scale,eyes.y-scene.setupEyes.y*scale);
 		if(props.portrait){
-			if(!clip){clip=new Graphics().rect(-4000,-4000,8000,4000+PORTRAIT_CLIP_Y).fill(0xffffff);scene.root.parent?.addChild(clip);}
+			if(!clip){clip=new Graphics();scene.root.parent?.addChild(clip);}
+			clip.clear().rect(-4000,-4000,8000,4000+props.clipY).fill(0xffffff);
 			clip.visible=true;scene.root.mask=clip;
 		}else {scene.root.mask=null;if(clip)clip.visible=false;}
 	});

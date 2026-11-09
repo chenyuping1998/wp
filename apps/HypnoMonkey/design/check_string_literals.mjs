@@ -85,6 +85,8 @@ const declarationPatterns = [
 	/\(([^()]*)\)\s*(?::[^=]*?)?=>/g,
 	/\bfunction\s*[A-Za-z_$\w]*\s*\(([^()]*)\)/g,
 	/\bcatch\s*\(([^)]*)\)/g,
+	// accessors declare a property, they do not read one (betModeMeta `get dialog()`)
+	/\b(?:get|set)\s+([A-Za-z_$][\w$]*)\s*\(/g,
 	// Object method definitions declare a real callable identifier too.
 	/^\s*(?:async\s+)?([A-Za-z_$][\w$]*)\([^;\n]*\)\s*\{/gm,
 ];

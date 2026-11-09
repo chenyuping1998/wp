@@ -8,6 +8,7 @@ import { uiTheme } from 'components-ui-pixi';
 
 import type { GameType, RawSymbol } from './types';
 import { stateLayoutDerived } from './stateLayout';
+import { stageLayout, stageAtBase, castPlacement, type Stage } from './stageLayout';
 import { winLevelMap } from './winLevelMap';
 import { eventEmitter } from './eventEmitter';
 import {
@@ -103,7 +104,8 @@ export const stateGame = $state({
 // lifted by half of what the strip took so it stays centred in what is left.
 const BOARD_SHRINK = 0.89;
 
-const boardLayout = () => {
+/** The pre-bar placement: what the stage layout grows from (stageLayout.ts). */
+const boardLayoutBase = () => {
 	const layout = stateLayoutDerived.mainLayout();
 	const usesBar = uiTheme.betBarLayout === 'compactBottom';
 	const portrait=stateLayoutDerived.layoutType()==='portrait';
@@ -125,6 +127,34 @@ const boardLayout = () => {
 	};
 };
 
+// With the game's own bet bar (uiTheme.customLayout, the v3 console) the board
+// is sized to the room the console leaves and the cast moved beside it
+// (stageLayout.ts). Solved once per screen size: every board layer reads
+// boardLayout() on its own.
+let stageMemo: { key: string; stage: Stage } | undefined;
+const stage = (): Stage => {
+	const base = boardLayoutBase();
+	if (!uiTheme.customLayout) return stageAtBase(base);
+	const canvas = stateLayoutDerived.canvasSizes();
+	const main = stateLayoutDerived.mainLayout();
+	const standard = stateLayoutDerived.mainLayoutStandard();
+	const portrait = stateLayoutDerived.layoutType() === 'portrait';
+	const key = [canvas.width, canvas.height, portrait, main.scale, standard.scale, base.x, base.y, base.scale].join();
+	if (stageMemo?.key !== key)
+		stageMemo = { key, stage: stageLayout({ canvas, main, standard, portrait, base }) };
+	return stageMemo.stage;
+};
+
+const boardLayout = () => {
+	const base = boardLayoutBase();
+	const placed = stage();
+	return { ...base, x: placed.x, y: placed.y, scale: placed.scale };
+};
+
+/** Where the MG Hypnotist / FG assistant stands, board units (HypnoCastView). */
+const castLayout = (freeGame: boolean) =>
+	castPlacement(stage(), freeGame ? 'fg' : 'mg', stateLayoutDerived.layoutType() === 'portrait');
+
 const boardRaw = () =>
 	board.map((reel) => reel.reelState.symbols.map((reelSymbol) => reelSymbol.rawSymbol));
 
@@ -144,6 +174,9 @@ export const { getWinLevelDataByWinLevelAlias } = createGetWinLevelDataByWinLeve
 export const stateGameDerived = {
 	onSymbolLand,
 	boardLayout,
+	boardLayoutBase,
+	castLayout,
+	stage,
 	boardRaw,
 	scatterLandIndex,
 	enhancedBoard,

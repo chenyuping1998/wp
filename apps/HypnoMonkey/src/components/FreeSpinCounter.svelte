@@ -23,28 +23,32 @@
 	const panelWidth = $derived(SYMBOL_SIZE * 2.1);
 	const panelSizes = $derived({ width: panelWidth, height: panelWidth / PANEL_RATIO });
 	const isPortrait = $derived(context.stateLayoutDerived.layoutType() === 'portrait');
-	const position = $derived(
-		isPortrait
-			? {
-					// Portrait: above the left edge, clear of the assistant and her watch.
-					x: context.stateGameDerived.boardLayout().x - context.stateGameDerived.boardLayout().width * 0.5 + SYMBOL_SIZE * 0.05,
-					y:
-						context.stateGameDerived.boardLayout().y -
-						context.stateGameDerived.boardLayout().height * 0.5 -
-						panelSizes.height * 1.28 -
-						SYMBOL_SIZE * 3.3,
-				}
-			: {
-					x:
-						context.stateGameDerived.boardLayout().x -
-						context.stateGameDerived.boardLayout().width * 0.5 -
-						panelSizes.width -
-						SYMBOL_SIZE * 0.6,
-					// Pinned near the top of the screen; Medusa's running-total plate
-					// sits below it on the same side (MedusaThrow.svelte).
-					y: context.stateLayoutDerived.mainLayout().height * 0.05,
-				},
-	);
+	const position = $derived.by(() => {
+		const board = context.stateGameDerived.boardLayout();
+		const base = context.stateGameDerived.boardLayoutBase();
+		// Portrait: above the left edge, clear of the assistant and her watch.
+		// The stage layout grows the board downward from a fixed top beam and
+		// leaves the cast above it where it was (stageLayout.ts), so this keeps
+		// the pre-bar placement.
+		if (isPortrait)
+			return {
+				x: base.x - base.width * 0.5 + SYMBOL_SIZE * 0.05,
+				y: base.y - base.height * 0.5 - panelSizes.height * 1.28 - SYMBOL_SIZE * 3.3,
+			};
+		// Left of the board, as far from the frame's outer edge as before the
+		// stage layout grew the board (the frame edge moves out by its growth).
+		return {
+			x:
+				board.x -
+				board.width * 0.5 -
+				panelSizes.width -
+				SYMBOL_SIZE * 0.6 -
+				(board.width * 0.5 + 32) * (board.scale - base.scale),
+			// Pinned near the top of the screen; Medusa's running-total plate
+			// sits below it on the same side (MedusaThrow.svelte).
+			y: context.stateLayoutDerived.mainLayout().height * 0.05,
+		};
+	});
 
 	let show = $state(false);
 	// `current` = the spin being played, 1-based, straight from the math's

@@ -1,6 +1,7 @@
 import { Container, Graphics, Rectangle, Sprite, Texture } from 'pixi.js';
 import { BACKGROUND_SIZE } from './backgroundMotion';
 import { circusPropPose, circusBuntingPose, circusLightPose } from './circusBackgroundMotion';
+import { PROPS } from './propsRow';
 
 /** Fixed painted architecture with independent circus props and stage lights. */
 export function createBackgroundScene(textures: Record<string, Texture>) {
@@ -14,9 +15,9 @@ export function createBackgroundScene(textures: Record<string, Texture>) {
  const source = textures.mgBgTourist, faceEnd = .48, faceTop = .026;
  const faceTexture = new Texture({ source: source.source, frame: new Rectangle(0, source.height * faceTop, source.width, source.height * (faceEnd - faceTop)) });
  const standTexture = new Texture({ source: source.source, frame: new Rectangle(0, source.height * faceEnd, source.width, source.height * (1 - faceEnd)) });
- const stand = new Sprite(standTexture); stand.anchor.set(.5, 1); stand.width = 132; stand.height = 280 * (1 - faceEnd); sign.addChild(stand);
- const face = new Sprite(faceTexture); face.anchor.set(.5); face.width = 132; face.height = 280 * (faceEnd - faceTop); face.position.set(0, -280 * (1 - faceEnd) - face.height / 2); sign.addChild(face);
- const balloons = new Sprite(textures.mgBgIcecream); balloons.label = 'Tethered circus balloons'; balloons.anchor.set(.5, 1); balloons.width = 145; balloons.height = 300; root.addChild(balloons);
+ const stand = new Sprite(standTexture); stand.anchor.set(.5, 1); stand.width = PROPS.signWidth; stand.height = 280 * (1 - faceEnd); sign.addChild(stand);
+ const face = new Sprite(faceTexture); face.anchor.set(.5); face.width = PROPS.signWidth; face.height = 280 * (faceEnd - faceTop); face.position.set(0, -280 * (1 - faceEnd) - face.height / 2); sign.addChild(face);
+ const balloons = new Sprite(textures.mgBgIcecream); balloons.label = 'Tethered circus balloons'; balloons.anchor.set(.5, 1); balloons.width = PROPS.balloonWidth; balloons.height = PROPS.balloonHeight; root.addChild(balloons);
  const lights = [-1, 1].map(side => {
   const light = new Graphics().poly([0, 0, -240, 890, 240, 890]).fill({ color: 0xffe4a3, alpha: .17 });
   light.position.set(side < 0 ? 220 : 1700, 45); light.blendMode = 'add'; root.addChild(light); return light;
@@ -33,23 +34,22 @@ export function createBackgroundScene(textures: Record<string, Texture>) {
   face.rotation = a.signRotation;
   sign.position.set(signX, ground); sign.scale.set(propScale);
   balloons.position.set(balloonX, ground); balloons.rotation = a.balloonRotation;
-  balloons.scale.set(145 / textures.mgBgIcecream.width * propScale, 300 / textures.mgBgIcecream.height * propScale);
+  balloons.scale.set(PROPS.balloonWidth / textures.mgBgIcecream.width * propScale, PROPS.balloonHeight / textures.mgBgIcecream.height * propScale);
   bunting.rotation = circusBuntingPose(time); bunting.alpha = 1 - nightness * .15;
   lights.forEach((light, index) => { const p = circusLightPose(time, index); light.rotation = p.rotation; light.alpha = nightness * p.alpha; light.visible = nightness > .001; });
  }
- // clearLeft: screen px the bet bar's bottom-left cluster reaches in from the
- // left edge (game/barFootprint, bar v4). With a corner cluster both props stand
- // just right of it — the sign, then the balloons — on the open ground left of
- // the board, because the corners where they used to stand now hold the buy
- // tile/menu and the spin/turbo/autoplay discs (2026-11-09). 0 keeps the old
- // places at the screen edges.
+ // clearLeft: screen px from the left edge where the bet bar says the props'
+ // row starts (game/barFootprint). Given one, the sign then the balloons stand
+ // there side by side on the ground line the bar gives (groundY), left of the
+ // board — the screen-edge places they used to have now hold bar controls
+ // (2026-11-09). 0 keeps the old places at the screen edges.
  function setBounds(width: number, height: number, figureHeight = height * .65, groundY = height * .87, clearLeft = 0) {
   const scale = Math.max(width / BACKGROUND_SIZE.width, height / BACKGROUND_SIZE.height);
   root.scale.set(scale); root.position.set((width - BACKGROUND_SIZE.width * scale) / 2, (height - BACKGROUND_SIZE.height * scale) / 2);
   const left = -root.x / scale, right = (width - root.x) / scale;
-  ground = (groundY - root.y) / scale; propScale = figureHeight * .36 / (300 * scale);
+  ground = (groundY - root.y) / scale; propScale = figureHeight * PROPS.size / (PROPS.balloonHeight * scale);
   if (clearLeft > 0) {
-   const signW = 132 * propScale, balloonW = 145 * propScale, gap = .4 * balloonW;
+   const signW = PROPS.signWidth * propScale, balloonW = PROPS.balloonWidth * propScale, gap = PROPS.gap * balloonW;
    signX = left + clearLeft / scale + gap + signW / 2;
    balloonX = signX + signW / 2 + gap + balloonW / 2;
   } else {

@@ -1,6 +1,6 @@
 import { GAME_FONT, GAME_FONT_WEIGHT } from './fonts';
 import { setUiTheme } from 'components-ui-pixi';
-import SplitBar from '../components/ui/SplitBar.svelte';
+import MummyBar from '../components/ui/MummyBar.svelte';
 import { stateConfig } from 'state-shared';
 
 // Circus controls share a red face, one gold edge and the shared toolbar behaviour.
@@ -172,16 +172,18 @@ setUiTheme({
 // button, spacebar, Autoplay). Paired with <ModalMessage /> in ui/Modals.svelte.
 stateConfig.explainInsufficientBalance = true;
 
-// BAR V4 TRIAL (2026-11-09): the split console from wp/tools/ui-bar-v4
-// (components/ui/SplitBar.svelte) — buy tile and menu bottom-left, BALANCE /
-// WIN / BET plates along the foot, spin disc with turbo and autoplay
-// bottom-right. uiTheme.customLayout replaces the shared layout in every
-// orientation; everything above stays as the old bar's palette. The buy menu
-// swaps its header stake toggle for the foot pill while this is set
-// (ui/ModalBuyBonus.svelte). To go back to the old bar, delete this call.
+// BET BAR V3 (2026-11-09): the connected console Mummy Mayhem uses
+// (components/ui/MummyBar.svelte, ported from apps/MummyMayhem木乃伊 at
+// origin/main f1f4992a) — the yellow buy tile, then one console holding the
+// menu, BALANCE (and WIN beside it while a win shows), the BET box, the ▲/▼
+// steppers, Spin, and Auto Spin over Turbo. Stone picked it over v4's split
+// pieces ("連在一起"). uiTheme.customLayout replaces the shared layout in every
+// orientation; the buy menu swaps its header stake toggle for the foot pill
+// while it is set (ui/ModalBuyBonus.svelte). To go back to the old bar,
+// delete this call.
 setUiTheme({
-	customLayout: SplitBar,
-	// the template's figure: the foot row is ~114 tall and the board must
-	// clear the WIN plate
+	customLayout: MummyBar,
+	// Mummy's figure: the console and its buy tile take 882..1080 of the 1080
+	// box (198), the spin disc's overhang sitting over the board's foot margin
 	barHeight: 190,
 });
