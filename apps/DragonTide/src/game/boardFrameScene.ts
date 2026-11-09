@@ -2,8 +2,8 @@ import { Container, Graphics, Sprite, TilingSprite, type Texture } from 'pixi.js
 
 /** The board geometry is authored in code; the material comes from painted parts. */
 export function createBoardFrameScene(textures: {capital:Texture;lintel:Texture;column:Texture;logo:Texture},width:number,height:number,portrait=false) {
-	const root=new Container();root.eventMode='none';root.label='Fixed circus timber frame';
-	const fill=new Graphics().roundRect(-3,-3,width+6,height+6,5).fill(0xb8b1a4).stroke({width:2,color:0xf2b632});root.addChild(fill);
+	const root=new Container();root.eventMode='none';root.label='Board frame (interim grey)';
+	const fill=new Graphics().roundRect(-3,-3,width+6,height+6,5).fill(0xb8b1a4).stroke({width:2,color:0xb9b9b9});root.addChild(fill);
 	const beam=(y:number)=>{const s=new TilingSprite({texture:textures.lintel,width:width+64,height:32});s.position.set(-32,y);s.tileScale.set(32/textures.lintel.height);root.addChild(s);};
 	beam(-32);beam(height);
 	for(const x of [-32,width]){const s=new TilingSprite({texture:textures.column,width:32,height});s.position.set(x,0);s.tileScale.set(32/textures.column.width);root.addChild(s);}
@@ -16,7 +16,7 @@ export function createBoardFrameScene(textures: {capital:Texture;lintel:Texture;
 	const setPortrait=(isPortrait:boolean)=>{
 		logo.width=width*(isPortrait ? .38 : .46);
 		logo.height=logo.width*.375;
-		logo.position.set(isPortrait ? width*.34 : width/2,-47);
+		logo.position.set(isPortrait ? width*.27 : width/2,-47);
 	};
 	setPortrait(portrait);
 	return {root,setPortrait,destroy(){root.destroy({children:true});}};

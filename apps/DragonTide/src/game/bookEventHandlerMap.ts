@@ -251,14 +251,14 @@ export const bookEventHandlerMap: BookEventHandlerMap<BookEvent, BookEventContex
 		// the BASE scene while the caster winds up and holds (Ready → ReadyLoop),
 		// then he casts, a portal opens in the plaque and the free game appears
 		// under a white flash.
-		eventEmitter.broadcast({ type: 'medusaAction', animation: 'win_big' });
+		eventEmitter.broadcast({ type: 'medusaAction', animation: 'fg_ready' });
 		eventEmitter.broadcast({ type: 'freeSpinIntroShow' });
 		eventEmitter.broadcast({ type: 'soundOnce', name: 'jng_intro_fs' });
 		await eventEmitter.broadcastAsync({
 			type: 'freeSpinIntroUpdate',
 			totalFreeSpins: bookEvent.totalFs,
 		});
-		eventEmitter.broadcast({ type: 'medusaAction', animation: 'gaze' });
+		eventEmitter.broadcast({ type: 'medusaAction', animation: 'fg_transform' });
 		eventEmitter.broadcast({ type: 'soundMedusa', cue: 'gaze' });
 		await eventEmitter.broadcastAsync({
 			type: 'transition',
@@ -373,6 +373,7 @@ export const bookEventHandlerMap: BookEventHandlerMap<BookEvent, BookEventContex
 		stateUi.freeSpinCounterShow = false;
 		await waitForTimeout(Math.max(0,medusaAnimations.fg_end.durationMs-(performance.now()-fgEndStarted)));
 		eventEmitter.broadcast({ type: 'soundMusic', name: 'bgm_main' });
+		eventEmitter.broadcast({ type: 'medusaAction', animation: 'fg_transform' });
 		// back through a gold portal (天使奧丁 FG_Board_End Out: a golden gate)
 		await eventEmitter.broadcastAsync({type:'transition',kind:'portal',tone:'gold',oncover:()=>{eventEmitter.broadcast({type:'freeSpinOutroHide'});eventEmitter.broadcast({type:'medusaPose',pose:'idle'});stateGame.gameType='basegame';}});
 		await eventEmitter.broadcastAsync({ type: 'uiShow' });

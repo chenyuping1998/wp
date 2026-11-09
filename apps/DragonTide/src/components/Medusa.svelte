@@ -13,10 +13,9 @@
 	import { BOARD_SIZES } from '../game/constants';
 	import { medusaAnimations } from '../game/animationTimeline';
 	import BoardContainer from './BoardContainer.svelte';
-	import HypnoCastView from './HypnoCastView.svelte';
+	import DragonCastView from './DragonCastView.svelte';
 	const context=getContext();
 	const portrait=$derived(context.stateLayoutDerived.layoutType()==='portrait');
-	const eyes=$derived(medusaEyes(portrait,BOARD_SIZES.width,BOARD_SIZES.height));
 	let token=0;
 	let action=$state<{name:string;token:number;hold?:boolean;rate?:number}>({name:'rest',token:0});
 	context.eventEmitter.subscribeOnMount({
@@ -36,8 +35,8 @@
 
 <BoardContainer>
 	{#if context.stateGame.gameType==='freegame'}
-		<HypnoCastView mode="fg" {portrait} {eyes} figureHeight={BOARD_SIZES.height*.98} {action}/>
+		<DragonCastView mode="fg" {portrait} figureHeight={BOARD_SIZES.height*.98} {action}/>
 	{:else}
-		<HypnoCastView {portrait} {eyes} figureHeight={BOARD_SIZES.height*.98} {action}/>
+		<DragonCastView {portrait} figureHeight={BOARD_SIZES.height*.98} {action}/>
 	{/if}
 </BoardContainer>

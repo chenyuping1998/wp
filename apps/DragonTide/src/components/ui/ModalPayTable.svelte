@@ -20,11 +20,11 @@
 		H2: 'mgH2',
 		H3: 'mgH3',
 		H4: 'mgH4',
-		H5: 'mgH5',
 		L1: 'mgL1',
 		L2: 'mgL2',
 		L3: 'mgL3',
 		L4: 'mgL4',
+		L5: 'mgL5',
 		S: 'mgS',
 	};
 
@@ -44,7 +44,7 @@
 	};
 
 	// No W: a wild in a pay-anywhere game joins every symbol's count at once.
-	const ORDER = ['H1', 'H2', 'H3', 'H4', 'H5', 'L1', 'L2', 'L3', 'L4', 'S'];
+	const ORDER = ['H1', 'H2', 'H3', 'H4', 'L1', 'L2', 'L3', 'L4', 'L5', 'S'];
 
 	const maxWin = config.betModes?.base?.max_win ?? 15000;
 	const fs = config.freeSpins;

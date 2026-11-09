@@ -64,7 +64,7 @@ const BAR_TEXT = {
 	multiplierTip: {
 		ar: 'مضاعفات الفوز',
 		de: 'GEWINNMULTIPLIKATOREN',
-		en: 'HYPNO MULTIPLIERS',
+		en: 'DRAGON PEARL MULTIPLIERS',
 		es: 'MULTIPLICADORES',
 		fr: 'MULTIPLICATEURS',
 		id: 'PENGGANDA KEMENANGAN',
@@ -75,7 +75,7 @@ const BAR_TEXT = {
 		ru: 'МНОЖИТЕЛИ ВЫИГРЫШЕЙ',
 		tr: 'KAZANÇ ÇARPANLARI',
 		vi: 'HỆ SỐ NHÂN THẮNG',
-		zh: '催眠倍率加成',
+		zh: '龍珠倍率加成',
 		fi: 'VOITTOKERTOIMET',
 		hi: 'जीत के गुणक',
 	},

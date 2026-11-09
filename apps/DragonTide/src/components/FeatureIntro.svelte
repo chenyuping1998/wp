@@ -93,7 +93,7 @@
                 <Container x={sceneX-pw*.26} y={sceneY+pw*.245}>
                     <Sprite key="mgFsPanel" anchor={0.5} width={pw*.45} height={pw*.21}/>
                     {#each Array.from({length:30},(_,n)=>n) as n}
-                        <Sprite key={['mgH1','mgL1','mgH2','mgL2','mgH3','mgH4','mgL3','mgH5','mgL4','mgS'][n%10]} anchor={0.5} x={(n%6-2.5)*pw*.069} y={(Math.floor(n/6)-2)*pw*.037} width={pw*.034} height={pw*.034}/>
+                        <Sprite key={['mgH1','mgL1','mgH2','mgL2','mgH3','mgH4','mgL3','mgL5','mgL4','mgS'][n%10]} anchor={0.5} x={(n%6-2.5)*pw*.069} y={(Math.floor(n/6)-2)*pw*.037} width={pw*.034} height={pw*.034}/>
                     {/each}
                 </Container>
             {:else if i === 2}

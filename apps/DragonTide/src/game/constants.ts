@@ -256,7 +256,10 @@ const explosion = {
 // Every state is the same PNG; the win state is animated programmatically by
 // SymbolWinAnim rather than by a per-symbol Spine, so it keeps working for
 // whatever art is dropped in next.
-const HIGH_RATIOS = { width: HIGH_SYMBOL_SIZE, height: HIGH_SYMBOL_SIZE };
+// H1-H4 v3 are framed tiles drawn for a 124x112 cell (art 1320x1190 incl. a 25 px clear
+// margin); the board cell is square, so keep their aspect: full width, shorter height.
+const HIGH_TILE_ASPECT = 1190 / 1320;
+const HIGH_RATIOS = { width: HIGH_SYMBOL_SIZE, height: HIGH_SYMBOL_SIZE * HIGH_TILE_ASPECT };
 const LOW_RATIOS = { width: LOW_SYMBOL_SIZE, height: LOW_SYMBOL_SIZE };
 const SPECIAL_RATIOS = {
 	width: SPECIAL_SYMBOL_SIZE,
@@ -283,14 +286,14 @@ export const SYMBOL_INFO_MAP = {
 	H2: mixedSymbol('mgH2', HIGH_RATIOS),
 	H3: mixedSymbol('mgH3', HIGH_RATIOS),
 	H4: mixedSymbol('mgH4', HIGH_RATIOS),
-	H5: mixedSymbol('mgH5', HIGH_RATIOS),
 	L1: mixedSymbol('mgL1', LOW_RATIOS),
 	L2: mixedSymbol('mgL2', LOW_RATIOS),
 	L3: mixedSymbol('mgL3', LOW_RATIOS),
 	L4: mixedSymbol('mgL4', LOW_RATIOS),
-	// TODO(dragon-tide art): L5 and the pearl body reuse placeholders until the new symbol art lands
-	L5: mixedSymbol('mgL4', LOW_RATIOS),
-	M: mixedSymbol('mgL1', LOW_RATIOS),
+	L5: mixedSymbol('mgL5', LOW_RATIOS),
+	// a pearl is drawn by MedusaThrow (mount + tier gem + value); this blank mount is only
+	// what shows while it passes through a spinning reel
+	M: mixedSymbol('mgOrbPurple', LOW_RATIOS),
 	S: mixedSymbol('mgS', SPECIAL_RATIOS),
 } as const;
 

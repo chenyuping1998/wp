@@ -5,8 +5,6 @@
 	import { getContext } from '../game/context';
 	import { BACKGROUND_KEYS } from '../game/backgroundMotion';
 	import { createBackgroundScene } from '../game/backgroundScene';
-	import {BOARD_SIZES} from '../game/constants';
-	import {uiTheme} from 'components-ui-pixi';
 	const context = getContext();
 	const parent = getContextParent();
 	let scene = $state.raw<ReturnType<typeof createBackgroundScene>>();
@@ -32,10 +30,8 @@
 		ticker = application.ticker; ticker.add(tick);
 	});
 	$effect(() => {
-		const {width,height}=context.stateLayoutDerived.canvasSizes();const main=context.stateLayoutDerived.mainLayout();const standard=context.stateLayoutDerived.mainLayoutStandard();const board=context.stateGameDerived.boardLayout();
-		const medusaHeight=BOARD_SIZES.height*.98*board.scale*main.scale;
-		const groundY=(height-standard.height*standard.scale)/2+(standard.height-uiTheme.barHeight)*standard.scale-12;
-		scene?.setBounds(width,height,medusaHeight,groundY);
+		const {width,height}=context.stateLayoutDerived.canvasSizes();
+		scene?.setBounds(width,height);
 	});
 	$effect(() => scene?.setNight(context.stateGame.gameType === 'freegame'));
 	$effect(() => scene?.setReducedMotion(reduced));

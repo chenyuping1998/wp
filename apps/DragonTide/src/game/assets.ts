@@ -3,9 +3,13 @@
 // Paths stay literal: Vite only bundles new URL() with a static string.
 
 export default {
-	mgHypnoCastAtlas: { type:'sprite', src:new URL('../../assets/sprites/hypnoCast/mg-atlas.png',import.meta.url).href, preload:true },
-	mgHypnoAssistantAtlas: { type:'sprite', src:new URL('../../assets/sprites/hypnoCast/fg-atlas.png',import.meta.url).href, preload:true },
-	mgLoader: { type:'sprite', src:new URL('../../assets/sprites/hypnoSymbols/s.png',import.meta.url).href, preload:true },
+	// Dragon Tide: r11 cast + approved H1-H4 v3 and backdrops v2; everything under
+	// dragonInterim/ is the greyscale stand-in (design/interim/build_interim.py) until
+	// the art in new-games/sea-dragon/art/gen-order-1109 arrives.
+	// r11 cast, packed by design/cast_dragon/build_runtime.py (one 2048 page each)
+	dragonKingAtlas: { type:'sprite', src:new URL('../../assets/sprites/dragonCast/mg-atlas.png',import.meta.url).href, preload:true },
+	dragonPrincessAtlas: { type:'sprite', src:new URL('../../assets/sprites/dragonCast/fg-atlas.png',import.meta.url).href, preload:true },
+	mgLoader: { type:'sprite', src:new URL('../../assets/sprites/dragonSymbols/s.png',import.meta.url).href, preload:true },
 	explosion: {
 		type: 'spine',
 		src: {
@@ -61,137 +65,122 @@ export default {
 	// scene
 	mgBgBase: {
 		type: 'sprite',
-		src: new URL('../../assets/sprites/hypnoBackground/bg_base.jpg', import.meta.url).href,
+		src: new URL('../../assets/sprites/dragonBackground/bg_base.jpg', import.meta.url).href,
 		preload: true,
 	},
 	mgBgFree: {
 		type: 'sprite',
-		src: new URL('../../assets/sprites/hypnoBackground/bg_free.jpg', import.meta.url).href,
-		preload: true,
-	},
-	mgBgCloud: {
-		type: 'sprite',
-		src: new URL('../../assets/sprites/hypnoBackground/bunting.png', import.meta.url).href,
-		preload: true,
-	},
-	mgBgTourist: {
-		type: 'sprite',
-		src: new URL('../../assets/sprites/hypnoBackground/prop_spiral_sign.png', import.meta.url).href,
-		preload: true,
-	},
-	mgBgIcecream: {
-		type: 'sprite',
-		src: new URL('../../assets/sprites/hypnoBackground/prop_balloons.png', import.meta.url).href,
+		src: new URL('../../assets/sprites/dragonBackground/bg_free.jpg', import.meta.url).href,
 		preload: true,
 	},
 
 	// the three loading-screen feature cards (MEDUSA_美術需求單 §6)
 	mgIntro1: {
 		type: 'sprite',
-		src: new URL('../../assets/sprites/hypnoIntro/intro_1.png', import.meta.url).href,
+		src: new URL('../../assets/sprites/dragonInterim/intro_1.jpg', import.meta.url).href,
 		preload: true,
 	},
 	mgIntro2: {
 		type: 'sprite',
-		src: new URL('../../assets/sprites/hypnoIntro/intro_2.png', import.meta.url).href,
+		src: new URL('../../assets/sprites/dragonInterim/intro_2.jpg', import.meta.url).href,
 		preload: true,
 	},
 	mgIntro3: {
 		type: 'sprite',
-		src: new URL('../../assets/sprites/hypnoIntro/intro_3.png', import.meta.url).href,
+		src: new URL('../../assets/sprites/dragonInterim/intro_3.jpg', import.meta.url).href,
 		preload: true,
 	},
 	mgLogo: {
 		type: 'sprite',
-		src: new URL('../../assets/sprites/hypnoBrand/logo.png', import.meta.url).href,
+		src: new URL('../../assets/sprites/dragonInterim/logo.png', import.meta.url).href,
 		preload: true,
 	},
 
 	// bet bar plates and the free-game panels
 	mgUiTicker: {
 		type: 'sprite',
-		src: new URL('../../assets/sprites/hypnoUi/ticker_plate.png', import.meta.url).href,
+		src: new URL('../../assets/sprites/dragonInterim/ticker_plate.png', import.meta.url).href,
 		preload: true,
 	},
 	mgUiBuyBonus: {
 		type: 'sprite',
-		src: new URL('../../assets/sprites/hypnoUi/buybonus_plate.png', import.meta.url).href,
+		src: new URL('../../assets/sprites/dragonInterim/buybonus_plate.png', import.meta.url).href,
 		preload: true,
 	},
 	mgUiBuyBonusLit: {
 		type: 'sprite',
-		src: new URL('../../assets/sprites/hypnoUi/buybonus_plate_lit.png', import.meta.url).href,
+		src: new URL('../../assets/sprites/dragonInterim/buybonus_plate_lit.png', import.meta.url).href,
 		preload: true,
 	},
 	mgUiBarStrip: {
 		type: 'sprite',
-		src: new URL('../../assets/sprites/hypnoUi/bar_strip.png', import.meta.url).href,
+		src: new URL('../../assets/sprites/dragonInterim/bar_strip.png', import.meta.url).href,
 		preload: true,
 	},
 	mgUiButton: {
 		type: 'sprite',
-		src: new URL('../../assets/sprites/hypnoUi/button_single.svg', import.meta.url).href,
+		src: new URL('../../assets/sprites/dragonInterim/button_single.svg', import.meta.url).href,
 		preload: true,
 	},
 	mgUiButtonOn: {
 		type: 'sprite',
-		src: new URL('../../assets/sprites/hypnoUi/button_single_on.svg', import.meta.url).href,
+		src: new URL('../../assets/sprites/dragonInterim/button_single_on.svg', import.meta.url).href,
 		preload: true,
 	},
 	mgTotalPlate: {
 		type: 'sprite',
-		src: new URL('../../assets/sprites/hypnoUi/total_plate.png', import.meta.url).href,
+		src: new URL('../../assets/sprites/dragonInterim/total_plate.png', import.meta.url).href,
 		preload: true,
 	},
 	mgTotalPlateMid: {
 		type: 'sprite',
-		src: new URL('../../assets/sprites/hypnoUi/total_plate_mid.png', import.meta.url).href,
+		src: new URL('../../assets/sprites/dragonInterim/total_plate_mid.png', import.meta.url).href,
 		preload: true,
 	},
 	mgTotalPlateHigh: {
 		type: 'sprite',
-		src: new URL('../../assets/sprites/hypnoUi/total_plate_high.png', import.meta.url).href,
+		src: new URL('../../assets/sprites/dragonInterim/total_plate_high.png', import.meta.url).href,
 		preload: true,
 	},
 	mgFrameCapital: {
 		type: 'sprite',
-		src: new URL('../../assets/sprites/hypnoFrame/corner.png', import.meta.url).href,
+		src: new URL('../../assets/sprites/dragonInterim/frame_corner.png', import.meta.url).href,
 		preload: true,
 	},
 	mgFrameLintel: {
 		type: 'sprite',
-		src: new URL('../../assets/sprites/hypnoFrame/top.png', import.meta.url).href,
+		src: new URL('../../assets/sprites/dragonInterim/frame_top.png', import.meta.url).href,
 		preload: true,
 	},
 	mgFrameColumn: {
 		type: 'sprite',
-		src: new URL('../../assets/sprites/hypnoFrame/side.png', import.meta.url).href,
+		src: new URL('../../assets/sprites/dragonInterim/frame_side.png', import.meta.url).href,
 		preload: true,
 	},
-	mgTransitionCurtain: { type: 'sprite', src: new URL('../../assets/sprites/hypnoBackground/curtain.png', import.meta.url).href, preload: true },
+	mgTransitionCurtain: { type: 'sprite', src: new URL('../../assets/sprites/dragonInterim/curtain.png', import.meta.url).href, preload: true },
 	mgFsSign: {
 		type: 'sprite',
-		src: new URL('../../assets/sprites/hypnoUi/fs_sign.png', import.meta.url).href,
+		src: new URL('../../assets/sprites/dragonInterim/fs_sign.png', import.meta.url).href,
 	},
 	mgFsPanel: {
 		type: 'sprite',
-		src: new URL('../../assets/sprites/hypnoUi/fs_counter_panel.png', import.meta.url).href,
+		src: new URL('../../assets/sprites/dragonInterim/fs_counter_panel.png', import.meta.url).href,
 	},
 
 	// Hypno pocket watches: bronze / silver / gold; retain internal keys for FX compatibility.
 	mgOrbGreen: {
 		type: 'sprite',
-		src: new URL('../../assets/sprites/hypnoWatches/watch-bronze.png', import.meta.url).href,
+		src: new URL('../../assets/sprites/dragonInterim/pearl_t1.png', import.meta.url).href,
 		preload: true,
 	},
 	mgOrbPurple: {
 		type: 'sprite',
-		src: new URL('../../assets/sprites/hypnoWatches/watch-silver.png', import.meta.url).href,
+		src: new URL('../../assets/sprites/dragonInterim/pearl_blank.png', import.meta.url).href,
 		preload: true,
 	},
 	mgOrbGold: {
 		type: 'sprite',
-		src: new URL('../../assets/sprites/hypnoWatches/watch-gold.png', import.meta.url).href,
+		src: new URL('../../assets/sprites/dragonInterim/pearl_t5.png', import.meta.url).href,
 		preload: true,
 	},
 
@@ -199,154 +188,154 @@ export default {
 	// (design/watch_art/build_tiers.py): green, blue, violet, crimson, gold.
 	watchT1: {
 		type: 'sprite',
-		src: new URL('../../assets/sprites/hypnoWatches/watch-t1.png', import.meta.url).href,
+		src: new URL('../../assets/sprites/dragonInterim/pearl_t1.png', import.meta.url).href,
 		preload: true,
 	},
 	watchT2: {
 		type: 'sprite',
-		src: new URL('../../assets/sprites/hypnoWatches/watch-t2.png', import.meta.url).href,
+		src: new URL('../../assets/sprites/dragonInterim/pearl_t2.png', import.meta.url).href,
 		preload: true,
 	},
 	watchT3: {
 		type: 'sprite',
-		src: new URL('../../assets/sprites/hypnoWatches/watch-t3.png', import.meta.url).href,
+		src: new URL('../../assets/sprites/dragonInterim/pearl_t3.png', import.meta.url).href,
 		preload: true,
 	},
 	watchT4: {
 		type: 'sprite',
-		src: new URL('../../assets/sprites/hypnoWatches/watch-t4.png', import.meta.url).href,
+		src: new URL('../../assets/sprites/dragonInterim/pearl_t4.png', import.meta.url).href,
 		preload: true,
 	},
 	watchT5: {
 		type: 'sprite',
-		src: new URL('../../assets/sprites/hypnoWatches/watch-t5.png', import.meta.url).href,
+		src: new URL('../../assets/sprites/dragonInterim/pearl_t5.png', import.meta.url).href,
 		preload: true,
 	},
 
 	// win-tier plaques
 	mgWinBannerBig: {
 		type: 'sprite',
-		src: new URL('../../assets/sprites/hypnoWinBanners/big.png', import.meta.url).href,
+		src: new URL('../../assets/sprites/dragonInterim/banner_big.png', import.meta.url).href,
 	},
 	mgWinBannerSuperwin: {
 		type: 'sprite',
-		src: new URL('../../assets/sprites/hypnoWinBanners/superwin.png', import.meta.url).href,
+		src: new URL('../../assets/sprites/dragonInterim/banner_superwin.png', import.meta.url).href,
 	},
 	mgWinBannerMega: {
 		type: 'sprite',
-		src: new URL('../../assets/sprites/hypnoWinBanners/mega.png', import.meta.url).href,
+		src: new URL('../../assets/sprites/dragonInterim/banner_mega.png', import.meta.url).href,
 	},
 	mgWinBannerEpic: {
 		type: 'sprite',
-		src: new URL('../../assets/sprites/hypnoWinBanners/epic.png', import.meta.url).href,
+		src: new URL('../../assets/sprites/dragonInterim/banner_epic.png', import.meta.url).href,
 	},
 	mgWinBannerMax: {
 		type: 'sprite',
-		src: new URL('../../assets/sprites/hypnoWinBanners/max.png', import.meta.url).href,
+		src: new URL('../../assets/sprites/dragonInterim/banner_max.png', import.meta.url).href,
 	},
 
 	// symbols — no W: a wild in a pay-anywhere game joins every symbol's count at
 	// once, so the maths ships none
 	mgS: {
 		type: 'sprite',
-		src: new URL('../../assets/sprites/hypnoSymbols/s.png', import.meta.url).href,
+		src: new URL('../../assets/sprites/dragonSymbols/s.png', import.meta.url).href,
 		preload: true,
 	},
 	mgH1: {
 		type: 'sprite',
-		src: new URL('../../assets/sprites/hypnoSymbols/h1.png', import.meta.url).href,
+		src: new URL('../../assets/sprites/dragonSymbols/h1.png', import.meta.url).href,
 		preload: true,
 	},
 	mgH2: {
 		type: 'sprite',
-		src: new URL('../../assets/sprites/hypnoSymbols/h2.png', import.meta.url).href,
+		src: new URL('../../assets/sprites/dragonSymbols/h2.png', import.meta.url).href,
 		preload: true,
 	},
 	mgH3: {
 		type: 'sprite',
-		src: new URL('../../assets/sprites/hypnoSymbols/h3.png', import.meta.url).href,
+		src: new URL('../../assets/sprites/dragonSymbols/h3.png', import.meta.url).href,
 		preload: true,
 	},
 	mgH4: {
 		type: 'sprite',
-		src: new URL('../../assets/sprites/hypnoSymbols/h4.png', import.meta.url).href,
-		preload: true,
-	},
-	mgH5: {
-		type: 'sprite',
-		src: new URL('../../assets/sprites/hypnoSymbols/h5.png', import.meta.url).href,
+		src: new URL('../../assets/sprites/dragonSymbols/h4.png', import.meta.url).href,
 		preload: true,
 	},
 	mgL1: {
 		type: 'sprite',
-		src: new URL('../../assets/sprites/hypnoSymbols/l1.png', import.meta.url).href,
+		src: new URL('../../assets/sprites/dragonSymbols/l1.png', import.meta.url).href,
 		preload: true,
 	},
 	mgL2: {
 		type: 'sprite',
-		src: new URL('../../assets/sprites/hypnoSymbols/l2.png', import.meta.url).href,
+		src: new URL('../../assets/sprites/dragonSymbols/l2.png', import.meta.url).href,
 		preload: true,
 	},
 	mgL3: {
 		type: 'sprite',
-		src: new URL('../../assets/sprites/hypnoSymbols/l3.png', import.meta.url).href,
+		src: new URL('../../assets/sprites/dragonSymbols/l3.png', import.meta.url).href,
 		preload: true,
 	},
 	mgL4: {
 		type: 'sprite',
-		src: new URL('../../assets/sprites/hypnoSymbols/l4.png', import.meta.url).href,
+		src: new URL('../../assets/sprites/dragonSymbols/l4.png', import.meta.url).href,
+		preload: true,
+	},
+	mgL5: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/dragonSymbols/l5.png', import.meta.url).href,
 		preload: true,
 	},
 
 	// bet-bar button icons in place of the template's text/emoji glyphs
 	mgIconMenu: {
 		type: 'sprite',
-		src: new URL('../../assets/sprites/medusaUiIcons/menu.png', import.meta.url).href,
+		src: new URL('../../assets/sprites/dragonInterim/icons/menu.png', import.meta.url).href,
 		preload: true,
 	},
 	mgIconMenuExit: {
 		type: 'sprite',
-		src: new URL('../../assets/sprites/medusaUiIcons/menuExit.png', import.meta.url).href,
+		src: new URL('../../assets/sprites/dragonInterim/icons/menuExit.png', import.meta.url).href,
 		preload: true,
 	},
 	mgIconSettings: {
 		type: 'sprite',
-		src: new URL('../../assets/sprites/medusaUiIcons/settings.png', import.meta.url).href,
+		src: new URL('../../assets/sprites/dragonInterim/icons/settings.png', import.meta.url).href,
 		preload: true,
 	},
 	mgIconInfo: {
 		type: 'sprite',
-		src: new URL('../../assets/sprites/medusaUiIcons/info.png', import.meta.url).href,
+		src: new URL('../../assets/sprites/dragonInterim/icons/info.png', import.meta.url).href,
 		preload: true,
 	},
 	mgIconPayTable: {
 		type: 'sprite',
-		src: new URL('../../assets/sprites/medusaUiIcons/payTable.png', import.meta.url).href,
+		src: new URL('../../assets/sprites/dragonInterim/icons/payTable.png', import.meta.url).href,
 		preload: true,
 	},
 	mgIconSoundOn: {
 		type: 'sprite',
-		src: new URL('../../assets/sprites/medusaUiIcons/soundOn.png', import.meta.url).href,
+		src: new URL('../../assets/sprites/dragonInterim/icons/soundOn.png', import.meta.url).href,
 		preload: true,
 	},
 	mgIconSoundOff: {
 		type: 'sprite',
-		src: new URL('../../assets/sprites/medusaUiIcons/soundOff.png', import.meta.url).href,
+		src: new URL('../../assets/sprites/dragonInterim/icons/soundOff.png', import.meta.url).href,
 		preload: true,
 	},
 	mgIconIncrease: {
 		type: 'sprite',
-		src: new URL('../../assets/sprites/medusaUiIcons/increase.png', import.meta.url).href,
+		src: new URL('../../assets/sprites/dragonInterim/icons/increase.png', import.meta.url).href,
 		preload: true,
 	},
 	mgIconDecrease: {
 		type: 'sprite',
-		src: new URL('../../assets/sprites/medusaUiIcons/decrease.png', import.meta.url).href,
+		src: new URL('../../assets/sprites/dragonInterim/icons/decrease.png', import.meta.url).href,
 		preload: true,
 	},
 	mgIconAutoSpin: {
 		type: 'sprite',
-		src: new URL('../../assets/sprites/medusaUiIcons/autoSpin.png', import.meta.url).href,
+		src: new URL('../../assets/sprites/dragonInterim/icons/autoSpin.png', import.meta.url).href,
 		preload: true,
 	},
 

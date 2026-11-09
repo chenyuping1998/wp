@@ -2,7 +2,12 @@ import { GAME_FONT, GAME_FONT_WEIGHT } from './fonts';
 import { setUiTheme } from 'components-ui-pixi';
 import { stateConfig } from 'state-shared';
 
-// Circus controls share a red face, one gold edge and the shared toolbar behaviour.
+// Dragon Tide interim (換畫風＝整體): the Hypno controls' palette, greyed by luminance until the
+// new UI art and palette land (art/gen-order-1109). Shapes and behaviour are unchanged.
+const grey = (rgb: number) => {
+	const v = Math.round(0.299 * ((rgb >> 16) & 255) + 0.587 * ((rgb >> 8) & 255) + 0.114 * (rgb & 255));
+	return (v << 16) | (v << 8) | v;
+};
 //
 // Applied once at module load (imported by Game.svelte).
 setUiTheme({
@@ -15,50 +20,50 @@ setUiTheme({
 	barStyle: 'framed',
 	barHeight: 210,
 	barFrameBottom: 18,
-	barFill: 0x57251f,
+	barFill: grey(0x57251f),
 	barAlpha: 1,
-	panelFill: 0x44201d,
-	panelBorder: 0x2a1f24,
+	panelFill: grey(0x44201d),
+	panelBorder: grey(0x2a1f24),
 
-	buttonFill: 0x970d21,
-	buttonFillLight: 0xe8725e,
-	buttonFillDisabled: 0x3b4648,
-	buttonFillActive: 0xc53d33,
-	buttonBorder: 0xf2b632,
+	buttonFill: grey(0x970d21),
+	buttonFillLight: grey(0xe8725e),
+	buttonFillDisabled: grey(0x3b4648),
+	buttonFillActive: grey(0xc53d33),
+	buttonBorder: grey(0xf2b632),
 	// All round controls share Spin's red face and a single gold edge.
 	buttonBorderWidth: 6,
 	buttonBorderWidthActive: 6,
-	buttonIconFill: 0xffedc2,
-	buttonIconStroke: 0x351b19,
+	buttonIconFill: grey(0xffedc2),
+	buttonIconStroke: grey(0x351b19),
 	// The cut around Turbo 2's front bolt matches the disc's red face.
-	turboKeylineColor: 0x970d21,
+	turboKeylineColor: grey(0x970d21),
 	turboButtonScale: 1.16,
 	turboIconScale: 0.58,
 	railButtonScale: 1.10,
 	spinScale: 0.88,
 
 	// spin: the one solid coral thing on the strip, edged in ink
-	betFill: 0x970d21,
-	betBorder: 0xf2b632,
+	betFill: grey(0x970d21),
+	betBorder: grey(0xf2b632),
 
 	// readouts: Balance and Bet in the strip's quiet marble, WIN alone in gold —
 	// the number the eye goes looking for after every spin
-	labelFill: 0xefe8d8,
-	balanceLabelFill: 0xefe8d8,
-	winAccent: { border: 0xf2b632, label: 0xffd36a },
-	betAccent: { border: 0x2a1f24, label: 0xefe8d8 },
-	valueFill: 0xfffaf0,
-	valueStroke: 0x2a1f24,
-	valueShadow: 0x120c0f,
+	labelFill: grey(0xefe8d8),
+	balanceLabelFill: grey(0xefe8d8),
+	winAccent: { border: grey(0xf2b632), label: grey(0xffd36a) },
+	betAccent: { border: grey(0x2a1f24), label: grey(0xefe8d8) },
+	valueFill: grey(0xfffaf0),
+	valueStroke: grey(0x2a1f24),
+	valueShadow: grey(0x120c0f),
 	readoutScale: 0.82,
 	readoutOffsetY: -4,
 	// the status line between Win and the stepper (BarMessage.svelte sets the text)
-	barMessageFill: 0xefe8d8,
+	barMessageFill: grey(0xefe8d8),
 	barMessageScale: 0.50,
-	barMessageStroke: 0x2a1f24,
+	barMessageStroke: grey(0x2a1f24),
 	// the Win figure swells and flashes when a win lands; Bet swells when it moves
 	valuePop: 0.18,
-	winFlashTint: 0xfff3c4,
+	winFlashTint: grey(0xfff3c4),
 
 	// one slim strip along the foot — the arrangement players arrive knowing
 	betBarLayout: 'compactBottom',
@@ -93,30 +98,30 @@ setUiTheme({
 	// buybonus_plate.png. Re-measure when the delivered shield replaces it.
 	buyBonusHitArea: { x: 0.08, y: 0.05, width: 0.84, height: 0.9 },
 	// caption on the shield's plain lower third
-	buyBonusLabelFill: 0x2a1f24,
+	buyBonusLabelFill: grey(0x2a1f24),
 	buyBonusLabelSizeRatio: 0.42,
 	buyBonusLabelWrapWidth: 90,
 	buyBonusLabelOffsetY: 0.2,
 	// hover swaps to the shield with Medusa's gaze lit round it
 	buyBonusHoverSprite: 'buyBonusGlyph',
-	buyBonusHoverSpriteTint: 0xffffff,
+	buyBonusHoverSpriteTint: grey(0xffffff),
 	buyBonusHoverSpriteBlend: 'normal',
 	// unlit rather than greyed while a round runs, and back to full colour after
 	// (a missing idle tint leaves the loading-time dim stuck on)
 	buyBonusDisabledStyle: 'dim',
-	buyBonusIdleTint: 0xffffff,
+	buyBonusIdleTint: grey(0xffffff),
 	// no offer to buy a feature beside a feature that is already running
 	buyBonusHideInFreeSpins: true,
 
 	// the Bet panel opens the stake menu when tapped; under the cursor its caption
 	// and chevron light coral, the colour every hover in the game uses
 	labelAffordance: true,
-	labelHoverColor: 0xe8725e,
-	labelChevronHoverColor: 0xe8725e,
+	labelHoverColor: grey(0xe8725e),
+	labelChevronHoverColor: grey(0xe8725e),
 	// hover never greys a control out: it lights in the game's own colour
 	hoverHighlight: true,
 	// Hover lights the same single-edge artwork, without adding an inner ring.
-	hoverPlateLight: 0xe8725e,
+	hoverPlateLight: grey(0xe8725e),
 	pressFeedback: true,
 	// no breathing halo on Spin (a flaring halo was part of a "poor UI" review)
 	spinButtonGlow: false,
@@ -134,10 +139,10 @@ setUiTheme({
 		closePanelsOnSpin: true,
 	},
 
-	autoSpinsCounterFill: 0x1e4950,
-	autoSpinsCounterBorder: 0xf2b632,
-	autoSpinsCounterLabel: 0xfffaf0,
-	autoSpinsCounterLabelStroke: 0x2a1f24,
+	autoSpinsCounterFill: grey(0x1e4950),
+	autoSpinsCounterBorder: grey(0xf2b632),
+	autoSpinsCounterLabel: grey(0xfffaf0),
+	autoSpinsCounterLabelStroke: grey(0x2a1f24),
 
 	sprites: {
 		// Spin uses a clean red disc with one gold edge.

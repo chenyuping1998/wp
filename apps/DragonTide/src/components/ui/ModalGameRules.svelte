@@ -19,7 +19,7 @@
 	// player matches what they read to what they see. This panel is DOM, so the
 	// icons come from static/ rather than the pixi asset pipeline. Every pressable
 	// control is listed — a guide that leaves one out fails the engine guideline.
-	const ICONS = `${base}/assets/sprites/medusaUiIcons`;
+	const ICONS = `${base}/assets/sprites/dragonInterim/icons`;
 	type Control = { icons: string[]; name: string; text: string; sign?: boolean; readout?: string; opens?: boolean };
 	const controls: Control[] = [
 		{
@@ -147,12 +147,12 @@
 {#if stateModal.modal?.name === 'gameRules'}
 	<Popup zIndex={zIndex.modal} onclose={() => (stateModal.modal = null)}>
 		<div class="wp-rules">
-			<h2>HYPNO MONKEY — GAME RULES</h2>
+			<h2>DRAGON TIDE — GAME RULES</h2>
 
 			<section class="wp-card">
 				<h3><span class="wp-accent-bar"></span>How to play</h3>
 				<p>
-					Hypno Monkey is a {reelCount}&times;{rowCount} {T.payAnywhere} video slot. There are no
+					Dragon Tide is a {reelCount}&times;{rowCount} {T.payAnywhere} video slot. There are no
 					{T.paylines} and symbols do not need to touch: if {minPayingCount} or more of the same symbol
 					are anywhere on the board, they {T.pay}. The more of that symbol there are, the higher the
 					{T.payValue}. Winning symbols are then hypnotised away, the symbols above them fall,
@@ -169,7 +169,7 @@
 						<li>
 							<span class="wp-control-icons" aria-hidden="true">
 								{#if control.sign}
-									<img class="wp-sign" src={`${base}/assets/sprites/hypnoUi/buybonus_plate.png`} alt="" />
+									<img class="wp-sign" src={`${base}/assets/sprites/dragonInterim/buybonus_plate.png`} alt="" />
 								{:else if control.readout}
 									<span class="wp-readout"
 										>{control.readout}{#if control.opens}<svg viewBox="0 0 12 8"><polyline points="1.5,1.5 6,6 10.5,1.5" /></svg>{/if}</span

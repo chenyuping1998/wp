@@ -38,7 +38,7 @@
 		<div class="hm-feature">
 			<header class="marquee">
 				<svg class="lights" viewBox="0 0 900 14" aria-hidden="true">{#each Array.from({length:24},(_,i)=>i) as i}<circle cx={12+i*38} cy="7" r="4"/>{/each}</svg>
-				<div class="heading"><span class="eyebrow">HYPNO MONKEY</span><h2>{social?'FEATURES':'BUY BONUS'}</h2><p>CHOOSE YOUR SHOW</p></div>
+				<div class="heading"><span class="eyebrow">DRAGON TIDE</span><h2>{social?'FEATURES':'BUY BONUS'}</h2><p>CHOOSE YOUR SHOW</p></div>
 				<div class="amount"><span>{social?'PLAY AMOUNT':'BET AMOUNT'}</span><BetMenuAmountToggle/></div>
 			</header>
 			<div class="tickets">
@@ -50,10 +50,10 @@
 					{@const max=Math.max(...values)}
 					{@const canBuy=affordable(mode.costMultiplier)}
 					<section class="ticket" class:super={superMode}>
-						<div class="scene" style:background-image={`url('${art(superMode?'hypnoBackground/bg_free.jpg':'hypnoBackground/bg_base.jpg')}')`}>
+						<div class="scene" style:background-image={`url('${art(superMode?'dragonBackground/bg_free.jpg':'dragonBackground/bg_base.jpg')}')`}>
 							<div class="spotlight"></div>
-							<img class="assistant" src={art('hypnoBuy/assistant.png')} alt=""/>
-							<div class="hero-watch"><img src={art(`hypnoWatches/watch-${superMode?'t5':'t1'}.png`)} alt=""/><strong>×{min}</strong></div>
+							<img class="assistant" src={art('dragonInterim/buy_princess.png')} alt=""/>
+							<div class="hero-watch"><img src={art(`dragonInterim/pearl_${superMode?'t5':'t1'}.png`)} alt=""/><strong>×{min}</strong></div>
 							<span class="show-tag">{superMode?'THE GOLDEN SHOW':'THE HYPNO SHOW'}</span>
 							<div class="spin-stub"><strong>{config.freeSpins.spins}</strong><span>FREE SPINS</span></div>
 						</div>

@@ -42,6 +42,10 @@ export const medusaAnimations = {
 	win_big: { durationMs: 2400, loopMs: 2000 },
 	win_max: { durationMs: 3000, loopMs: 2000 },
 	fg_end: { durationMs: 1500 },
+	// Dragon Tide staff set (SPEC §4, 天使奧丁 timings): wind-up while the feature plaque
+	// is up (ready 0.52 s → ready_loop), then the transform act before the portal.
+	fg_ready: { durationMs: 520 },
+	fg_transform: { durationMs: 1600 },
 } as const;
 
 export type MedusaAnimation = keyof typeof medusaAnimations;
