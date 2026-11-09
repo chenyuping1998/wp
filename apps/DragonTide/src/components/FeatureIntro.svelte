@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { pearlInfo } from '../game/pearlInfo';
+	import { pearlRules } from '../game/pearlRules';
 	import { Container, Graphics, Sprite, Text } from 'pixi-svelte';
 	import type { Graphics as PixiGraphics } from 'pixi.js';
 	import { MainContainer } from 'components-layout';
@@ -12,7 +12,7 @@
 
 	/**
 	 * The loading-screen feature cards: the title wordmark and three illustrated
-	 * cards — the hypnotised tumble, the Hypnotist's pocket watch, the free-game
+	 * cards — the tumble, the dragon pearls, the free-game
 	 * running total. Side by side in landscape, stacked in portrait.
 	 * The pictures carry no text; every figure on the cards comes from config.
 	 */
@@ -46,22 +46,22 @@
 		return (1 - progress) ** 2;
 	};
 
-	const maxFree = Math.max(...pearlInfo.freeValues);
+	const maxFree = pearlRules.max;
 	const panels = [
 		{
 			key: 'mgIntro1',
-			title: 'HYPNO TUMBLE',
-			body: `8+ of a symbol anywhere ${T.pays}. Winners are hypnotised away and new symbols drop in.`,
+			title: 'TIDE TUMBLE',
+			body: `8+ of a symbol anywhere ${T.pays}. Winners wash away and new symbols drop in.`,
 		},
 		{
 			key: 'mgIntro2',
-			title: 'HYPNO WATCH',
-			body: `On a spin with a win, his pocket watch multiplies the whole spin.`,
+			title: 'DRAGON PEARLS',
+			body: `On a spin with a win, every dragon pearl on the board multiplies the whole spin.`,
 		},
 		{
 			key: 'mgIntro3',
 			title: 'FREE SPINS',
-			body: `Watch multipliers, up to ${maxFree}×, add to a total that never resets.`,
+			body: `Pearls, up to ${maxFree}×, add to a TOTAL that never resets.`,
 		},
 	];
 

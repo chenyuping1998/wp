@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { pearlInfo } from '../../game/pearlInfo';
+	import { pearlRules } from '../../game/pearlRules';
 	import { Popup } from 'components-shared';
 	import { zIndex } from 'constants-shared/zIndex';
 	import { stateModal } from 'state-shared';
@@ -28,19 +28,19 @@
 		S: 'mgS',
 	};
 
-	// Names follow the actual installed circus symbol art. If the art
-	// changes, these names move with it.
+	// Names follow the Dragon Tide symbol art (art/symbols v3; lows are the five
+	// dragon-scale jade plaques). If the art changes, these names move with it.
 	const SYMBOL_LABEL: Record<string, string> = {
-		H1: 'Top Hat',
-		H2: 'Spiral Lollipop',
-		H3: 'Crystal Ball',
-		H4: 'Hand Bell',
-		H5: 'Banana',
-		L1: 'Star Ticket',
-		L2: 'Moon Ticket',
-		L3: 'Diamond Ticket',
-		L4: 'Heart Ticket',
-		S: 'Hypnosis Paddle — Scatter',
+		H1: 'Wave Crown',
+		H2: 'Trident',
+		H3: 'Jade Ruyi',
+		H4: 'Gold Ingot',
+		L1: 'Gold Scale',
+		L2: 'Red Scale',
+		L3: 'Purple Scale',
+		L4: 'Jade Scale',
+		L5: 'Blue Scale',
+		S: 'Dragon Gate — Scatter',
 	};
 
 	// No W: a wild in a pay-anywhere game joins every symbol's count at once.
@@ -182,15 +182,14 @@
 				{/each}
 			</div>
 
-			<h3 class="wp-section-title">THE HYPNOTIST'S WATCH</h3>
+			<h3 class="wp-section-title">DRAGON PEARLS</h3>
 			<p class="wp-note">
-				Winning symbols are hypnotised away, and the symbols above fall to replace them; the
-				chain continues until nothing more {T.pays}. When it ends, the Hypnotist may add a pocket-watch multiplier. It
-				only counts if that spin had a win: base game values are
-				{pearlInfo.baseValues.join('×, ')}×, and the whole spin's win is multiplied by it. In Free
-				Spins he can add up to {pearlInfo.freeMaxThrows} at once, values up to
-				{Math.max(...pearlInfo.freeValues)}×; they are added to a running total that multiplies
-				the spin. Hypno Spiral {T.payout}s are never multiplied. Max win is capped at
+				Winning symbols wash away, and the symbols above fall to replace them; the chain
+				continues until nothing more {T.pays}. Dragon pearls ({pearlRules.min}&times; to
+				{pearlRules.max}&times;) can land anywhere and stay put; any number can be on the board and
+				their values add up. When the chain ends, a spin that won is multiplied by the sum of its
+				pearls. In Free Spins the pearls are added to a TOTAL MULTIPLIER that multiplies each winning
+				spin that has pearls. Dragon Gate {T.payout}s are never multiplied. Max win is capped at
 				{maxWin.toLocaleString()}&times; {T.totalBet}.
 			</p>
 		</div>

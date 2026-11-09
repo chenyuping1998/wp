@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { pearlInfo } from '../../game/pearlInfo';
+	import { pearlRules } from '../../game/pearlRules';
 	import { Popup } from 'components-shared';
 	import { zIndex } from 'constants-shared/zIndex';
 	import { stateModal, stateMetaDerived, stateBet, stateUrlDerived } from 'state-shared';
@@ -38,14 +38,14 @@
 		<div class="hm-feature">
 			<header class="marquee">
 				<svg class="lights" viewBox="0 0 900 14" aria-hidden="true">{#each Array.from({length:24},(_,i)=>i) as i}<circle cx={12+i*38} cy="7" r="4"/>{/each}</svg>
-				<div class="heading"><span class="eyebrow">DRAGON TIDE</span><h2>{social?'FEATURES':'BUY BONUS'}</h2><p>CHOOSE YOUR SHOW</p></div>
+				<div class="heading"><span class="eyebrow">DRAGON TIDE</span><h2>{social?'FEATURES':'BUY BONUS'}</h2><p>CHOOSE YOUR TIDE</p></div>
 				<div class="amount"><span>{social?'PLAY AMOUNT':'BET AMOUNT'}</span><BetMenuAmountToggle/></div>
 			</header>
 			<div class="tickets">
 				{#each modes as mode (mode.mode)}
 					{@const superMode=mode.mode==='SUPER_BONUS'}
 					{@const cfg=superMode?config.betModes.super_bonus:config.betModes.bonus}
-					{@const values=superMode?pearlInfo.superValues:pearlInfo.freeValues}
+					{@const values=superMode?pearlRules.superValues:pearlRules.values}
 					{@const min=Math.min(...values)}
 					{@const max=Math.max(...values)}
 					{@const canBuy=affordable(mode.costMultiplier)}
@@ -54,14 +54,14 @@
 							<div class="spotlight"></div>
 							<img class="assistant" src={art('dragonInterim/buy_princess.png')} alt=""/>
 							<div class="hero-watch"><img src={art(`dragonInterim/pearl_${superMode?'t5':'t1'}.png`)} alt=""/><strong>×{min}</strong></div>
-							<span class="show-tag">{superMode?'THE GOLDEN SHOW':'THE HYPNO SHOW'}</span>
+							<span class="show-tag">{superMode?'THE DEEP PALACE':'THE DRAGON TIDE'}</span>
 							<div class="spin-stub"><strong>{config.freeSpins.spins}</strong><span>FREE SPINS</span></div>
 						</div>
 						<div class="ticket-body">
 							<h3>{superMode?'SUPER FREE SPINS':'FREE SPINS'}</h3>
-							<div class="watch-range">WATCH VALUES <strong>×{min} – ×{max}</strong></div>
-							<div class="formula" aria-label="Watch multipliers add together"><span>×{min}</span><i>+</i><span>×{superMode?25:5}</span><i>=</i><b>×{min+(superMode?25:5)}</b></div>
-							<p>Winning watches add to a running total.<br/>{superMode?`Every watch is ×${min} or more.`:'The total stays for the whole feature.'}</p>
+							<div class="watch-range">PEARL VALUES <strong>×{min} – ×{max}</strong></div>
+							<div class="formula" aria-label="Pearl multipliers add together"><span>×{min}</span><i>+</i><span>×{superMode?25:5}</span><i>=</i><b>×{min+(superMode?25:5)}</b></div>
+							<p>Pearls on a winning spin add to the TOTAL.<br/>{superMode?`Every pearl is ×${min} or more.`:'The total stays for the whole feature.'}</p>
 							<div class="ticket-divider"><span></span><b>{mode.costMultiplier}× {social?'AMOUNT':'BET'}</b><span></span></div>
 							<button class="enter" disabled={!canBuy} onclick={()=>choose(mode.mode,mode.costMultiplier)}><span>{social?'PLAY FEATURE':'BUY FEATURE'}</span><strong>{numberToCurrencyString(stateBet.betAmount*mode.costMultiplier)}</strong></button>
 							<div class="card-foot"><span>{(cfg.rtp*100).toFixed(2)}% RTP</span><span>{canBuy?'CONFIRM ON NEXT SCREEN':'INSUFFICIENT BALANCE'}</span></div>

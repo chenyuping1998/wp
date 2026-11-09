@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { pearlInfo } from '../../game/pearlInfo';
+	import { pearlRules } from '../../game/pearlRules';
 	import { Popup } from 'components-shared';
 	import { zIndex } from 'constants-shared/zIndex';
 	import { stateModal, LEGAL_NOTICE } from 'state-shared';
@@ -43,7 +43,7 @@
 			icons: [],
 			sign: true,
 			name: T.buyBonusName,
-			text: `The ticket-booth sign beside the board. Opens the feature menu, where Free Spins can be ${T.bought} outright for the stated multiple of your ${T.bet}; the amount is shown before you confirm. It is unlit while a round is playing and hidden during Free Spins.`,
+			text: `The BUY BONUS plaque beside the board. Opens the feature menu, where Free Spins can be ${T.bought} outright for the stated multiple of your ${T.bet}; the amount is shown before you confirm. It is unlit while a round is playing and hidden during Free Spins.`,
 		},
 		{
 			icons: ['autoSpin'],
@@ -53,7 +53,7 @@
 		{
 			icons: ['turbo'],
 			name: 'Turbo',
-			text: "Press once for Turbo (one solid bolt): quicker drops and win presentations. Press again for Turbo 2 (two bolts): the board drops quicker still and each chain step is shorter. A third press turns turbo off. The Hypnotist's watches are always shown at a readable speed.",
+			text: "Press once for Turbo (one solid bolt): quicker drops and win presentations. Press again for Turbo 2 (two bolts): the board drops quicker still and each chain step is shorter. A third press turns turbo off. Dragon pearls are always shown at a readable speed.",
 		},
 		{
 			icons: ['menu'],
@@ -98,7 +98,7 @@
 	const rowCount = config.numRows?.[0] ?? 6;
 	const minPayingCount = 8;
 	const fs = config.freeSpins;
-	const medusa = pearlInfo;
+	const pearls = pearlRules;
 	const scatterPays = Object.entries(config.scatterPays)
 		.map(([count, value]) => ({ count: Number(count), value: Number(value) }))
 		.sort((a, b) => a.count - b.count);
@@ -110,7 +110,12 @@
 		{
 			name: 'Base game',
 			price: `1× ${T.bet}`,
-			text: `Every spin. ${minPayingCount}+ of a symbol anywhere ${T.pays}, chains continue until nothing more does, the Hypnotist may multiply a winning spin, and ${fs.trigger}+ Hypno Spirals award ${fs.spins} Free Spins.`,
+			text: `Every spin. ${minPayingCount}+ of a symbol anywhere ${T.pays}, chains continue until nothing more does, dragon pearls multiply a spin that won, and ${fs.trigger}+ Dragon Gates award ${fs.spins} Free Spins.`,
+		},
+		{
+			name: 'Extra Bet',
+			price: `${config.betModes?.ante?.cost}× ${T.bet}`,
+			text: `A switch in the feature menu for base-game spins. While it is on, every spin costs ${config.betModes?.ante?.cost}× your ${T.bet} and Dragon Gates land more often, so Free Spins come more often. Wins are worked out on your ${T.bet} as usual. Turn it off in the same menu.`,
 		},
 		{
 			name: 'Free Spins',
@@ -128,7 +133,7 @@
 	type BetMode = { cost?: number; rtp?: number; max_win?: number };
 	const modeRows = (
 		[
-			['Base game', 'base', `Every spin — or land ${fs.trigger} or more Hypno Spirals`],
+			['Base game', 'base', `Every spin — or land ${fs.trigger} or more Dragon Gates`],
 			['Extra Bet', 'ante', `Every spin at ${config.betModes?.ante?.cost}× with Extra Bet on`],
 			['Free Spins', 'bonus', `${entryVerb} for ${config.betModes?.bonus?.cost}×`],
 			['Super Free Spins', 'super_bonus', `${entryVerb} for ${config.betModes?.super_bonus?.cost}×`],
@@ -155,7 +160,7 @@
 					Dragon Tide is a {reelCount}&times;{rowCount} {T.payAnywhere} video slot. There are no
 					{T.paylines} and symbols do not need to touch: if {minPayingCount} or more of the same symbol
 					are anywhere on the board, they {T.pay}. The more of that symbol there are, the higher the
-					{T.payValue}. Winning symbols are then hypnotised away, the symbols above them fall,
+					{T.payValue}. Winning symbols then wash away, the symbols above them fall,
 					and new ones drop in from the top &mdash; if that leaves {minPayingCount} or more of a symbol
 					again it {T.pays} too, and the chain continues until nothing more {T.pays}. Wins from
 					different symbols are added together. The theoretical return to player (RTP) is {rtpPct}.
@@ -231,46 +236,43 @@
 			</section>
 
 			<section class="wp-card">
-				<h3><span class="wp-accent-bar"></span>The Hypnotist's watch</h3>
+				<h3><span class="wp-accent-bar"></span>Dragon pearls</h3>
 				<p>
-					A pocket-watch multiplier can drop into its own cell alongside the symbols.
-					Its multiplier is collected when the spin's chain has finished.
-					<strong>It only counts if that spin had a win from the chain.</strong> If the spin had no
-					win, the watch shatters and nothing changes.
+					A dragon pearl can land in any cell, on the first board or among the new symbols that drop
+					in, and a chain never removes it. Each pearl shows its multiplier, from
+					{pearls.values.join('×, ')}×. Any number of pearls can be on the board; their values add up.
 				</p>
 				<p>
-					In the base game he can add up to {medusa.baseMaxThrows} watches on one spin, worth
-					{medusa.baseValues.join('×, ')}×; the spin's whole chain win is multiplied by the sum of
-					its watches. A spin with no win can throw many more, up to {medusa.deadMaxThrows};
-					they all shatter and add nothing.
+					When the chain has finished, <strong>if the spin had a win from the chain</strong>, that
+					chain win is multiplied by the sum of every pearl on the board. If the spin had no chain win
+					(nothing, or only a Dragon Gate {T.payout}), the pearls add nothing.
 				</p>
 			</section>
 
 			<section class="wp-card">
-				<h3><span class="wp-accent-bar"></span>Free Spins &mdash; the running total</h3>
+				<h3><span class="wp-accent-bar"></span>Free Spins &mdash; TOTAL MULTIPLIER</h3>
 				<p>
-					In Free Spins he can add up to {medusa.freeMaxThrows} watches on one spin, worth
-					{medusa.freeValues.join('×, ')}×; in Super Free Spins every watch is worth
-					{medusa.superValues.join('×, ')}×. Every watch added on a spin
-					with a win is <strong>added to a running total</strong>, and that spin's chain win is
-					multiplied by the new total.
+					In Free Spins the pearls feed a <strong>TOTAL MULTIPLIER</strong>. On a spin with a win
+					from the chain, the sum of the pearls on the board is added to the total, and that spin's
+					chain win is multiplied by the new total. Pearls are worth {pearls.values.join('×, ')}×;
+					in Super Free Spins every pearl is worth {pearls.superValues.join('×, ')}×.
 				</p>
 				<ul class="wp-tiers">
-					<li>A spin with a win and a watch: the watch is added, then the win is multiplied by the total.</li>
-					<li>A spin with a win and no watch: the win is {T.paid} as it is, &times;1. The total is kept.</li>
-					<li>Watches on a spin with no win (up to {medusa.deadMaxThrows}) shatter and are not added.</li>
+					<li>A spin with a win and pearls: the pearls are added, then the win is multiplied by the total.</li>
+					<li>A spin with a win and no pearl: the win is {T.paid} as it is, &times;1. The total is kept.</li>
+					<li>Pearls on a spin with no chain win are not added.</li>
 				</ul>
-				<p>The running total starts at 0, never goes down during the feature, and resets when the feature ends.</p>
+				<p>The total starts at 0, never goes down during the feature, and resets when the feature ends.</p>
 			</section>
 
 			<section class="wp-card">
-				<h3><span class="wp-accent-bar"></span>Hypno Spiral &mdash; Scatter</h3>
+				<h3><span class="wp-accent-bar"></span>Dragon Gate &mdash; Scatter</h3>
 				<p>
-					The Hypno Spiral can land anywhere and is never removed by a chain. If {scatterPays[0]?.count ?? 4}
+					The Dragon Gate can land anywhere and is never removed by a chain. If {scatterPays[0]?.count ?? 4}
 					or more are on the board when the chain ends they {T.pay}
 					{#each scatterPays as pay, i (pay.count)}{i > 0 ? (i === scatterPays.length - 1 ? ' or ' : ', ') : ''}{pay.value}&times;
 						for {pay.count === topScatter ? `${pay.count} or more` : pay.count}{/each}
-					the {T.totalBet}. This {T.payout} is never multiplied by a watch. {fs.trigger} or more Hypno Spirals in
+					the {T.totalBet}. This {T.payout} is never multiplied by a pearl. {fs.trigger} or more Dragon Gates in
 					the base game award <strong>{fs.spins} Free Spins</strong>.
 				</p>
 			</section>
@@ -278,20 +280,22 @@
 			<section class="wp-card">
 				<h3><span class="wp-accent-bar"></span>Retriggers</h3>
 				<p>
-					During Free Spins, {fs.retrigger} or more Hypno Spirals on the board when a chain ends add
+					During Free Spins, {fs.retrigger} or more Dragon Gates on the board when a chain ends add
 					<strong>{fs.retriggerSpins} more Free Spins</strong>. There is no maximum number of Free
 					Spins; the feature ends when its spins run out or the maximum win is reached. This applies to
-					Free Spins won with Hypno Spirals and to rounds {T.bought} from the menu.
+					Free Spins won with Dragon Gates and to rounds {T.bought} from the menu.
 				</p>
 			</section>
 
 			<section class="wp-card">
 				<h3><span class="wp-accent-bar"></span>{T.buyBonusName}</h3>
 				<p>
-					Instead of waiting for the Hypno Spirals, you can {T.buy} direct entry into Free Spins for
-					{config.betModes?.bonus?.cost}&times; your {T.bet}. The round opens with {fs.trigger} or more
-					Hypno Spirals on the board and plays exactly like Free Spins won in the base game, at
-					{bonusRtpPct} RTP.
+					Instead of waiting for the Dragon Gates, you can {T.buy} direct entry into Free Spins for
+					{config.betModes?.bonus?.cost}&times; your {T.bet} ({bonusRtpPct} RTP), or into Super Free Spins
+					for {config.betModes?.super_bonus?.cost}&times; your {T.bet}
+					({((config.betModes?.super_bonus?.rtp ?? 0) * 100).toFixed(2)}% RTP), where every pearl is worth
+					{pearls.superMin}&times; or more. The round opens with {fs.trigger} or more Dragon Gates on the
+					board and plays exactly like Free Spins won in the base game.
 				</p>
 			</section>
 
