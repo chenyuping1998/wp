@@ -3,55 +3,46 @@
   "scope": "Pure motion, actual painted bounds, wrap continuity; actual browser frames checked separately",
   "clockWrap": 120,
   "distinctCellPhases": 28,
-  "maxPaintedCellEdge": 0.4838310819281698,
+  "maxPaintedCellEdge": 0.486563682170577,
   "symbols": {
     "H1": {
-      "description": "Hat balances on its brim, tips and lifts",
+      "description": "Wave crown tile lifts and swells",
       "cycle": 6,
       "actSeconds": 1.2,
-      "visibleAct": 2.102621468847584,
-      "ambientRange": 0.028579976627824903,
-      "maxScale": 1.0553038715321403,
-      "maxOffset": 0.04495578623503843
+      "visibleAct": 1.2385865172940436,
+      "ambientRange": 0.015877764793235993,
+      "maxScale": 1.0495434606917617,
+      "maxOffset": 0.034
     },
     "H2": {
-      "description": "Lollipop sways from its stick and turns",
+      "description": "Trident tile pulses with a small twist",
       "cycle": 5,
       "actSeconds": 1,
-      "visibleAct": 2.418627185147724,
-      "ambientRange": 0.04287011653855964,
-      "maxScale": 1,
-      "maxOffset": 0.04322604524338904
+      "visibleAct": 1.1248223564718551,
+      "ambientRange": 0.012702256752165818,
+      "maxScale": 1.0449928942588742,
+      "maxOffset": 0
     },
     "H3": {
-      "description": "Crystal settles on its base, inner orbit circles",
+      "description": "Jade ruyi tile settles and swells",
       "cycle": 8,
       "actSeconds": 1.6,
-      "visibleAct": 1.5363232419728812,
+      "visibleAct": 1.4114465714461177,
       "ambientRange": 0.01893087244106706,
-      "maxScale": 1.0614529296789152,
+      "maxScale": 1.0564578628578447,
       "maxOffset": 0.012
     },
     "H4": {
-      "description": "Bell hangs from its handle and rings",
+      "description": "Gold ingot tile hops with a squash",
       "cycle": 4,
       "actSeconds": 0.8,
-      "visibleAct": 3.9093794876317918,
-      "ambientRange": 0.04835624966651032,
-      "maxScale": 1,
-      "maxOffset": 0.07094635578723821
-    },
-    "H5": {
-      "description": "Banana rocks on its peel and hops",
-      "cycle": 7.5,
-      "actSeconds": 1.1,
-      "visibleAct": 2.143128231433866,
-      "ambientRange": 0.03127507819900763,
-      "maxScale": 1.0399934748830026,
-      "maxOffset": 0.06429384694301599
+      "visibleAct": 1.3333333333333335,
+      "ambientRange": 0.02321099983992503,
+      "maxScale": 1.0230826265288144,
+      "maxOffset": 0.04
     },
     "L1": {
-      "description": "Star ticket drifts and flicks upward",
+      "description": "Gold scale plaque drifts and flicks upward",
       "cycle": 6,
       "actSeconds": 1,
       "visibleAct": 1.4562030918066704,
@@ -60,7 +51,7 @@
       "maxOffset": 0.04368609275420011
     },
     "L2": {
-      "description": "Moon ticket curls inward then opens",
+      "description": "Red scale plaque narrows then opens",
       "cycle": 5,
       "actSeconds": 1.2,
       "visibleAct": 2.4999999999999996,
@@ -69,7 +60,7 @@
       "maxOffset": 0.003359879630322512
     },
     "L3": {
-      "description": "Diamond ticket pendulum kick",
+      "description": "Purple scale diamond pendulum kick",
       "cycle": 8,
       "actSeconds": 1.1,
       "visibleAct": 2.106850973249681,
@@ -78,7 +69,7 @@
       "maxOffset": 0.03982577534951891
     },
     "L4": {
-      "description": "Heart ticket double heartbeat",
+      "description": "Jade scale shield double beat",
       "cycle": 7.5,
       "actSeconds": 0.9,
       "visibleAct": 1.782314884199715,
@@ -86,8 +77,26 @@
       "maxScale": 1.0712925953679886,
       "maxOffset": 0
     },
+    "L5": {
+      "description": "Blue scale plaque pulses",
+      "cycle": 7.5,
+      "actSeconds": 0.9,
+      "visibleAct": 1.2499390775058128,
+      "ambientRange": 0.023381107016155603,
+      "maxScale": 1.0499975631002325,
+      "maxOffset": 0
+    },
+    "M": {
+      "description": "Dragon pearl mount breathes",
+      "cycle": 4,
+      "actSeconds": 1,
+      "visibleAct": 1.1664824437485912,
+      "ambientRange": 0.009999210442038109,
+      "maxScale": 1.019996841892833,
+      "maxOffset": 0.03499447331245774
+    },
     "S": {
-      "description": "Spiral paddle sways and makes a hypnotic turn",
+      "description": "Dragon Gate sways and swings open a touch",
       "cycle": 4,
       "actSeconds": 1.4,
       "visibleAct": 2.1681757689108214,

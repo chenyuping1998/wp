@@ -16,6 +16,8 @@ type Bubble = { g: Graphics; x: number; y: number; r: number; speed: number; swa
 
 // deterministic scatter, so a reload looks the same
 let seed = 7;
+/** nothing that moves may reach the cast strip right of this backdrop x */
+export const FX_RIGHT = 1500;
 const random = () => ((seed = (seed * 16807) % 2147483647) - 1) / 2147483646;
 
 export function createBackgroundScene(textures: Record<string, Texture>) {
@@ -69,9 +71,11 @@ export function createBackgroundScene(textures: Record<string, Texture>) {
 			s.g.alpha = Math.min(1, 0.75 * twinkle * twinkle * burst);
 		}
 		for (const s of streaks) {
-			const x = ((s.x + t * s.speed) % 1560) - 80;
+			// drift right, fading in from the left edge and out before the cast strip (x 1500)
+			const x = ((s.x + t * s.speed) % FX_RIGHT) - s.span / 2;
+			const edge = Math.min(1, Math.max(0, (x + s.span / 2) / 160), Math.max(0, (FX_RIGHT - s.span / 2 - x) / 220));
 			s.g.position.set(x, s.y + Math.sin(t * 0.6 + s.phase) * 4);
-			s.g.alpha = (0.10 + 0.08 * Math.sin(t * 0.9 + s.phase)) * burst;
+			s.g.alpha = (0.10 + 0.08 * Math.sin(t * 0.9 + s.phase)) * burst * edge;
 		}
 		for (const s of shafts) { s.g.rotation = s.base + Math.sin(t * 0.55 + s.phase) * 0.035; s.g.alpha = (0.03 + 0.02 * Math.sin(t * 0.8 + s.phase)) * burst; }
 		for (const b of bubbles) {

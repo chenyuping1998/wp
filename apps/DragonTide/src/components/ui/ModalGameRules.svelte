@@ -115,7 +115,7 @@
 		{
 			name: 'Extra Bet',
 			price: `${config.betModes?.ante?.cost}× ${T.bet}`,
-			text: `A switch in the feature menu for base-game spins. While it is on, every spin costs ${config.betModes?.ante?.cost}× your ${T.bet} and Dragon Gates land more often, so Free Spins come more often. Wins are worked out on your ${T.bet} as usual. Turn it off in the same menu.`,
+			text: `A switch in the feature menu for base-game spins. While it is on, every spin is ${config.betModes?.ante?.cost}× your ${T.bet} and Dragon Gates land more often, so Free Spins come more often. Wins are worked out on your ${T.bet} as usual. Turn it off in the same menu.`,
 		},
 		{
 			name: 'Free Spins',

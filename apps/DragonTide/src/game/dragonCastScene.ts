@@ -59,7 +59,7 @@ export function createDragonCastScene(texture: Texture, kind: DragonCastKind) {
 	const skin = rig.skins[0].attachments as unknown as Record<string, Record<string, Attachment>>;
 	const parts = atlas.parts;
 	const meshes = new Map<string, { mesh: Mesh; geometry: MeshGeometry; positions: Float32Array }>();
-	let hidden = new Set<string>(), reduced = false, disposed = false, inspection = false, silhouette = false;
+	let hidden = new Set<string>(), reduced = false, disposed = false, inspection = false, silhouetteOn = false;
 	state.setAnimation(0, 'idle', true);
 
 	function matrix(slotName: string, drawing: string) {
@@ -79,8 +79,8 @@ export function createDragonCastScene(texture: Texture, kind: DragonCastKind) {
 		return { x: (m.x + m.a * x - m.b * y) * figure.scale.x, y: -(m.y + m.c * x - m.d * y) };
 	}
 	function applyTint() {
-		for (const item of meshes.values()) item.mesh.tint = silhouette ? SILHOUETTE.tint : 0xffffff;
-		figure.alpha = silhouette ? SILHOUETTE.alpha : 1;
+		for (const item of meshes.values()) item.mesh.tint = silhouetteOn ? SILHOUETTE.tint : 0xffffff;
+		figure.alpha = silhouetteOn ? SILHOUETTE.alpha : 1;
 	}
 	function update(seconds: number) {
 		if (disposed) return;
@@ -102,7 +102,7 @@ export function createDragonCastScene(texture: Texture, kind: DragonCastKind) {
 				const positions = new Float32Array(8);
 				const u0 = part.x / atlas.width, v0 = part.y / atlas.height, u1 = (part.x + part.width) / atlas.width, v1 = (part.y + part.height) / atlas.height;
 				const geometry = new MeshGeometry({ positions, uvs: new Float32Array([u0, v0, u1, v0, u1, v1, u0, v1]), indices: new Uint32Array([0, 1, 2, 0, 2, 3]) });
-				const mesh = new Mesh({ geometry, texture }); mesh.tint = silhouette ? SILHOUETTE.tint : 0xffffff;
+				const mesh = new Mesh({ geometry, texture }); mesh.tint = silhouetteOn ? SILHOUETTE.tint : 0xffffff;
 				figure.addChild(mesh); item = { mesh, geometry, positions }; meshes.set(drawing, item);
 			}
 			const m = matrix(slot.name, drawing);
@@ -132,7 +132,8 @@ export function createDragonCastScene(texture: Texture, kind: DragonCastKind) {
 			state.setAnimation(0, name, false); state.update(seconds); skeleton.update(seconds); state.apply(skeleton); skeleton.updateWorldTransform(Physics.none);
 			inspection = true; update(0);
 		},
-		resume() { inspection = false; api.reset(); },
+		/** leave a QA hold straight to idle (the held clip has no idle queued behind it) */
+		resume() { inspection = false; silhouetteOn = false; applyTint(); state.clearTracks(); skeleton.setupPose(); toIdle(); update(0); },
 		/** slots left undrawn */
 		setHidden(names: string[]) { hidden = new Set(names); update(0); },
 		setReducedMotion(value: boolean) { reduced = value; if (value) { state.clearTracks(); skeleton.setupPose(); toIdle(); update(0); } },
@@ -140,7 +141,7 @@ export function createDragonCastScene(texture: Texture, kind: DragonCastKind) {
 		play(request: string) {
 			// a held QA pose (?castqa) must not be replaced by the game's next cue
 			if (disposed || inspection) return false;
-			if (SILHOUETTE_REQUESTS.has(request)) { silhouette = true; applyTint(); return true; }
+			if (SILHOUETTE_REQUESTS.has(request)) { silhouetteOn = true; applyTint(); return true; }
 			if (reduced) return false;
 			const current = state.tracks[0]?.animation?.name;
 			if (CAST_REQUESTS.has(request)) {
@@ -158,17 +159,17 @@ export function createDragonCastScene(texture: Texture, kind: DragonCastKind) {
 		/** Back to plain idle, silhouette off. */
 		reset() {
 			if (inspection) return;
-			silhouette = false; applyTint();
+			silhouetteOn = false; applyTint();
 			const name = state.tracks[0]?.animation?.name;
 			if (name === 'cast' || name === 'transform') return; // let the act finish into idle
 			state.clearTracks(); skeleton.setupPose(); toIdle(); update(0);
 		},
 		/** Release point (prop tip) in the parent's space, for the bolt and pearl effects. */
 		getGazeAnchors() {
-			const r = cast.release, p = canvasPoint(r.slot, r.drawing, r.x, r.y);
+			const rel = cast.release, p = canvasPoint(rel.slot, rel.drawing, rel.x, rel.y);
 			const point = (q: { x: number; y: number }) => ({ x: root.x + q.x * root.scale.x, y: root.y + q.y * root.scale.y });
-			const left = point({ x: p.x - 5, y: p.y }), right = point({ x: p.x + 5, y: p.y });
-			return { left, right, center: { x: (left.x + right.x) / 2, y: (left.y + right.y) / 2 } };
+			const l = point({ x: p.x - 5, y: p.y }), r = point({ x: p.x + 5, y: p.y });
+			return { left: l, right: r, center: { x: (l.x + r.x) / 2, y: (l.y + r.y) / 2 } };
 		},
 		destroy() {
 			if (disposed) return; disposed = true; state.clearTracks(); state.clearListeners();

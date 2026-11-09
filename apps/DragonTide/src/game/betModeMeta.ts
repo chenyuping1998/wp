@@ -71,7 +71,7 @@ export const MEDUSA_GAZE_BET_MODE_META: Record<string, BetModeData> = {
 			get dialog() {
 				return pick(
 					`EXTRA BET costs ${anteCost}× your bet and brings more dragon gates, raising the chance to trigger FREE SPINS, at ${anteRtp} RTP. Wins and big-win levels are still counted on your base bet. EXTRA BET stays on until you turn it off.`,
-					`EXTRA PLAY costs ${anteCost}× your amount and brings more dragon gates, raising the chance to trigger FREE SPINS, at ${anteRtp} RTP. Wins are still counted on your base amount. EXTRA PLAY stays on until you turn it off.`,
+					`EXTRA PLAY totals ${anteCost}× your amount and brings more dragon gates, raising the chance to trigger FREE SPINS, at ${anteRtp} RTP. Wins are still counted on your base amount. EXTRA PLAY stays on until you turn it off.`,
 				);
 			},
 			description: 'More dragon gates: a higher chance of FREE SPINS.',

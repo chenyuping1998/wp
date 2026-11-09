@@ -100,9 +100,9 @@ export const INITIAL_SYMBOL_STATE: SymbolState = 'static';
 
 // High symbols are a size up on low ones (MEDUSA_美術需求單 §4). The Aegis
 // deliberately overflows its cell: it is what the player is hunting.
-const HIGH_SYMBOL_SIZE = 0.98;
+const HIGH_SYMBOL_SIZE = 0.95; // framed v3 tiles: their idle act must stay inside the cell (check_symbol_idle)
 const LOW_SYMBOL_SIZE = 0.84;
-const SPECIAL_SYMBOL_SIZE = 1.1;
+const SPECIAL_SYMBOL_SIZE = 1.05; // Dragon Gate: its sway must stay inside the cell
 
 // ---------------------------------------------------------------------------
 // Cascading (tumble) motion

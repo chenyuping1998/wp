@@ -1,81 +1,30 @@
 {
-  "scope": "Actual circus scene, five aspect ratios, mode fade, delta cap, reduced motion, event response, disposal",
+  "scope": "Dragon Tide backdrop scene: cover at five aspect ratios, frame cap, MG/FG crossfade, reduced motion, big-win flare, double dispose",
   "cases": [
     {
       "width": 1792,
       "height": 771,
-      "figureHeight": 455,
-      "props": [
-        {
-          "height": 152.88,
-          "groundY": 600
-        },
-        {
-          "height": 163.8,
-          "groundY": 600
-        }
-      ]
+      "scale": 0.9333333333333333
     },
     {
       "width": 1280,
       "height": 720,
-      "figureHeight": 430,
-      "props": [
-        {
-          "height": 144.47999999999996,
-          "groundY": 568
-        },
-        {
-          "height": 154.79999999999995,
-          "groundY": 568
-        }
-      ]
+      "scale": 0.6666666666666666
     },
     {
       "width": 960,
       "height": 540,
-      "figureHeight": 320,
-      "props": [
-        {
-          "height": 107.51999999999998,
-          "groundY": 420
-        },
-        {
-          "height": 115.19999999999999,
-          "groundY": 420
-        }
-      ]
+      "scale": 0.5
     },
     {
       "width": 390,
       "height": 844,
-      "figureHeight": 245,
-      "props": [
-        {
-          "height": 82.32000000000001,
-          "groundY": 650
-        },
-        {
-          "height": 88.2,
-          "groundY": 650
-        }
-      ]
+      "scale": 0.7814814814814814
     },
     {
       "width": 320,
       "height": 568,
-      "figureHeight": 201,
-      "props": [
-        {
-          "height": 67.536,
-          "groundY": 455
-        },
-        {
-          "height": 72.36,
-          "groundY": 455
-        }
-      ]
+      "scale": 0.5259259259259259
     }
-  ],
-  "passed": true
+  ]
 }
