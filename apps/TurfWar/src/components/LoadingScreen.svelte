@@ -10,6 +10,7 @@
 	import config from '../game/config';
 	import TransitionAnimation from './TransitionAnimation.svelte';
 	import PressToContinue from './PressToContinue.svelte';
+	import PlateSlice from './PlateSlice.svelte';
 
 	type Props = {
 		onloaded: () => void;
@@ -86,6 +87,7 @@
 	// into the string. This line shipped as GoBananas' "5X5, 15 LINES — MAX WIN
 	// 10,000X" for the whole build; taking it from config means it cannot state a
 	// game other than the one being played.
+	const subtitleSize = $derived(Math.max(13, Math.min(19, layout.width * 0.014)));
 	const subtitle = [
 		`${config.numReels}X${config.numRows?.[0] ?? 4}`,
 		`${Object.keys(config.paylines).length} LINES`,
@@ -236,6 +238,17 @@
 			height={logoWidth * (LOGO_H / LOGO_W)}
 		/>
 
+		<!-- 2026-11-05: the board size / lines / MAX WIN line sat on the wall art;
+		     numbers go on a clean plate (the bet bar's ticker plate). -->
+		<PlateSlice
+			key="hmUiTicker"
+			border={24}
+			centered
+			x={layout.width * 0.5}
+			y={logoY + logoWidth * (LOGO_H / LOGO_W) * 0.62}
+			width={subtitle.length * subtitleSize * 0.74 + 44}
+			height={subtitleSize * 2.3}
+		/>
 		<Text
 			anchor={0.5}
 			x={layout.width * 0.5}
@@ -243,7 +256,7 @@
 			text={subtitle}
 			style={{
 				fontFamily: BODY_FONT,
-				fontSize: Math.max(13, Math.min(19, layout.width * 0.014)),
+				fontSize: subtitleSize,
 				fontWeight: '600',
 				fill: 0xffc38a,
 				letterSpacing: 3,

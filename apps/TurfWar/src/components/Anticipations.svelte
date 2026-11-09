@@ -1,6 +1,5 @@
 <script lang="ts">
 	import { OnMount } from 'components-shared';
-	import { SECOND } from 'constants-shared/time';
 	import { Graphics } from 'pixi-svelte';
 	import type { Graphics as PixiGraphics } from 'pixi.js';
 	import { Tween } from 'svelte/motion';
@@ -84,14 +83,7 @@
 {#if hasAnticipation}
 	<OnMount
 		onmount={() => {
-			context.eventEmitter.broadcast({ type: 'soundLoop', name: 'sfx_anticipation' });
-			context.eventEmitter.broadcast({
-				type: 'soundFade',
-				name: 'sfx_anticipation',
-				from: 0,
-				to: 1,
-				duration: SECOND,
-			});
+			// The dedicated tension loop owns its attack/release envelope.
 			// Mechanical reel-ticking loop — keeps the player locked on the glowing reel
 			context.eventEmitter.broadcast({ type: 'soundReelTensionStart', rate: tensionRate });
 			// ...and the music goes underwater. 0.7s to close, 0.3s to open (see

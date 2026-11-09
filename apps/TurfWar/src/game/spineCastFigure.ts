@@ -1,7 +1,8 @@
-import { AnimationState, AnimationStateData, MeshAttachment, Physics, RegionAttachment } from '@esotericsoftware/spine-core';
+import { MeshAttachment, Physics, RegionAttachment } from '@esotericsoftware/spine-core';
 import { Container, Mesh, MeshGeometry, type Texture } from 'pixi.js';
 import { readCastSkeleton, type CastSpineJson } from './spineCastData';
 import type { CastReactionKind } from './castMotion';
+import { CastDirector } from './castDirector';
 
 type Part = { attachment: MeshAttachment | RegionAttachment; slotIndex: number; positions: Float32Array; mesh: Mesh };
 
@@ -11,26 +12,17 @@ export class SpineCastFigure {
   readonly figureBox: [number, number, number, number];
   readonly envelope: [number, number];
   readonly skeleton: ReturnType<typeof readCastSkeleton>;
-  readonly state: AnimationState;
+  readonly director: CastDirector;
   private lastMs: number | null = null;
   private readonly parts: Part[] = [];
   private readonly origin: [number, number];
-  private readonly reactions: Record<string, string> | null;
-  private readonly idle: string;
-  private readonly speed: Record<string, number>;
 
   constructor(json: CastSpineJson, textures: Record<string, Texture>, label: string) {
     this.view = new Container({ label });
     this.figureBox = json.turf.figureBox;
     this.envelope = json.turf.envelope;
     this.origin = json.turf.origin ?? [0, 0];
-    this.reactions = json.turf.reactions ?? null;
-    this.idle = json.turf.idle ?? 'idle';
-    this.speed = json.turf.speed ?? {};
     this.skeleton = readCastSkeleton(json);
-    const stateData = new AnimationStateData(this.skeleton.data);
-    stateData.defaultMix = this.reactions ? 0.18 : 0.12;
-    this.state = new AnimationState(stateData);
     this.skeleton.setupPose();
     this.skeleton.updateWorldTransform(Physics.none);
     for (const slot of this.skeleton.slots) {
@@ -54,40 +46,19 @@ export class SpineCastFigure {
       this.view.addChild(mesh);
       this.parts.push({ attachment, slotIndex: slot.data.index, positions, mesh });
     }
-    this.state.setAnimation(0, this.idle, true).timeScale = this.speed[this.idle] ?? 1;
+    this.director = new CastDirector(this.skeleton, json.turf);
     this.update(0);
     this.lastMs = null;
   }
 
   react(kind: CastReactionKind, _atMs = performance.now(), speed = 1) {
-    const timeScale = Number.isFinite(speed) && speed > 0 ? speed : 1;
-    if (this.reactions) {
-      // Full-body kit moves (punch / celebrate / jump) replace the guard, then
-      // ease back into it.
-      const name = this.reactions[kind];
-      if (!name) return;
-      const entry = this.state.setAnimation(0, name, false);
-      entry.timeScale = timeScale * (this.speed[name] ?? 1);
-      entry.mixDuration = 0.15;
-      const back = this.state.addAnimation(0, this.idle, true, 0);
-      back.mixDuration = 0.35;
-      back.timeScale = this.speed[this.idle] ?? 1;
-      return;
-    }
-    const entry = this.state.setAnimation(1, kind, false);
-    entry.additive = true;
-    entry.mixDuration = 0.06;
-    entry.timeScale = timeScale;
-    this.state.addEmptyAnimation(1, 0.14 / entry.timeScale, 0);
+    this.director.react(kind, speed);
   }
 
   update(timeMs: number) {
     const delta = this.lastMs === null ? 0 : Math.max(0, Math.min(0.1, (timeMs - this.lastMs) / 1000));
     this.lastMs = timeMs;
-    this.state.update(delta);
-    this.state.apply(this.skeleton);
-    this.skeleton.update(delta);
-    this.skeleton.updateWorldTransform(Physics.update);
+    this.director.step(delta);
     const [ox, oy] = this.origin;
     for (const { attachment, slotIndex, positions, mesh } of this.parts) {
       const slot = this.skeleton.slots[slotIndex];
@@ -104,7 +75,7 @@ export class SpineCastFigure {
   }
 
   destroy() {
-    this.state.clearTracks();
+    this.director.state.clearTracks();
     for (const { mesh } of this.parts) mesh.geometry.destroy();
     this.view.removeFromParent();
     // Asset loader owns the shared textures; only release this instance's meshes.

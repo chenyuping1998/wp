@@ -26,6 +26,46 @@ for (const [who, variant] of [['mg', 'base'], ['fg', 'fg']]) {
   const kit = JSON.parse(fs.readFileSync(path.join(here, 'kit', who, 'spine', `turf_${who}.json`), 'utf8'));
   const mesh = JSON.parse(fs.readFileSync(path.join(here, 'kit', who, 'mesh.json'), 'utf8'));
   const ox = -kit.skeleton.x, oy = kit.skeleton.y + kit.skeleton.height;
+  // Shoes keep their drawn angle to the floor: foot bones at the ankles that do
+  // not inherit the shin's rotation (build_mesh_cast.py weights the shoes to them).
+  for (const [foot, shin] of [['footB', 'shinB'], ['footF', 'shinF']]) {
+    if (kit.bones.some((b) => b.name === foot)) continue;
+    const at = kit.bones.findIndex((b) => b.name === shin);
+    kit.bones.splice(at + 1, 0, { name: foot, parent: shin, x: kit.bones[at].length, length: 60, inherit: 'noRotationOrReflection' });
+  }
+  // Both feet IK'd onto the ankles they move. The kit IKs only the back leg,
+  // aimed at a target ~80 px off the ankle and softened 89 px from full
+  // extension; these legs are drawn nearly straight, so the idle bounce sat in
+  // the soft zone and the ankles floated. The front shin just rode the hip.
+  // Together the shoes slid and lifted ±17 px (MG) / ±27 px (FG). Now each
+  // target sits on its shin's tip (setup pose = the drawing), softness 0 with
+  // stretch, and
+  // the bend direction is whichever reproduces the drawn knee.
+  const probe = new Skeleton(new SkeletonJson(castAttachmentLoader).readSkeletonData({ ...kit, constraints: kit.constraints.filter((k) => !k.name.startsWith('leg')), slots: [], skins: [{ name: 'default', attachments: {} }] }));
+  probe.setupPose(); probe.updateWorldTransform(Physics.none);
+  const legs = [];
+  for (const [name, thigh, shinName, targetName] of [['leg-back', 'thighB', 'shinB', 'ik-foot-back'], ['leg-front', 'thighF', 'shinF', 'ik-foot-front']]) {
+    const shin = probe.findBone(shinName);
+    const tip = new Vector2(shin.data.length, 0);
+    shin.appliedPose.localToWorld(tip);
+    const target = kit.bones.find((b) => b.name === targetName);
+    target.x = +tip.x.toFixed(3); target.y = +tip.y.toFixed(3);
+    let pick = null;
+    for (const bendPositive of [true, false]) {
+      const c = { name, type: 'ik', bones: [thigh, shinName], target: targetName, bendPositive };
+      const trial = { ...kit, constraints: [...kit.constraints.filter((k) => !k.name.startsWith('leg')), c], slots: [], skins: [{ name: 'default', attachments: {} }] };
+      const s2 = new Skeleton(new SkeletonJson(castAttachmentLoader).readSkeletonData(trial));
+      s2.setupPose(); s2.updateWorldTransform(Physics.none);
+      const k2 = s2.findBone(shinName);
+      const err = Math.hypot(k2.appliedPose.worldX - shin.appliedPose.worldX, k2.appliedPose.worldY - shin.appliedPose.worldY);
+      if (!pick || err < pick.err) pick = { c, err };
+    }
+    assert(pick.err < 0.5, `${variant}: ${name} moves the knee ${pick.err}px`);
+    // stretch: when the bounce/lunge lifts the hip past full reach, the leg
+    // lengthens a few percent instead of lifting the shoe off the floor
+    legs.push({ ...pick.c, stretch: true });
+  }
+  kit.constraints = [...kit.constraints.filter((k) => !k.name.startsWith('leg')), ...legs];
   // During the jab / fist pump the guard (near) fist's IK target stays pinned
   // while the body lunges, folding that elbow until the wrap squashes. Hand the
   // guard arm to the chest instead (IK mix 0; AnimationState blends it in/out).
@@ -61,6 +101,13 @@ for (const [who, variant] of [['mg', 'base'], ['fg', 'fg']]) {
     attachments[layer.name] = { [layer.name]: { type: 'mesh', path: layer.name,
       width: layer.crop[2], height: layer.crop[3], uvs: layer.uvs.flat(), triangles: layer.tris, vertices } };
   }
+  // Ship only the moves the game plays (2026-11-05). hit / jump / punch_big /
+  // idle_weave were never mapped to a reaction; with both feet planted the
+  // hit's backward shove folds the back knee past the drawing, and an unused
+  // clip that tears is a trap for whoever wires it up next. They stay in the
+  // kit skeleton (kit/<who>/spine) for reference.
+  const PLAYED = new Set([IDLE, ...Object.values(REACTIONS)]);
+  kit.animations = Object.fromEntries(Object.entries(kit.animations).filter(([n]) => PLAYED.has(n)));
   const rig = { ...kit,
     slots: mesh.map((l) => ({ name: l.name, bone: 'root', attachment: l.name })),
     skins: [{ name: 'default', attachments }],

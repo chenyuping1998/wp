@@ -1,5 +1,7 @@
 <script lang="ts">
 	import type { Snippet } from 'svelte';
+	import { stateReplay } from 'state-shared';
+	import TurfPortrait from './TurfPortrait.svelte';
 	import LayoutBottomBar from 'components-ui-pixi/src/components/LayoutBottomBar.svelte';
 	import LayoutPortrait from 'components-ui-pixi/src/components/LayoutPortrait.svelte';
 	import { getContext } from '../game/context';
@@ -39,7 +41,9 @@
 	// bar tagged "Poor bet UI bar" on 10-23. Geometry lives in uiTheme.ts.
 	const context = getContext();
 	const LayoutComponent = $derived(
-		context.stateLayoutDerived.layoutType() === 'portrait' ? LayoutPortrait : LayoutBottomBar,
+		context.stateLayoutDerived.layoutType() === 'portrait'
+			? (stateReplay.enabled ? LayoutPortrait : TurfPortrait)
+			: LayoutBottomBar,
 	);
 </script>
 

@@ -17,6 +17,10 @@ description: >-
 - 已整合遊戲須在桌機與直式手機實際試玩，包含 MG／FG、角色反應、轉場與 feature cut-in，檢查破口、殘影、裁切與接縫；保留實際截圖、動作預覽及新舊對照。
 - 交件前核對來源層、實際合成 full、Spine images、runtime 裁圖與座標、烘焙動作、預覽及 upload 包皆為同一最終版本。母圖若與合成有差異須如實留對照，不得冒稱零差異；不得拿舊預覽證明新版正常。
 
+## 分層圖（頭／身體／手臂各一張）要做專業動作＋接縫自然
+
+先讀 `references/layered-weighted-mesh.md`（Turf War v6，2026-11-09）：自建骨架＋每張圖 harmonic 權重＋接縫抄權重規則＋肩膀半轉輔助骨＋物理配件＋Iron Jaw 節奏＋overlay 播放＋看得到才算的閘門，以及 22 條踩過的坑（關節點要放在畫的折痕中心、袖縫線位置、出拳長度會讓側邊人物變小……）。工具 `wp/apps/TurfWar/design/cast_v6/` 可直接改 SPEC 給下一隻角色用。
+
 ## Routing boundary
 
 This is the retained or explicitly selected single-image mesh workflow. New

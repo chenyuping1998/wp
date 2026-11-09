@@ -127,7 +127,11 @@
 {:else if !stateGame.featureSplashShow && portrait && USE_MESH_CAST}
   <MainContainer standard>
     {#key who}
-      <CastFigureMesh {who} x={portrait.x} topY={portrait.topY} height={portrait.height} groundY={portrait.groundY} innerEdge={portrait.innerEdge} />
+      <!-- 2026-11-05: the housing cuts him at the waist (MG jacket hem at 0.47
+           of the ink, Kingpin's belt at 0.42), not across the trousers where
+           the width-limited scale left it, which read as legs chopped off. -->
+      <CastFigureMesh {who} x={portrait.x} topY={portrait.topY} height={portrait.height} groundY={portrait.groundY} innerEdge={portrait.innerEdge}
+        cut={{ y: portrait.groundY, fraction: stateGame.gameType === 'freegame' ? 0.42 : 0.47, minTop: portrait.topY - 30 }} />
     {/key}
   </MainContainer>
 {/if}

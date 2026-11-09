@@ -27,6 +27,13 @@
      * enclosing container must be untransformed.
      */
     inline?: boolean;
+    /**
+     * Portrait (2026-11-05): put this fraction of the ink height (from the top)
+     * exactly on `y` (standard-box px) — the housing's top edge — so the reels
+     * cut the figure at the waist rather than wherever the width-limited scale
+     * happens to leave it. Ignored when the head would then rise above `minTop`.
+     */
+    cut?: { y: number; fraction: number; minTop: number };
   };
 
   const props: Props = $props();
@@ -34,20 +41,21 @@
   const parentContext = props.inline ? getContextParent() : null;
   const context = getContext();
   const std = $derived(context.stateLayoutDerived.mainLayoutStandard());
-  // spine-motion-kit skeleton and moves (bounce guard, punch, celebrate) driving
-  // one weighted mesh per drawing — design/rebuild_20261023/{build_mesh_cast.py,mesh_to_spine.mjs}.
+  // v6 (2026-11-09): own skeleton + harmonic weights + physics accessories,
+  // idle on one clock with reactions over it — design/cast_v6/ (build_v6.py,
+  // motions.py, finalize.mjs). Same four drawings as v5.
   const variant = $derived(stateGame.gameType === "freegame" ? "fg" : "base");
   const LAYERS = ["arm_far", "body", "head", "arm_near"];
   const RIG_URL = {
-    base: new URL("../../assets/castLayers/turf/v5/base/cast.spine.json", import.meta.url).href,
-    fg: new URL("../../assets/castLayers/turf/v5/fg/cast.spine.json", import.meta.url).href,
+    base: new URL("../../assets/castLayers/turf/v6/base/cast.spine.json", import.meta.url).href,
+    fg: new URL("../../assets/castLayers/turf/v6/fg/cast.spine.json", import.meta.url).href,
   };
   const textures = $derived.by(() => {
     const selected: Record<string, Texture> = {};
     for (const layer of LAYERS) {
       const name = layer.split("_").map((word) => word[0].toUpperCase() + word.slice(1)).join("");
       const label = variant[0].toUpperCase() + variant.slice(1);
-      const key = `turfV5${label}${name}` as keyof typeof app.stateApp.loadedAssets;
+      const key = `turfV6${label}${name}` as keyof typeof app.stateApp.loadedAssets;
       const texture = app.stateApp.loadedAssets[key] as Texture | undefined;
       if (!texture) return null;
       selected[layer] = texture;
@@ -168,6 +176,11 @@
     figure.view.y =
       std.y + ((props.fitToGround ? props.groundY : props.topY) - std.height * anchorY) * std.scale
       - (props.fitToGround ? y1 : y0) * drawScale;
+    if (props.cut) {
+      const toCanvasY = (y: number) => std.y + (y - std.height * anchorY) * std.scale;
+      const cutY = toCanvasY(props.cut.y) - (y0 + props.cut.fraction * contentHeight) * drawScale;
+      if (cutY + y0 * drawScale >= toCanvasY(props.cut.minTop)) figure.view.y = cutY;
+    }
     figure.view.alpha = props.alpha ?? 1;
   });
 </script>

@@ -235,7 +235,8 @@
 		style:z-index={zIndex.modal + 20}
 		style:--bg={`url("${BG}/bg_base.png")`}
 		onclick={() => armed && ready && close()}
-		transition:fade={{ duration: 320 }}
+		in:fade={{ duration: 140 }}
+		out:fade={{ duration: 320 }}
 	>
 		<div class="hm-scrim"></div>
 
@@ -261,7 +262,7 @@
 		<div class="hm-stage" bind:this={stage} style:transform={fit < 1 ? `scale(${fit})` : undefined}>
 			<div class="hm-logo street-wordmark">TURF WAR</div>
 
-			<div class="hm-vol">
+			<div class="hm-vol hm-tag" style:--tag={`url(${base}/assets/sprites/turfUi/ticker_plate.png)`}>
 				<span class="hm-vol-label">{tx('introVolatility', 'VOLATILITY')}</span>
 				<span class="hm-bolts" aria-label={`Volatility ${VOLATILITY} of ${VOLATILITY_MAX}`}>
 					{#each Array(VOLATILITY_MAX) as _, i (i)}
@@ -317,7 +318,7 @@
 				figure there is worse than no figure. The rules panel carries RTP per
 				mode, read live from the maths config, which is where it belongs.
 			-->
-			<p class="hm-stats" dir="auto">
+			<p class="hm-stats hm-tag" dir="auto" style:--tag={`url(${base}/assets/sprites/turfUi/ticker_plate.png)`}>
 				{tx('introPaylines', `${lineCount} ${T.paylinesUpper}`, { lines: lineCount })} &nbsp;/&nbsp; {tx('introMaxWin', `MAX WIN ${maxWin}×`, { max: maxWin })}
 			</p>
 			<p class="hm-cta" class:waiting={!ready} dir="auto">
@@ -477,11 +478,20 @@
 		color: #f7f5f0;
 		font-family: var(--gb-body-font, sans-serif);
 		background: var(--bg) center / cover no-repeat, #3a3d42;
+	}
+
+	/* 2026-11-05: the whole card used to start at opacity 0 and fade in after
+	   the 420 ms arming delay, so for that stretch the pixi loading screen
+	   behind it (its own title, MAX WIN line, tips and PRESS ANYWHERE) showed
+	   through the card's text — two screens of type on top of each other. The
+	   backdrop is now opaque from the first frame (the same street plate the
+	   loader uses); only the card's content waits for the arming delay. */
+	.hm-intro > :not(.hm-scrim) {
 		opacity: 0;
 		transition: opacity 0.35s ease;
 	}
 
-	.hm-intro.armed {
+	.hm-intro.armed > :not(.hm-scrim) {
 		opacity: 1;
 	}
 
@@ -607,6 +617,16 @@
 		height: auto;
 		filter: drop-shadow(0 6px 18px rgba(0, 0, 0, 0.8));
 		animation: riseIn 0.5s cubic-bezier(0.22, 1, 0.36, 1) both;
+	}
+
+	/* 2026-11-05: the volatility meter and "14 PAYLINES / MAX WIN 20,000×" sat
+	   straight on the backdrop (wall and wet pavement) — numbers on art, which
+	   the house rule forbids. Both now sit on the bet bar's own ticker plate. */
+	.hm-tag {
+		border: 12px solid transparent;
+		border-image: var(--tag) 24 fill / 12px / 0 stretch;
+		padding: 0.1rem 0.75rem;
+		filter: drop-shadow(4px 5px 0 rgba(14, 15, 17, 0.6));
 	}
 
 	.hm-vol {

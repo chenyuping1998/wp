@@ -39,6 +39,14 @@ export type CastSpineJson = {
     speed?: Record<string, number>;
     envelope: [number, number];
     generator: string;
+    /** 'overlay' (v6): idle never restarts; reactions play on track 1 over it */
+    layering?: 'replace' | 'overlay';
+    /** overlay cross-fade seconds into and out of a reaction */
+    mix?: { in: number; out: number };
+    /** idle variations played over the idle every few loops (overlay only) */
+    variants?: string[];
+    /** [min, max] idle loops between two variations */
+    variantEvery?: [number, number];
   };
 };
 

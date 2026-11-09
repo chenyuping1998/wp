@@ -89,7 +89,7 @@
 		// a Frame already there being restated (a re-roll or a doubling), which
 		// has its own punch and must not replay the arrival.
 		entryT: from === 0 ? 0 : -1,
-		entryTier: beatTierOf(frame.mult),
+		entryTier: beatTierOf(frame.mult * sizeOf(frame)),
 	});
 
 	// One clock for every arriving Frame — a single rAF loop over the list rather
@@ -174,7 +174,7 @@
 			if (frames.some((frame) => sizeOf(frame) > 1)) {
 				context.eventEmitter.broadcast({ type: 'soundFrameBigLand' });
 			}
-			await pause(T.entryMs);
+			await pause(Math.max(T.entryMs, ...frames.map(frame => ENTRY_MS[beatTierOf(frame.mult * sizeOf(frame))])));
 		},
 		framesUpdate: async ({ frames }) => {
 			// Neon Nights refills every sticky Frame with a new multiplier between
@@ -188,8 +188,9 @@
 					frame.scale.set(0.86, { duration: scaled(T.rerollOutMs), easing: cubicOut }),
 				));
 			}
-			// The new number appears at the small impact, then rebounds into view.
+			// The new number and its sound share the impact, after anticipation.
 			upsert(frames, 1);
+			if (changed.length > 0) context.eventEmitter.broadcast({ type: 'soundOnce', name: 'sfx_multiplier_update' });
 			if (changed.length === 0) return;
 			await Promise.all(changed.map((frame) =>
 				frame.scale.set(1, { duration: scaled(T.rerollInMs), easing: backOut }),
@@ -207,6 +208,7 @@
 				const target = active.find((candidate) => keyOf(candidate) === keyOf(frame));
 				if (target) target.mult = frame.mult;
 			});
+			if (touched.length > 0) context.eventEmitter.broadcast({ type: 'soundOnce', name: 'sfx_multiplier_update' });
 			await Promise.all(touched.map((frame) =>
 				frame.scale.set(1.35, { duration: scaled(T.doubleInMs * 0.45), easing: backOut }),
 			));

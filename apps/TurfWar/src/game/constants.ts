@@ -135,11 +135,21 @@ const SPIN_OPTIONS_SHARED = {
 	landOnImpact: true,
 };
 
+// Neon cadence trial (origin/main 19bedb2e, GoBananeon): its speeds are px/ms
+// for 140px cells. Scale them to Turf's cells so the travel and settle TIMES
+// match: 100ms start stagger, ~200ms between stops, 0.12-cell / ~76ms settle.
+// Keep Turf's landOnImpact and anticipation rules; turbo retains its own pace.
+const NEON_SPEED_SCALE = SYMBOL_SIZE / 140;
+
 export const SPIN_OPTIONS_DEFAULT = {
 	...SPIN_OPTIONS_SHARED,
-	reelPreSpinSpeed: 2,
-	reelSpinSpeed: 3,
-	reelBounceSizeMulti: 0.3,
+	reelPreSpinSpeed: 2.8 * NEON_SPEED_SCALE,
+	reelSpinSpeed: 4.2 * NEON_SPEED_SCALE,
+	reelSpinSpeedBeforeBounce: 2.8 * NEON_SPEED_SCALE,
+	reelBounceBackSpeed: 0.22 * NEON_SPEED_SCALE,
+	reelPaddingMultiplierNormal: 1,
+	reelSpinDelay: 100,
+	reelBounceSizeMulti: 0.12,
 };
 
 // Base-game turbo. Still turbo — the reels are fast and the bounce is almost

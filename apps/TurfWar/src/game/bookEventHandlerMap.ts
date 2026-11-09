@@ -473,23 +473,15 @@ export const bookEventHandlerMap: BookEventHandlerMap<BookEvent, BookEventContex
 	// Sticky frames carried into this spin; Neon Nights re-rolls their values.
 	updateFrames: async (bookEvent: BookEventOfType<'updateFrames'>) => {
 		if (bookEvent.frames.length === 0) return;
-		// `updateFreeSpin` clears the rendered set at the previous spin boundary.
-		// The ledger still holds what the player last saw; compare against that
-		// value so a visible re-roll also gets its impact sound.
-		const changed = bookEvent.frames.some((frame) => {
-			const previous = stickyFrameMult.get(frameKey(frame));
-			return previous !== undefined && previous !== frame.mult;
-		});
+		// NeonFrames owns the reveal sound so it lands with the new number.
 		stateGame.frames = bookEvent.frames.map((frame) => ({ ...frame }));
 		for (const frame of bookEvent.frames) stickyFrameMult.set(frameKey(frame), frame.mult);
-		if (changed) eventEmitter.broadcast({ type: 'soundOnce', name: 'sfx_multiplier_update' });
 		await eventEmitter.broadcastAsync({ type: 'framesUpdate', frames: bookEvent.frames });
 	},
 	// Sunset Hits / Ocean Drive: a frame that took part in a win doubles after
 	// the win is paid, so this arrives after winInfo for the same spin.
 	frameDoubling: async (bookEvent: BookEventOfType<'frameDoubling'>) => {
 		if (bookEvent.frames.length === 0) return;
-		eventEmitter.broadcast({ type: 'soundOnce', name: 'sfx_multiplier_update' });
 		stateGame.frames = stateGame.frames.map((frame) => {
 			const doubled = bookEvent.frames.find((f) => f.reel === frame.reel && f.row === frame.row);
 			return doubled ? { ...frame, mult: doubled.mult } : frame;

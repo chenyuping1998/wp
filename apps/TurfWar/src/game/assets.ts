@@ -487,14 +487,14 @@ export default {
 
 
  // spine-motion-kit skeleton + one weighted mesh per drawing (v5, build_mesh_cast.py).
- turfV5BaseArmFar: { type: 'sprite', src: new URL('../../assets/castLayers/turf/v5/base/arm_far.png', import.meta.url).href, preload: true },
- turfV5BaseBody: { type: 'sprite', src: new URL('../../assets/castLayers/turf/v5/base/body.png', import.meta.url).href, preload: true },
- turfV5BaseHead: { type: 'sprite', src: new URL('../../assets/castLayers/turf/v5/base/head.png', import.meta.url).href, preload: true },
- turfV5BaseArmNear: { type: 'sprite', src: new URL('../../assets/castLayers/turf/v5/base/arm_near.png', import.meta.url).href, preload: true },
- turfV5FgArmFar: { type: 'sprite', src: new URL('../../assets/castLayers/turf/v5/fg/arm_far.png', import.meta.url).href, preload: true },
- turfV5FgBody: { type: 'sprite', src: new URL('../../assets/castLayers/turf/v5/fg/body.png', import.meta.url).href, preload: true },
- turfV5FgHead: { type: 'sprite', src: new URL('../../assets/castLayers/turf/v5/fg/head.png', import.meta.url).href, preload: true },
- turfV5FgArmNear: { type: 'sprite', src: new URL('../../assets/castLayers/turf/v5/fg/arm_near.png', import.meta.url).href, preload: true },
+ turfV6BaseArmFar: { type: 'sprite', src: new URL('../../assets/castLayers/turf/v6/base/arm_far.png', import.meta.url).href, preload: true },
+ turfV6BaseBody: { type: 'sprite', src: new URL('../../assets/castLayers/turf/v6/base/body.png', import.meta.url).href, preload: true },
+ turfV6BaseHead: { type: 'sprite', src: new URL('../../assets/castLayers/turf/v6/base/head.png', import.meta.url).href, preload: true },
+ turfV6BaseArmNear: { type: 'sprite', src: new URL('../../assets/castLayers/turf/v6/base/arm_near.png', import.meta.url).href, preload: true },
+ turfV6FgArmFar: { type: 'sprite', src: new URL('../../assets/castLayers/turf/v6/fg/arm_far.png', import.meta.url).href, preload: true },
+ turfV6FgBody: { type: 'sprite', src: new URL('../../assets/castLayers/turf/v6/fg/body.png', import.meta.url).href, preload: true },
+ turfV6FgHead: { type: 'sprite', src: new URL('../../assets/castLayers/turf/v6/fg/head.png', import.meta.url).href, preload: true },
+ turfV6FgArmNear: { type: 'sprite', src: new URL('../../assets/castLayers/turf/v6/fg/arm_near.png', import.meta.url).href, preload: true },
 
 
 } as const;

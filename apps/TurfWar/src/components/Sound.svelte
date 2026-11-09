@@ -339,9 +339,21 @@
 	const REELSTOP_DEBUG =
 		typeof window !== 'undefined' && /[?&]hmdebug=1(&|$)/.test(window.location.search);
 	const reelStopLog: { ctxTime: number; rate: number }[] = [];
+	const cueLog: { name: string; at: number; volume: number }[] = [];
+	const fallbackLog: string[] = [];
 
+	const lastLanding = new Map<CnSfxName, number>();
 	function playCnSfx(name: CnSfxName, volumeScale = 1, rate = 1, delaySeconds = 0) {
+		if (name === 'pluck_low') {
+			const now = performance.now();
+			if (now - (lastLanding.get(name) ?? -Infinity) < 45) return;
+			lastLanding.set(name, now);
+		}
 		const ctx = ensureAudioContext();
+		if (REELSTOP_DEBUG && ctx) {
+			cueLog.push({name, at: ctx.currentTime + delaySeconds, volume: sfxVolume(volumeScale)});
+			if (cueLog.length > 400) cueLog.shift();
+		}
 		if (REELSTOP_DEBUG && name === 'reel_stop' && ctx) {
 			reelStopLog.push({ ctxTime: ctx.currentTime + delaySeconds, rate });
 		}
@@ -349,7 +361,7 @@
 		if (ctx && buffer) {
 			const gain = ctx.createGain();
 			gain.gain.value = sfxVolume(volumeScale);
-			gain.connect(ctx.destination);
+			gain.connect(outputBus(ctx));
 			sfxOneShots.set(gain, volumeScale);
 			const source = ctx.createBufferSource();
 			source.buffer = buffer;
@@ -407,13 +419,14 @@
 			const running = sfxLoops[name];
 			if (running) {
 				running.scale = volumeScale;
-				running.gain.gain.value = sfxVolume(volumeScale);
-				running.source.playbackRate.value = rate;
+				running.gain.gain.setTargetAtTime(sfxVolume(volumeScale), ctx.currentTime, .025);
+				running.source.playbackRate.setTargetAtTime(rate, ctx.currentTime, .04);
 				return;
 			}
 			const gain = ctx.createGain();
-			gain.gain.value = sfxVolume(volumeScale);
-			gain.connect(ctx.destination);
+			gain.gain.setValueAtTime(0, ctx.currentTime);
+			gain.gain.linearRampToValueAtTime(sfxVolume(volumeScale), ctx.currentTime + .08);
+			gain.connect(outputBus(ctx));
 			const source = ctx.createBufferSource();
 			source.buffer = buffer;
 			source.loop = true;
@@ -429,14 +442,18 @@
 	function stopCnSfx(name: CnSfxName) {
 		const running = sfxLoops[name];
 		if (running) {
-			try {
-				running.source.stop();
-			} catch {
-				// already stopped
-			}
-			running.source.disconnect();
-			running.gain.disconnect();
 			delete sfxLoops[name];
+			const now = running.gain.context.currentTime;
+			running.gain.gain.cancelScheduledValues(now);
+			running.gain.gain.setValueAtTime(running.gain.gain.value, now);
+			running.gain.gain.linearRampToValueAtTime(0, now + .1);
+			// Include releasing voices in immediate mute/volume changes.
+			sfxOneShots.set(running.gain, running.scale);
+			running.source.onended = () => {
+				sfxOneShots.delete(running.gain);
+				running.source.disconnect(); running.gain.disconnect();
+			};
+			try { running.source.stop(now + .11); } catch { /* already ended */ }
 		}
 		// the fallback element, if this name ever played through it
 		const audio = cnSfxAudio[name];
@@ -498,8 +515,24 @@
 	const DUCK_CLOSE_S = 0.7;
 	const DUCK_OPEN_S = 0.3;
 	let audioContext: AudioContext | null = null;
+	// Every audible Turf source meets here, so simultaneous cues cannot sum
+	// unchecked at the hardware destination. Individual settings remain upstream.
+	let mixBus: DynamicsCompressorNode | null = null;
+	let mixHeadroom: GainNode | null = null;
+	function outputBus(ctx: AudioContext) {
+		if (!mixBus) {
+			mixBus = ctx.createDynamicsCompressor();
+			mixBus.threshold.value = -12; mixBus.knee.value = 8;
+			mixBus.ratio.value = 8; mixBus.attack.value = .003; mixBus.release.value = .14;
+			mixHeadroom = ctx.createGain(); mixHeadroom.gain.value = .75;
+			mixBus.connect(mixHeadroom); mixHeadroom.connect(ctx.destination);
+		}
+		return mixBus;
+	}
+
 	let musicFilter: BiquadFilterNode | null = null;
 	let filteredElement: HTMLAudioElement | null = null;
+	const musicSources = new WeakMap<HTMLAudioElement, MediaElementAudioSourceNode>();
 
 	const routeThroughFilter = (element: HTMLAudioElement) => {
 		try {
@@ -511,13 +544,14 @@
 				musicFilter = audioContext.createBiquadFilter();
 				musicFilter.type = 'lowpass';
 				musicFilter.frequency.value = OPEN_HZ;
-				musicFilter.connect(audioContext.destination);
+				musicFilter.connect(outputBus(audioContext));
 			}
 			// One source node per element, and a new element arrives on every track
 			// change. Reconnecting an element that already has a source throws.
 			if (filteredElement === element) return;
 			const source = audioContext.createMediaElementSource(element);
 			source.connect(musicFilter);
+			musicSources.set(element, source);
 			filteredElement = element;
 		} catch {
 			// no Web Audio, or the element is already routed: play unfiltered
@@ -547,32 +581,50 @@
 		freespin: 'turf/bgm_feature.m4a',
 	} as const;
 
+	type MusicVoice = { audio: HTMLAudioElement; level: number; raf: number };
+	const musicVoices = new Set<MusicVoice>();
+	function releaseMusic(voice: MusicVoice) {
+		cancelAnimationFrame(voice.raf);
+		voice.audio.pause(); voice.audio.src = '';
+		musicSources.get(voice.audio)?.disconnect();
+		musicSources.delete(voice.audio);
+		if (filteredElement === voice.audio) filteredElement = null;
+		musicVoices.delete(voice);
+	}
+	function fadeMusic(voice: MusicVoice, target: number, duration: number) {
+		cancelAnimationFrame(voice.raf);
+		const start = performance.now(), from = voice.level;
+		const tick = (now: number) => {
+			const u = Math.min(1, (now - start) / duration);
+			voice.level = from + (target - from) * u;
+			voice.audio.volume = stateSoundDerived.volumeMusic() * voice.level;
+			if (u < 1) voice.raf = requestAnimationFrame(tick);
+			else if (target === 0) releaseMusic(voice);
+		};
+		voice.raf = requestAnimationFrame(tick);
+	}
 	function playBgm(type: 'base' | 'freespin') {
 		if (currentBgm === type && bgmAudio && !bgmAudio.paused) return;
-		if (bgmAudio) {
-			bgmAudio.pause();
-			bgmAudio = null;
-		}
-		bgmAudio = new Audio(`${base}/assets/audio/${BGM_FILES[type]}`);
-		routeThroughFilter(bgmAudio);
-		bgmAudio.loop = true;
-		bgmAudio.volume = stateSoundDerived.volumeMusic();
-		bgmAudio.play().catch(() => {});
-		currentBgm = type;
+		const previous = [...musicVoices];
+		const audio = new Audio(`${base}/assets/audio/${BGM_FILES[type]}`);
+		const voice: MusicVoice = {audio, level: previous.length ? 0 : 1, raf: 0};
+		musicVoices.add(voice); bgmAudio = audio; currentBgm = type;
+		routeThroughFilter(audio); audio.loop = true;
+		audio.volume = stateSoundDerived.volumeMusic() * voice.level;
+		// Start the overlap only after playback is ready; decoding cannot cut a gap.
+		audio.play().then(() => {
+			if (bgmAudio !== audio) { releaseMusic(voice); return; }
+			previous.forEach(old => fadeMusic(old, 0, 360));
+			fadeMusic(voice, 1, 360);
+		}).catch(() => { releaseMusic(voice); if (bgmAudio === audio) { bgmAudio = null; currentBgm = null; } });
 	}
-
 	function stopBgm() {
-		if (bgmAudio) {
-			bgmAudio.pause();
-			bgmAudio.currentTime = 0;
-		}
-		currentBgm = null;
+		for (const voice of musicVoices) releaseMusic(voice);
+		bgmAudio = null; currentBgm = null;
 	}
-
-	// Keep volume in sync with settings
 	$effect(() => {
-		const vol = stateSoundDerived.volumeMusic();
-		if (bgmAudio) bgmAudio.volume = vol;
+		const volume = stateSoundDerived.volumeMusic();
+		for (const voice of musicVoices) voice.audio.volume = volume * voice.level;
 	});
 
 	// A loop's gain was set once, when it started. Muting (or turning effects
@@ -623,9 +675,8 @@
 			} else if (name === 'bgm_freespin') {
 				playBgm('freespin');
 			} else {
-				// Other music (win levels etc) — pause bgm, play via sprite
-				if (bgmAudio) bgmAudio.pause();
-				currentBgm = null;
+				// Other music is explicitly delegated; retire the entire current bed.
+				stopBgm();
 				sound.players.music.play({ name });
 			}
 		},
@@ -647,6 +698,7 @@
 					playCnSfx(mapped.name, mapped.volume ?? 1, mapped.rate ?? 1);
 				}
 			} else {
+				if (REELSTOP_DEBUG) fallbackLog.push(name);
 				sound.players.once.play({ name, forcePlay });
 			}
 		},
@@ -670,7 +722,9 @@
 				sound.stop({ name });
 			}
 		},
-		soundFade: async ({ name, duration, from, to }) => await sound.fade({ name, duration, from, to }), // prettier-ignore
+		soundFade: async ({ name, duration, from, to }) => {
+			await sound.fade({ name, duration, from, to });
+		},
 	});
 
 	onMount(() => {
@@ -699,6 +753,9 @@
 				context: audioContext?.state ?? 'none',
 				filtered: !!filteredElement,
 				hz: musicFilter ? Math.round(musicFilter.frequency.value) : null,
+				cues: cueLog.slice(), fallback: fallbackLog.slice(),
+				mixReductionDb: mixBus?.reduction ?? 0,
+				music: [...musicVoices].map(v => ({src:v.audio.src, level:v.level, volume:v.audio.volume, paused:v.audio.paused})),
 			});
 		}
 
@@ -721,11 +778,7 @@
 			sfxOneShots.clear();
 			elementOneShots.clear();
 			for (const name of Object.keys(sfxLoops) as CnSfxName[]) stopCnSfx(name);
-			if (bgmAudio) {
-				bgmAudio.pause();
-				bgmAudio.src = '';
-				bgmAudio = null;
-			}
+			stopBgm();
 			for (const name of Object.keys(cnSfxAudio) as CnSfxName[]) {
 				const audio = cnSfxAudio[name];
 				if (audio) {

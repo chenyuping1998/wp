@@ -1056,3 +1056,123 @@ v5權重修正胸／拳誤綁、腿部全綁chest與肩部過窄權重交接，�
 - upload/TurfWar/frontend精確鏡像新build（152檔）；上傳5檔、刪除3舊雜湊、147不變，3510645 bytes。post-upload plan0 actions。舊stage可恢復於dist/turfwar-pre-release-20261031。
 - publish回傳front32，get_game確認front32；math保持7。審核仍closed/locked，未更新審核或另開送審。商店圖未修改。
 - 憑證design/qa/precheck_20261031/publish/RELEASE-RECEIPT.json；原報告保留未補的實機與人工檢查，不將發佈成功當作51項全數通過。
+
+
+## 2026-11-02：Neon 一般轉輪節奏試版
+
+Stone 要求把協作者 GoBananeon 的節奏套到 Turf 試看。參考 origin/main `19bedb2e` 的一般轉速，僅改 `src/game/constants.ts` 的 `SPIN_OPTIONS_DEFAULT`：起轉錯開 100ms、normal padding 1、回彈 0.12 格；四個 px/ms 速度乘 `SYMBOL_SIZE / 140`，對齊兩款不同格子尺寸下的時間。保留 Turf 的 landOnImpact、聽牌慢速規則、音效與 Turbo 設定。未搬 Neon 的模糊濾鏡。
+
+完整 build 與 check_reel_stop_sound 通過。Chrome 本機 stub 實測 5 手一般轉速，停輪間隔中位數 200ms，首末輪差 786–800ms；回彈實際取樣約 81–85ms（設定值約 76ms，受逐幀量化影響）。桌機與 390×844 直式主遊戲各有轉完及截圖；未完整重跑 bonus / 聽牌 / Turbo。5 手桌機測試的 QA error 收集為空。
+
+預覽：`dist/turfwar-neon-rhythm/`，`http://localhost:8017/?hmdebug=1&rgs_url=stub.local&sessionID=playtest&currency=USD&lang=en`。量測 JSON 與桌機／直式截圖在該資料夾 `evidence/`。此為本機試玩版，未同步 upload、未上傳平台。
+
+
+### 2026-11-02: Neon cadence published
+
+User requested upload and publication. Build PASS. Staged `/Users/stone/stake-engine/upload/TurfWar/frontend/` matches tested production assets. Front plan4 actions (3 uploads,1 deletion,149 unchanged),3,411,024 bytes uploaded; subsequent plan0 actions. Published **front v33**, verified with get_game; **math v7** unchanged,9 files match remote,CLI compliance PASS. Existing thumbnail/cover retained; platform store artwork unchanged.
+
+Incremental51-item review against final v32 sources: only constants.ts differs;26 PASS /19 AT RISK /5 NEEDS A HUMAN /1 N/A /0 FAIL. Outstanding complete currency/device/audio/replay matrices retain their risk labels. Approval closed+locked; no approval-version update or new submission. Public CDN index returned403, so published CDN bytes were not independently compared. Receipt and audit: `design/qa/release_20261102_neon/`; release receipt/self-check also saved under upload/TurfWar.
+
+
+### 2026-11-02: corrected Neon spin presentation, front v34
+
+Stone rejected v33 as an incomplete port: matching stop timing alone did not meet the requested spinning feel. Re-read GoBananeon on origin/main19bedb2e: all3 utils-slots spin/pre-spin/board engine files are byte-identical to our shared engine. The missing presentation was ReelMotion.svelte + reelMotion.ts: actual frame displacement drives one vertical BlurFilter per reel; padding identity changes rebase the sample; build45ms/sharpen24ms smoothing and a lower bounce cap make strips clear as they brake.
+
+Ported those two files (reelMotion.ts byte-identical) and behavioral check_reel_motion.mjs; BoardBase wraps each strip in ReelMotion. Removed SymbolSprite's two faded ghost copies,30% vertical stretch and15% motion dim. The blur prop remains only to suppress idle acts while moving. Normal cadence is still100ms start stagger/~200ms stop gaps, with Turf landOnImpact retained. Turbo/anticipation math profiles and character art are unchanged. Build and svelte-check PASS (0 errors,0 warnings).
+
+Actual production Chrome:3 complete desktop normal rounds and1 portrait round.321 measured active-filter samples,306 while at least one reel spun; strengthX0, peak strengthY15.44px; no active filter on fully stopped board, caught window errors empty. First-to-last stops799–801ms. Screenshots include3 stopped sharp columns beside2 still blurred moving columns. Actual captured clip: `design/qa/release_20261102_neon_motion/neon-motion-preview.gif`. Preview now http://localhost:8018/?hmdebug=1&rgs_url=stub.local&sessionID=playtest&currency=USD&lang=en (8017 is the superseded cadence-only trial).
+
+Continued the user's upload/publication instruction for the corrected result: staged upload/TurfWar/frontend exactly from this build.4 plan actions (3 uploads+1 obsolete bundle deletion),3,428,406 bytes uploaded; subsequent plan0 actions. Publish success **front v34**, get_game confirmed **front34/math7**. No new approval submission/version change, no store-art change; original thumbnail/cover remain staged. Receipt, source comparison, full inherited-checklist gaps and new runtime evidence in `design/qa/release_20261102_neon_motion/`, with receipt/self-check copied to upload/TurfWar.
+
+## 2026-11-03 — 審查四類回饋的本機改善版
+
+Stone 先要求分析，再授權「做」。本輪是本機實作／比較／驗證，**未更新 upload/TurfWar、未打包、未上傳或重新送審**；math、角色來源／rig、縮圖與封面未改。
+
+- 新 app-local `TurfPortrait.svelte`：餘額／贏分並列，下注與大旋轉鍵放同一層，下方四個次要控制。整塊下注框可觸控開金額選單；沿用既有 drawer／free-spin、modal、按鈕 provider。桌機結構與 replay UI 保留原路徑，沒有修改共用 packages。
+- `design/build_review_glyphs.py` 是本輪四低賠符號＋四按鈕的可重建原生幾何來源；舊圖備份在 `design/qa/review_fix_20261103/before-assets/`。保留符號身分、原註冊與透明背景，補分層筆觸、刻線與明暗邊緣。低賠佔格平均15.4%（高賠37.7%）、輪廓對比4.77–4.81，階級guard通過。
+- Scatter 的通用金星 `FxBurst` 換成 `ScatterSignal`：兩個喇叭的外向波紋與音量條，依 feature time scale 收勢。Frame entry 的分級改與靜態相同（mult × size），等待實際tier動畫長度，更新／加倍音效改在數字換值時播。8ms取樣：reroll約172ms、double約214ms，聲音與換值同窗。
+- Sound：BGM 360ms交叉淡化且舊媒體source會斷線；聽牌／coin循環80ms起音與100ms收音，移除Anticipations對舊sprite播放器無效的fade呼叫。Wild和弦45ms同時落地去重，保留五次物理停輪click。新增共用compressor與headroom，處理真實功能回放中量到的重疊過載；靜音仍即時套用所有活躍／收音voice。所有被測cue均走Turf映射，fallback清單空。
+
+最終完整build與guards PASS；最後下注框hit-area調整後再Vite編譯＋refs PASS，svelte-check 0 errors／0 warnings，diff whitespace check PASS。四種viewport 320×568／390×844／640×420／1280×720無scroll overflow與window exception；Chrome實際touch選$2後開局stats wagered=$2；social金額選單無BET。滿音量五種SFX＋聽牌重疊peak0.558、0 overload samples；播放中mute量到peak0。
+
+同一最終build的手機normal與桌機實際按鈕鎖定Turbo各6組：BASE books64（中獎）／1（Bruiser）／1546（Big Score）／11（Lookout）／29（Muscle）／50（Kingpin），全12組至finalWin exit並返回base。手機完整混音peak0.593、桌機0.583，均0 overload samples；window exception／HTTP≥400皆空。角色未改，完整pose／layer guard與兩尺寸實播保留證據；未以舊人物preview證明本次版面。
+
+review-tags為0 FAIL／4 WARN，保留盤面底色、字體Logo、sticky記號、spin plate低色數警告；這是機械檢查結果，不代表人工素材評價或四類評語已被撤銷。沒有以加雜訊消警告。
+
+預覽：`dist/turfwar-review-20261103/`，`http://localhost:8021/?hmdebug=1&rgs_url=stub.local&sessionID=playtest&currency=USD&lang=en`。報告、前後比較與含音訊實際回放：`design/qa/review_fix_20261103/report.html`。final source hash與152檔build manifest已保存；preview除注入fixture的index外正式檔逐檔與build一致。早期探測的before-desktop.webm／after-mobile-first.png是過程資料，不作最終驗收；以report引用的final截圖與after-{390,1280}-gameplay.webm為準。
+
+驗證界線：本機已發布book fixtures／Chrome觸控與viewport模擬，沒有真實玩家RGS session或實體iOS／Android裝置；音訊以輸出量測和回放交件，人工音色偏好與平台通過仍未確認。
+
+補驗：手機replay BASE64正常完成至finalWin exit、wallet rounds=0、無window exception；replay-report.json／replay-final.png。探測必須等Svelte replay-start事件handler就緒才按，不能把pre-hydration click當作真正開始。
+
+## 2026-11-03 — 已上傳並發布 front v35（math v7）
+
+Stone明確授權「上傳發布」。核對改善版來源／測試build／stage雜湊，upload/TurfWar/frontend152檔與已驗證build完全相同；舊stage備份於_upload_backups/TurfWar-frontend-pre-review-fix-20261103.tgz。validate無warning，front plan12 actions（11上傳＋1舊bundle刪除、141不變），3,803,102 bytes。execute成功，上傳後plan0 actions。publish回傳published=true、changed=true、version35；get_game獨立確認front35／math7，發布後plan仍0 actions。math9檔與remote無差異，CLI compliance PASS、0 failures／0 warnings；thumbnail／cover與provider14個保留檔hash不變，未更新平台商店圖。
+
+本輪官方51項增量自檢保存於design/qa/review_fix_20261103/publish/SELF-CHECK.md：26 PASS／19 AT RISK／5 NEEDS A HUMAN／1 N/A／0 FAIL，保留完整幣別／實體手機／真人RGS與人工美術音色等未完成矩陣。補充官方精確尺寸的舊headless瀏覽器嘗試未完成，已停止，不推定PASS；原本最終4尺寸與12組回放證據有效。審核仍closed＋locked；沒有更新approval version或新送審。沒有以scratch零差異聲稱公開CDN逐檔驗證。收據：upload/TurfWar/RELEASE-RECEIPT-20261103.json；API與manifest證據在design/qa/review_fix_20261103/publish/。
+
+## 2026-11-05 — 人物動作最高標準複查＋修正（本機，未打包未上傳）
+
+Stone 要求以最高標準看人物／動畫，選「人物動作先修」。只動 v5 rig 與動作；四張原圖逐像素不變（PNG 位元組也還原成原檔），math、UI、upload 包、平台都沒動。重建一行：`design/rebuild_20261023/regen_motion.sh`（spine-motion generate 兩份配方 → build_mesh_cast.py → mesh_to_spine.mjs），可重現、輸出確定。
+
+修了什麼（MG 與 FG 同步）：
+- **出拳手腕後折**：拳頭原本硬綁前臂，防守圖的拳頭比前臂高約 20°，伸直後像手腕往後翻。拳頭改綁 handF（腕部 ±30px 漸變），配方加 handF −24° 出手；前手權重從腕部起不再分給上臂（舊版伸直時腕部拉伸 2.0x，現 1.6x），手肘內折處保留原寬混合，並做 4 次網格平滑。
+- **出拳只有手**：胸口扭轉 5°→9°、前傾 8→11；身體層胸口／髖部分配沿網格平滑（WAIST_PASSES 12），腰側不再被摺。
+- **慶祝太弱**：前手上臂抬 15°/前臂 88°（試過 35–55°：MG 身體上畫的肩頭膨袖會留在原地變一顆球、FG 捲袖扭曲 → 退回），加兩次離地跳（預設彈跳 14 + 雙腳 IK 目標 50/38px 同步抬起），後手 upperArmB/foreArmB 做往下拉的「Yes!」。
+- **前手（護臉手）不動**：慶祝時往下拉到腹部（不經過臉）；出拳仍隨胸口。
+- **新發現：腳底浮動**：kit 只有後腳 IK（目標偏離腳踝約 80px、softness 89），前腳沒 IK，鞋子硬綁小腿 → 待機時腳尖腳跟 ±17（MG）／±27（FG）px 上下翹、滑。現在雙腳 IK 目標放在腳踝、softness 0＋stretch、腳掌骨 footB/footF 不繼承旋轉；大腿／小腿權重改沿大腿軸線（膝上 110／膝下 70px），修掉 MG 後腿口袋帶子落地時彎折分叉。殘餘漂移 ±3–7px。
+- **只安裝遊戲會播的動作**：idle／punch／celebrate。hit／jump／punch_big／idle_weave 從未接上，雙腳踩穩後 hit 會把後膝折過頭；kit 骨架仍保留。
+
+驗證：check_spine_motion_cast（含中斷混合 3128 姿勢/角色）PASS，墨線三角形面積比 MG 0.211–1.874（舊 0.107–2.404）、FG 0.210–2.028（舊 0.239–2.247）；完整 `pnpm build` 綠。離線逐格（每 0.1s、遊戲實際播放速度與 0.15/0.35 混合）全身＋關鍵格放大（拳、肩、膝、腳、臉）看過；本機試玩 dist/turfwar-motion-20261105（port 8022）桌機 1280×720 MG 出拳／觸發慶祝／FG Kingpin、直式 390×844 出拳，無錯誤、拳不碰盤面也不壓 Logo。證據：design/qa/motion_review_20261105/（before_v5 備份、after/ 圖、render.py、_qa_sim_runtime.mjs、tri_check.py、feet.py）。
+
+未做：upload/TurfWar 未更新、未上傳發布、未送審；角色縮圖／封面未重做（姿勢沒變）。轉場鐵捲門、數字壓圖、中獎標籤堆疊、直式人物裁切、載入疊字仍待處理（見同資料夾第一次複查）。
+
+### 2026-11-05 — 人物動作修正已上傳並發布 front v36（math v7）
+
+Stone 明確授權「Stage and publish」。ship.sh（SKIP_MATH_CHECKS=1 SKIP_STUB=1，數學與 math-sdk 一致）重建＋全部 guard 綠；舊 stage 備份 _upload_backups/TurfWar-frontend-pre-motion-20261105.tgz。upload/TurfWar/frontend 152 檔與 build 完全相同，兩個 cast.spine.json 與本機試玩版逐位元組相同；與前一版只差 2 個 rig JSON＋bundle（大小相同、只有建置時間戳）＋version.json＋index.html。plan 5 上傳／1 刪舊 bundle／147 不變（4,139,544 bytes），execute 成功後 plan 0；publish 回傳 version 36，get_game 確認 front 36／math 7，發布後 plan 仍 0。審核 closed＋locked，未更新 approval version、未送審；商店圖未改（姿勢沒變）。收據 upload/TurfWar/RELEASE-RECEIPT-20261105-motion.json；API 證據 design/qa/motion_review_20261105/publish/。未以 scratch 零差異冒稱公開 CDN 逐檔驗證。
+
+## 2026-11-05 — 畫面問題修正（本機，未打包未上傳）
+
+接續同日人物複查清單的畫面項目。本機 build＋全部 guard 綠、svelte-check 0/0；試玩 dist/turfwar-screens-20261105（port 8023）。未更新 upload、未上傳。證據 design/qa/motion_review_20261105/screens/。
+- **數字壓圖**：開場說明頁的 VOLATILITY 與「14 PAYLINES / MAX WIN 20,000×」改放 ticker_plate（bet bar 同款）牌子上（IntroFeatures `.hm-tag`）；pixi 載入畫面的「5X4, 14 LINES — MAX WIN」也放 PlateSlice(hmUiTicker)。
+- **載入／說明頁疊字**：IntroFeatures 原本整張 opacity 0、等 420ms arming 才淡入，期間 pixi 載入畫面的標題／MAX WIN／提示／PRESS ANYWHERE 透出來。現在背景第一格就不透明（in:fade 140ms），只有內容等 arming 淡入；關閉仍 320ms 淡出。
+- **直式人物從大腿被切**：直式寬度限制縮放，`visible` 比例無效。CastFigureMesh 加 `cut`（指定 ink 第幾成對齊盤面頂邊），直式 MG 0.47（外套下擺）／FG 0.42（皮帶下）；頭頂超出才退回原位置。
+- **鐵捲門轉場**：原 shutter_l/r、lock 是 10-16 換畫風的過渡版（淺灰條紋＋舊貼紙、橘方塊＋白 U 鎖），正式圖從未交件。`design/shutter_20261105/build_shutter_v2.py` 依 bg_base 的手繪鐵捲門畫法重繪整面（藍灰鋼片三階、溝槽墨線、碎鏽＋暗邊、斜向分色陰影、09-06 生成鐵捲門只取刮痕高頻（左半＋鏡像，避免中線）、踢腳條＋拉把＋中央鎖扣、噴上遊戲 Logo），一張切兩半；鎖改用 09-06 生成的圓形掛鎖（墨線分色，透明邊乾淨）。舊圖在 design/_legacy_assets/turfFx_interim_20261016/。TransitionAnimation：鎖從鎖環頂端擺動落下扣上（不再像轉盤轉 112°），開門時先晃、脫落、淡出，鐵捲門往上捲（原本是往左右分開＋旋轉）；拿掉中縫黑帶（整面一張畫，接縫亮度差 2.8 < 一般相鄰欄 3.7）；鎖 min(0.32H, 0.42W)。離線關鍵格 transition_frames_{1280,390}.jpg＋遊戲內重播模式實錄（放慢 rAF 0.2x 只為截圖）。
+- **不改：中獎金額標籤直排**：同輪多條線的標籤排成一列是 10-15 依 Deadwood 審核意見（每條線金額都要看得到）刻意做的。
+- 仍未做：TURF WAR 打字 Logo 在說明頁壓在曬衣繩上（是 Logo 不是數字，可另議）；鐵捲門仍是程式繪製，若要手繪正式圖需生圖。
+
+### 2026-11-06 — 畫面修正已上傳並發布 front v37（math v7）
+
+Stone 要求排程 11/6 00:45 stage and publish；排程沒有執行（早上 08:35 平台仍 front 36、stage 停在 11-05 21:56），Stone 說「請再試一次」→ 08:4x 直接執行。先確認 11-05 22:29 試玩建置之後沒有任何來源被改。ship.sh（SKIP_MATH_CHECKS=1 SKIP_STUB=1，math 與 math-sdk 一致）全 guard 綠；舊 stage 備份 _upload_backups/TurfWar-frontend-pre-screens-20261106.tgz。stage 152 檔＝build；轉場 3 圖與 2 個 CSS 與已測 dist/turfwar-screens-20261105 逐檔相同，bundle 只差建置時間戳 5 bytes。plan 8 上傳／3 刪舊／144 不變（8,181,847 bytes），execute 後 plan 0；publish version 37，get_game 確認 front 37／math 7，發布後 plan 0。審核 closed＋locked，未更新 approval、未送審；商店圖未改。收據 upload/TurfWar/RELEASE-RECEIPT-20261106-screens.json；API 證據 design/qa/motion_review_20261105/publish_screens/。
+
+### 2026-11-06 — 揮拳肩膀分裂＋連線數字雜亂（本地，未上傳；平台仍是 front v37）
+
+Stone：「人物揮拳的那隻手的肩膀處還是有分裂感」「連線跳小數字在盤面上有點雜亂看不清楚尤其是很多條線的時候 參考催眠猴淡出」。
+
+- 肩膀（MG＋FG）：身體圖層畫的肩頭只跟手臂 0.3–0.5，手臂層同位置是 0.7–1.0，出拳到底時肩頭留成一顆球、描邊橫過袖子；FG 另外是手臂根部從背心底下滑出、露出自己的圓形描邊。修法在 `design/rebuild_20261023/build_mesh_cast.py` 的 `shoulder_field()`：沿畫好的袖縫（`split_kit_layers.py` 的 `sleeve_edge`，MG 肩頭內縫、FG 背心袖口）定同一個權重場，身體肩頭照抄手臂層的權重，手臂根部在軀幹那一側改跟胸口；兩邊都沿網格抹平。`check_turf_layered_cast.mjs` PASS（MG 0.116..1.952、FG 0.210..2.028）。證據 `design/qa/shoulder_20261106/`。
+- 連線數字（`src/components/WinLines.svelte`）：拿掉白邊貼紙牌與整列堆疊，改成催眠猴式：最後一格上一個數字＋淡黑底，跑完淡入、停住、淡出；同一格多條線輪流出現（每條 600 ms／turbo 360 ms），全部停 650／320 ms 後一起淡出。閒置重播（`src/game/utils.ts`）改成一條一條輪播。桌面與直式 390 實測：book 38961（8 線）、18277（同格 $0.50 → $16.00 ×2）。
+- 試玩版 `dist/turfwar-lines-20261106`（launch `turfwar-lines-1106`，含 `?slow=N` 慢動作與 `?forceBook=`）。
+
+**11-06 14:17 已發布 front v38（math v7）**：Stone「給我看GIF然後上傳發佈」。先給 GIF（design/qa/shoulder_20261106/shoulder_punch.gif、shoulder_celebrate.gif＝新 rig 實際速度渲染；win_values_8lines.gif＝試玩版 book 38961 實錄）。ship.sh（SKIP_MATH_CHECKS=1 SKIP_STUB=1）全 guard 綠，舊 stage 備份 _upload_backups/TurfWar-frontend-pre-lines-20261106.tgz；stage 與 build 相同、兩個 cast.spine.json 與 static 相同。plan 5 上傳／1 刪舊 bundle／147 不變（4,144,436 bytes），執行後 plan 0；publish version 38，get_game 確認 front 38／math 7。審核 closed＋locked，未更新 approval、未送審；商店圖未改。收據 upload/TurfWar/RELEASE-RECEIPT-20261106-lines.json；API 證據 design/qa/shoulder_20261106/publish/。FG 免費遊戲的數字節奏未在畫面上另外看過。
+
+## 2026-11-09 — 人物動作 v6 全面重做（本機，未打包未上傳；平台仍 front v40）
+
+Stone：「Turf還是超低分 幫我全面優化動作動畫 任何接縫處我都要很自然 要有專業虎機動畫的水準」。四張圖不變（與 v5 逐像素相同、PNG 位元組也相同，商店圖／loading 不用重做），骨架、權重、動作、播放全部重做。來源 `design/cast_v6/`，安裝到 `static/assets/castLayers/turf/v6/`；v5 搬到 `design/_legacy_assets/castLayers_v5_20261109/`（gitignored）。
+
+重建一行：`python design/cast_v6/build_v6.py && python design/cast_v6/assemble.py && node design/cast_v6/finalize.mjs --install`（python 用 /Applications/anaconda3/bin/python3）。
+
+- **骨架**（build_v6.py）：hip→spine→chest→neck→head、左右鎖骨、手臂三節、雙腿 IK（鞋子 noRotation 踩地）、肩膀半轉輔助骨 deltF（動作自動 key 成 upperArmF 的一半，抬手時肩頭是圓的不會凹）、physics 鏈：MG 兩條帽繩＋腰間鍊、FG 領帶（兩端固定、中段擺；鍊子同）。物理加 limit 上限，turbo 不會甩過頭。
+- **權重**：每張圖在自己的網格圖上解 harmonic（Laplace）場，只釘骨頭核心；接縫規則＝上層畫在同一部件上時抄下層權重（MG 膨袖／FG 襯衫袖肩抄手臂、帽子／領口在頭下面那塊綁 neck）；袖縫折線 `armholeF` 沿真正袖縫、袖下繞到軀幹外（外套前片／背心側邊留給胸）；手臂被身體蓋住且離外露處 34px 以上的根部才抄身體權重；外露袖子不帶胸/腰權重、上臂側不帶前臂權重（緊折手肘的折痕不互漏）。
+- **動作**（motions.py，Iron Jaw 三星節奏）：idle 2 s 正弦循環（髖下沉＋重心前移、呼吸、肩膀隨呼吸、頭部抵銷軀幹保持看盤面、護手每節晚 0.067 s）；win＝刺拳（0.30 蓄力／0.10 出手／停頓／收）；winBig＝兩記刺拳＋上勾拳；trigger＝蹲低後爆發、往側上方連續舉拳兩次（拳頭不經過頭後）。出手時軀幹先帶、手臂 snap、軀幹後到；蓄力與護手永不把手肘折得比原圖更緊；手肘伸直只到 80%（MG/FG 都是）、前臂 scaleX 補距離；FG 前手抬高 ×0.78、鎖骨 ×1.35。
+- **播放**（src/game/castDirector.ts，遊戲與 QA 共用）：overlay——idle 永遠在 track 0 不重來；反應在 track 1 混入 0.12 s、混出 0.25 s 接回 idle 當下相位；反應進行中再來的反應排隊（只留最新），等這一拳收勢時接上，不在出拳半途切斷。SpineCastFigure 改用 director；CastFigureMesh 指向 v6，assets.ts 鍵改 turfV6*。
+- **閘門**：`check_spine_motion_cast.mjs` 改用 CastDirector（含 physics）跑全部 clip＋每種反應×被打斷×idle 相位×1/2 倍速＋24 秒 idle；壓扁/翻折三角形若被上層圖完全蓋住（`design/lib/cast_occluded.py` 量 ≥0.98）才放行。目前 base/fg 各 21050 姿勢通過、墨線三角形面積比 0.084–4.61／0.085–4.54。check_cast_proportions（runtime 裁圖＝full 合成，RGBA 誤差 0）通過。
+- QA 工具：sim.mjs（同一個 director 傾印頂點）、render.py（bilinear＋預乘，這台 8GB 機器請單程序）、analyze.py（每格速度／跳點）、tri_scan.mjs、tri_time.mjs、trace_mix.mjs、occlusion.mjs、viz_weights.py／viz_bone.py。
+- 動作包絡（決定側邊人物縮放）：第一版出拳太長，實測 4:3／16:10／16:9 人物都比 v5 小約 6%（scale 0.218 vs 0.232、0.272 vs 0.290）。出拳改成：手肘伸直 MG 70%／FG 74%、前臂不拉長、拳頭只轉 −10°、出手時重心不前移、胸口扭轉減小 → 包絡 MG [36,1075]（寬 1039，v5 1038）、FG [100,1114]（寬 1014，v5 1025），人物大小與 v5 相同。量法：`design/cast_v6/envelope_by_clip.mjs`；遊戲內 `__PIXI_APP__` 找 `turf-cast-base` 的 scale。
+- 實機（dist/turfwar-motion6-20261109，launch turfwar-motion6-1109）：MG 中獎出拳、forceBook=11 觸發 → 慶祝舉拳 → Lookout 開場卡 Kingpin → FG 盤面 Kingpin、直式 390×844 Kingpin 腰部切在盤面上緣，皆無頁面錯誤。
+- 證據：`design/qa/motion_v6_20261109/compare_{mg,fg}.gif`（左 v5 現行、右 v6，同一事件序列實速）。
+
+### 2026-11-09 — 小腿彎曲修正＋已上傳發布 front v41（math v7）
+
+Stone 截圖 FG 後腳：「腿下半部不要不自然彎曲動作」。原因兩個：①膝蓋骨頭比畫出來的膝蓋低 80–120 px（FG 後腳骨頭在 y1110、畫的膝蓋折在 ~990），蹲低時腿在小腿中段折；②大腿／小腿權重過渡拉太長，小腿彎成香蕉。修法：四條腿的膝蓋改放在畫的膝蓋中心（MG kneeB 240,1075／kneeF 810,1070；FG kneeB 250,990／kneeF 755,985），大腿核心 t 0.24–0.78、小腿核心 t 0.24–0.88、各自只在離另一段 25px 以上處釘（膝蓋和腳踝小範圍彎、小腿保持直）；慶祝蹲低 −30→−24。閘門 base/fg 各 21050 姿勢 PASS。
+
+Stone「做完就上傳發佈」：ship.sh（SKIP_MATH_CHECKS=1 SKIP_STUB=1，math 與 math-sdk 一致）全 guard 綠；舊 stage 備份 `_upload_backups/TurfWar-frontend-pre-motion6-20261109.tgz`；stage＝build、兩個 rig 與閘門驗過的檔逐位元相同。plan：front 上傳 5／伺服器端複製 8（v6 PNG 與 v5 相同位元組）／刪 11（舊 bundle＋v5 資料夾）／不變 139，4,820,082 bytes；math 0 動作。執行後 plan 0；publish version 41，get_game 確認 front 41／math 7。審核 closed＋locked，未更新 approval、未送審；商店圖未改。收據 `upload/TurfWar/RELEASE-RECEIPT-20261109-motion6.json`，ART-PACKAGE-SHA256.json 已重算；API 紀錄 `design/qa/motion_v6_20261109/publish/`。

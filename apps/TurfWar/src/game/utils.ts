@@ -79,6 +79,7 @@ export const { playBookEvent, playBookEvents } = createPlayBookUtils({
 // sounds are fired by the winInfo handler, not by winLinesShow, so replaying does
 // not re-trigger them.
 const REPLAY_GAP_MS = 1600;
+const REPLAY_LINE_GAP_MS = 140;
 
 // Incremented to cancel: a loop only continues while it still holds the current
 // token, so starting a spin invalidates any pass already in flight.
@@ -105,9 +106,16 @@ const runWinLineReplay = async () => {
 	while (true) {
 		await waitForTimeout(REPLAY_GAP_MS);
 		if (token !== replayToken) return;
-		await eventEmitter.broadcastAsync({ type: 'winLinesShow', wins, fast: true });
-		if (token !== replayToken) return;
-		eventEmitter.broadcast({ type: 'winLinesHide' });
+		// One line at a time (2026-11-06): the spin itself runs every line at
+		// once; the idle repeat walks them one by one, each with its own value,
+		// so a many-line win can actually be read line by line.
+		for (const win of wins) {
+			await eventEmitter.broadcastAsync({ type: 'winLinesShow', wins: [win], fast: true });
+			if (token !== replayToken) return;
+			eventEmitter.broadcast({ type: 'winLinesHide' });
+			if (wins.length > 1) await waitForTimeout(REPLAY_LINE_GAP_MS);
+			if (token !== replayToken) return;
+		}
 	}
 };
 
