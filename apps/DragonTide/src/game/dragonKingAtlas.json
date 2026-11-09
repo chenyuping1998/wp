@@ -27,7 +27,7 @@
    "height": 143,
    "cropX": 747,
    "cropY": 512,
-   "sourceSha256": "ace3a76bcd1821017cf30cf49e95e9bff8aa364bc44812e65e315c6171c374fb"
+   "sourceSha256": "1cbb03b0900f15bdf60327131136b1494c55626777a1109cdf4da7e4da5a30ee"
   },
   "arm_r_upper": {
    "x": 1952,
@@ -279,7 +279,7 @@
    "height": 525,
    "cropX": 632,
    "cropY": 497,
-   "sourceSha256": "81314a7975ffb0d557289a074339412469d5921f095de14a11b299e60022e62e"
+   "sourceSha256": "dc594e75e52e1094b8c1a0e3a09e1521bc951c886ddd4f8f79fcdad4477c3aeb"
   },
   "torso": {
    "x": 1462,

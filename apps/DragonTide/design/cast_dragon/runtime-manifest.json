@@ -1,7 +1,7 @@
 {
   "mg": {
     "atlas": "static/assets/sprites/dragonCast/mg-atlas.png",
-    "atlasSha256": "9f78de958337040e1f61256292dca4bcf7abb5f854efbfa8a782dec3cd9f65fa",
+    "atlasSha256": "ffa782f2d90aac023de089dc5695487869cf37f4a02834173e36789d99de20e5",
     "spine": "/Users/stone/stake-engine/new-games/sea-dragon/art/cast-layers-1105/r12/spine/mg/dragon_king.json",
     "spineSha256": "d3645ee2ea8ac26d19b92d630fceebca20e7cf0f82f36a0c6c96a0e6785caf28",
     "layers": 34,
