@@ -29,12 +29,12 @@
 	import { SYMBOL_SIZE } from '../game/constants';
 	import { getContext } from '../game/context';
 	import {symbolIdleClock} from '../game/symbolIdleClock.svelte';
-	import bannerLayout from '../game/medusaBannerLayout.json';
+	import artGeometry from '../game/artGeometry.json';
 
 	const context = getContext();
 
-	// Tier plaques (medusaWinBanners). The tier name is drawn by the program, so
-	// the art stays language-neutral.
+	// Tier plaques (gen-order-1109: wave crest, waterspout, coral palace, rising dragon, golden
+	// dragon). The tier name is drawn by the program, so the art stays language-neutral.
 	const BANNER_KEY: Record<string, string> = {
 		big: 'mgWinBannerBig',
 		superwin: 'mgWinBannerSuperwin',
@@ -50,16 +50,15 @@
 	// ornament grows (97px at BIG, 160px at MAX). Sizing them all by WIDTH keeps
 	// the bars a consistent length on screen and lets the ornate ones stand taller,
 	// which is the point of them.
-	const BANNER_SOURCE: Record<string, { width:number; height:number; textY:number; textHeight:number; textWidth:number }> = bannerLayout;
+	const BANNER_SOURCE: Record<string, { width:number; height:number; textY:number; textHeight:number; textWidth:number }> = artGeometry.banners;
 	// presentation intensity scales with the tier
 	const TIER_FX: Record<string, { mult: number; glowTint: number }> = {
-		big: { mult: 1, glowTint: 0xb877ef },
+		big: { mult: 1, glowTint: 0x5fd3c4 },
 		superwin: { mult: 1.15, glowTint: 0xffd75e },
-		mega: { mult: 1.3, glowTint: 0xffa347 },
-		epic: { mult: 1.5, glowTint: 0xff7a4a },
-		max: { mult: 1.8, glowTint: 0xff8ede },
+		mega: { mult: 1.3, glowTint: 0xff9a6a },
+		epic: { mult: 1.5, glowTint: 0xff6a5a },
+		max: { mult: 1.8, glowTint: 0xfff0b0 },
 	};
-
 	let show = $state(false);
 	$effect(()=>{symbolIdleClock.bannerPaused=show;});
 	onDestroy(()=>{symbolIdleClock.bannerPaused=false;});

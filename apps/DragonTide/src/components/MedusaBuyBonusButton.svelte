@@ -6,15 +6,19 @@
 	import { i18nDerived } from '../../../../packages/components-ui-pixi/src/i18n/i18nDerived';
 	import { getContext } from '../game/context';
 	import { GAME_FONT, TITLE_FONT,GAME_FONT_WEIGHT } from '../game/fonts';
+	import geometry from '../game/artGeometry.json';
 	const props:Partial<Omit<ButtonProps,'children'>>=$props();const context=getContext();
-	const sizes={width:135,height:135},plate=146;
+	// the palace gate (buybonus.png, 640 square): drawn a little wider than the button box,
+	// pressed and hovered only inside its own outline (polygon measured on the art)
+	const sizes={width:135,height:135},plate=170;
+	const well=geometry.buyBonus.well,outline=geometry.buyBonus.hit;
 	const disabled=$derived(!context.stateXstateDerived.isIdle());
 	const active=$derived(stateBetDerived.activeBetMode()?.type==='activate');
 	let pop=$state(0),shine=$state(0),hovered=$state(false),raf=0;
 	const hitArea={contains:(x:number,y:number)=>{
 		const u=(x-sizes.width/2)/plate+.5,v=(y-sizes.height/2)/plate+.5;
-		const points=[[.5,.04],[.90,.20],[.96,.42],[.90,.71],[.5,.96],[.10,.71],[.04,.42],[.10,.20]];let inside=false;
-		for(let i=0,j=points.length-1;i<points.length;j=i++){const a=points[i],b=points[j];if((a[1]>v)!==(b[1]>v)&&u<(b[0]-a[0])*(v-a[1])/(b[1]-a[1])+a[0])inside=!inside;}return inside;
+		let inside=false;
+		for(let i=0,j=outline.length-1;i<outline.length;j=i++){const a=outline[i],b=outline[j];if((a[1]>v)!==(b[1]>v)&&u<(b[0]-a[0])*(v-a[1])/(b[1]-a[1])+a[0])inside=!inside;}return inside;
 	}};
 	function hover(value:boolean){
 		hovered=value&&!disabled;
@@ -28,10 +32,9 @@
 	{#snippet children({center})}
 		<Container {...center} scale={1+.06*pop}>
 			<Sprite key={hovered&&!disabled?'mgUiBuyBonusLit':'mgUiBuyBonus'} anchor={.5} width={plate} height={plate} alpha={disabled?.65:1}/>
-			{#if shine>0}<Sprite key="fxStreak" anchor={.5} x={-plate*.015} y={-plate*.22} width={plate*.27} height={plate*.025} rotation={-.25} alpha={shine*.8} blendMode="add"/>{/if}
+			{#if shine>0}<Sprite key="fxStreak" anchor={.5} x={-plate*.015} y={-plate*.2} width={plate*.27} height={plate*.025} rotation={-.25} alpha={shine*.8} blendMode="add"/>{/if}
 		</Container>
-		<!-- inside the booth window (x 108-532, y 255-425 of the 640 plate): two lines
-		     must fit its 27% height, or BONUS sits on the counter -->
-		<Text x={center.x} y={center.y+plate*.031} anchor={.5} text={active?i18nDerived.disable():i18nDerived.buyBonus()} alpha={disabled?.6:1} style={{fontFamily:TITLE_FONT,fontWeight:GAME_FONT_WEIGHT,fontSize:15,lineHeight:16,wordWrap:true,wordWrapWidth:plate*.58,align:'center',fill:0xffedc2,stroke:{color:0x351b19,width:2}}}/>
+		<!-- on the gate's plain jade plaque: cream lettering inked in deep jade -->
+		<Text x={center.x+plate*(well.x-.5)} y={center.y+plate*(well.y-.5)} anchor={.5} text={active?i18nDerived.disable():i18nDerived.buyBonus()} alpha={disabled?.6:1} style={{fontFamily:TITLE_FONT,fontWeight:GAME_FONT_WEIGHT,fontSize:16,lineHeight:17,wordWrap:true,wordWrapWidth:plate*well.w*.9,align:'center',fill:0xfff2d6,stroke:{color:0x16302d,width:2.5}}}/>
 	{/snippet}
 </Button>

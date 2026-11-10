@@ -711,6 +711,12 @@ export const uiTheme = $state({
 	// Ignored entirely unless sprites.bar is set, which no game does by default.
 	barSpriteSlice: 64,
 
+	// compactBottom only — how far the vertical section rules stop short of the strip's top and
+	// bottom, in layout units. Undefined keeps the original 22. A game whose strip artwork has a
+	// well narrower than the frame (wave scrolls rising above it, say) sets it so the rules end
+	// inside the well instead of crossing its edge.
+	barRuleInset: undefined as number | undefined,
+
 	// compactBottom only — geometry, in standard-layout units (a 1920x1080 box on
 	// wide screens). All three were constants inside LayoutBottomBar; the defaults
 	// here are those constants exactly.

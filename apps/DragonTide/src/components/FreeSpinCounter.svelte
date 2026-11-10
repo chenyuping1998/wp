@@ -15,11 +15,14 @@
 	import { SYMBOL_SIZE } from '../game/constants';
 	import { gameText } from '../game/i18nText';
 	import GoldText from './GoldText.svelte';
+	import geometry from '../game/artGeometry.json';
 
 	const context = getContext();
 
-	// Circus timber plaque left of the board (fs_counter_panel.png, 512×320)
+	// Jade-and-cream plaque left of the board (fs_counter.png, 512×320): the title on the
+	// jade band, the count on the cream band (bands measured by build_final_art.py)
 	const PANEL_RATIO = 512 / 320;
+	const BANDS = geometry.fsCounter;
 	const panelWidth = $derived(SYMBOL_SIZE * 2.1);
 	const panelSizes = $derived({ width: panelWidth, height: panelWidth / PANEL_RATIO });
 	const isPortrait = $derived(context.stateLayoutDerived.layoutType() === 'portrait');
@@ -73,17 +76,18 @@
 		<Text
 			anchor={0.5}
 			x={panelSizes.width * 0.5}
-			y={panelSizes.height * 0.33}
+			y={panelSizes.height * BANDS.title.y}
 			text={title}
 			style={{
 				fontFamily: TITLE_FONT,
 				// Rye runs ~7% wider than the old rounded face: keep the title off the rim
-				fontSize: Math.min(panelSizes.width * 0.105, (panelSizes.width * 1.22) / Math.max(1, title.length)),
+				fontSize: Math.min(panelSizes.width * 0.1, (panelSizes.width * BANDS.title.w * 1.15) / Math.max(1, title.length)),
 				fontWeight: GAME_FONT_WEIGHT,
-				letterSpacing: 2,
-				// Ivory lettering on the dark timber; a single colour, because a fill array
-				// renders as plain white in pixi v8
-				fill: 0xffedc2,
+				letterSpacing: 1,
+				// cream lettering on the jade band, inked so it holds on every screen; one colour,
+				// because a fill array renders as plain white in pixi v8
+				fill: 0xfff2d6,
+				stroke: { color: 0x16302d, width: 3 },
 				wordWrap: false,
 			}}
 		/>
@@ -91,10 +95,10 @@
 		<!-- free game: current spin of total -->
 		<GoldText
 			x={panelSizes.width * 0.5}
-			y={panelSizes.height * 0.58}
+			y={panelSizes.height * BANDS.count.y}
 			text={`${Math.min(current, total)} / ${total}`}
-			fontSize={panelSizes.width * 0.19}
-			maxWidth={panelSizes.width * 0.72}
+			fontSize={Math.min(panelSizes.width * 0.19, panelSizes.height * BANDS.count.h * 0.8)}
+			maxWidth={panelSizes.width * BANDS.count.w * 0.8}
 		/>
 	</FadeContainer>
 </MainContainer>

@@ -11,6 +11,7 @@
 	import { socialTerms } from '../game/socialTerms';
 	import GoldText from './GoldText.svelte';
 	import PressToContinue from './PressToContinue.svelte';
+	import geometry from '../game/artGeometry.json';
 
 	/**
 	 * The card a replay opens on.
@@ -100,17 +101,17 @@
 				x={context.stateGameDerived.boardLayout().x}
 				y={context.stateGameDerived.boardLayout().y}
 			>
-				<!-- the same plaque the free-spin boards use -->
+				<!-- the gold water gate the free game ends on; its cream plaque carries the text -->
 				<Sprite
-					key="mgFsSign"
+					key="mgFsSignOut"
 					anchor={0.5}
 					width={SYMBOL_SIZE * 6.4}
-					height={SYMBOL_SIZE * 3.2}
+					height={(SYMBOL_SIZE * 6.4 * 922) / 1706}
 				/>
-
+				<Container y={((SYMBOL_SIZE * 6.4 * 922) / 1706) * (geometry.fsOutro.y - 0.5)}>
 				<Text
 					anchor={0.5}
-					y={-SYMBOL_SIZE * 0.72}
+					y={-SYMBOL_SIZE * 0.6}
 					text="REPLAY"
 					style={{
 						fontFamily: TITLE_FONT,
@@ -125,25 +126,25 @@
 
 				{#if wonAmount > 0}
 					<GoldText
-						y={SYMBOL_SIZE * 0.16}
+						y={SYMBOL_SIZE * 0.14}
 						text={fmtMoney(wonAmount)}
 						fontSize={SYMBOL_SIZE * 0.62}
 						maxWidth={SYMBOL_SIZE * 5}
 					/>
 					<Text
 						anchor={0.5}
-						y={SYMBOL_SIZE * 0.96}
+						y={SYMBOL_SIZE * 0.74}
 						text={`THIS ROUND ${T.paid.toUpperCase()}`}
 						style={{
 							fontFamily: TITLE_FONT,
 							fontWeight: GAME_FONT_WEIGHT,
 							fontSize: SYMBOL_SIZE * 0.2,
 							letterSpacing: 3,
-							fill: 0xf5e3c3,
-							stroke: { color: 0x2c1c08, width: 3 },
+							fill: 0x1d4a44,
 						}}
 					/>
 				{/if}
+				</Container>
 			</Container>
 		</MainContainer>
 

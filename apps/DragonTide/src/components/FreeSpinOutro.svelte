@@ -68,7 +68,7 @@
 
 				<CanvasSizeRectangle backgroundColor={0x000000} backgroundAlpha={0.5} />
 
-				<FreeSpinAnimation>
+				<FreeSpinAnimation sign="outro">
 					{#snippet children({ sizes })}
 						<Text
 							anchor={0.5}

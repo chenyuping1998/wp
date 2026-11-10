@@ -10,7 +10,7 @@ export function gazePose(progress:number){
 }
 /** FX colour per watch tier (constants.watchTier): green, blue, violet, crimson, gold — one hue
  * each so the bands read apart at a glance (Stone 11-03, ATG 戰神賽特 orbs). */
-export const orbColor=(value:number)=>value>=250?0xffd23a:value>=100?0xff3a44:value>=15?0xb05cff:value>=8?0x3a8cff:0x45bf52;
+export const orbColor=(value:number)=>value>=250?0xffd23a:value>=100?0xff3a44:value>=15?0xb05cff:value>=8?0x3a8cff:0x4fb3a0;
 export function flightPose(from:Point,to:Point,progress:number){
  const t=clamp(progress),u=t*t*(2-t),dx=to.x-from.x,dy=to.y-from.y;
  const lift=Math.min(122,Math.abs(dx)*.105+26),a={x:from.x+dx*.25,y:from.y+dy*.22-lift},b={x:to.x-dx*.20,y:to.y-dy*.12-lift*.68};

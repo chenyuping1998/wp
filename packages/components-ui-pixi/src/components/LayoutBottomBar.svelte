@@ -154,7 +154,9 @@
 
 	// Rules stop short of the frame's inner rails at both ends so they read as
 	// separators rather than as structure holding the frame together.
-	const DIV_INSET = 22;
+	// how far the section rules stop short of the strip's top and bottom; a game whose strip
+	// art has a narrower well than the frame (uiTheme.barRuleInset) keeps them inside it
+	const DIV_INSET = $derived(uiTheme.barRuleInset ?? 22);
 
 	// Stepper stacked rather than flanking the bet button: it saves ~90px of strip
 	// and matches how nearly every bar of this shape does it. Kept as + and − (not

@@ -1,14 +1,17 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
-	import { Graphics } from 'pixi-svelte';
-	import type { Graphics as PixiGraphics } from 'pixi.js';
+	import { BaseSprite, Graphics } from 'pixi-svelte';
+	import type { Graphics as PixiGraphics, Texture } from 'pixi.js';
 
 	import { SYMBOL_SIZE } from '../game/constants';
+	import { getContext } from '../game/context';
+	import { splashFrames } from '../game/splashFrames';
 
 	/**
 	 * A cleared symbol bursting (ATG 戰神賽特 tumble, research ATG-Seth-Capture §2):
 	 * a pale-gold star of 7 spikes flares out over the first third, then fine
-	 * gold motes drift upward and fade for the rest.
+	 * gold motes drift upward and fade for the rest. Over it the painted splash
+	 * (burst_sheet.png, gen-order-1109: water and gold scales, 8 frames) plays once.
 	 */
 	type Props = { x: number; y: number; durationMs?: number; seed?: number; oncomplete: () => void };
 	const props: Props = $props();
@@ -20,6 +23,9 @@
 	const motes = Array.from({ length: 12 }, (_, i) => ({ x: (rand(i + 20) - 0.5) * 0.9, y: (rand(i + 40) - 0.5) * 0.6, rise: 0.35 + rand(i + 60) * 0.45, size: 2 + rand(i + 80) * 3 }));
 
 	let t = $state(0);
+	const context = getContext();
+	const splash = splashFrames(context.stateApp.loadedAssets?.mgBurstSheet as Texture | undefined);
+	const frame = $derived(splash[Math.min(splash.length - 1, Math.floor(t * splash.length))]);
 	const ease = (k: number) => 1 - (1 - k) ** 2;
 	const draw = (g: PixiGraphics) => {
 		g.clear();
@@ -59,3 +65,7 @@
 </script>
 
 <Graphics x={props.x} y={props.y} draw={draw} />
+{#if frame && t < 1}
+	<!-- the splash rises from the cell's lower third, a little wider than the cell -->
+	<BaseSprite texture={frame} anchor={{ x: 0.5, y: 1 }} x={props.x} y={props.y + SYMBOL_SIZE * 0.42} width={SYMBOL_SIZE * 1.25} height={SYMBOL_SIZE * 1.25} />
+{/if}

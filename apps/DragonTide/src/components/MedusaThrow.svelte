@@ -56,6 +56,7 @@
 	import MultiplierFx from './MultiplierFx.svelte';
 	import type { MultiplierFxController } from '../game/multiplierFxScene';
 	import { flightPose,gazePose,recoil,orbColor,type OrbVisual } from '../game/multiplierPerformance';
+	import artGeometry from '../game/artGeometry.json';
 	import { drawMultiplierReadout } from '../game/multiplierReadout';
 	import { medusaAnchors } from '../game/medusaAnchors.svelte';
 	import BoardContainer from './BoardContainer.svelte';
@@ -110,33 +111,12 @@
 		if (document.fonts?.check?.(`100px "${NUMBER_FACE_NAME}"`)) numberSizes.set(value, size);
 		return size;
 	};
-	// dial: centre at the sprite anchor, radius 135/512 of the sprite; the gem
-	// runs over the inner bezel so its colour still shows around the number
-	const DIAL_R = WATCH_SIZE * (135 / 512) * 1.18;
+	// pearl body: centre at the sprite anchor (256, 300 of 512), radius 150/512 of the sprite.
+	// The delivered pearls carry their own tier colour, so nothing is painted over them.
+	const DIAL_R = WATCH_SIZE * (150 / 512);
 	const shade = (color: number, k: number) => {
 		const ch = (shift: number) => Math.max(0, Math.min(255, Math.round(((color >> shift) & 255) * k)));
 		return (ch(16) << 16) | (ch(8) << 8) | ch(0);
-	};
-	// The top tier is a prism, not a gold gem (天使奧丁's 1000x eye is a rainbow
-	// crystal): a gold number on a gold dial vanished. Its case stays gold.
-	const PRISM = [0xd94be0, 0x8a4cf0, 0x3a8cff, 0x2fc7d9, 0x7be06a, 0xffb02e];
-	const drawPrism = (g: PixiGraphics) => {
-		const step = (Math.PI * 2) / PRISM.length;
-		g.circle(0, 0, DIAL_R).fill(0x4a2a7a);
-		PRISM.forEach((color, i) => {
-			const a = -Math.PI / 2 + i * step;
-			g.moveTo(0, 0).arc(0, 0, DIAL_R * 0.94, a, a + step).closePath().fill(shade(color, 0.85));
-		});
-		g.circle(0, 0, DIAL_R * 0.42).fill({ color: 0xffffff, alpha: 0.35 });
-		g.ellipse(-DIAL_R * 0.34, -DIAL_R * 0.46, DIAL_R * 0.24, DIAL_R * 0.13).fill({ color: 0xffffff, alpha: 0.85 });
-	};
-	const drawGem = (g: PixiGraphics, color: number, prism = false) => {
-		g.clear();
-		if (prism) return drawPrism(g);
-		g.circle(0, 0, DIAL_R).fill(shade(color, 0.62));
-		g.circle(-DIAL_R * 0.08, -DIAL_R * 0.1, DIAL_R * 0.8).fill(color);
-		g.circle(-DIAL_R * 0.18, -DIAL_R * 0.22, DIAL_R * 0.48).fill({ color: shade(color, 1.35), alpha: 0.85 });
-		g.ellipse(-DIAL_R * 0.34, -DIAL_R * 0.46, DIAL_R * 0.24, DIAL_R * 0.13).fill({ color: 0xffffff, alpha: 0.8 });
 	};
 	let watchesLanded: Promise<unknown> = Promise.resolve();
 	// ×100 and up land like a thunderclap: a bolt rides the watch down its
@@ -144,9 +124,7 @@
 	const HEAVY = 100;
 	// a wasted watch dulls to a cold lavender-grey before its glass cracks
 	const DUD_TINT = 0xa79cbc;
-	// a blank watch before its value is struck in: a plain cream dial
-	const BLANK_DIAL = 0xe8dcc0;
-	// and a plain silver case, so the tier colour is not given away before the beam
+	// a blank pearl before its value is struck in: plain nacre, so the tier is not given away before the beam
 	const BLANK_WATCH = 'mgOrbPurple';
 	let heavy = $state<{ x: number; y: number; bolt: number; ring: number; flash: number; dim: number; color: number; seed: number } | null>(null);
 	let fx=$state.raw<MultiplierFxController>();
@@ -188,18 +166,26 @@
 	const READOUT_HALF_WIDTH = 208;
 	const READOUT_HEIGHT = 238;
 
+	// TOTAL badge (total_1-4.png): each tier drawn so its plaque is WELL_H tall and centred
+	// at (WELL_X, 0) of the container; the round window holds a pearl of the plate's tier
 	const PLATE_WIDTH = 200;
 	const PLATE_HEIGHT = PLATE_WIDTH * (320 / 512);
+	const WELL_X = PLATE_WIDTH * (337 / 512 - 0.5), WELL_H = 58;
+	const TOTAL_PLATES = artGeometry.total;
+	const plateArt = $derived.by(() => {
+		const tier = Math.min(3, plateLevel), g = TOTAL_PLATES[tier], k = WELL_H / g.well.h;
+		return { key: `mgTotalPlate${tier + 1}`, light: tier >= 2, x: WELL_X - g.well.x * k, y: -g.well.y * k, width: g.width * k, height: g.height * k,
+			window: { x: WELL_X + (g.window.x - g.well.x) * k, y: (g.window.y - g.well.y) * k, r: g.window.r * k }, wellWidth: g.well.w * k };
+	});
 	// Landscape: left of the board, below the free-spin counter. Portrait: above
 	// the wordmark on the frame's top-left, clear of the counter centred above it.
 	const plate = $derived(
 		portrait
 			? { x: PLATE_WIDTH * 0.2, y: -PLATE_HEIGHT * 1.35 }
-			: { x: -PLATE_WIDTH * 0.62, y: BOARD_SIZES.height * 0.45 },
+			: { x: -PLATE_WIDTH * 0.76, y: BOARD_SIZES.height * 0.45 },
 	);
-	// the ×N sits on the right-hand two thirds; the cameo is on the left
-	// Writable art area: source x198..476, y124..225 on the 512×320 plate.
-	const plateValue = $derived({ x: plate.x + PLATE_WIDTH * (337 / 512 - 0.5), y: plate.y + 11 });
+	// the ×N sits on the plaque at the right; the pearl window is on the left
+	const plateValue = $derived({ x: plate.x + WELL_X, y: plate.y + WELL_H * 0.14 });
 
 	// A hidden tab must complete each beat exactly once, even without rAF.
 	const tween = (ms: number, step: (t: number) => void) =>
@@ -644,13 +630,16 @@
 			scale={1 + 0.08 * totalBump}
 		>
 			{#if plateLevel >= 3}
-				<!-- level 3 lights a fire behind the plate, level 4 a hotter, faster one -->
-				<Sprite key="fxGlow" anchor={0.5} x={PLATE_WIDTH*(337/512-.5)} width={PLATE_WIDTH*(plateLevel>3?1.25:1.05)*(1+0.08*plateBreath)} height={PLATE_HEIGHT*(plateLevel>3?1.9:1.6)*(1+0.08*plateBreath)} tint={plateLevel>3?0xffb02e:0xff7a1f} alpha={(plateLevel>3?0.75:0.5)*(0.7+0.3*plateBreath)}/>
+				<!-- level 3 raises a water flame behind the plate, level 4 a brighter, faster one -->
+				<Sprite key="fxGlow" anchor={0.5} x={WELL_X} width={PLATE_WIDTH*(plateLevel>3?1.3:1.1)*(1+0.08*plateBreath)} height={PLATE_HEIGHT*(plateLevel>3?1.9:1.6)*(1+0.08*plateBreath)} tint={plateLevel>3?0x9ff5ff:0x5fe0d0} alpha={(plateLevel>3?0.75:0.5)*(0.7+0.3*plateBreath)}/>
 			{/if}
-			<Sprite key={plateLevel > 2 ? 'mgTotalPlateHigh' : plateLevel > 0 ? 'mgTotalPlateMid' : 'mgTotalPlate'} anchor={0.5} width={PLATE_WIDTH} height={PLATE_HEIGHT} />
-			<InkText x={PLATE_WIDTH*(337/512-.5)} y={-8} text="TOTAL" fontSize={12} maxWidth={104} maxHeight={10} stroke={2} fill={0xffedc1} fontFamily={TITLE_FONT}/>
-			<Container x={PLATE_WIDTH*(337/512-.5)} y={11} scale={1-0.05*plateBreath}>
-				<InkText x={0} y={0} text={`×${totalValue}`} fontSize={40} maxWidth={104} maxHeight={25}/>
+			<Sprite key={plateArt.key} x={plateArt.x} y={plateArt.y} width={plateArt.width} height={plateArt.height} />
+			<!-- the window holds the plate's tier pearl, set like a jewel: body inside the rim, crown above it -->
+			<Sprite key={`watchT${Math.min(5, plateLevel + 1)}`} x={plateArt.window.x} y={plateArt.window.y} anchor={{x:0.5,y:300/512}}
+				width={512 * plateArt.window.r * 0.86 / 150} height={512 * plateArt.window.r * 0.86 / 150} />
+			<InkText x={WELL_X} y={-WELL_H*0.27} text="TOTAL" fontSize={13} maxWidth={plateArt.wellWidth*0.8} maxHeight={11} stroke={plateArt.light?0:2} fill={plateArt.light?0x1d4a44:0xfff2d6} fontFamily={TITLE_FONT}/>
+			<Container x={WELL_X} y={WELL_H*0.14} scale={1-0.05*plateBreath}>
+				<InkText x={0} y={0} text={`×${totalValue}`} fontSize={40} maxWidth={plateArt.wellWidth*0.86} maxHeight={27}/>
 			</Container>
 		</Container>
 	{/if}
@@ -705,7 +694,7 @@
 					anchor={0.5}
 					width={WATCH_SIZE * (orb.value >= HEAVY ? 2.2 : 1.95) * (1 + 0.07 * haloBreath)}
 					height={WATCH_SIZE * (orb.value >= HEAVY ? 2.2 : 1.95) * (1 + 0.07 * haloBreath)}
-					tint={watchTier(orb.value) === 5 ? 0xff8a1f : orbColor(orb.value)}
+					tint={watchTier(orb.value) === 5 ? 0xffd36a : orbColor(orb.value)}
 					alpha={(orb.value >= HEAVY ? 0.95 : 0.85) * (0.8 + 0.2 * haloBreath) * (orb.reveal ?? 1)}
 				/>
 			{/if}
@@ -717,8 +706,6 @@
 				tint={orb.stone > 0 ? DUD_TINT : 0xffffff}
 				filters={orb.stone>0?[stoneMaterial]:[]}
 			/>
-			<!-- the dial as a coloured gem in the gold bezel (ref. GoO 1000 orbs) -->
-			<Graphics draw={(g) => drawGem(g, orb.stone > 0 ? DUD_TINT : (orb.reveal ?? 1) < 0.5 ? BLANK_DIAL : orbColor(orb.value), orb.stone === 0 && (orb.reveal ?? 1) >= 0.5 && watchTier(orb.value) === 5)} />
 			{#if orb.stone === 0 && (orb.reveal ?? 1) > 0}
 				<!-- Odin's eye rim flares on the same 1.43 s loop as the halo -->
 				<Graphics draw={(g) => { g.clear(); g.circle(0, 0, DIAL_R * 1.32).stroke({ color: shade(orbColor(orb.value), 1.2), width: 5, alpha: (0.45 + 0.4 * haloBreath) * (orb.reveal ?? 1) }); }} />

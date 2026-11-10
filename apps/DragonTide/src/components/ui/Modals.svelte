@@ -170,7 +170,7 @@
 	}
 
 	:global(.close-button:hover) {
-		color: #e8725e !important;
+		color: #d39a2c !important;
 	}
 
 	/* Modal backdrop */
@@ -233,7 +233,7 @@
 	}
 
 	:global(.bonus-card-wrap .title) {
-		color: #c85a4a !important;
+		color: #1d4a44 !important;
 		font-family: var(--gb-title-font) !important;
 		font-weight: 400 !important;
 		letter-spacing: 0.04em !important;
@@ -273,7 +273,7 @@
 
 	:global(.pop-up-wrap input:focus),
 	:global(.pop-up-wrap select:focus) {
-		border-color: #e8725e !important;
+		border-color: #d39a2c !important;
 		outline: none !important;
 	}
 </style>

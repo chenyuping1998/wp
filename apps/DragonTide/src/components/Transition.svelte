@@ -1,5 +1,5 @@
 <script lang="ts" module>
-	export type EmitterEventTransition = { type: 'transition'; oncover?:()=>void; onreveal?:()=>void; kind?:'curtain'|'portal'; tone?:'violet'|'gold' };
+	export type EmitterEventTransition = { type: 'transition'; oncover?:()=>void; onreveal?:()=>void; kind?:'portal'; tone?:'violet'|'gold' };
 </script>
 
 <script lang="ts">
@@ -12,14 +12,14 @@
 
 	let transitioning = $state(false);
 	let oncover=$state<(()=>void)|undefined>();
-	let kind=$state<'curtain'|'portal'>('curtain');
+	let kind=$state<'portal'>('portal');
 	let tone=$state<'violet'|'gold'>('violet');
 	let onreveal=$state<(()=>void)|undefined>();
 	let oncomplete = $state(() => {});
 
 	context.eventEmitter.subscribeOnMount({
 		transition: async (event) => {
-			oncover=event.oncover;onreveal=event.onreveal;kind=event.kind??'curtain';tone=event.tone??'violet';
+			oncover=event.oncover;onreveal=event.onreveal;kind=event.kind??'portal';tone=event.tone??'violet';
 			transitioning = true;
 			await waitForResolve((resolve) => (oncomplete = resolve));
 		},

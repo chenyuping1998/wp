@@ -322,7 +322,7 @@
 
 		b {
 			font-weight: 800;
-			color: #c85a4a;
+			color: #1d4a44;
 		}
 
 		/* count and value must not read as one number split in two */
@@ -344,14 +344,14 @@
 		text-align: right;
 		font-size: 0.82rem;
 		font-weight: 700;
-		color: #c85a4a;
+		color: #1d4a44;
 	}
 
 	.wp-section-title {
 		margin: 0.5rem 0 0;
 		font-size: 1.05rem;
 		letter-spacing: 0.1em;
-		color: #c85a4a;
+		color: #1d4a44;
 	}
 
 	.wp-examples {

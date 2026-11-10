@@ -4,13 +4,18 @@
 import assert from 'node:assert/strict';
 import {createRequire} from 'node:module';
 import {fileURLToPath} from 'node:url';
-import {Texture} from 'pixi.js';
+import fs from 'node:fs';
+import {Texture,TextureSource} from 'pixi.js';
 import {BACKGROUND_KEYS} from '../src/game/backgroundMotion.ts';
 const {build}=createRequire(import.meta.resolve('vite'))('esbuild');
 const compiled=await build({entryPoints:[fileURLToPath(new URL('../src/game/backgroundScene.ts',import.meta.url))],bundle:true,platform:'node',format:'esm',packages:'external',write:false});
 const source=compiled.outputFiles[0].text.replaceAll('"pixi.js"',JSON.stringify(import.meta.resolve('pixi.js')));
-const {createBackgroundScene,FX_RIGHT}=await import('data:text/javascript;base64,'+Buffer.from(source).toString('base64'));
-const scene=createBackgroundScene(Object.fromEntries(BACKGROUND_KEYS.map(key=>[key,Texture.EMPTY])));
+const {createBackgroundScene,FX_RIGHT,PROP_KEYS}=await import('data:text/javascript;base64,'+Buffer.from(source).toString('base64'));
+// the props at their real pixel sizes (read from the shipped PNG headers), so bounds are honest
+const pngSize=file=>{const b=fs.readFileSync(new URL(`../static/assets/sprites/dragonArt/bg/${file}`,import.meta.url));return [b.readUInt32BE(16),b.readUInt32BE(20)];};
+const fileOf=key=>key.replace(/^bg/,'').replace(/([a-z])([A-Z0-9])/g,'$1_$2').toLowerCase()+'.png';
+const sized=key=>{const [width,height]=pngSize(fileOf(key));return new Texture({source:new TextureSource({width,height})});};
+const scene=createBackgroundScene({...Object.fromEntries(BACKGROUND_KEYS.map(key=>[key,Texture.EMPTY])),...Object.fromEntries(PROP_KEYS.map(key=>[key,sized(key)]))});
 const [, , seaFx, hallFx]=scene.root.children;
 let maxRight=-Infinity,moved={sea:0,hall:0};
 const sample=(layer,key)=>{
@@ -26,4 +31,4 @@ for(const night of [false,true]){
 assert.ok(maxRight<=FX_RIGHT+1e-6,`moving bits reach x ${maxRight.toFixed(1)} (cast strip starts at ${FX_RIGHT})`);
 assert.ok(moved.sea>1000&&moved.hall>1000,'both backdrops visibly move');
 scene.destroy();
-console.log(`Background: sea glints/wave light and hall shafts/bubbles move for 120 s, all left of x ${FX_RIGHT} (max ${maxRight.toFixed(0)}).`);
+console.log(`Background: sea crests/lanterns/leaping fish/glints and hall shafts/weeds/bubbles move for 120 s, all left of x ${FX_RIGHT} (max ${maxRight.toFixed(0)}).`);

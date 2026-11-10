@@ -4,7 +4,7 @@
 	import type { Texture, Ticker } from 'pixi.js';
 	import { getContext } from '../game/context';
 	import { BACKGROUND_KEYS } from '../game/backgroundMotion';
-	import { createBackgroundScene } from '../game/backgroundScene';
+	import { createBackgroundScene, PROP_KEYS } from '../game/backgroundScene';
 	const context = getContext();
 	const parent = getContextParent();
 	let scene = $state.raw<ReturnType<typeof createBackgroundScene>>();
@@ -20,8 +20,9 @@
 	$effect(() => {
 		const loaded = context.stateApp.loadedAssets;
 		const application = context.stateApp.pixiApplication;
-		if (disposed || scene || !application || !BACKGROUND_KEYS.every(key => loaded?.[key])) return;
-		scene = createBackgroundScene(Object.fromEntries(BACKGROUND_KEYS.map(key => [key, loaded![key] as Texture])));
+		const keys = [...BACKGROUND_KEYS, ...PROP_KEYS];
+		if (disposed || scene || !application || !keys.every(key => loaded?.[key])) return;
+		scene = createBackgroundScene(Object.fromEntries(keys.map(key => [key, loaded![key] as Texture])));
 		// addToParent registers onMount and must only be called synchronously
 		// during component setup. Assets can arrive after mount, so attach this
 		// late-created, app-owned scene directly and dispose it below.

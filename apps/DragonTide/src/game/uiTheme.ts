@@ -1,14 +1,12 @@
 import { GAME_FONT, GAME_FONT_WEIGHT } from './fonts';
 import { setUiTheme } from 'components-ui-pixi';
 import { stateConfig } from 'state-shared';
+import geometry from './artGeometry.json';
 
-// Dragon Tide interim (換畫風＝整體): the Hypno controls' palette, greyed by luminance until the
-// new UI art and palette land (art/gen-order-1109). Shapes and behaviour are unchanged.
-const grey = (rgb: number) => {
-	const v = Math.round(0.299 * ((rgb >> 16) & 255) + 0.587 * ((rgb >> 8) & 255) + 0.114 * (rgb & 255));
-	return (v << 16) | (v << 8) | v;
-};
-//
+// Dragon Tide (art/gen-order-1109): a jade strip edged in gold with wave-scroll ends, jade
+// discs with one gold rim, cream lettering inked in deep jade. Gold is the accent (WIN, hover);
+// red stays reserved for the red pearl, the palace gate and the big wins.
+const JADE = 0x4f938a, JADE_DEEP = 0x24524d, JADE_INK = 0x16302d, GOLD = 0xe8b84a, CREAM = 0xfff2d6;
 // Applied once at module load (imported by Game.svelte).
 setUiTheme({
 	fontFamily: GAME_FONT,
@@ -20,56 +18,59 @@ setUiTheme({
 	barStyle: 'framed',
 	barHeight: 210,
 	barFrameBottom: 18,
-	barFill: grey(0x57251f),
+	barFill: JADE_DEEP,
 	barAlpha: 1,
-	panelFill: grey(0x44201d),
-	panelBorder: grey(0x2a1f24),
+	panelFill: JADE_DEEP,
+	panelBorder: JADE_INK,
 
-	buttonFill: grey(0x970d21),
-	buttonFillLight: grey(0xe8725e),
-	buttonFillDisabled: grey(0x3b4648),
-	buttonFillActive: grey(0xc53d33),
-	buttonBorder: grey(0xf2b632),
-	// All round controls share Spin's red face and a single gold edge.
+	buttonFill: JADE,
+	buttonFillLight: 0x7cc0b4,
+	buttonFillDisabled: 0x5d6e6b,
+	buttonFillActive: 0x5fae9f,
+	buttonBorder: GOLD,
+	// All round controls share one jade face and a single gold edge.
 	buttonBorderWidth: 6,
 	buttonBorderWidthActive: 6,
-	buttonIconFill: grey(0xffedc2),
-	buttonIconStroke: grey(0x351b19),
-	// The cut around Turbo 2's front bolt matches the disc's red face.
-	turboKeylineColor: grey(0x970d21),
+	buttonIconFill: CREAM,
+	buttonIconStroke: JADE_INK,
+	// The cut around Turbo 2's front bolt matches the disc's jade face.
+	turboKeylineColor: JADE,
 	turboButtonScale: 1.16,
 	turboIconScale: 0.58,
 	railButtonScale: 1.10,
 	spinScale: 0.88,
 
-	// spin: the one solid coral thing on the strip, edged in ink
-	betFill: grey(0x970d21),
-	betBorder: grey(0xf2b632),
+	// spin: the jade disc, its gold rim the only edge
+	betFill: JADE,
+	betBorder: GOLD,
 
-	// readouts: Balance and Bet in the strip's quiet marble, WIN alone in gold —
+	// readouts: Balance and Bet in cream on the jade, WIN alone in gold —
 	// the number the eye goes looking for after every spin
-	labelFill: grey(0xefe8d8),
-	balanceLabelFill: grey(0xefe8d8),
-	winAccent: { border: grey(0xf2b632), label: grey(0xffd36a) },
-	betAccent: { border: grey(0x2a1f24), label: grey(0xefe8d8) },
-	valueFill: grey(0xfffaf0),
-	valueStroke: grey(0x2a1f24),
-	valueShadow: grey(0x120c0f),
+	labelFill: CREAM,
+	balanceLabelFill: CREAM,
+	winAccent: { border: GOLD, label: 0xffd36a },
+	betAccent: { border: JADE_INK, label: CREAM },
+	valueFill: 0xfffaf0,
+	valueStroke: JADE_INK,
+	valueShadow: 0x0c1c1a,
 	readoutScale: 0.82,
 	readoutOffsetY: -4,
 	// the status line between Win and the stepper (BarMessage.svelte sets the text)
-	barMessageFill: grey(0xefe8d8),
+	barMessageFill: CREAM,
 	barMessageScale: 0.50,
-	barMessageStroke: grey(0x2a1f24),
+	barMessageStroke: JADE_INK,
 	// the Win figure swells and flashes when a win lands; Bet swells when it moves
 	valuePop: 0.18,
-	winFlashTint: grey(0xfff3c4),
+	winFlashTint: 0xfff3c4,
 
 	// one slim strip along the foot — the arrangement players arrive knowing
 	betBarLayout: 'compactBottom',
-	barSpriteSlice: 96,
+	// the wave-scroll ends stay whole; measured on the strip by build_final_art.py
+	barSpriteSlice: geometry.bar.slice,
+	// the section rules end inside the jade well (it is the middle 44% of the strip)
+	barRuleInset: Math.round((0.5 - geometry.bar.panel.h / 2) * (210 - 18)) + 6,
 
-	// Turbo ON fills the bolt; autoplay brightens its red face.
+	// Turbo ON fills the bolt; autoplay brightens its jade face.
 	// Two turbo tiers: off -> one bolt -> two bolts.
 	activeByIconOnly: ['turbo'],
 	turboTiers: 2,
@@ -78,50 +79,49 @@ setUiTheme({
 	stepButtonScale: 0.46,
 	stepButtonGap: 28,
 	stepperLayout: 'flank',
-	// phone portrait: keep the menu disc and the Aegis inside both screen edges,
+	// phone portrait: keep the menu disc and the gate inside both screen edges,
 	// and the bet steppers big enough to hit
 	portraitSideButtonX: 400,
 	portraitStepButtonScale: 0.68,
 
-	// Buy Bonus: the Aegis shield left of the board, not in the strip — buying the
+	// Buy Bonus: the palace gate left of the board, not in the strip — buying the
 	// feature is an occasional, deliberate action
 	buyBonusOnRail: false,
 	buyBonusButtonScale: 0.9,
-	buyBonusPlateScale: 1.08,
-	// the shield art fills its square; keep the hover light inside its outline
+	buyBonusPlateScale: 0.98,
+	// keep the hover light inside the gate's outline
 	buyBonusPlateInset: { width: 0.8, height: 0.86 },
 	buyBonusHighlightPad: 0,
 	buyBonusHighlightRadius: 0.12,
-	// Hover and presses only on the shield itself, not its square canvas — a
+	// Hover and presses only on the gate itself, not its square canvas — a
 	// transparent corner lighting the button is one of the "poor UI" findings.
-	// Fractions of the plate art: the shield spans x 8–92%, y 5–95% of
-	// buybonus_plate.png. Re-measure when the delivered shield replaces it.
-	buyBonusHitArea: { x: 0.08, y: 0.05, width: 0.84, height: 0.9 },
-	// caption on the shield's plain lower third
-	buyBonusLabelFill: grey(0x2a1f24),
+	// Fractions of the plate art (buybonus.png, the palace gate): x 0–100%, y 11–89%.
+	buyBonusHitArea: { x: 0.0, y: 0.11, width: 1.0, height: 0.78 },
+	// caption on the gate's plain jade plaque
+	buyBonusLabelFill: CREAM,
 	buyBonusLabelSizeRatio: 0.42,
 	buyBonusLabelWrapWidth: 90,
 	buyBonusLabelOffsetY: 0.2,
-	// hover swaps to the shield with Medusa's gaze lit round it
+	// hover swaps to the same gate drawn lit
 	buyBonusHoverSprite: 'buyBonusGlyph',
-	buyBonusHoverSpriteTint: grey(0xffffff),
+	buyBonusHoverSpriteTint: 0xffffff,
 	buyBonusHoverSpriteBlend: 'normal',
 	// unlit rather than greyed while a round runs, and back to full colour after
 	// (a missing idle tint leaves the loading-time dim stuck on)
 	buyBonusDisabledStyle: 'dim',
-	buyBonusIdleTint: grey(0xffffff),
+	buyBonusIdleTint: 0xffffff,
 	// no offer to buy a feature beside a feature that is already running
 	buyBonusHideInFreeSpins: true,
 
 	// the Bet panel opens the stake menu when tapped; under the cursor its caption
-	// and chevron light coral, the colour every hover in the game uses
+	// and chevron light gold, the colour every hover in the game uses
 	labelAffordance: true,
-	labelHoverColor: grey(0xe8725e),
-	labelChevronHoverColor: grey(0xe8725e),
+	labelHoverColor: 0xffd36a,
+	labelChevronHoverColor: 0xffd36a,
 	// hover never greys a control out: it lights in the game's own colour
 	hoverHighlight: true,
 	// Hover lights the same single-edge artwork, without adding an inner ring.
-	hoverPlateLight: grey(0xe8725e),
+	hoverPlateLight: 0x9fe0d2,
 	pressFeedback: true,
 	// no breathing halo on Spin (a flaring halo was part of a "poor UI" review)
 	spinButtonGlow: false,
@@ -139,13 +139,13 @@ setUiTheme({
 		closePanelsOnSpin: true,
 	},
 
-	autoSpinsCounterFill: grey(0x1e4950),
-	autoSpinsCounterBorder: grey(0xf2b632),
-	autoSpinsCounterLabel: grey(0xfffaf0),
-	autoSpinsCounterLabelStroke: grey(0x2a1f24),
+	autoSpinsCounterFill: JADE_DEEP,
+	autoSpinsCounterBorder: GOLD,
+	autoSpinsCounterLabel: 0xfffaf0,
+	autoSpinsCounterLabelStroke: JADE_INK,
 
 	sprites: {
-		// Spin uses a clean red disc with one gold edge.
+		// jade discs, one gold rim; the lit disc is the same plate brighter (ON / active)
 		bar: 'mgUiBarStrip',
 		// Transparent margin keeps adjacent mobile faces apart without shrinking hit areas.
 		button: 'mgUiButton',

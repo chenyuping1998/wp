@@ -40,6 +40,8 @@
 	import Transition from './Transition.svelte';
 
 	const context = getContext();
+	// local art QA only: lets a browser console raise a panel or a banner and hold it (stripped from builds)
+	if (import.meta.env.DEV) (globalThis as typeof globalThis & { __dragonEmit?: unknown }).__dragonEmit = context.eventEmitter;
 
 
 	onMount(() => (context.stateLayout.showLoadingScreen = true));

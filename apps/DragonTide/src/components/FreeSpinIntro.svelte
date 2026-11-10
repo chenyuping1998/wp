@@ -99,8 +99,8 @@
 					fontSize: Math.min(sizes.width * 0.045, (sizes.width * 1.1) / subtitle.length),
 					fontWeight: GAME_FONT_WEIGHT,
 					letterSpacing: 4,
-					fill: 0xf5e3c3,
-					stroke: { color: 0x2c1c08, width: 3 },
+					// deep jade on the cream plaque
+					fill: 0x1d4a44,
 				}}
 			/>
 		{/snippet}

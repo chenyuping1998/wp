@@ -9,6 +9,7 @@
 	import { GAME_FONT, TITLE_FONT, GAME_FONT_WEIGHT, BODY_FONT } from '../game/fonts';
 	import { socialTerms } from '../game/socialTerms';
 	import config from '../game/config';
+	import geometry from '../game/artGeometry.json';
 
 	/**
 	 * The loading-screen feature cards: the title wordmark and three illustrated
@@ -89,16 +90,19 @@
 			<Graphics draw={drawCard} />
 			<Sprite key={panel.key} anchor={0.5} x={sceneX} y={sceneY} width={pw} height={pw * 0.75} />
 			{#if i === 1}
-                <Text text="×100" anchor={0.5} x={sceneX - pw * 0.25} y={sceneY - pw / 24} rotation={-0.1} style={{fontFamily:GAME_FONT,fontWeight:GAME_FONT_WEIGHT,fontSize:pw*.055,fill:0x3a2021}} />
-                <Container x={sceneX-pw*.26} y={sceneY+pw*.245}>
-                    <Sprite key="mgFsPanel" anchor={0.5} width={pw*.45} height={pw*.21}/>
-                    {#each Array.from({length:30},(_,n)=>n) as n}
-                        <Sprite key={['mgH1','mgL1','mgH2','mgL2','mgH3','mgH4','mgL3','mgL5','mgL4','mgS'][n%10]} anchor={0.5} x={(n%6-2.5)*pw*.069} y={(Math.floor(n/6)-2)*pw*.037} width={pw*.034} height={pw*.034}/>
-                    {/each}
-                </Container>
-            {:else if i === 2}
-                <Text text="TOTAL ×250" anchor={0.5} x={sceneX+pw*.245} y={sceneY-pw*.02} style={{fontFamily:GAME_FONT,fontWeight:GAME_FONT_WEIGHT,fontSize:pw*.042,fill:0xffebbc}} />
-            {/if}
+				<!-- the three pearls the king casts: their values on the cream hearts -->
+				{#each geometry.card2 as pearl (pearl.value)}
+					<Text text={`${pearl.value}x`} anchor={0.5} x={sceneX + (pearl.x - 0.5) * pw} y={sceneY + (pearl.y - 0.5) * pw * 0.75}
+						style={{fontFamily:GAME_FONT,fontWeight:GAME_FONT_WEIGHT,fontSize:pw*.052,fill:0xffd84a,stroke:{color:0x5a1008,width:Math.max(2,pw*.009)}}} />
+				{/each}
+			{:else if i === 2}
+				<!-- the big pearl the small ones flow into: the running TOTAL -->
+				{@const total = geometry.card3.total}
+				<Text text="TOTAL" anchor={0.5} x={sceneX + (total.x - 0.5) * pw} y={sceneY + (total.y - 0.5) * pw * 0.75 - pw * 0.035}
+					style={{fontFamily:TITLE_FONT,fontWeight:GAME_FONT_WEIGHT,fontSize:pw*.034,fill:0x1d4a44}} />
+				<Text text="×250" anchor={0.5} x={sceneX + (total.x - 0.5) * pw} y={sceneY + (total.y - 0.5) * pw * 0.75 + pw * 0.022}
+					style={{fontFamily:GAME_FONT,fontWeight:GAME_FONT_WEIGHT,fontSize:pw*.062,fill:0xffd84a,stroke:{color:0x5a1008,width:Math.max(2,pw*.01)}}} />
+			{/if}
 			<Text
 				text={panel.title}
 				anchor={0.5}
@@ -108,7 +112,7 @@
 					fontFamily: TITLE_FONT,
 					fontWeight: GAME_FONT_WEIGHT,
 					fontSize: stacked ? Math.max(19, cardW * 0.05) : cardW * 0.08,
-					fill: 0xc85a4a,
+					fill: 0x1d4a44,
 				}}
 			/>
 			<Text

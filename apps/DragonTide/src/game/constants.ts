@@ -294,13 +294,14 @@ export const SYMBOL_INFO_MAP = {
 	L3: mixedSymbol('mgL3', LOW_RATIOS),
 	L4: mixedSymbol('mgL4', LOW_RATIOS),
 	L5: mixedSymbol('mgL5', LOW_RATIOS),
-	// a pearl is drawn by MedusaThrow (mount + tier gem + value); this blank mount is only
+	// a pearl is drawn by MedusaThrow (tier pearl + value); this blank pearl is only
 	// what shows while it passes through a spinning reel
 	M: mixedSymbol('mgOrbPurple', LOW_RATIOS),
-	S: mixedSymbol('mgS', SPECIAL_RATIOS),
+	// the Dragon Gate swings open (s_open.png, same box) while it pays and triggers
+	S: { ...mixedSymbol('mgS', SPECIAL_RATIOS), win: symbolSprite('mgSOpen', SPECIAL_RATIOS) },
 } as const;
 
-// Aegis landing clang, pitched up per Aegis already on the board. The board can
+// Dragon Gate landing chime, pitched up per gate already on the board. The board can
 // hold more than five, so the ladder is clamped at its top step.
 export const SCATTER_LAND_SOUND_MAP = {
 	1: 'sfx_scatter_stop_1',

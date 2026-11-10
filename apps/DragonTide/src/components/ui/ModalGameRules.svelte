@@ -19,7 +19,7 @@
 	// player matches what they read to what they see. This panel is DOM, so the
 	// icons come from static/ rather than the pixi asset pipeline. Every pressable
 	// control is listed — a guide that leaves one out fails the engine guideline.
-	const ICONS = `${base}/assets/sprites/dragonInterim/icons`;
+	const ICONS = `${base}/assets/sprites/dragonArt/icons`;
 	type Control = { icons: string[]; name: string; text: string; sign?: boolean; readout?: string; opens?: boolean };
 	const controls: Control[] = [
 		{
@@ -175,7 +175,7 @@
 						<li>
 							<span class="wp-control-icons" aria-hidden="true">
 								{#if control.sign}
-									<img class="wp-sign" src={`${base}/assets/sprites/dragonInterim/buybonus_plate.png`} alt="" />
+									<img class="wp-sign" src={`${base}/assets/sprites/dragonArt/buybonus.png`} alt="" />
 								{:else if control.readout}
 									<span class="wp-readout"
 										>{control.readout}{#if control.opens}<svg viewBox="0 0 12 8"><polyline points="1.5,1.5 6,6 10.5,1.5" /></svg>{/if}</span
@@ -392,7 +392,7 @@
 			gap: 0.5rem;
 			margin: 0 0 0.35rem;
 			font-size: 1.05rem;
-			color: #c85a4a;
+			color: #1d4a44;
 		}
 
 		p {
@@ -519,7 +519,7 @@
 	}
 
 	.wp-modes thead th {
-		color: #c85a4a;
+		color: #1d4a44;
 		font-weight: 700;
 		text-transform: uppercase;
 		letter-spacing: 0.04em;
