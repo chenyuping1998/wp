@@ -62,5 +62,7 @@ export const CUE_CAP: Record<string, number> = {
 	sfx_pearl_lit_s: 2,
 	sfx_pearl_lit_m: 2,
 	sfx_pearl_lit_l: 2,
+	sfx_quake: 2,
+	sfx_quake_top: 2,
 };
 export const CAP_FADE_S = 0.04;

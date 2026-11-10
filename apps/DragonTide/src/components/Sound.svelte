@@ -16,6 +16,7 @@
     | "pearlAdd"
     | "orbCrack"
     | "totalUp"
+    | "quake"
     | "plateBeam"
     | "glassesOn"
     | "hmm"
@@ -370,7 +371,8 @@
 
   // Mix start points from the delivery (new-games/sea-dragon/audio/README.md): the files peak
   // near -3 to -1 dBFS and many fire together, so none plays at full scale.
-  const LEVEL = { music: 0.45, ambience: 0.6, sfx: 0.21, bigStart: 0.3, bigLoop: 0.18, bigCount: 0.1, voice: 0.28 };
+  // quake (Claude add-quake-1110): the x100+ hit sits a little above the other beats
+  const LEVEL = { music: 0.45, ambience: 0.6, sfx: 0.21, bigStart: 0.3, bigLoop: 0.18, bigCount: 0.1, voice: 0.28, quake: 0.3 };
   // Voices (delivery-v1 vo_*, wordless): a line from each pool, never the same one twice running.
   const POOLS: Record<string, string[]> = {
     king: [1, 2, 3, 4, 5].map((n) => `vo_king_cast_${n}`),
@@ -547,6 +549,10 @@
         break;
       case "totalUp":
         void playCue("sfx_total_up", LEVEL.sfx);
+        break;
+      case "quake":
+        // a x100+ pearl hits: the board-shake boom (x250+ has the aftershock in it)
+        void playCue(value >= 250 ? "sfx_quake_top" : "sfx_quake", LEVEL.quake);
         break;
       // template beats with no Dragon Tide sound (no voices in delivery-v1; no losing-pearl crack)
       case "peek":

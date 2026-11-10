@@ -257,18 +257,42 @@
 		await tween(ms, (t) => update(id, { ...flightPose(from, to, reducedMotion ? 1 : t), alpha: 1 }));
 	};
 
-	/** x100+ impact: thunderclap, flash, rings and a board shake (also on a wasted watch). */
+	/**
+	 * x100+ impact: thunderclap, flash, rings, a heavy board shake and the quake sound (also on a
+	 * wasted pearl). Stone 11-10: 「丟百倍球音效跟盤面再震撼一點，盤面震動＋震動音效」 — the shake is
+	 * about half again as strong and long as before, x250+ kicks a second time (the aftershock,
+	 * sfx_quake_top's second thump at 0.38 s), and the board stays dimmed while the rumble rings.
+	 */
+	type Quake = { shake: number; ms: number; aftershock?: number; afterMs?: number };
+	const QUAKE: Record<'heavy' | 'top' | 'max', Quake> = {
+		heavy: { shake: 2.6, ms: 1000 },
+		top: { shake: 3.4, ms: 1250, aftershock: 1.8, afterMs: 380 },
+		max: { shake: 4.0, ms: 1400, aftershock: 2.2, afterMs: 380 },
+	};
 	const strike = (x: number, y: number, value: number, fast: boolean) => {
 		const color = orbColor(value);
+		const k = fast ? 0.55 : 1;
+		const q = value >= 1000 ? QUAKE.max : value >= 250 ? QUAKE.top : QUAKE.heavy;
 		// a handful lands at once: the board takes one big hit (massShock), each x100+ keeps its flash
 		if (!mass) {
+			broadcast({ type: 'soundMedusa', cue: 'quake', value });
 			// ATG 戰神賽特: the camera lunges at the impact while the board shakes
 			zoomBoard({ x, y }, value >= 250 ? 0.2 : 0.15, fast ? 520 : 1050);
-			shakeBoard(value >= 250 ? 2.3 : 1.7, fast ? 480 : 820);
+			shakeBoard(q.shake, q.ms * k);
+			const { aftershock, afterMs = 0 } = q;
+			if (aftershock) void wait(afterMs * k).then(() => shakeBoard(aftershock, q.ms * 0.7 * k));
 		}
 		fx?.impact({ x, y }, value, 'orb');
-		return tween(fast ? 340 : 640, (t) => {
-			heavy = { x, y, bolt: Math.max(0, 1 - t * 2.4), ring: t, flash: Math.max(0, 1 - t * 2.2), dim: 0, color, seed: Math.random() * 100 };
+		const dimTo = value >= 250 ? 0.85 : 0.6;
+		return tween(fast ? 450 : 900, (t) => {
+			heavy = {
+				x, y, color, seed: heavy?.seed ?? Math.random() * 100,
+				bolt: Math.max(0, 1 - t * 3.4),
+				ring: t,
+				flash: Math.max(0, 1 - t * 3.1),
+				// the board darkens under the rumble once the white-out fades
+				dim: dimTo * Math.sin(Math.PI * Math.min(1, Math.max(0, (t - 0.12) / 0.88))),
+			};
 		}).then(() => (heavy = null));
 	};
 
@@ -286,8 +310,10 @@
 	let mass = false, massHit = false, revealStagger = REVEAL_STAGGER_MS, lastBeamSound = 0;
 	const massShock = (fast: boolean) => {
 		massHit = true;
+		broadcast({ type: 'soundMedusa', cue: 'quake', value: 250 });
 		zoomBoard({ x: BOARD_SIZES.width / 2, y: BOARD_SIZES.height / 2 }, 0.12, fast ? 700 : 1400);
-		shakeBoard(2.8, fast ? 700 : 1300);
+		shakeBoard(3.4, fast ? 700 : 1400);
+		void wait(fast ? 210 : 380).then(() => shakeBoard(1.8, fast ? 480 : 900));
 	};
 	let beams = $state<{ id: number; x: number; y: number; color: number; beam: number; flash: number; smoke: number }[]>([]);
 	let nextRevealAt = 0;
@@ -629,7 +655,8 @@
 		const { x, y, bolt, ring, flash, dim, color, seed } = heavy;
 		const all = () => g.rect(-80, -80, BOARD_SIZES.width + 160, BOARD_SIZES.height + 160);
 		// the board darkens while the bolt comes down, then whites out on impact
-		if (dim > 0) all().fill({ color: 0x0b0710, alpha: 0.38 * dim });
+		// the rumble's dim stays inside the board (a box past the frame reads as a panel)
+		if (dim > 0) g.rect(0, 0, BOARD_SIZES.width, BOARD_SIZES.height).fill({ color: 0x0b0710, alpha: 0.38 * dim });
 		if (flash > 0) all().fill({ color: 0xfff6dc, alpha: 0.7 * flash });
 		if (bolt > 0) {
 			const top = -460;

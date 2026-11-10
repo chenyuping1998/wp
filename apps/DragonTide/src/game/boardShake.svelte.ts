@@ -24,10 +24,15 @@ export const shakeBoard = (strength = 1, ms = 640) => {
 			return;
 		}
 		const amp = 18 * strength * (1 - t) ** 2;
-		boardShake.scale = 1 + 0.035 * strength * Math.max(0, 1 - t * 4);
+		// the punch stays at its old size (strength 2.3) so a heavier shake does not grow the
+		// board over the cast's strip
+		boardShake.scale = 1 + 0.035 * Math.min(strength, 2.3) * Math.max(0, 1 - t * 4);
 		const s = (now - start) / 1000;
-		boardShake.x = amp * Math.sin(s * Math.PI * 2 * 19);
-		boardShake.y = amp * 0.75 * Math.sin(s * Math.PI * 2 * 23 + 1.3);
+		// sideways the board never travels further than the old strongest shake (2.3), so it stays
+		// clear of the cast's strip and the Buy Bonus plate; a heavier hit goes into the vertical
+		const side = Math.min(amp, 18 * 2.3 * (1 - t) ** 2);
+		boardShake.x = side * Math.sin(s * Math.PI * 2 * 19);
+		boardShake.y = amp * 0.9 * Math.sin(s * Math.PI * 2 * 23 + 1.3);
 		requestAnimationFrame(step);
 	};
 	requestAnimationFrame(step);

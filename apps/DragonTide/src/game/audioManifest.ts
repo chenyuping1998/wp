@@ -53,6 +53,8 @@ export const DRAGON_AUDIO = {
 	"sfx_pearl_show": "sfx_pearl_show.wav",
 	"sfx_pearl_show_top": "sfx_pearl_show_top.wav",
 	"sfx_portal": "sfx_portal.wav",
+	"sfx_quake": "sfx_quake.wav",
+	"sfx_quake_top": "sfx_quake_top.wav",
 	"sfx_ready": "sfx_ready.ogg",
 	"sfx_reel_stop": "sfx_reel_stop.wav",
 	"sfx_refill": "sfx_refill.wav",

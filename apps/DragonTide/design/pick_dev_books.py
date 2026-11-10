@@ -6,6 +6,7 @@ trigger, a big TOTAL, a retrigger, the super buy, an EXTRA BET spin.
 
   /Applications/anaconda3/envs/math-sdk/bin/python design/pick_dev_books.py
 """
+import io
 import json
 from pathlib import Path
 
@@ -16,9 +17,10 @@ OUT = Path(__file__).resolve().parents[1] / "src/dev/devBooks.json"
 
 
 def books(mode):
-    raw = zstd.ZstdDecompressor().stream_reader(open(PUB / f"books_{mode}.jsonl.zst", "rb")).read().decode()
-    for line in raw.splitlines():
-        yield json.loads(line)
+    # streamed line by line: the bonus books are ~2 GB once decompressed
+    with open(PUB / f"books_{mode}.jsonl.zst", "rb") as f:
+        for line in io.TextIOWrapper(zstd.ZstdDecompressor().stream_reader(f), encoding="utf-8"):
+            yield json.loads(line)
 
 
 def types(b):
@@ -47,7 +49,18 @@ def pearls_on(spin):
     return n
 
 
-def first(mode, pred, limit=60000):
+def top_pearl(spin):
+    """Largest visible pearl of a spin (reveal rows 1-5 and refill drops)."""
+    vals = [0]
+    for e in spin:
+        if e["type"] == "reveal":
+            vals += [s.get("multiplier", 0) for col in e["board"] for s in col[1:-1] if s["name"] == "M"]
+        if e["type"] == "tumbleBoard":
+            vals += [s.get("multiplier", 0) for col in e["newSymbols"] for s in col[1:] if s["name"] == "M"]
+    return max(vals)
+
+
+def first(mode, pred, limit=100000):
     for i, b in enumerate(books(mode)):
         if i > limit:
             break
@@ -66,6 +79,11 @@ picks = {
     "basePearlMulti": first("base", lambda b: base_only(b) and any(e["type"] == "boardMultiplierInfo" and len(e["multInfo"]["positions"]) >= 2 for e in b["events"])),
     "basePearlNoWin": first("base", lambda b: base_only(b) and b["payoutMultiplier"] == 0 and pearls_on(spins(b)[0]) >= 1),
     "baseRefillPearl": first("base", lambda b: base_only(b) and "boardMultiplierInfo" in types(b) and any(e["type"] == "tumbleBoard" and any(s["name"] == "M" for col in e["newSymbols"] for s in col[1:]) for e in b["events"])),
+    # x100+ pearls (board shake + quake): wasted on a spin with no win, and settling a win
+    "baseHeavyNoWin": first("base", lambda b: base_only(b) and b["payoutMultiplier"] == 0 and 100 <= top_pearl(spins(b)[0]) < 250),
+    "baseTopNoWin": first("base", lambda b: base_only(b) and b["payoutMultiplier"] == 0 and top_pearl(spins(b)[0]) >= 250),
+    "baseHeavyWin": first("base", lambda b: base_only(b) and "boardMultiplierInfo" in types(b) and 100 <= top_pearl(spins(b)[0]) < 250),
+    "baseTopWin": first("base", lambda b: base_only(b) and "boardMultiplierInfo" in types(b) and top_pearl(spins(b)[0]) >= 250),
     "baseScatterPay": first("base", lambda b: b["payoutMultiplier"] < 200000 and any(e["type"] == "winInfo" and e["wins"] and e["wins"][0]["symbol"] == "S" for e in b["events"])),
     "baseTrigger": first("base", lambda b: "freeSpinTrigger" in types(b) and 50 <= b["payoutMultiplier"] / 100 <= 400),
     "anteSpin": first("ante", lambda b: base_only(b) and b["payoutMultiplier"] > 0),

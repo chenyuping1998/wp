@@ -83,6 +83,8 @@ const spec = {
   sfx_bigwin_count: CAP(12), sfx_bigwin_end: T(2.25),
   sfx_button: CAP(0.2), sfx_buy_hover: CAP(0.3), sfx_buy_confirm: CAP(1.0), sfx_entry_reveal: CAP(1.0),
   sfx_menu_open: T(0.3), sfx_menu_close: T(0.4),
+  // x100+ board-shake boom (Claude add-quake-1110, new-games/sea-dragon/audio/source/build_quake.mjs)
+  sfx_quake: T(1.6), sfx_quake_top: T(2.3),
 };
 // request §3.8 voices (P2, wordless): 1.5-2.9 s; the top-pearl lines ~2.6
 const VOICE = { min: 1.5, max: 2.9 };
