@@ -88,7 +88,7 @@ setUiTheme({
 	// feature is an occasional, deliberate action
 	buyBonusOnRail: false,
 	buyBonusButtonScale: 0.9,
-	buyBonusPlateScale: 0.98,
+	buyBonusPlateScale: 0.92,
 	// keep the hover light inside the gate's outline
 	buyBonusPlateInset: { width: 0.8, height: 0.86 },
 	buyBonusHighlightPad: 0,

@@ -43,9 +43,10 @@
 						context.stateGameDerived.boardLayout().width * 0.5 -
 						panelSizes.width -
 						SYMBOL_SIZE * 0.6,
-					// Pinned near the top of the screen; Medusa's running-total plate
+					// Near the top, clear of the clock-and-name line the popout sizes print large;
+					// the running-total plate
 					// sits below it on the same side (MedusaThrow.svelte).
-					y: context.stateLayoutDerived.mainLayout().height * 0.05,
+					y: context.stateLayoutDerived.mainLayout().height * 0.085,
 				},
 	);
 
