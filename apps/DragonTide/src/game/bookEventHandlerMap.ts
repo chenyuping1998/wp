@@ -88,6 +88,9 @@ const withPearls = (column: RawSymbol[]) =>
 	column.map((raw, row) =>
 		raw.name === ('M' as SymbolName) && row >= 1 && row <= BOARD_DIMENSIONS.y ? { ...raw, watchValue: raw.multiplier } : { ...raw },
 	);
+/** The largest pearl on the visible rows (0 when there is none). */
+const topPearl = (board: RawSymbol[][]) =>
+	Math.max(0, ...board.flatMap((column) => column.filter((raw, row) => raw.name === ('M' as SymbolName) && row >= 1 && row <= BOARD_DIMENSIONS.y).map((raw) => Number(raw.multiplier) || 0)));
 const visiblePearls = (board: RawSymbol[][]) =>
 	board.reduce((n, column) => n + column.filter((raw, row) => raw.name === ('M' as SymbolName) && row >= 1 && row <= BOARD_DIMENSIONS.y).length, 0);
 
@@ -133,7 +136,7 @@ export const bookEventHandlerMap: BookEventHandlerMap<BookEvent, BookEventContex
 		// reference game: the caster acts only when this board carries pearls; they land with it
 		const revealBoard = bookEvent.board.map(withPearls);
 		const pearls = visiblePearls(bookEvent.board);
-		if (pearls > 0) eventEmitter.broadcast({ type: 'hypnoWatchReveal', pace: currentPace(), count: pearls });
+		if (pearls > 0) eventEmitter.broadcast({ type: 'hypnoWatchReveal', pace: currentPace(), count: pearls, top: topPearl(bookEvent.board) });
 		eventEmitter.broadcast({ type: 'soundScatterCounterClear' });
 		// reference: a free spin empties its board like a base spin, reel by reel left to right
 		// (the shared spin would drop the whole board at once); a base spin already did this
@@ -275,6 +278,7 @@ export const bookEventHandlerMap: BookEventHandlerMap<BookEvent, BookEventContex
 		});
 		eventEmitter.broadcast({ type: 'medusaAction', animation: 'fg_transform' });
 		eventEmitter.broadcast({ type: 'soundCue', cue: 'sfx_transform' });
+		eventEmitter.broadcast({ type: 'soundVoice', line: 'fgIn' });
 		let swappedAt = performance.now();
 		await eventEmitter.broadcastAsync({
 			type: 'transition',
@@ -382,6 +386,7 @@ export const bookEventHandlerMap: BookEventHandlerMap<BookEvent, BookEventContex
 		eventEmitter.broadcast({ type: 'boardFrameGlowHide' });
 		eventEmitter.broadcast({ type: 'freeSpinOutroShow' });
 		eventEmitter.broadcast({ type: 'soundOnce', name: 'sfx_youwon_panel' });
+		eventEmitter.broadcast({ type: 'soundVoice', line: bookEvent.winLevel >= 2 ? 'fgEndBig' : 'fgEnd' });
 		// the end plaque has its own sting and bed (reference FgPage_Out), not the big-win set
 		winLevelSoundsPlay({ winLevelData, celebrate: false });
 		await eventEmitter.broadcastAsync({

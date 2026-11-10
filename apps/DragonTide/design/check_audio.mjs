@@ -84,13 +84,22 @@ const spec = {
   sfx_button: CAP(0.2), sfx_buy_hover: CAP(0.3), sfx_buy_confirm: CAP(1.0), sfx_entry_reveal: CAP(1.0),
   sfx_menu_open: T(0.3), sfx_menu_close: T(0.4),
 };
+// request §3.8 voices (P2, wordless): 1.5-2.9 s; the top-pearl lines ~2.6
+const VOICE = { min: 1.5, max: 2.9 };
+for (const who of ["king", "princess"]) {
+  for (let n = 1; n <= 5; n += 1) spec[`vo_${who}_cast_${n}`] = VOICE;
+  spec[`vo_${who}_cast_top`] = T(2.6);
+}
+for (let n = 1; n <= 3; n += 1) spec[`vo_fg_in_${n}`] = VOICE;
+for (const line of ["vo_fg_end_1", "vo_fg_end_2", "vo_fg_end_big_1", "vo_fg_end_big_2"]) spec[line] = VOICE;
+for (let n = 1; n <= 5; n += 1) spec[`vo_bigwin_${n}`] = VOICE;
 for (let n = 1; n <= 5; n += 1) {
   spec[`sfx_fgscore_${n}`] = T(1.69);
   spec[`sfx_blast_${n}`] = T(1.53);
   spec[`sfx_bigwin_loop_${n}`] = CAP(12);
 }
 // request §3: P1 must all be here
-const P1 = Object.keys(spec).filter((cue) => !/^amb_|^sfx_menu_/.test(cue));
+const P1 = Object.keys(spec).filter((cue) => !/^amb_|^sfx_menu_|^vo_/.test(cue));
 for (const cue of P1) assert.ok(manifest[cue], `P1 cue missing from the delivery: ${cue}`);
 
 let bytes = 0;
@@ -131,7 +140,9 @@ for (const source of sources) {
     cueRefs += 1;
   }
 }
-for (const ladder of ["sfx_blast_", "sfx_score_", "sfx_fgscore_", "sfx_bigwin_loop_", "sfx_bigwin_start_"]) {
+// the voice pools Sound.svelte builds at run time
+if (/vo_king_cast_|POOLS/.test(soundSource)) for (const cue of Object.keys(spec).filter((name) => name.startsWith("vo_"))) assert.ok(manifest[cue], `Missing voice: ${cue}`);
+for (const ladder of ["sfx_blast_", "sfx_score_", "sfx_fgscore_", "sfx_bigwin_loop_", "sfx_bigwin_start_", "vo_bigwin_"]) {
   assert.ok(soundSource.includes("`" + ladder + "${"), `Ladder ${ladder} not used`);
   for (let n = 1; n <= 5; n += 1) assert.ok(manifest[`${ladder}${n}`], `Missing ladder cue ${ladder}${n}`);
 }

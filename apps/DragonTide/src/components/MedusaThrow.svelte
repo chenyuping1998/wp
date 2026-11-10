@@ -27,7 +27,7 @@
 				pace: WinPace;
 				drops: WatchDrop[];
 		  }
-		| { type: 'hypnoWatchReveal'; pace: WinPace; count: number }
+		| { type: 'hypnoWatchReveal'; pace: WinPace; count: number; top?: number }
 		| { type: 'hypnoWatchClear' }
 		| { type: 'medusaTotalShow' }
 		| { type: 'medusaTotalHide' };
@@ -330,7 +330,7 @@
 		// the caster acts at the burst; the pearls already ride the refill clock
 		void wait(castDelayMs).then(() => {
 			broadcast({ type: 'medusaAction', animation, releaseMs });
-			broadcast({ type: 'soundMedusa', cue: 'gaze', speed: fast ? 1.5 : 1 });
+			broadcast({ type: 'soundMedusa', cue: 'gaze', value: Math.max(0, ...drops.map((drop) => drop.value)), speed: fast ? 1.5 : 1 });
 		});
 		nextRevealAt = 0;
 		mass = false; massHit = false; revealStagger = REVEAL_STAGGER_MS;
@@ -490,7 +490,7 @@
 			totalEnter = 0;
 			plateLevel = 0;
 		},
-		hypnoWatchReveal: ({ pace, count }) => {
+		hypnoWatchReveal: ({ pace, count, top = 0 }) => {
 			const fast = pace === 'turbo' || pace === 'turboFreegame';
 			const previousRaw = new Set(context.stateGame.board.flatMap((reel) => reel.reelState.symbols.map((symbol) => symbol.rawSymbol)));
 			const freegame = pace === 'freegame' || pace === 'turboFreegame';
@@ -500,7 +500,7 @@
 			// at once; each pearl falls in with its value on it and is struck 0.15 s after it lands
 			const cast = () => {
 				broadcast({ type: 'medusaAction', animation });
-				broadcast({ type: 'soundMedusa', cue: 'gaze', speed: fast ? 1.5 : 1 });
+				broadcast({ type: 'soundMedusa', cue: 'gaze', value: top, speed: fast ? 1.5 : 1 });
 			};
 			if (fast || context.stateGame.board.every((reel) => reel.reelState.motion === 'hanging')) cast();
 			else void wait(250).then(cast);

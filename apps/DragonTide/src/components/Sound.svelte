@@ -38,6 +38,7 @@
     | { type: "soundMedusa"; cue: MedusaCue; value?: number;speed?:number;panFrom?:number;panTo?:number }
     | { type: "soundCue"; cue: DragonCue; loop?: boolean; rate?: number }
     | { type: "soundCueStop"; cue: DragonCue }
+    | { type: "soundVoice"; line: "fgIn" | "fgEnd" | "fgEndBig" }
     | { type: "soundFreeGameBell" }
     | { type: "soundBigWinBlast"; tier?: 1 | 2 | 3 | 4 | 5 }
     | { type: "soundTumbleHit"; chain: number }
@@ -253,7 +254,22 @@
 
   // Mix start points from the delivery (new-games/sea-dragon/audio/README.md): the files peak
   // near -3 to -1 dBFS and many fire together, so none plays at full scale.
-  const LEVEL = { music: 0.45, ambience: 0.6, sfx: 0.21, bigStart: 0.3, bigLoop: 0.18, bigCount: 0.1 };
+  const LEVEL = { music: 0.45, ambience: 0.6, sfx: 0.21, bigStart: 0.3, bigLoop: 0.18, bigCount: 0.1, voice: 0.28 };
+  // Voices (delivery-v1 vo_*, wordless): a line from each pool, never the same one twice running.
+  const POOLS: Record<string, string[]> = {
+    king: [1, 2, 3, 4, 5].map((n) => `vo_king_cast_${n}`),
+    princess: [1, 2, 3, 4, 5].map((n) => `vo_princess_cast_${n}`),
+    fgIn: [1, 2, 3].map((n) => `vo_fg_in_${n}`),
+    fgEnd: [1, 2].map((n) => `vo_fg_end_${n}`),
+    fgEndBig: [1, 2].map((n) => `vo_fg_end_big_${n}`),
+  };
+  const lastLine: Record<string, string> = {};
+  const voice = (pool: string) => {
+    const lines = POOLS[pool].filter((line) => line !== lastLine[pool]);
+    const line = lines[Math.floor(Math.random() * lines.length)];
+    lastLine[pool] = line;
+    void playCue(line, LEVEL.voice);
+  };
   type Bed = "main" | "free" | "wait";
   const BEDS: Record<Bed, { music: DragonCue; ambience?: DragonCue }> = {
     main: { music: "bgm_main", ambience: "amb_sea" },
@@ -379,10 +395,15 @@
 
   function playMedusa(cue: MedusaCue, value = 0,speed=1,panFrom=0,panTo=0) {
     switch (cue) {
-      case "gaze":
-        // the caster: the Dragon King in the base game, the Dragon Princess in free spins
-        void playCue(freegame() ? "sfx_cast_princess" : "sfx_cast_king", LEVEL.sfx, speed);
+      case "gaze": {
+        // the caster: the Dragon King in the base game, the Dragon Princess in free spins; a
+        // top-tier (x250+) pearl on the board always gets the caster's big line
+        const who = freegame() ? "princess" : "king";
+        void playCue(`sfx_cast_${who}`, LEVEL.sfx, speed);
+        if (value >= 250) void playCue(`vo_${who}_cast_top`, LEVEL.voice);
+        else voice(who);
         break;
+      }
       case "gazeBeam":
         void playCue("sfx_strike", LEVEL.sfx, speed);
         break;
@@ -493,6 +514,7 @@
     soundCueStop: ({ cue }) => stopCue(cue),
     soundMedusa: ({ cue, value,speed,panFrom,panTo }) => playMedusa(cue, value,speed,panFrom,panTo),
     soundFreeGameBell: () => gateWin(),
+    soundVoice: ({ line }) => voice(line),
     soundBigWinBlast: ({ tier }) => {
       const next = tier ?? 1;
       duck(true);
@@ -504,6 +526,7 @@
       }
       activeTier = next;
       void playCue(`sfx_bigwin_start_${activeTier}`, LEVEL.bigStart);
+      void playCue(`vo_bigwin_${activeTier}`, LEVEL.voice);
     },
     soundTransitionBlast: () => {
       void playCue("sfx_portal", LEVEL.sfx);
