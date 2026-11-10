@@ -252,8 +252,8 @@
 	};
 
 	/** Fly an existing orb between two board points (the settlement, not a throw). */
-	const flyBetween = async (id: number, from: { x: number; y: number }, to: { x: number; y: number }, ms: number) => {
-		broadcast({ type:'soundMedusa',cue:'orbFly',speed:450/ms,panFrom:Math.max(-.85,Math.min(.85,(from.x-BOARD_SIZES.width/2)/BOARD_SIZES.width*1.6)),panTo:Math.max(-.85,Math.min(.85,(to.x-BOARD_SIZES.width/2)/BOARD_SIZES.width*1.6)) });
+	const flyBetween = async (id: number, from: { x: number; y: number }, to: { x: number; y: number }, ms: number, cue: 'orbFly' | 'totalFly' = 'orbFly') => {
+		broadcast({ type:'soundMedusa',cue,speed:450/ms,panFrom:Math.max(-.85,Math.min(.85,(from.x-BOARD_SIZES.width/2)/BOARD_SIZES.width*1.6)),panTo:Math.max(-.85,Math.min(.85,(to.x-BOARD_SIZES.width/2)/BOARD_SIZES.width*1.6)) });
 		await tween(ms, (t) => update(id, { ...flightPose(from, to, reducedMotion ? 1 : t), alpha: 1 }));
 	};
 
@@ -262,7 +262,6 @@
 		const color = orbColor(value);
 		// a handful lands at once: the board takes one big hit (massShock), each x100+ keeps its flash
 		if (!mass) {
-			broadcast({ type: 'soundOnce', name: 'sfx_wild_explode' });
 			// ATG 戰神賽特: the camera lunges at the impact while the board shakes
 			zoomBoard({ x, y }, value >= 250 ? 0.2 : 0.15, fast ? 520 : 1050);
 			shakeBoard(value >= 250 ? 2.3 : 1.7, fast ? 480 : 820);
@@ -287,7 +286,6 @@
 	let mass = false, massHit = false, revealStagger = REVEAL_STAGGER_MS, lastBeamSound = 0;
 	const massShock = (fast: boolean) => {
 		massHit = true;
-		broadcast({ type: 'soundOnce', name: 'sfx_wild_explode' });
 		zoomBoard({ x: BOARD_SIZES.width / 2, y: BOARD_SIZES.height / 2 }, 0.12, fast ? 700 : 1400);
 		shakeBoard(2.8, fast ? 700 : 1300);
 	};
@@ -347,6 +345,7 @@
 					// fades in as it crosses the top edge of the board
 					update(id, { y, alpha: Math.max(0, Math.min(1, (y + 20) / 60)), sx: 1 - 0.06 * t, sy: 1 + 0.12 * t });
 				});
+				broadcast({ type: 'soundMedusa', cue: 'pearlShow', value: drop.value, speed: fast ? 1.25 : 1 });
 				await tween(fast ? 90 : 160, (t) => {
 					const squash = Math.sin(Math.PI * t);
 					update(id, { y: drop.toY, alpha: 1, sx: 1 + 0.14 * squash, sy: 1 - 0.16 * squash });
@@ -399,7 +398,7 @@
 			const id = nextId++;
 			orbs = [...orbs, { id, value: previous, ...plateValue, scale: 0.7, alpha: 1, stone: 0, crack: 0, angle: 0, sx: 1, sy: 1, trail: [] }];
 			totalBump = 1;
-			await flyBetween(id, plateValue, readout, plan.totalFlyMs);
+			await flyBetween(id, plateValue, readout, plan.totalFlyMs, 'totalFly');
 			fx?.impact(readout, previous, 'score');
 			orbs = orbs.filter((orb) => orb.id !== id);
 			totalBump = 0;
@@ -424,7 +423,7 @@
 					update(watch.id, { reveal: 0 });
 					await flyBetween(copy, from, readout, plan.flyMs);
 					fx?.impact(readout, watch.value, 'score');
-					broadcast({ type: 'soundMedusa', cue: 'orbHit', value: watch.value, speed: fast ? 1.25 : 1 });
+					broadcast({ type: 'soundMedusa', cue: 'pearlAdd', value: watch.value, speed: fast ? 1.25 : 1 });
 					if (watch.value >= HEAVY) shakeBoard(0.6, fast ? 260 : 380);
 					orbs = orbs.filter((orb) => orb.id !== copy);
 					arrive(shown + watch.value);
@@ -438,7 +437,8 @@
 		await wait(plan.settleMs + plan.holdMs);
 		formulaDone = true;
 		amount = { text: baseAmount, alpha: 1 };
-		broadcast({ type: 'soundLoop', name: 'sfx_multiplier_update' });
+		// the sum turns into the paid amount (a one-shot that rings past the count)
+		broadcast({ type: 'soundOnce', name: 'sfx_multiplier_update' });
 		try {
 			// ATG: the readout turns into the paid amount in one beat
 			await countUp(baseWin, totalWin, fast ? 120 : 220);
@@ -535,6 +535,7 @@
 								landed++;
 								if (!impacts.has(key)) {
 									impacts.add(key);
+									broadcast({ type: 'soundMedusa', cue: 'pearlShow', value, speed: fast ? 1.25 : 1 });
 									reveals.push(revealWatch(id, getSymbolX(reelIndex), y, value, fast, freegame, STRIKE_DELAY_MS));
 								}
 							}

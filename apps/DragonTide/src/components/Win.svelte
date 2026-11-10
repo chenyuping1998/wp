@@ -16,7 +16,7 @@
 	// float and the formatter passes the fraction straight through, so a rolling
 	// amount read $9,289.1716 and only snapped to two decimals on the final
 	// frame. Book amounts are integer minor units, so rounding is exact.
-	import { bookEventAmountToCurrencyString } from 'utils-shared/amount';
+	import { bookEventAmountToCountUpString } from 'utils-shared/amount';
 	import { CanvasSizeRectangle, MainContainer } from 'components-layout';
 
 	import WinCoins from './WinCoins.svelte';
@@ -220,9 +220,25 @@
 					: [{ level: data.level, from: 0, to: total, start: 0, countEnd: data.presentDuration / 1000, end: data.presentDuration / 1000 + 0.2 }];
 			if (data.type === 'big') startBannerFx();
 			let raf = 0, last = performance.now(), done = false;
+			// the count ticks while the amount runs and lands on a closing hit
+			const big = data.type === 'big';
+			let counting = false, landed = false;
+			const countSound = () => {
+				if (!big || landed) return;
+				if (!counting && elapsed >= COUNT_START_S) {
+					counting = true;
+					context.eventEmitter.broadcast({ type: 'soundCue', cue: 'sfx_bigwin_count', loop: true });
+				}
+				if (elapsed >= steps[steps.length - 1].countEnd) {
+					landed = true;
+					context.eventEmitter.broadcast({ type: 'soundCueStop', cue: 'sfx_bigwin_count' });
+					context.eventEmitter.broadcast({ type: 'soundCue', cue: 'sfx_bigwin_end' });
+				}
+			};
 			const end = () => {
 				if (done) return;
 				done = true;
+				if (big) context.eventEmitter.broadcast({ type: 'soundCueStop', cue: 'sfx_bigwin_count' });
 				cancelAnimationFrame(raf);
 				document.removeEventListener('visibilitychange', onVisibility);
 				elapsed = steps[steps.length - 1].end;
@@ -240,6 +256,7 @@
 				const dt = Math.min(0.1, Math.max(0, (now - last) / 1000));
 				last = now;
 				elapsed = skipTo >= 0 && elapsed < skipTo ? skipTo : elapsed + dt;
+				countSound();
 				if (elapsed >= steps[steps.length - 1].end) end();
 				else raf = requestAnimationFrame(tick);
 			};
@@ -358,7 +375,7 @@
 							<GoldText
 								y={amountY}
 								maxWidth={bw * 0.86}
-								text={bookEventAmountToCurrencyString(Math.round(countUpAmount))}
+								text={bookEventAmountToCountUpString(Math.round(countUpAmount), amount)}
 								fontSize={amountSize}
 							/>
 							{#if flare < 1}
@@ -386,7 +403,7 @@
 							<GoldText
 								maxWidth={context.stateLayoutDerived.canvasSizes().width /
 									context.stateLayoutDerived.mainLayout().scale}
-								text={bookEventAmountToCurrencyString(Math.round(countUpAmount))}
+								text={bookEventAmountToCountUpString(Math.round(countUpAmount), amount)}
 								fontSize={SYMBOL_SIZE}
 							/>
 						{/if}

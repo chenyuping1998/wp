@@ -45,9 +45,9 @@ const manifestSource = fs.readFileSync(
   path.join(appRoot, "src/game/audioManifest.ts"),
   "utf8",
 );
-const audioMap = manifestSource.match(/=\s*(\{[\s\S]*\});/);
+const audioMap = manifestSource.match(/=\s*(\{[\s\S]*?\})\s*as const;/);
 if (!audioMap) {
-  console.log("  !! could not parse MEDUSA_AUDIO in audioManifest.ts");
+  console.log("  !! could not parse DRAGON_AUDIO in audioManifest.ts");
   missing++;
 } else {
   const deliveredFiles = [
@@ -57,10 +57,10 @@ if (!audioMap) {
   ].map((m) => m[2]);
   for (const file of deliveredFiles) {
     checked++;
-    if (fs.existsSync(path.join(appRoot, "static/assets/audio/medusa", file)))
+    if (fs.existsSync(path.join(appRoot, "static/assets/audio/dragon", file)))
       continue;
     console.log(
-      `  !! missing (audio): ${file}  →  static/assets/audio/medusa/${file}`,
+      `  !! missing (audio): ${file}  →  static/assets/audio/dragon/${file}`,
     );
     missing++;
   }

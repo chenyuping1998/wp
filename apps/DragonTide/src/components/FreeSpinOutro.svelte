@@ -16,7 +16,7 @@
 	// float and the formatter passes the fraction straight through, so a rolling
 	// amount read $9,289.1716 and only snapped to two decimals on the final
 	// frame. Book amounts are integer minor units, so rounding is exact.
-	import { bookEventAmountToCurrencyString } from 'utils-shared/amount';
+	import { bookEventAmountToCountUpString } from 'utils-shared/amount';
 	import { waitForResolve } from 'utils-shared/wait';
 	import { CanvasSizeRectangle } from 'components-layout';
 	import { OnMount } from 'components-shared';
@@ -101,7 +101,7 @@
 						<GoldText
 							y={sizes.height * 0.12}
 							fontSize={Math.min(sizes.width * 0.15,sizes.height * 0.36)}
-							text={bookEventAmountToCurrencyString(Math.round(countUpAmount))}
+							text={bookEventAmountToCountUpString(Math.round(countUpAmount), amount)}
 							maxWidth={sizes.width * 0.9}
 						/>
 					{/snippet}

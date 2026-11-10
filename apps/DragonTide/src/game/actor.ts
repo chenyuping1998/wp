@@ -44,6 +44,7 @@ const primaryMachines = createPrimaryMachines<Bet>({
 		if (skipPreSpinInTurboAutoBet) return;
 
 		const forceNormalPreSpin = stateBet.isTurbo && stateGame.gameType === 'freegame';
+		eventEmitter.broadcast({ type: 'soundCue', cue: 'sfx_board_out' });
 		await stateGameDerived.enhancedBoard.preSpin({
 			paddingBoard: config.paddingReels[stateGame.gameType] as RawSymbol[][],
 			isTurboBeforeAllOverride: forceNormalPreSpin ? false : undefined,

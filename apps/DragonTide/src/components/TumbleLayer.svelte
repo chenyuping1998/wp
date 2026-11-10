@@ -155,6 +155,7 @@
 		void (async () => { for (let i = 1; i <= 3 && flash; i++) { await sleep(25); if (flash) flash = { ...flash, alpha: 1 - i / 3 }; } flash = null; })();
 		const burstAt = performance.now();
 		const refillAt = burstAt + timing.crumbleMs + timing.emptyMs + gapMs;
+		void sleep(Math.max(0, refillAt - performance.now())).then(() => { if (current()) context.eventEmitter.broadcast({ type: 'soundCue', cue: 'sfx_refill' }); });
 
 		const land = async (symbol: (typeof board)[number]['reelState']['symbols'][number], to: number, duration: number) => {
 			await Promise.race([symbol.symbolY.set(to, { duration, easing: gravityProgress }), sleep(duration + 80)]);

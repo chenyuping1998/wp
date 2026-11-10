@@ -43,31 +43,35 @@ export type ScatterWinDatum = {
 	overlay: Position;
 };
 
-const winLevelSoundsPlay = ({ winLevelData, blastTier }: { winLevelData: WinLevelData; blastTier?: 1 | 2 | 3 | 4 | 5 }) => {
+const winLevelSoundsPlay = ({ winLevelData, blastTier, celebrate = true }: { winLevelData: WinLevelData; blastTier?: 1 | 2 | 3 | 4 | 5; celebrate?: boolean }) => {
 	if (winLevelData?.alias === 'max') eventEmitter.broadcastAsync({ type: 'uiHide' });
 	if (winLevelData?.sound?.sfx) {
 		eventEmitter.broadcast({ type: 'soundOnce', name: winLevelData.sound.sfx });
 	}
 	// Deliberately NOT switching to winLevelData.sound.bgm: switching pauses the
 	// running bed and restarts it from the top afterwards. Keep it playing.
-	if (winLevelData?.type === 'big') {
+	if (winLevelData?.type === 'big' && celebrate) {
 		eventEmitter.broadcast({
 			type: 'soundBigWinBlast',
 			tier: blastTier ?? (Math.min(5, Math.max(1, winLevelData.level - 5)) as 1 | 2 | 3 | 4 | 5),
 		});
 		eventEmitter.broadcast({ type: 'soundMedusa', cue: 'laugh' });
+		eventEmitter.broadcast({ type: 'soundLoop', name: 'sfx_bigwin_coinloop' });
+	}
+	if (winLevelData?.type === 'big') {
 		eventEmitter.broadcast({
 			type: 'medusaAction',
 			animation: winLevelData.alias === 'max' ? 'win_max' : 'win_big',
 		});
-		eventEmitter.broadcast({ type: 'soundLoop', name: 'sfx_bigwin_coinloop' });
 	}
 };
 
-const winLevelSoundsStop = () => {
+const winLevelSoundsStop = ({ restoreMusic = true }: { restoreMusic?: boolean } = {}) => {
 	eventEmitter.broadcast({ type: 'soundStop', name: 'sfx_bigwin_coinloop' });
 	eventEmitter.broadcast({ type: 'medusaPose', pose: 'idle' });
-	if (stateGame.gameType === 'freegame') {
+	if (!restoreMusic) {
+		// the end plaque waits over its own bed; the base-game music comes in with the way back
+	} else if (stateGame.gameType === 'freegame') {
 		eventEmitter.broadcast({ type: 'soundMusic', name: 'bgm_freespin' });
 	} else {
 		eventEmitter.broadcast({ type: 'soundMusic', name: 'bgm_main' });
@@ -135,6 +139,7 @@ export const bookEventHandlerMap: BookEventHandlerMap<BookEvent, BookEventContex
 		// (the shared spin would drop the whole board at once); a base spin already did this
 		// before its book arrived
 		if (bookEvent.gameType === 'freegame' && stateGame.board.some((reel) => reel.reelState.motion === 'stopped')) {
+			eventEmitter.broadcast({ type: 'soundCue', cue: 'sfx_board_out' });
 			await stateGameDerived.enhancedBoard.preSpin({ paddingBoard: config.paddingReels[bookEvent.gameType] as RawSymbol[][] });
 		}
 		await stateGameDerived.enhancedBoard.spin({
@@ -256,7 +261,6 @@ export const bookEventHandlerMap: BookEventHandlerMap<BookEvent, BookEventContex
 		// reference §5.1: the gates' light 0.5-1.5 s, the plaque and the caster's wind-up at ~2.2 s
 		// after the 4th gate lands (the bar takes ~0.4 s to clear first)
 		await waitForTimeout(Math.max(0, 1100 - (performance.now() - triggerStart)));
-		eventEmitter.broadcast({ type: 'soundOnce', name: 'sfx_superfreespin' });
 		await eventEmitter.broadcastAsync({ type: 'uiHide' });
 		// 天使奧丁 (research/xinstar-angelodin §5.1): the feature plaque comes in on
 		// the BASE scene while the caster winds up and holds (Ready → ReadyLoop),
@@ -270,7 +274,7 @@ export const bookEventHandlerMap: BookEventHandlerMap<BookEvent, BookEventContex
 			totalFreeSpins: bookEvent.totalFs,
 		});
 		eventEmitter.broadcast({ type: 'medusaAction', animation: 'fg_transform' });
-		eventEmitter.broadcast({ type: 'soundMedusa', cue: 'gaze' });
+		eventEmitter.broadcast({ type: 'soundCue', cue: 'sfx_transform' });
 		let swappedAt = performance.now();
 		await eventEmitter.broadcastAsync({
 			type: 'transition',
@@ -378,22 +382,23 @@ export const bookEventHandlerMap: BookEventHandlerMap<BookEvent, BookEventContex
 		eventEmitter.broadcast({ type: 'boardFrameGlowHide' });
 		eventEmitter.broadcast({ type: 'freeSpinOutroShow' });
 		eventEmitter.broadcast({ type: 'soundOnce', name: 'sfx_youwon_panel' });
-		winLevelSoundsPlay({ winLevelData });
+		// the end plaque has its own sting and bed (reference FgPage_Out), not the big-win set
+		winLevelSoundsPlay({ winLevelData, celebrate: false });
 		await eventEmitter.broadcastAsync({
 			type: 'freeSpinOutroCountUp',
 			amount: total.amount,
 			winLevelData,
 		});
-		winLevelSoundsStop();
+		winLevelSoundsStop({ restoreMusic: false });
 		eventEmitter.broadcast({ type: 'freeSpinCounterHide' });
 		eventEmitter.broadcast({ type: 'medusaTotalHide' });
 		stateGame.medusaTotal = 0;
 		stateUi.freeSpinCounterShow = false;
 		await waitForTimeout(Math.max(0,medusaAnimations.fg_end.durationMs-(performance.now()-fgEndStarted)));
-		eventEmitter.broadcast({ type: 'soundMusic', name: 'bgm_main' });
 		eventEmitter.broadcast({ type: 'medusaAction', animation: 'fg_transform' });
+		eventEmitter.broadcast({ type: 'soundCue', cue: 'sfx_transform' });
 		// back through a gold portal (天使奧丁 FG_Board_End Out: a golden gate)
-		await eventEmitter.broadcastAsync({type:'transition',kind:'portal',tone:'gold',oncover:()=>{eventEmitter.broadcast({type:'freeSpinOutroHide'});eventEmitter.broadcast({type:'medusaPose',pose:'idle'});stateGame.gameType='basegame';}});
+		await eventEmitter.broadcastAsync({type:'transition',kind:'portal',tone:'gold',oncover:()=>{eventEmitter.broadcast({type:'soundMusic',name:'bgm_main'});eventEmitter.broadcast({type:'freeSpinOutroHide'});eventEmitter.broadcast({type:'medusaPose',pose:'idle'});stateGame.gameType='basegame';}});
 		await eventEmitter.broadcastAsync({ type: 'uiShow' });
 		await eventEmitter.broadcastAsync({ type: 'drawerUnfold' });
 		eventEmitter.broadcast({ type: 'drawerButtonHide' });

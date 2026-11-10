@@ -1,9 +1,9 @@
 /**
- * List the delivered original Medusa Gaze audio for Sound.svelte.
+ * List the delivered Dragon Tide audio (new-games/sea-dragon/音效需求單.md, delivery-v1) for Sound.svelte.
  *
  *   node design/sync_audio_manifest.mjs
  *
- * Runtime files live in static/assets/audio/medusa/. Sound.svelte decodes them
+ * Runtime files live in static/assets/audio/dragon/. Sound.svelte decodes them
  * into Web Audio buffers for overlapping effects and sample-accurate loops.
  * The old template sprite is archived under design/source/audio/legacy-template
  * and is no longer shipped or loaded. Missing cues are not requested.
@@ -17,7 +17,7 @@ const appRoot = path.resolve(
   path.dirname(fileURLToPath(import.meta.url)),
   "..",
 );
-const DIR = path.join(appRoot, "static/assets/audio/medusa");
+const DIR = path.join(appRoot, "static/assets/audio/dragon");
 const OUT = path.join(appRoot, "src/game/audioManifest.ts");
 
 const files = fs.existsSync(DIR)
@@ -40,9 +40,10 @@ for (const file of files) {
 }
 
 const body = `// GENERATED FILE - do not edit by hand.
-// Delivered audio in static/assets/audio/medusa/, as cue -> file.
+// Delivered audio in static/assets/audio/dragon/, as cue -> file.
 // Regenerate with: node design/sync_audio_manifest.mjs (pnpm build runs it).
-export const MEDUSA_AUDIO: Record<string, string> = ${JSON.stringify(byCue, null, "\t")};
+export const DRAGON_AUDIO = ${JSON.stringify(byCue, null, "\t")} as const;
+export type DragonCue = keyof typeof DRAGON_AUDIO;
 `;
 fs.writeFileSync(OUT, body, "utf8");
 console.log(
