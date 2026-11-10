@@ -54,19 +54,39 @@
   import { onMount } from "svelte";
   import { stateModal, stateSoundDerived } from "state-shared";
   import { getContext } from "../game/context";
+  import {
+    AMBIENCE_MID_CUT,
+    CAP_FADE_S,
+    CUE_CAP,
+    DUCK_ATTACK_S,
+    DUCK_DB,
+    DUCK_HOLD_S,
+    DUCK_RELEASE_S,
+    EFFECTS_LOW_SHELF_HZ,
+    MUSIC_LOW_MID,
+    MUSIC_MID,
+    mixClass,
+    type DuckTarget,
+    type MixClass,
+  } from "../game/mixPolicy";
 
   const context = getContext();
-  type Bus = "music" | "ambience" | "effects";
+  // effects split by role (mixPolicy): hero beats, small ticks, character voices
+  type Bus = "music" | "ambience" | "effects" | "ticks" | "voices";
+  const TRANSIENT: Bus[] = ["effects", "ticks", "voices"];
+  const transient = (bus: Bus) => TRANSIENT.includes(bus);
   type Voice = {
     source: AudioBufferSourceNode;
     gain: GainNode;
     cue: string;
     bus: Bus;
     loop: boolean;
+    start: number;
     panner?:StereoPannerNode;
   };
   let engine: AudioContext | null = null;
   let buses: Record<Bus, GainNode> | null = null;
+  let duckParams: Record<DuckTarget, AudioParam> | null = null;
   let disposed = false;
   let generation = 0;
   const buffers = new Map<string, Promise<AudioBuffer>>();
@@ -79,7 +99,9 @@
   // a big win ducks the music bed under its own celebration (audio README: start points)
   let ducked = false;
   const DUCK = 0.4;
-  const MAKEUP = 2.5;
+  // 2.5 at db48fb50; +2 dB (3.1) since the music bells cut a little all the time (mixPolicy), so the
+  // round plays as loud as before
+  const MAKEUP = 3.1;
 
   function getEngine() {
     if (disposed || typeof window === "undefined") return null;
@@ -89,6 +111,8 @@
         music: engine.createGain(),
         ambience: engine.createGain(),
         effects: engine.createGain(),
+        ticks: engine.createGain(),
+        voices: engine.createGain(),
       };
       // Short overlapping impacts can sum above any one file's measured peak.
       const limiter = engine.createDynamicsCompressor();
@@ -103,6 +127,11 @@
         const audioContext = engine;
         (globalThis as unknown as { __dragonAudio?: unknown }).__dragonAudio = {
           log: devLog,
+          // ducking stages (dB or gain) and the limiter's gain reduction, for QA sampling
+          stages: () => ({
+            ...Object.fromEntries(Object.entries(duckParams ?? {}).map(([name, param]) => [name, +param.value.toFixed(3)])),
+            limiter: +limiter.reduction.toFixed(2),
+          }),
           tap: () => {
             const destination = audioContext.createMediaStreamDestination();
             limiter.connect(destination);
@@ -115,7 +144,44 @@
       const makeup = engine.createGain();
       makeup.gain.value = MAKEUP;
       makeup.connect(limiter);
-      for (const bus of Object.values(buses)) bus.connect(makeup);
+      // Each bus reaches the make-up stage through its ducking stages (mixPolicy): the music
+      // through two bells (low-mid, mid) and a gain, the ambience through a fixed mid cut and a
+      // gain, the ticks through a gain, the hero effects through a low shelf; voices go straight.
+      const audio = engine;
+      const bell = (frequency: number, q: number, gain = 0) => {
+        const filter = audio.createBiquadFilter();
+        filter.type = "peaking";
+        filter.frequency.value = frequency;
+        filter.Q.value = q;
+        filter.gain.value = gain;
+        return filter;
+      };
+      const chain = (...nodes: AudioNode[]) => {
+        for (let i = 0; i < nodes.length - 1; i++) nodes[i].connect(nodes[i + 1]);
+        nodes[nodes.length - 1].connect(makeup);
+      };
+      const musicLowMid = bell(MUSIC_LOW_MID.frequency, MUSIC_LOW_MID.q, DUCK_DB.musicLowMid.idle);
+      const musicMid = bell(MUSIC_MID.frequency, MUSIC_MID.q, DUCK_DB.musicMid.idle);
+      const musicGain = audio.createGain();
+      const ambienceGain = audio.createGain();
+      const tickGain = audio.createGain();
+      const effectsLow = audio.createBiquadFilter();
+      effectsLow.type = "lowshelf";
+      effectsLow.frequency.value = EFFECTS_LOW_SHELF_HZ;
+      effectsLow.gain.value = 0;
+      chain(buses.music, musicLowMid, musicMid, musicGain);
+      chain(buses.ambience, bell(AMBIENCE_MID_CUT.frequency, AMBIENCE_MID_CUT.q, AMBIENCE_MID_CUT.gain), ambienceGain);
+      chain(buses.ticks, tickGain);
+      chain(buses.effects, effectsLow);
+      chain(buses.voices);
+      duckParams = {
+        musicLowMid: musicLowMid.gain,
+        musicMid: musicMid.gain,
+        musicGain: musicGain.gain,
+        ambienceGain: ambienceGain.gain,
+        tickGain: tickGain.gain,
+        effectsLow: effectsLow.gain,
+      };
       updateVolume();
     }
     return engine;
@@ -133,11 +199,52 @@
       engine.currentTime,
       0.025,
     );
-    buses.effects.gain.setTargetAtTime(
-      stateSoundDerived.volumeSoundEffect(),
-      engine.currentTime,
-      0.025,
-    );
+    for (const bus of TRANSIENT)
+      buses[bus].gain.setTargetAtTime(
+        stateSoundDerived.volumeSoundEffect(),
+        engine.currentTime,
+        0.025,
+      );
+  }
+
+  // Ducking (mixPolicy): every sound that starts holds its class's depths until it ends (at most
+  // DUCK_HOLD_S); each stage sits at the deepest hold that is still on. The whole future envelope
+  // is rescheduled whenever a hold starts, so no timers are needed.
+  type Hold = { end: number; cls: MixClass };
+  const holds: Hold[] = [];
+  const DB_STAGE: DuckTarget[] = ["musicLowMid", "musicMid", "effectsLow"];
+  function hold(cls: MixClass, seconds: number) {
+    if (!engine || !duckParams || cls === "none") return;
+    const now = engine.currentTime;
+    for (let i = holds.length - 1; i >= 0; i--) if (holds[i].end <= now) holds.splice(i, 1);
+    const before = [...holds];
+    holds.push({ end: now + Math.min(seconds, DUCK_HOLD_S[cls]), cls });
+    const points = [now, ...new Set(holds.map((h) => h.end))].sort((a, b) => a - b);
+    for (const target of Object.keys(DUCK_DB) as DuckTarget[]) {
+      const spec = DUCK_DB[target];
+      const release = spec.release ?? DUCK_RELEASE_S;
+      const idle = spec.idle ?? 0;
+      const depth = (list: Hold[], at: number) =>
+        Math.min(idle, ...list.filter((h) => h.end > at).map((h) => spec[h.cls] ?? idle));
+      if (points.every((p) => depth(holds, p) === depth(before, p))) continue;
+      const value = (dB: number) => (DB_STAGE.includes(target) ? dB : 10 ** (dB / 20));
+      const param = duckParams[target];
+      // keep the stage where it is right now, then lay the new envelope from here
+      const holdable = param as AudioParam & { cancelAndHoldAtTime?: (time: number) => AudioParam };
+      if (holdable.cancelAndHoldAtTime) holdable.cancelAndHoldAtTime(now);
+      else {
+        param.cancelScheduledValues(now);
+        param.setValueAtTime(param.value, now);
+      }
+      // the first step moves from wherever the stage is now (it may be mid-way down or up)
+      let previous = DB_STAGE.includes(target) ? param.value : 20 * Math.log10(Math.max(param.value, 1e-4));
+      for (const point of points) {
+        const next = depth(holds, point);
+        if (next === previous && point > now) continue;
+        param.setTargetAtTime(value(next), point, next < previous ? DUCK_ATTACK_S : release);
+        previous = next;
+      }
+    }
   }
 
   function load(cue: string) {
@@ -183,9 +290,9 @@
   function resetTransient() {
     generation += 1;
     for (const [cue, bus] of pendingLoops)
-      if (bus === "effects") pendingLoops.delete(cue);
+      if (transient(bus)) pendingLoops.delete(cue);
     for (const voice of [...voices])
-      if (voice.bus === "effects") fadeVoice(voice);
+      if (transient(voice.bus)) fadeVoice(voice);
   }
 
   /** Independent buffer sources allow staggered orbs to overlap without restarting. */
@@ -200,6 +307,8 @@
   ) {
     const data = load(cue);
     if (!data) return false;
+    const cls = mixClass(cue);
+    if (bus === "effects") bus = cls === "tick" ? "ticks" : cls === "voice" ? "voices" : "effects";
     if (
       loop &&
       (pendingLoops.has(cue) ||
@@ -214,10 +323,16 @@
         disposed ||
         !engine ||
         !buses ||
-        (bus === "effects" && startGeneration !== generation)
+        (transient(bus) && startGeneration !== generation)
       )
         return false;
       if (loop && !pendingLoops.has(cue)) return false;
+      // a burst keeps only its newest copies ringing
+      const cap = CUE_CAP[cue];
+      if (cap) {
+        const same = [...voices].filter((voice) => voice.cue === cue).sort((a, b) => a.start - b.start);
+        while (same.length >= cap) fadeVoice(same.shift()!, CAP_FADE_S);
+      }
       const source = engine.createBufferSource();
       const gain = engine.createGain();
       source.buffer = buffer;
@@ -232,8 +347,9 @@
       source.connect(gain);
       const panner=spatial&&engine.createStereoPanner?engine.createStereoPanner():undefined;
       if(panner&&spatial){gain.connect(panner);panner.connect(buses[bus]);panner.pan.setValueAtTime(spatial.from,engine.currentTime);panner.pan.linearRampToValueAtTime(spatial.to,engine.currentTime+spatial.seconds);}else gain.connect(buses[bus]);
-      const voice: Voice = { source, gain, cue, bus, loop,panner };
+      const voice: Voice = { source, gain, cue, bus, loop, start: engine.currentTime, panner };
       voices.add(voice);
+      if (transient(bus)) hold(cls, loop ? Infinity : buffer.duration / rate);
       source.onended = () => {
         voices.delete(voice);
         source.disconnect();
