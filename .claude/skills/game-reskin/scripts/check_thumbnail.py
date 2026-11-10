@@ -86,6 +86,9 @@ def main() -> int:
             print(f"FAIL: {root} has no cover/ — every game ships one (packaging.md §6b)")
             return 1
         results = [check_pair(bg, fg) for bg, fg in pairs]
+        if any("thumbnail" in str(bg) for bg, _ in pairs):
+            print("REMINDER thumbnail FG: exactly ONE character (house-rules G1b) — count them in the preview; "
+                  "touching figures read as one blob, so this is not measured")
         return 0 if all(results) else 1
     if len(args) not in (1, 2):
         print(__doc__, file=sys.stderr)

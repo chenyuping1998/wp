@@ -100,11 +100,12 @@ If you find that name anywhere, it is stale.
 | XAF | `FCFA` | → `XAF` |
 | XPF | `CFPF` | → `XPF` |
 
-Handled in `packages/utils-shared/amount.ts` via `CODE_DISPLAY_CURRENCIES`.
-**Do not undo it**, and do not move these into `NO_LOCALISATION_CURRENCY_MAP` —
-that branch formats with `toFixed` and loses thousands separators, which these
-currencies need most (XOF has no minor unit in practice, so ordinary amounts run
-to five figures).
+**Superseded 2026-10-04 (Deadwood review, "symbols vs codes mixed"):**
+`packages/utils-shared/amount.ts` no longer has `CODE_DISPLAY_CURRENCIES` or
+`NO_LOCALISATION_CURRENCY_MAP`. It now carries the platform's own currency table
+(`CURRENCY_META`: symbol and position per currency, XGC→GC, XSC→SC, XEC→SC) and
+shows every amount to two decimals with thousands separators. Check the
+worktree you are in has that version; do not rebuild the old branches.
 
 ### 4. The store tile: one character, and mind what goes on top
 

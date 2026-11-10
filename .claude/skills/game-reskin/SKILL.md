@@ -1,10 +1,95 @@
 ---
 name: game-reskin
 description: >-
-  Reskin or fork a Stake Engine slot under wp/apps into a new uploadable game. Covers source/theme selection, mechanics and math, art direction, briefs, frontend integration, character visual acceptance, QA, thumbnails and packaging. Use for 換皮、畫風、美術風格、AI 感 and Hacksaw, Nolimit City or Pragmatic Play visual references; includes manga, comic, caricature, grime, collage, cartoon, rubber-hose and street styles.
+  The production process (製程) for every Stake Engine slot under wp/apps and its worktrees: reskin, fork or new game, from kick-off to upload. Opens with the 製程總表: what to check before touching anything, the kick-off questionnaire, the gate for each phase, the acceptance matrix and Stone's standing rules. Covers source/theme selection, mechanics and math, art direction, art requests and delivery acceptance, frontend integration, character visual acceptance, QA, thumbnails, packaging and the preflight check. Use for 製程、開新遊戲、新機、換皮、開工、需求單、生圖單、收圖驗收、畫風、美術風格、AI 感、打包前檢查、送審前檢查 and Hacksaw, Nolimit City or Pragmatic Play visual references; includes manga, comic, caricature, grime, collage, cartoon, rubber-hose and street styles.
 ---
 
 # Reskinning a Stake Engine slot
+
+## 製程總表（先讀這一節）
+
+這份 skill 很長，因為每一段都是一次退件或一次被 Stone 糾正換來的。**動工前先讀完這一節**：它把階段、每階段要先問的事和要過的閘門排成一張表，細節再去下文與 `references/` 查。目標是一次做對，不靠退件補規格。
+
+| 要查什麼 | 在哪 |
+|---|---|
+| Stone 說過「以後都要」的固定規則（角色、符號、UI、數字、分工、打包、上傳、用語） | `references/house-rules.md` |
+| 生圖需求單怎麼寫、收圖當天怎麼驗、拆層補底規則 | `references/art-request-rules.md` |
+| 這台 Mac 的環境坑（工作樹、隱藏窗格降速與 headless Chrome、記憶體、排程、stakecli） | `references/tooling-pitfalls.md` |
+| 打包前、上傳前的一鍵檢查 | `scripts/preflight.py <app> --upload upload/<Game>` |
+| skill 副本有沒有過期、共用段落有沒有走鐘 | `scripts/skills_doctor.py` |
+
+### 動工前（每次接手都做）
+
+1. **讀正本。** 遊戲 skill 的正本在 `/Users/stone/stake-engine/wp/.claude/skills/`。其他 worktree 裡的 `.claude/skills/` 是舊副本，不要照它做。
+2. **讀這款的現況**：memory 裡這款的檔、app 的 `HANDOFF.md`、`upload/<Game>/README.md`。確認在哪棵 worktree、平台上是哪一版、**上線了沒**（上線＝核准；已上線的不動，`house-rules.md` H1）。
+3. **看工作樹裡有沒有別人的東西**：`git -C <tree> status --short | wc -l`。Codex 或別的 session 可能同時在改同一款；動 `static/`、`upload/` 之前先看時間戳，有比自己新的檔就停下來問。主 `wp` 不 `git checkout`。
+4. **工具就緒**：角色要用的模板在哪個分支（`spine-character`「模板在哪」）；來源遊戲的 math 在不在 `math-sdk/games/<source>`；平台上有沒有這款的 slug（`list_games`，沒有就請 Stone 當天建，stakecli 不能建）。
+5. 吃記憶體的工作（數學全量、stub 產生、headless 批次、多個 build）先問再跑，一次一個。
+
+### 開工問卷（新遊戲與換皮：一次問完，答完才 scaffold）
+
+用 AskUserQuestion 分批問，每題附推薦；Stone 說「你決定」就照推薦並寫進 SPEC。右欄是沒先問而重做過的事。
+
+| # | 要問定的事 | 沒先問的代價 |
+|---|---|---|
+| 1 | 來源遊戲、在哪棵 worktree、來源上線了沒 | 催眠猴：來源的 math 不在本機，整套重建 |
+| 2 | 題材與名稱（名稱和機制名當下就過禁用字）、平台 slug | Wild Alchemy 打包完等 slug 卡半天 |
+| 3 | 盤面：幾列 × 幾行，複述成「B 輪、每輪 A 格」並附格子圖 | 催眠猴「5×6」讀反，數學重建兩次 |
+| 4 | 規格差異表；規格與節奏只跟哪一款參考（唯一來源） | 催眠猴節奏換三套參考、發布三次 |
+| 5 | 最高贏分、購買檔位與價格、要不要 ante、最高檔的定義（自訂的機制先跑小量模擬再定） | Dragon Tide、Wild Alchemy 都做到一半才定 |
+| 6 | 招牌機制的數字：多常出、出現時有派彩的比例、中位倍數；倍數物件每盤上限（中獎手／沒中手）、相加或相乘、是不是佔盤面格子 | Turf 整盤大框頻率改 5 輪；催眠猴倍數球數學改 4 次、定位改 4 次 |
+| 7 | 每個數學目標的來源：Stake 規定，還是 Stone 的偏好 | Capo 把偏好當規定守了兩輪 |
+| 8 | 參考遊戲裡 Stake 做不到的機制：拿掉後畫面空位放什麼 | Wild Alchemy 的 MG 左側要放什麼，發布時還沒定 |
+| 9 | 畫風（評分候選＋ style frame）；WILD 要多顯眼 | Capo 整款重畫；Dragon Tide 第一批全部重生 |
+| 10 | 兩隻角色是誰（都成年、MG 與 FG 不同人）、換場還是同場、站哪一側 | Wild Alchemy 角色改設定重畫 |
+| 11 | 角色動作表（哪些真的會播、大獎時演不演）、姿勢（哪隻手拿道具、另一隻放哪）、模板、Spine 4.3 直跑或烘焙 | 催眠猴叉腰手修 4 次；Static Shift 中途改 runtime 路線 |
+| 12 | 下注列版本 v1–v4（給截圖選）；UI 版面對齊哪一款已過審的姊妹作；盤面在各比例佔多滿 | 催眠猴 v4 整套做完改 v3；兩款被說盤面太小 |
+| 13 | 沿用什麼：動作表、音效、字型不沿用來源（有 Reused assets 退件前例；工作室 logo 的 loader 是共用的，要留）；符號與道具不可是寫實槍械 | Go Banandit 5.0/9；Capo 衝鋒槍改小提琴盒 |
+| 14 | 背景：MG、FG 各有哪些會動的物件（拆層交件） | Wild Alchemy 需求單中途改 |
+| 15 | 做到哪一步：staged、上傳、publish；可不可以無人值守；重工作何時可跑 | Dragon Tide 上傳被擋；多個排程死在權限詢問 |
+| 16 | 哪些研究素材與筆記不可進公開 repo | `hypno-monkey` 分支至今不能推 |
+
+### 階段與閘門（沒過不往下做）
+
+| 階段 | 做什麼 | 過關條件 |
+|---|---|---|
+| 0 開工 | 問卷 → SPEC（差異表、做不到清單、機制數字、動作表） | Stone 對 SPEC 回「對」 |
+| 1 Scaffold（step 1） | 複製 app 與 math、改名、開得起來；列**繼承清單** | 清單逐項標「換／留／刪」：動作表、音效、字型、loader、favicon、rig、符號顯示比例常數、色票、文案、`ship.sh`、每一支 `design/check_*`（讀的是誰的資料）。`ship.sh` 與閘門已改成這款的 |
+| 2 數學（step 2） | 預檢 → 模擬 → 最佳化 → 驗 | 跑之前：`math-retarget.md`「跑之前的預檢」。跑之後：RTP 在帶內且遞增、每個模式到得了最高贏分、自己的機制對 books 斷言、事件對帳、`stakecli compliance` 0 FAIL |
+| 3 畫風與需求單（step 3） | style frame → §0 → 需求單 | Stone 點頭的 style frame；需求單過 `art-request-rules.md` §2–§4；全身定稿圖點頭後才拆層 |
+| 4 收圖與角色 | 收圖當天驗收 → 拆層 → rig → 動作 | `art-request-rules.md` §5 的順序走完；零可見缺陷；全部動作逐格看過 |
+| 5 前端（step 4、4b、5） | 換皮、表現、音效、UI、多語 | 繼承清單清零；每個符號有待機表演、背景有東西在動；`check_review_tags.py` 0 FAIL。**這一步結束就跑檢查，不是等到送審前** |
+| 6 整合驗收（step 6） | 實機逐尺寸逐狀態 | 下面的驗收矩陣；官方 self-check；文案對 books。**第一次 publish 之前就要跑過**（相撲猴發了 11 版才第一次跑，當天被打 5.3） |
+| 7 商店圖（step 7、7b） | 縮圖三個檔＋封面兩層 | `check_thumbnail.py` 過；200 px 合成看得出主題；**縮圖 FG 只有一個角色**（封面可以兩隻） |
+| 8 打包（step 8） | `ship.sh` → `preflight.py` | preflight 0 FAIL、WARN 逐條說明；README 寫平台狀態 |
+| 9 上傳與發布 | stakecli（`stake-engine-slot`） | 每一步都有 Stone 當下的同意；回報版本、商店圖換了沒、審核單開著沒 |
+| 10 收尾 | HANDOFF、memory、關掉自己開的 server | 這款學到的通則已寫回 skill |
+
+### 驗收矩陣（step 6 用；套範本、換框、換角色、換下注列之後也要重跑）
+
+- **尺寸**：1440×900、16:10（1280×800）、4:3（1024×768）、直式 390×844 與 425×812、320×568、pop-out S（400×225）與 L（800×450）。
+- **狀態**：loading、開場卡、待機 10 秒、轉動、小獎、大獎每一級（強制一局 ≥25× 與一局最高級的真 book）、FG 開場到結束、重觸發、購買選單與確認、自動轉面板、選單、規則頁、pay table、餘額不足、重播。
+- **每格看什麼**：角色面向盤面、不壓盤面與框、不被背景吃掉；數字在乾淨底上且每一階讀得到；字在底板裡置中；控制項沒壓到道具或角色；沒有來源遊戲的字、圖、顏色；hover 會亮不反灰；文字（不只數字）不橫跨角色；直式角色不裁在膝蓋。
+- **怎麼看**：隱藏的窗格量到的時間不能用；用獨立 headless Chrome（`tooling-pitfalls.md`）。AA 等級的細線以遊戲裡的畫面為準，不以離線預覽為準。
+
+### 修任何一個問題時
+
+每次修正結案前回答這四題（「只修被點名的那一處」在這些遊戲裡重複了十幾次）：
+
+1. 同一個部位在**另一隻角色**（MG／FG）有沒有？
+2. 同一個元件在**其他畫面與尺寸**有沒有？
+3. **還沒上線的姊妹作**有沒有同一個問題？列出來逐款打勾（已上線的不動）。
+4. 修在共用 packages 的話，**每棵 worktree** 都有了嗎？
+
+同一個症狀修兩次還在：先懷疑量測或預覽工具，再懷疑別的層（見文末 Cross-cutting principles）。
+
+### 回報「完成」
+
+- 附證據：實際截圖、動作預覽、新舊對照、量到的數字；寫明在哪個尺寸、哪個狀態看的。
+- 沒驗到的直接說沒驗、為什麼、差什麼。build 綠、檢查器 PASS、分數 100 都不是驗收。
+- 守門腳本第一次用在這款時，先塞一個已知會錯的字串或檔，確認它真的會響。
+- 需要 Stone 決定才能往下的事，當輪附兩版圖問，不要讓 build 紅著過夜。
+- Stone 說「以後都要」「記起來」的事，同一輪寫進 `house-rules.md` 或對應段落；只記在 memory 的規則 Codex 看不到。
 
 ## 角色美術與動作：零可見缺陷交付門檻（Stone，2026-10-25）
 
@@ -12,7 +97,9 @@ description: >-
 
 - 逐層在亮底、暗底與原生解析度檢查。分層肢體必須是完整連續的部件，補齊被遮住的解剖與關節重疊；軀幹不得夾手臂殘影、拳套不得夾臉／胸口或袖口外的毛、服裝不得夾腿部碎片。網格角色也須檢查輪廓拉裂與貼圖殘影。
 - Stone 補充（2026-10-26，相撲猴前臂修正）：粗壯角色仍須有連續、自然收窄的上下臂輪廓；前臂與肘部不得出現非設計需要的腫塊、圓球堆疊或香腸式分節。先辨別來源畫稿與動作變形，連同上臂末端及袖口銜接一起檢查；修來源後用原動作幅度驗證彎肘、伸展與轉場，不能只修靜態或靠縮小動作掩蓋。
+- Stone 補充（2026-10-29，催眠猴助手舉手）：**任何動作都不能出現不合理的關節角度**——手腕往後折、手掌接在前臂中段而不是袖口、手肘反折、換手圖後手腕對不上袖口。用正式 rig 每 0.12 秒渲染全部動作排成表逐張看，數字和檢查器不能代替；修法優先改 IK 目標讓前臂帶方向（手腕偏移 ≤20°），舉手過頭的動作改用直接 key 上臂／前臂，不靠兩節 IK（手肘會翻一圈）。
 - Stone 補充（2026-10-30，相撲猴腿「有東西被切掉」「腳還是亂切一通」）：**修關節形狀（例如膝蓋兩顆球）不得用直線、多邊形或弦切削掉輪廓。**被削的肢體會變直筒，留下直角、階梯與缺口，小腿肚、大腿下緣等肌肉一起消失（補畫 v5 的 MG／FG 大小腿就是這樣）。要修就重畫連續、自然收窄的有機輪廓：關節處收進相鄰部件下，離開關節後平滑接回原稿的肌肉線條。每次改輪廓後：(1) 每層 alpha 和修前原稿相減，逐塊看被移除的區域是不是該移除；(2) 合成圖與每個動作的最大彎曲格上不得有直線邊、尖角或缺口。**一隻角色被點出某部位有問題，同一部位在所有角色（MG 與 FG）都要一起查、一起修**，不能只修被點名的那隻。
+- Stone 補充（2026-11-07，Turf War 打手＋老大「手肩膀這邊還是有黑線分離感」）：**身體層上畫了袖肩（外套鼓包、襯衫肩頭）時，壓在手臂層上的那段外框墨線就是「重疊處描邊」**——出拳伸直時橫在袖子上變一條黑線。查法：身體層描邊染紅、手臂層描邊染藍，逐格看紅線是否夾在兩塊同色布料中間。修法：(1) 只把「靜止時底下就是手臂」的那段墨線＋邊緣陰影補成相鄰布料色，alpha 不動（對背景的外輪廓保留墨線，不可切）；補色用附近淺色布料的正規化模糊，邊緣羽化，不可用 inpaint 抹出灰斑；(2) 網格角色在重疊區讓身體層**直接用手臂層同一點的最終權重**（兩層同一變形），否則藏在肩包下的袖子轉得比肩包多、舉手時從邊緣滑出。同步範圍只到上臂的肩膀半段、前臂份額不要抄（會拉腋下外套、壓扁肩包頂），每次改權重都跑三角形面積閘門並和上一版比最大拉伸。改了圖層要重寫 full.png、重出商店圖。範例：`wp/apps/TurfWar/design/rebuild_20261023/fix_shoulder_ink.py`＋`build_mesh_cast.py` overlap sync，證據 `design/qa/shoulder_20261107/`。
 - 逐一檢查**所有交付動作**（spine-motion 預設六動作也須全看），包含起終格、過渡／中間格、最大彎曲與伸展。重點看肩、肘、頸、髖、膝、腕；靜態疊圖、檢查器 PASS 或流暢度 100 都不能代替實際渲染。檢查器不支援此 rig 格式時不得當作通過。
 - 先修造成缺陷的來源拆層、遮擋區補繪、權重或 rig。不得靠縮小動作／角色、加遮擋或挑好看的靜態格掩蓋；修正後重看受影響動作。合理動作預算仍須通過完整表演驗收。
 - 已整合遊戲須在桌機與直式手機實際試玩，包含 MG／FG、角色反應、轉場與 feature cut-in，檢查破口、殘影、裁切與接縫；保留實際截圖、動作預覽及新舊對照。
@@ -32,7 +119,7 @@ art, a paytable naming a briefcase "Flamingo", a menu button sitting on top of
 the paytable icon. None of those were exotic; all of them were "the old game's
 version of this thing was still there and nobody looked."
 
-Two other skills do part of this and should be pulled in rather than
+Other skills do part of this and should be pulled in rather than
 re-derived:
 
 - **`stake-engine-slot`** — the build commands, the static guards, the Svelte 5
@@ -45,13 +132,20 @@ re-derived:
   acceptance, existing archetype/mesh rigs and reference-motion research. Its
   historical archetype route is conditional on retaining/selecting that rig;
   research-only motion packs never ship.
-- **`mesh-cast-rig`** — the older one-flat-illustration skinned mesh. Still
-  what Capo Nostra / Turf War run today; use it only when a game keeps a
-  single-image figure.
+- **`mesh-cast-rig`** — the older one-flat-illustration skinned mesh (Hard
+  Time's single-image figures); use it only when a game keeps such a figure.
+  Its `references/layered-weighted-mesh.md` is the current recipe for a figure
+  delivered as a few big painted layers (head / body / arms) — what Turf War
+  v6 runs — and should be read before rigging any such cast.
+- **`xinstar-spec`** (user scope) — when the spec or rhythm follows one of the
+  transcribed reference titles.
 
-This skill is the sequencing and the reskin-specific gotchas on top of both.
+This skill is the sequencing and the reskin-specific gotchas on top of them.
 
 ## Before starting: confirm, don't assume
+
+The full list of questions is the 開工問卷 in the 製程總表 at the top; ask all of
+it before scaffolding. The four below are the ones with the longest history.
 
 Four things must come from the user, not from a guess, because guessing wrong
 here means redoing everything downstream of the guess:
@@ -80,6 +174,11 @@ here means redoing everything downstream of the guess:
    in the same AskUserQuestion round as the name if both are open.
 
 ### The user's vocabulary — pin these before acting on a tuning request
+
+The whole glossary (輪／手、小圖／大圖、A×B＝A 列×B 行、高均率、打包／上傳／上線、
+換畫風、第三版／第四版 UI…) is `references/house-rules.md` A3. When a request can
+be read two ways, say back which file and field you are about to change before
+changing it.
 
 Two words in this project mean something narrower than their generic slot sense,
 and reading them the generic way cost **five** optimizer re-runs on Turf War
@@ -118,12 +217,50 @@ for step zero. Rename `game_id`/`working_name` in `game_config.py` and the
 app's own name strings, but don't start re-theming yet; confirm the app boots
 (blank-screen is a real failure mode here) before building on top of it.
 
+**Then write the inheritance list** (`design/INHERITED.md`), before any
+re-theming. "The source game's version of this is still here" is the single
+most repeated cause of rework and of rejections in this repo (Capo 09-04 "poor
+animation": motion files ~89% byte-identical to Hot Miami; Go Banandit 10-04
+"Reused assets" + "Bad sound design": 33 sound files identical to three
+siblings; Hard Time ran Hot Miami's rig for weeks). One line per item, each
+marked 換／留／刪, and step 6 requires every line resolved:
+
+- symbol land/win/idle motion tables (does each motion suit the NEW object? a
+  boombox must not inherit a 60° spin), cast rig and cast motion table, sound
+  files and sprite (sha against the source and against every sibling), fonts,
+  loader, favicon, per-symbol display-scale constants, palette constants,
+  transition art, rules/info copy, buy-menu copy, the submission description.
+  The studio-logo loader (`WildPartyLoader.svelte`) is ours and STAYS — it is
+  the Stake Engine splash that must go; Go Banandit once deleted the studio
+  loader as a leftover while the layout still imported it. `grep` for imports
+  before deleting any "old game" file;
+- **the tooling too**: `design/ship.sh` (paths, game name, win cap, contamination
+  word list — Sumo Monkey shipped with Sushi's `ship.sh` for weeks) and every
+  `design/check_*` script (which path does it read, whose mechanic does it
+  model? `check_rules_match_wins.mjs` defaulted to `upload/HotMiami/math` in
+  two reskins and reported the source game's books). A gate that checks the
+  source game is worse than no gate: delete or rewrite it, never leave it green;
+- interim assets: anything standing in until final art arrives goes in
+  `design/INTERIM.md`, and that list must be empty before submission (Turf
+  War's transition shutter was a "temporary" placeholder for three weeks and
+  17 published versions).
+
+Also check the source math exists locally (`ls math-sdk/games/<source>`) before
+planning on it; Hypno Monkey's source math had never been pushed and had to be
+rebuilt.
+
 ### 2. Math
 
 Do this early, in parallel with the art brief if possible — it does not block
 on art, and its own turnaround (the Rust optimizer) is the slowest thing in
 the whole pipeline, so starting it late just makes it the critical path later.
 
+- **Before the first long run, do the pre-run checks in
+  `references/math-retarget.md` ("跑之前的預檢")**: every paytable value a multiple
+  of 0.1×, the theoretical maximum reaches the win cap, buy price × wincap slice
+  under the ETL limit, each target tagged with its source (Stake rule or Stone's
+  preference), and the signature mechanic's three numbers agreed. Each of those
+  cost a full run, or several, when skipped.
 - Write the new game's mechanic changes into `game_config.py` and
   `game_executables.py`/`game_events.py` as needed.
 - **House RTP band (Stone, 2026-10-11): every mode of every game sits
@@ -249,7 +386,10 @@ Two requirements that are easy to state and easy to drop by the last art pass:
   - **The swap is the mode change.** MG figure in the base game, FG figure
     from the FG intro until the FG outro closes, then back. Swap under the
     transition, never mid-spin and never on a win, and do not show both at
-    once on the board.
+    once on the board — unless Stone asks for both on screen for that game
+    (Hard Time, 2026-10-20: warden left of the board, prisoner right). Then
+    they share one scale basis and one ground line, each centred in its own
+    side strip with the same gap to the board, on one idle clock.
   - **The pair reads as a pair**: same §0 style, light direction and scale
     (feet on the same line, heads within about 5% of each other), and a
     contrast the player sees at a glance, such as build, gender, age or one
@@ -260,7 +400,14 @@ Two requirements that are easy to state and easy to drop by the last art pass:
     tile still shows one character (`review-findings.md`).
   - **Both follow the selected supported rig workflow**, one brief each, and each
     may take a different archetype. Each figure is rigged and gated on its
-    own; they can share the game's motion table only if both pass its gates.
+    own. They do not share one whole motion table: each has at least one
+    signature motion of its own, and neither set may be byte-identical to the
+    source game's (Go Banandit 10-04, "Poor animations" ×2: MG and FG ran the
+    same nine motions, identical to Boomana's).
+  - **Both are adults, face the board, stay off the board and read off the
+    background** — `references/house-rules.md` B2, B5, B6, B7. Body build is
+    written as numbers in the brief (limb and torso widths against head width;
+    `references/art-request-rules.md` §2).
 - **Step 0: decide the motions first, then the pose to generate (Stone,
   2026-10-27: 「以後開始製程就要考慮到動作才方便生圖的姿勢」).** For every new
   figure, before writing the brief or generating anything (never generate
@@ -277,10 +424,12 @@ Two requirements that are easy to state and easy to drop by the last art pass:
      a gap between the limbs and the body; elbows and knees slightly bent; the
      rear hand tucked by the cheek, elbow not flared; paint one complete
      full-body figure first and split it, never assemble a parts atlas.
-  3. Confirm the spine-motion template can do it (today: one right-facing,
-     side-on boxing guard only). Front-facing, quadruped, long skirt/cape or
-     turning motions: tell Stone a new template is needed first. Do not force
-     the template or swap the pose on your own.
+  3. Confirm a spine-motion template can do it. Three exist, in different
+     checkouts of the tool (`spine-character`, "模板在哪"): the right-facing
+     boxing guard, the front 3/4 standing `stand34` (performers: hypnotist,
+     host), and `stand34` with robe and staff (Dragon Tide). Quadruped, long
+     skirt/cape or turning motions: tell Stone a new template is needed first.
+     Do not force a template or swap the pose on your own.
   4. Put the split rules in the brief: paint what is hidden; both sides of a
      joint overlap, with no outline on the overlapping part, and the extra
      paint stays inside the neighbouring part's silhouette; never cut a joint
@@ -380,11 +529,18 @@ are easiest to leave in by accident. Match the NEW theme in:
   - **Pick from the plate's own world.** Liquid flows and drips, tanks
     bubble, sky glints, a sign flickers, a small animal crosses. Pick
     2–3 things per mode, and make MG and FG different from each other.
-  - **Cut the moving pieces from the approved plates** (masks, cut-outs,
-    measured positions into a `bg_fx_meta.json`), so nothing new has to be
-    painted and the motion sits in the plate's exact pixels. All coordinates
-    are in plate pixels; Background.svelte hands in the plate's on-screen
-    position and scale, so the effects stay pinned when the plate crops.
+  - **New games: the background is DELIVERED as object layers (Stone,
+    2026-11-09: 「背景也要做動態，可以先拆物件」).** One PNG per moving thing on a
+    shared 1920×1080 canvas (flames, steam, particles, a swinging object, a far
+    moon…), listed in the ART_REQUEST before generation
+    (`new-games/wild-alchemy/SPEC.md` §3.1 is the template); the frontend
+    animates layer by layer. Cutting patches out of a flat approved plate
+    (masks and measured positions in a `bg_fx_meta.json`, as Pickle Panic and
+    Hard Time's SceneLife did) is only for a game whose plates already exist.
+    Either way all coordinates are in plate pixels; Background.svelte hands in
+    the plate's on-screen position and scale, so the effects stay pinned when
+    the plate crops. The plate is cover-fitted, never stretched (Deadwood's
+    3:2 plate was stretched and deformed in portrait).
   - **House style holds:** flat inks, hard edges, ink outline like the
     plate, no glow, no blur, no floating motes or light shafts unless the
     style already has them.
@@ -414,7 +570,9 @@ are easiest to leave in by accident. Match the NEW theme in:
   build.
   - **Two layers per symbol:** an AMBIENT loop that is always on and in the
     object's own physics (chain swings from its top, lowrider engine idles,
-    bottle fizzes), plus an ACT — its signature move every 4–8 s for 0.5–1.6 s
+    bottle fizzes), plus an ACT — its signature move every 3–6 s for 0.5–1.6 s
+    (Turf War 10-28: low-pay acts 5–6.5 s apart read as too weak; 3.25–4.16 s
+    and about 1.6× the amplitude passed)
     (boombox thumps with speaker rings, lowrider hydraulic hop, cash rolls hop
     and squash, star turns one point, skull chatters, lightning flickers,
     brass knuckles jab with a sparkle, building's windows light up).
@@ -471,6 +629,13 @@ are easiest to leave in by accident. Match the NEW theme in:
   and a 0.1-cell rebound, 1.55 s lift to last stop), see
   `references/iron-jaw-transcript.md`; evidence and the point-tracking tools
   are in `/Users/stone/stake-engine/research/drive-3star/`.
+  **When the spec or rhythm copies a 星城 title** (天使奧丁 6×5 tumble with
+  multiplier orbs, 東海龍王 push-board respin with thrown multipliers and a
+  wheel, 血月伯爵 6×6 merged giant symbols with character-to-wild and an FG
+  points ladder), load the user-level `xinstar-spec` skill first and follow
+  its flow: SPEC template, math rules, verbatim timing constants, cast motion
+  table, Stake event format and the replay-the-captured-books acceptance. Its
+  timings carry over; its extracted art and audio never ship.
 - **Transitions and set-pieces.** Don't reuse the source game's transition
   motif just because the code is already wired — pick one that fits the new
   theme's own imagery (Capo Nostra replaced "a car drives past" with vault
@@ -601,6 +766,26 @@ Wire book events and presentation with the same discipline the source game
 used (reveal/board-state consistency, sound-per-event, guard scripts) — that
 part IS meant to carry over unchanged; it's the proven engine.
 
+### 4b. 前端最常漏掉的項目（每一條都退過件或被 Stone 點過）
+
+step 4 的長段落講「怎麼做」；這張表是做完前端時逐條打勾用的。
+
+- **UI 版面照最近一款已過審的姊妹作，不自製下注列**（`house-rules.md` D1、D2）。Turf War 10-23 被打「Poor bet UI bar」，查出來是自製的 `TurfConsole.svelte`，10-25 換回過審款的共用下注列。下注列版本（v1–v4）每款都問；套範本後照 D3 逐尺寸逐狀態看圖，範本的已知 bug 照 D2 的清單一次修掉。
+- **盤面夠大**：換下注列或開新遊戲後，量各比例下盤面佔可用高度幾成，先給 Stone 看對照（催眠猴、Dragon Tide 都被說「盤面有點小」，各放大 17–42%）。改了盤面縮放就 grep 所有讀盤面座標的元件（開場蓋板、轉場、讀數、角色夾限），含開場第一幀截圖。
+- **角色面向盤面、身體與表演都不壓盤面與框**（`house-rules.md` B5、B6）。朝向只在遊戲截圖裡看臉判斷。
+- **音效是一條獨立的工作**，不是沿用來源：列「每個 book 事件與 UI 動作 → 音效」的表，來源沒有的機制要新做；音檔與 sprite 不可和任何姊妹作位元組相同（`check_capo_win_audio.py` 的 SIBLINGS 檢查複製進新遊戲的 build）；BGM 是真的音樂（Static Shift 兩條 BGM 是 0.65 秒的四音循環，出貨了 7 版才發現）、每個 cue 不是同一個音移調；大獎音效每級更長（用變調做高一級會變短）；音樂用 m4a 不用 WAV。Stone 說「停輪音效」是指停輪瞬間的所有聲音。新音效要給 Stone 試聽檔，沒聽過不算驗收。
+- **規則頁和 pay table 也是美術範圍**：主題卡片版型、實際符號圖、主題字型、每個機制配圖。純文字會被標「poor info tab」（Deadwood 09-26）。操作說明用實際的按鈕圖。
+- **新增任何玩家看得到的字，16 個語言同時補**；pixi 文字的中日韓要 `breakWords: true`；用最長的語言（德文）截選單、按鈕、規則頁看有沒有溢出；字型查有沒有那些字（缺的符號如 ∞ 直接畫向量，不用位移補）。Static Shift 的 intro、下注列、轉場字只有英文，補了三輪。
+- **重寫符號動作不可比原本小**：重寫前後列每個符號的峰值角度、位移、縮放對照（Deadwood 把中獎彈跳 1.45 改成 1.16，Poor animations ×1 變 ×2）。抄姊妹作的動畫數值前先看那個版本的審核結果，被打過 Poor animations 的版本不能當範本。
+- **小獎金額的淡入要比它顯示的時間短**（共用 `FadeContainer` 預設 400–500 ms，酸黃瓜、Static Shift 各修一次）。中獎金額怎麼排（扇開成一欄／一次一個數字）照這款的姊妹作，有疑問問 Stone。
+- **每一轉都會出現、會蓋住盤面的演出要有秒數上限**並寫成常數（Deadwood 的倍數輪盤每個中獎轉蓋盤面約 10 秒，改了三次）。重觸發彈窗約 2 秒自動繼續，不等點擊。
+- **關鍵讀數放在盤框上或第一視線**（累積倍數、TOTAL、剩餘局數），位置先截圖給 Stone 選。值牌、倍數牌不超出自己的格子。
+- **大獎等級對照表和數學的 `winLevel` 是同一套**，並用真 book 強制每一級各看一次（Dragon Tide 的大獎面板因為對照表不同從沒出現，發布後才發現）。
+- **loading 與開場卡在 4:3、16:10、直式、pop-out S 各看一次**：背景要跟著整個畫面而不是主容器、文字不橫跨角色、開場卡在 400×225 走得過去、logo 不蓋符號與角色的臉。
+- **多個框或牌疊在一起時，標籤畫在所有框之上**（Capo 10-14：Vault Frame 標籤被別的框蓋住）；交叉的中獎線每一條都看得到自己的數值。
+- **餘額不足**：Bet、空白鍵長按、自動轉、購買卡四條路都要有訊息或反灰；押注階不因餘額被藏起來；按住 ± 不連跳。
+- **共用元件的顏色、彈窗、捲軸、字型都是上一款的**：設定、訊息、重播卡這些沒有專屬美術的彈窗也要換成這款的色票與字型（Static Shift 的彈窗還是石板灰＋載不到的字型）。DOM 裡的 CSS 漸層 `check_review_tags.py` 掃不到，要自己看。
+
 ### 5. Art integration loop
 
 Once the user starts generating art:
@@ -627,6 +812,18 @@ Once the user starts generating art:
    mismatched light. Reject and regenerate what fails; post-processing can
    hold a palette but cannot turn a render into the chosen style
    (quantising a render gives a posterised render).
+5. **Every swapped picture means re-measuring everything positioned against
+   it** — eight separate fixes across four games came from keeping the old
+   art's coordinates. When a panel, frame, plate, symbol set or cast changes:
+   the text area of the panel (step 4, "New panel art"), every number placed
+   relative to it (item 7), the cast's bounds against the board AND the new
+   frame (Static Shift's cast tips poked into the new frame's VU column), each
+   symbol's ink-to-cell ratio against the inherited per-symbol display scale
+   (Hard Time's lows filled only 25–31% of a cell), hover/lit variants of any
+   replaced plate, FX tints and glow colours that were tuned to the old art
+   (Capo's restyle left a pink glow on the new black-and-white symbols), and
+   every other place the same character appears (intro card, loading screen,
+   buy card, cut-in, win plaque, thumbnail, cover).
 6. **A character drawn into a feature beat must move — never a static
    picture of the cast** (Stone, 2026-10-16: 「我要 FG 砍圖騰的時候角色也有動態」,
    then 「這種以後也要做」). Pickle Panic's FG chop overlay showed the chef as one
@@ -686,6 +883,15 @@ Once the user starts generating art:
    need the same correction again.
 
 ### 6. Pre-submission QA
+
+**Run this before the FIRST publish, not before the first review**, and walk the
+驗收矩陣 in the 製程總表 (sizes × states) rather than a free-form playthrough.
+Reviewers have found, on paths nobody had walked: resume of a winning base round,
+a balance of 0, a balance between two bet rungs, holding space, holding ±, the
+intro card at pop-out S, the logo at pop-out S, a bet ladder up to 750,000, the
+social splash card, and JPY decimals. The playtest stub can reach all of them
+(`?resume=<mode>&ramt=<stake>`, `?bal=<amount>`, `?forceBook=<id>`, a swapped
+ladder); so reach them.
 
 Two passes, and they check different things:
 
@@ -751,8 +957,11 @@ two house checks described at the end of stake-engine-slot's
     python3 .claude/skills/game-reskin/scripts/check_cast_underlay.py \
       apps/<Game>/design/source/mg apps/<Game>/design/source/fg --out /tmp/underlay
 
-The underlay check reads the #7 own-rig cut (`layers.json` + `rig.json`). If it
-FAILs, trim the trunk outside the body line and keep a disc round each shoulder
+**Scope: that script only understands the #7 own-rig cut with hanging arms**
+(`layers.json` + `rig.json`). For any other rig (Spine 4.3 templates, crossed
+arms, layered mesh) it proves nothing: hide every moving part and look at what
+is left on the remaining layers for hand, finger or prop pixels, then watch the
+motions. If it FAILs, trim the trunk outside the body line and keep a disc round each shoulder
 pivot — `apps/PicklePanic/design/trim_trunk_smear.py fg|mg` is the worked
 example, with both ways of finding the body's edge: a hand-measured body line
 for arms that hang BESIDE a thin body (the cut copied the arm's own pixels into
@@ -840,7 +1049,14 @@ reference for what "correct" already looks like, since this part rarely
 changes shape between reskins.
 
 Treat those layers literally. **FG contains only the main character or single
-theme hero cutout.** Do not put the game title, wordmark, provider logo,
+theme hero cutout — exactly ONE character, never the MG+FG pair** (Stone,
+2026-11-10: Dragon Tide's first thumbnail had the Dragon King and the Dragon
+Princess side by side and was sent back — 「規定是只能一隻」). The two-cast rule
+is for the game itself and the cover; the square thumbnail shows one. Default
+to the MG lead. If the only delivered store art paints the pair touching, do
+not cut them apart (that chord-cuts robes, ribbons, limbs): build the thumbnail
+FG from that character's approved full-body master instead (Dragon Tide
+`design/build_store_art.py`). Do not put the game title, wordmark, provider logo,
 decorative typography, scenery, or a full-frame colour field in FG. Provider
 art stays in the separate provider-logo file; any platform title treatment
 stays outside FG. Export genuine RGBA transparency around the hero — a painted
@@ -880,7 +1096,8 @@ reaching it. Record the measurements in the art status or handoff.
 
 Separate from the thumbnail: the wide banner on the game's Stake Engine page.
 Every game ships one — 1920×1080 as BG + FG layers (like the thumbnail),
-top-right and bottom-left kept clear for the page's overlays. See `references/packaging.md` §6b.
+top-right and bottom-left kept clear for the page's overlays. The cover may show
+both cast; the one-character limit is the thumbnail's (step 7). See `references/packaging.md` §6b.
 
 The thumbnail's brightness rules apply to the cover too, and the cover is where
 they were missed: built from a night in-game plate and then "knocked back toward
@@ -892,11 +1109,19 @@ never toward black; gate the BG in the cover script itself (Turf/Hard Time
 
 ### 8. Package
 
+**打包 means staging into `/Users/stone/stake-engine/upload/<Game>/` and stopping
+there. No zips unless Stone asks for zips** (`ship.sh --zip`; 2026-09-20).
+
 See `references/packaging.md` for the exact, repeatable command sequence
-(sync math config → frontend build → playtest stub rebuild → three zips) and
-the sanity greps that must pass before calling a zip final (no old game name
+(sync math config → frontend build → playtest stub rebuild → stage) and
+the sanity greps that must pass before calling a package final (no old game name
 string anywhere in the shipped frontend, no localhost/stub references, no
-playtest-only files in the upload build). Write or update a HANDOFF.md as you
+playtest-only files in the upload build). Then run
+`scripts/preflight.py <app> --upload upload/<Game> --source-names <source names>`:
+it re-checks the things that were missed most often (house RTP band and
+ordering, the frontend carrying the math's RTP figures, staged build = current
+build, store art present and not dark, hover keys sharing one file, minors
+wording in the art requests) and prints the manual gates that are left. Write or update a HANDOFF.md as you
 go, not retroactively — it is the only place the exact retarget numbers and
 the reasoning behind each scale_factor live, and reconstructing that after
 the fact from a diff is much slower than writing two sentences at the time.
@@ -986,6 +1211,12 @@ change to the optimizer does not affect the resulting distribution linearly or
 predictably; the only way to know it worked is to regenerate and recompute the
 actual metric. The same discipline applies to visual claims — "the frame looks
 softer now" needs a measured opacity percentage, not a screenshot glanced at.
+
+**Measure in an isolated headless Chrome, not in the pane** — the working rig
+(flags, the CDP driver, pixi extract instead of `Page.captureScreenshot`, two
+ready-made scripts to copy) is in `references/tooling-pitfalls.md`. After about
+five minutes hidden the pane throttles timers as well as rAF, so the older
+advice below ("front the tab") is only a fallback.
 
 **Distrust timing measured through a hidden/backgrounded browser pane.**
 `requestAnimationFrame` freezes while the pane is hidden and catches up in one

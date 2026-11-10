@@ -17,6 +17,76 @@ means the signature mechanics (reel special-symbol density, full-board-frame
 chance), not the free-spin trigger rate. Turf War burned five optimizer runs
 before that was pinned down.
 
+## 跑之前的預檢（每一條都賠過一次以上的完整模擬）
+
+Run the math with `/Applications/anaconda3/envs/math-sdk/bin/python` and
+`PYTHONPATH` set to the math-sdk root (the system python3 is 3.9 and dies on
+`match`). A full run is memory-heavy on this 8 GB machine: tell Stone before
+starting it and never run two at once.
+
+1. **Every paytable value is a multiple of 0.1×.** `verify_lookup_format`
+   asserts `payout % 10 == 0` on the ×100 lookup table, at the very LAST step,
+   after books and the Rust optimizer have run. A 0.25× line pay cost Hard Time
+   a whole run; Dragon Tide (0.25/0.75 → 0.2/0.7) and Wild Alchemy (0.05 → 0.1)
+   hit the same wall copying a reference paytable. Assert it before `run.py`;
+   when a transcribed value does not fit, list the choices for Stone.
+2. **The theoretical maximum reaches the win cap.** Before removing or changing
+   the only multiplier carrier, compute best line pay × lines × top multiplier.
+   Hard Time dropped its frames and could then reach 5,600× against a 20,000×
+   cap; the cap had to move to 12,000×.
+3. **Buy price × wincap slice.** `etl10k = Σ win × probability` for wins
+   ≥ 10,000×, in base-bet multiples and NOT divided by the mode's cost, so its
+   floor is (wincap slice RTP × mode cost). At a 1000× buy Hard Time's floor was
+   already 1.000 and the buys were repriced to 100/300/600. Compute it before
+   fixing a cap or a buy price. Since 2026-10-15 `stakecli compliance` prints
+   the platform policy's own figures per mode (ETL 40x, ETL 10,000x, ETL sum,
+   CVaR, tail probabilities against the 2-star and 3-star limits): that output
+   is the authority, not the local `etl10k` warning discussed further down.
+4. **After changing a cap or a buy price, every freegame criteria needs its own
+   top-band suppressor.** The source game only tuned the one that had been
+   rejected.
+5. **Each target has a source.** Write the targets as a table: metric, target,
+   source (Stake rule / Stone's preference / our own), how it is measured,
+   tolerance. Capo's "payout < bet under 70%" was Stone's preference, guarded
+   for two retargets as if it were Stake's rule, and he relaxed it when asked.
+   Ask again before re-tuning to a preference.
+6. **The signature mechanic's three numbers are agreed with Stone before the
+   run**: how often it lands in the base game, what share of those pay, and the
+   median multiple. Turf War's full-board frame went 1/120 → 1/70 → 1/50 → 1/35
+   → split base/feature across five runs. For a multiplier object also agree the
+   cap per board on winning and on dead spins, and whether values add or
+   multiply (Hypno Monkey: four math rounds, one thrown away).
+7. **Board legibility is a math acceptance item**: draw 20 boards from the books
+   as thumbnails and look at how many cells the specials cover (Turf: several
+   expanding wilds per spin, then frames hiding the symbols).
+8. **Measure the optimizer's own noise before tuning a shape metric.** Same
+   config, same books, optimizer only, three times. Capo's two runs differed by
+   11.7 and 6.7 points on the metric being tuned, so an afternoon of
+   `scale_factor` conclusions was noise. When the spread exceeds the tolerance,
+   stop turning knobs: keep the books fixed, draw 8–10 solutions, pick with a
+   script that scores EVERY target Stone gave (the first pick scored only one
+   and quietly worsened another from 51.94 to 40.41), and ship that pick without
+   running `run.py` again.
+9. **Only `library/publish_files` is the result.** `library/lookup_tables` is the
+   pre-optimisation table and reads 300–800% RTP.
+10. **A new event is reconciled against the books**: `finalWin` = last
+    `setTotalWin` = `payoutMultiplier`, and Σ `winInfo` includes the new
+    mechanic's amount (Go Banandit's collect never sent `setTotalWin`, so the
+    frontend added it itself). Change a value table and its checker
+    (`check_books.py` allowed values) in the same commit.
+11. **Rewriting books vs re-simulating**: rewriting may only touch presentation
+    events on losing spins, with every other byte compared afterwards. Anything
+    that changes a paying spin is a native re-run.
+12. **Back up before overwriting**: math-sdk games are not in git. `tar czf
+    _upload_backups/…` before changing a LUT or restaging math, never only in a
+    session scratchpad.
+
+If `run.py` hangs joining a worker on a large mode (the Manager return is too
+big), merge the temp files instead of re-running:
+`math-sdk/games/wild_alchemy/design/finish_run.py` is the worked example, and
+`smoke_run.py` beside it is the small-sample check to run on any self-invented
+mechanic before it is written into the SPEC.
+
 ## The assertion to check before every run
 
 `OptimizationSetup.__init__` calls `verify_optimization_input`, which asserts
@@ -154,6 +224,11 @@ for lo, hi in buckets:
 ```
 
 ## The local `etl10k` volatility check is a false-positive generator for high-cost modes — do not trust it alone
+
+> Read this with pre-run check 3 above. Both are true: the local check
+> over-reports for high-cost modes, AND the quantity it measures has a real
+> floor of (wincap slice RTP × mode cost) that can make a buy price impossible.
+> `stakecli compliance upload/<Game>/math` settles which case you are in.
 
 `utils/rgs_verification.py`'s `verify_mode_volatility` computes `etl10k` as
 `sum(win * probability for win >= 10000)` — a dollar-weighted sum, **not

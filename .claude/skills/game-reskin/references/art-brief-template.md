@@ -6,6 +6,11 @@ still the old one wearing new paint. Structure it around the RULES that produce
 correct art, with the asset list falling out of each rule, because the rules
 are what a second or third round of generated art actually needs to follow.
 
+Read `art-request-rules.md` with this: it holds the rules every generation
+request carries (who does what, the fixed fields, what to check the day art
+arrives). The first version of a brief has to be complete; "退件再補規格" is what
+turned one cast into eight revisions.
+
 Sections that earned their place doing this for Capo Nostra:
 
 ## 0. Art direction (the style lock) — every other section inherits this
@@ -64,6 +69,16 @@ games already share.
   punch, arms long enough and shoulder/armpit/chest painted for celebrate,
   gaps between limbs and body, elbows and knees slightly bent, rear hand by the
   cheek). Confirm the spine-motion template supports the pose before briefing.
+- **Adult, clothed, facing the board, built to numbers.** Age and adult features
+  written out, never 學徒／少女／apprentice／girl／young (Engine [217]; Wild
+  Alchemy's "apprentice" came back as a teenager). Which side of the board the
+  figure stands on and which way the FACE points. Build as ratios, not
+  adjectives: shoulder and waist width against height, limb widths against head
+  width (Capo's Don came back "too thin and odd" at shoulder 0.16H / waist
+  0.19H and was regenerated at ≥ 0.24H / ≥ 0.27H; Sumo's limbs at 0.34 and 0.2
+  head-widths were redrawn weeks later). In a limited-palette style, name the
+  swatch the skin uses (Capo's Don came back with a gold head). No realistic
+  firearms as props.
 - Pose and cropping against the actual layout math (how much of the side band
   it needs to fill at the reference viewport — measure the source game's own
   proportions if there's a design reference, don't guess a percentage).
@@ -94,6 +109,18 @@ games already share.
   symbol's, the visual hierarchy is inverted regardless of how it looks
   glanced at. Write the actual measured numbers into the brief once a
   version passes, so future regenerations have a target, not just a rule.
+- **High symbols are framed, with the same frame and size as the lows** (Stone,
+  2026-10-28), even when the reference game's highs have none.
+- **Minimum ink-to-cell ratio and viewing angle per symbol**, measured on
+  arrival (Capo's H5 in side view filled 27% of its cell; Sumo's A/J were too
+  narrow; Static Shift's Wild mast filled 40%). Write the colour of the card or
+  badge each symbol sits on and check the symbol against it, and write the
+  brightness ladder as numbers with the Wild on top.
+- **What each symbol reads as at 70 px**, by someone who has not seen the brief
+  (Pickle Panic's H4 read as a cannabis leaf and was repainted after a
+  rejection). No brand look-alikes, no realistic firearms.
+- **Show the whole set composited on the real board to Stone before installing
+  it** (Deadwood's enamel royals were installed, staged, then rejected by him).
 - List which symbols reuse or are pre-scaled from an existing asset, if any
   (saves a redraw), and call out anything that must NOT reuse the source
   game's shape (a symbol whose silhouette IS the source game's mascot, say).
@@ -121,6 +148,9 @@ games already share.
   "an ornate frame". An ornamental gold bezel is the default look's frame
   (`nolimit-city-styles.md`, What transfers, rule 1).
 
+- **The frame's opening has the board's aspect ratio** (columns × cell width :
+  rows × cell height). Dragon Tide's arrived 1146×857 for a 6:5 board and had to
+  be nine-sliced.
 - The housing's own alpha bounding box vs its nominal canvas size, if
   anything downstream measures against it (character placement, board-edge
   math) — note the actual ink fraction so that math isn't done against a
@@ -139,6 +169,15 @@ games already share.
   with a code-drawn one.
 
 ## 6. UI chrome (buy-bonus card, modal frames, etc.)
+
+- **The first art batch includes the board frame, the low symbols, the logo, the
+  bet-bar plates, the intro card and the rules/pay-table cards.** Leaving them on
+  the source game's art is what "Inconsistent art style" and "Low quality
+  assets" were (Pickle Panic 10-17, Sumo Monkey 11-03), and a text-only rules
+  page is "poor info tab" (Deadwood 09-26).
+- Every panel marks a clear text area; every number has clear ground to sit on.
+  The list of items comes from `assets.ts`, key by key, not from memory (a
+  Wild Alchemy batch missed 13 files the game loads).
 
 - 9-slice requirements if the frame needs to stretch to arbitrary
   panel sizes — state the border insets the asset needs to support that.
@@ -209,10 +248,14 @@ games already share.
   SKILL.md step 4 "The background lives"): 2–3 things per mode that animate
   naturally — liquid, bubbles, a sign, sky glints, a small animal — placed
   in the side margins or upper sky, not behind the board at 16:9 and not
-  behind the cast. Ask for them as clean, separable shapes (a tank with a
-  clear inside, a sign with an empty face, a pipe mouth with a puddle under
-  it) so code can mask or cut them out of the plate, as Pickle Panic's
-  `design/build_bg_fx.py` does.
+  behind the cast.
+- **Ask for the background as object layers** (Stone, 2026-11-09): the plate,
+  plus one PNG per moving thing on the same 1920×1080 canvas, listed by name in
+  the request (`new-games/wild-alchemy/SPEC.md` §3.1). Cutting pieces out of a
+  flat plate afterwards (Pickle Panic's `design/build_bg_fx.py`) is the fallback
+  for plates that already exist.
+- State the size (1920×1080; one batch arrived 1672×941) and that the side
+  where the cast stands is calmer and paler than the rest.
 
 ## 8. Lettering vs. system-font audit
 
@@ -238,6 +281,10 @@ an assumption:
       nonsense ornament, counts correct, one light direction
 - [ ] Cast figure, UI chrome, FX colours and thumbnail carry §0 too, not just
       the symbols
+- [ ] Every figure reads as an adult at 66 px and enlarged; nothing reads as
+      something else at 70 px; no brand look-alikes or realistic firearms
+- [ ] Every delivered PNG: mode and corner alpha checked (a painted checkerboard
+      is an opaque image), keyed edges looked at on light and dark
 - [ ] Three random symbols still identifiable shrunk to reel-cell size
 - [ ] Whole symbol set desaturated to greyscale still shows a luminance
       ladder matching pay order

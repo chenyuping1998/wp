@@ -128,7 +128,9 @@ def scan_code(path: Path, rel: str, palette: list[str]) -> None:
 
     if is_intro:
         art = len(re.findall(r"<Sprite\b|CastFigure|<FreeSpinAnimation\b|FeatureSplashPanel", text))
-        motion = len(re.findall(r"requestAnimationFrame|Tween|ticker", text))
+        # keyframes(ms, …) is the Hypno-lineage helper (Hypno Monkey, Dragon Tide): a value read off
+        # the beat's own ms clock every frame. Without it this check failed a moving intro (2026-11-10).
+        motion = len(re.findall(r"requestAnimationFrame|Tween|ticker|\bkeyframes\(", text))
         if art == 0 or motion == 0:
             add("animations", "FAIL", rel,
                 f"free-game intro has {art} art element(s) and {motion} animation driver(s) — the feature trigger is THE key moment; a scrim with text on it is what 'missing in key moments' means")
