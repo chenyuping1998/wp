@@ -457,7 +457,8 @@
 		scoreBump = 0;
 		totalBump = 0;
 		broadcast({ type: 'medusaPose', pose: 'idle' });
-		await wait(fast ? 120 : 500);
+		// reference §4.3/§4.4: a big win opens as the sum turns into the paid amount
+		await wait(fast ? 120 : bigWin ? 0 : 500);
 		await tween(plan.collapseMs, (t) => {
 			if (pop) pop = { ...pop, alpha: 1 - t };
 			if (amount) amount = { ...amount, alpha: 1 - t };

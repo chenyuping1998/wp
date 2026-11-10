@@ -347,36 +347,38 @@
 										alpha={Math.sin(p * Math.PI)}
 									/>
 								{/each}
-								<!--
-									Amount below the bar, not inside it: the well carries the tier
-									name now. Offset from the bar's own half-height so the gap stays
-									constant as the plaques change height between tiers.
-								-->
-								<GoldText
-									y={bh * 0.5 + amountSize * 0.72}
-									maxWidth={bw * 0.86}
-									text={bookEventAmountToCurrencyString(Math.round(countUpAmount))}
-									fontSize={amountSize}
-								/>
-								{#if flare < 1}
-									<Sprite
-										key="fxGlow"
-										anchor={0.5}
-										y={bh * 0.5 + amountSize * 0.72}
-										tint={flareTint}
-										blendMode="add"
-										width={amountSize * (1.2 + 3.2 * flare)}
-										height={amountSize * (1.2 + 3.2 * flare)}
-										alpha={1 - flare}
-									/>
-								{/if}
 							</Container>
+							<!--
+								Amount below the bar, not inside it: the well carries the tier name now.
+								Offset from the bar's own half-height so the gap stays constant as the
+								plaques change height between tiers. It stays out of the bar's entrance
+								pose, so the pose's overshoot never pushes it into the press prompt.
+							-->
+							{@const amountY = bh * 0.5 + amountSize * 0.62}
+							<GoldText
+								y={amountY}
+								maxWidth={bw * 0.86}
+								text={bookEventAmountToCurrencyString(Math.round(countUpAmount))}
+								fontSize={amountSize}
+							/>
+							{#if flare < 1}
+								<Sprite
+									key="fxGlow"
+									anchor={0.5}
+									y={amountY}
+									tint={flareTint}
+									blendMode="add"
+									width={amountSize * (1.2 + 3.2 * flare)}
+									height={amountSize * (1.2 + 3.2 * flare)}
+									alpha={1 - flare}
+								/>
+							{/if}
 							{#if burstShown}
 								<FxBurst scale={1.7} flavour="paper" oncomplete={() => (burstShown = false)} />
 							{/if}
 							{#key flareKey}
 								{#if flareKey > 0}
-									<FxBurst y={(bh * 0.5 + amountSize * 0.72) * bannerPose.scale} scale={1.1} flavour="paper" />
+									<FxBurst y={bh * 0.5 + amountSize * 0.62} scale={1.1} flavour="paper" />
 								{/if}
 							{/key}
 						{:else}
