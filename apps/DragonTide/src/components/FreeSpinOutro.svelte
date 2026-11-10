@@ -8,6 +8,7 @@
 </script>
 
 <script lang="ts">
+	import { onDestroy } from 'svelte';
 	import { GAME_FONT, GAME_FONT_WEIGHT, TITLE_FONT } from '../game/fonts';
 	import { Text } from 'pixi-svelte';
 	import { FadeContainer, WinCountUpProvider } from 'components-pixi';
@@ -42,9 +43,18 @@
 	// total, taking a screenshot) therefore heard the 2.4s coin shimmer loop over
 	// and over with nothing else going on. The loop belongs to the count-up, so it
 	// ends with the count-up.
+	// reference §5.3: the plaque returns to the base game on its own ~4.2 s after it came in
+	// (the player can still press); never before the total has stood still for 1.2 s
+	const AUTO_RETURN_MS = 4200, HOLD_AFTER_COUNT_MS = 1200;
+	let shownAt = 0;
+	let autoReturn: ReturnType<typeof setTimeout> | undefined;
 	const onCountUpComplete = () => {
 		context.eventEmitter.broadcast({ type: 'soundStop', name: 'sfx_bigwin_coinloop' });
+		clearTimeout(autoReturn);
+		const finish = oncomplete;
+		autoReturn = setTimeout(() => finish(), Math.max(HOLD_AFTER_COUNT_MS, AUTO_RETURN_MS - (performance.now() - shownAt)));
 	};
+	onDestroy(() => clearTimeout(autoReturn));
 
 	const title = gameText('totalWin');
 
@@ -54,7 +64,8 @@
 		freeSpinOutroCountUp: async (emitterEvent) => {
 			amount = emitterEvent.amount;
 			winLevelData = emitterEvent.winLevelData;
-			await waitForResolve((resolve) => (oncomplete = resolve));
+			shownAt = performance.now();
+			await waitForResolve((resolve) => (oncomplete = () => { clearTimeout(autoReturn); resolve(); }));
 		},
 	});
 </script>

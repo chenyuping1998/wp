@@ -51,28 +51,30 @@ export const medusaAnimations = {
 export type MedusaAnimation = keyof typeof medusaAnimations;
 
 /**
- * One tumble link on a fixed clock, whatever the win size (ATG 戰神賽特
- * transcription, research ATG-Seth-Capture §2, ~2.55 s a link): the winners are
- * framed while the win counts up (mark, 0.95 s), a short hold, each winner goes
- * to a white light ball that swells as the frame fades (glow), it bursts into a
- * gold star whose motes drift up (burst) WHILE the survivors drop into the
- * holes, a short look at the top gaps (empty), then the refill from the top,
- * left to right 50 ms a reel. Turbo keeps the order on a shorter clock.
+ * One tumble link on a fixed clock, whatever the win size.
+ *
+ * Normal play is 天使奧丁's link (SPEC §2.2, reference §3.3/§3.3.1: every link 3.0 s, base
+ * game and free game alike, whatever the chain length): the winners are framed and act for
+ * 1.30 s (mark) while their amount shows, the frames go and each winner swells to a light ball
+ * (flash, 0.15 s), bursts at 1.45 s into the splash (crumble, 0.5 s), the column hangs open
+ * 0.15 s (empty), the refill starts at 2.10 s left to right 50 ms a reel, survivors and new
+ * symbols falling together, lands, and the next link's frames come 0.25 s after the last reel.
+ * Turbo keeps our own shorter clock (the reference was recorded without turbo).
  */
-export const tumbleTiming = ({ chain = 1, turbo = false, turboLevel = 1 } = {}) => {
-	const scale = (chain >= 4 ? 0.85 : 1) * (turbo ? 0.6 : 1) * (turbo && turboLevel === 2 ? 0.8 : 1);
-	const highlightMs = (turbo ? 120 : 620) * (turbo ? 1 : scale);
-	const stoneMs = (turbo ? 60 : 200) * (turbo ? 1 : scale);
-	const crackMs = (turbo ? 60 : 130) * (turbo ? 1 : scale);
-	const restMs = turbo ? 0 : 200 * scale;
-	const flashMs = turbo ? 70 : 150 * scale;
-	const crumbleMs = (turbo ? 220 : 310) * (turbo ? 1 : scale);
-	/** survivors start dropping this long into the burst */
-	const survivorsAtMs = turbo ? 50 : 100 * scale;
-	const emptyMs = (turbo ? 60 : 150) * (turbo ? 1 : scale);
-	const dropMs = 550 * scale;
-	const columnStaggerMs = (turbo ? 27 : 50) * scale;
-	const settleMs = 150 * scale;
+export const tumbleTiming = ({ turbo = false, turboLevel = 1 }: { chain?: number; turbo?: boolean; turboLevel?: number } = {}) => {
+	const scale = turbo ? 0.6 * (turboLevel === 2 ? 0.8 : 1) : 1;
+	const highlightMs = turbo ? 120 : 760;
+	const stoneMs = turbo ? 60 : 330;
+	const crackMs = turbo ? 60 : 210;
+	const restMs = 0;
+	const flashMs = turbo ? 70 : 150;
+	const crumbleMs = turbo ? 220 : 500;
+	const emptyMs = turbo ? 60 : 150;
+	/** survivors start dropping this long into the burst (normal: with the refill, as one string) */
+	const survivorsAtMs = turbo ? 50 : crumbleMs + emptyMs - 100;
+	const dropMs = turbo ? 550 * scale : 450;
+	const columnStaggerMs = turbo ? 27 * scale : 50;
+	const settleMs = turbo ? 150 * scale : 250;
 	return {
 		scale,
 		highlightMs,

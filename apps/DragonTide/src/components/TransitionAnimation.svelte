@@ -8,13 +8,13 @@
  type Props={oncomplete:()=>void;oncover?:()=>void;onreveal?:()=>void;kind?:'portal';tone?:'violet'|'gold'};
  const props:Props=$props(),context=getContext();
  let elapsed=$state(0);
- // Whirlpool gate (天使奧丁 FG_Board_Start Out, research/xinstar-angelodin §5.1), 1.6 s:
- // a whirlpool opens in the middle of the board inside the painted wave ring
- // (portal_in teal for the way in and the loading screen, portal_out gold for the way
- // out) and grows to fill the screen by 0.85 s; the white flash peaks at 0.95 s and the
- // scene swaps under it, then the flash fades on the new scene.
- const DONE=1600,COVER_MS=900,REVEAL_MS=1050;
- const white=$derived(elapsed<650?0:elapsed<950?((elapsed-650)/300)**2:Math.max(0,1-(elapsed-950)/650)**1.6);
+ // Whirlpool gate (天使奧丁 FG_Board_Start Out, research/xinstar-angelodin §5.1): the plaque's
+ // Out runs 2.33 s and the scene swaps 1.5 s in (6.5 s -> 8.0 s). A whirlpool opens in the
+ // middle of the board inside the painted wave ring (portal_in teal for the way in and the
+ // loading screen, portal_out gold for the way out) and grows to fill the screen by 1.4 s; the
+ // white flash peaks at 1.5 s and the scene swaps under it, then the flash fades on the new scene.
+ const DONE=2330,COVER_MS=1500,REVEAL_MS=1650,GROW_MS=1400;
+ const white=$derived(elapsed<1100?0:elapsed<1500?((elapsed-1100)/400)**2:Math.max(0,1-(elapsed-1500)/830)**1.6);
  const sizes=$derived(context.stateLayoutDerived.canvasSizes());
  const board=$derived(context.stateGameDerived.boardLayout());
  const main=$derived(context.stateLayoutDerived.mainLayout());
@@ -24,14 +24,14 @@
  // radius in main-container units: from nothing to past every canvas corner (the gate is an
  // ellipse as wide as the ring's hole, so its short axis has to clear the corners too)
  const reach=$derived(Math.hypot(sizes.width,sizes.height)/Math.max(.01,main.scale)/squash);
- const grow=$derived(Math.min(1,elapsed/850));
+ const grow=$derived(Math.min(1,elapsed/GROW_MS));
  const radius=$derived(reach*(grow<.35?.12*(grow/.35)**.7:.12+.88*((grow-.35)/.65)**2.2));
  const spin=$derived(elapsed*.0011);
  const palette=$derived(gold?{arm:0xf2b632,gap:0xfff3d6,ink:0x5a3208,core:0xfff8e8}:{arm:0x1f7f86,gap:0xe3f3ee,ink:0x12343a,core:0xf6fcfa});
  const ARMS=6,STEPS=28,TWIST=Math.PI*2.4;
  const drawPortal=(g:PixiGraphics)=>{
   g.clear();
-  if(elapsed>=1000||radius<=0)return;
+  if(elapsed>=COVER_MS+100||radius<=0)return;
   const turn=elapsed*.011;
   g.circle(0,0,radius).fill(palette.gap);
   for(let k=0;k<ARMS;k++){
@@ -64,7 +64,7 @@
 </script>
 <Container>
  <MainContainer>
-  {#if elapsed<1000&&radius>0}
+  {#if elapsed<COVER_MS+100&&radius>0}
    <Container x={board.x} y={board.y} rotation={spin}>
     <Container scale={{x:1,y:squash}}>
      <Graphics draw={drawPortal}/>

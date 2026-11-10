@@ -74,8 +74,10 @@ assert.equal(new Set(['H1', 'H2', 'H3', 'H4', 'H5'].map(name => JSON.stringify(s
 // no longer than 2.9 s, eight links inside 24 s, turbo eight links inside 10 s.
 const eightLinkMs = Array.from({ length: 8 }, (_, i) => tumbleTiming({ chain: i + 1 }).totalMs).reduce((a, b) => a + b, 0);
 const eightLinkTurboMs = Array.from({ length: 8 }, (_, i) => tumbleTiming({ chain: i + 1, turbo: true }).totalMs).reduce((a, b) => a + b, 0);
-assert.ok(tumbleTiming({ chain: 1 }).totalMs <= 2900);
-assert.ok(eightLinkMs < 24000);
+// normal play: the reference's fixed 3.0 s link (2.9-3.1 measured), the same for every link
+assert.ok(Math.abs(tumbleTiming({ chain: 1 }).totalMs - 3000) <= 100, 'a normal link runs the reference 3.0 s');
+assert.ok(Array.from({ length: 8 }, (_, i) => tumbleTiming({ chain: i + 1 }).totalMs).every((ms, _, all) => ms === all[0]), 'every link runs the same clock');
+assert.ok(eightLinkMs < 25000);
 assert.ok(eightLinkTurboMs < 10000);
 const report = { scope: 'Offline geometry, published book data and timing only; no Stake Engine recording.', exhaustiveColumnPatterns: plans, publishedWinningPositions: positions,
   fracturePieces: 5, fractureArea: 1, landingFootFixed: true, independentColumnLandings: true, eightLinkTimingBudgetMs: eightLinkMs,

@@ -13,12 +13,16 @@
 				totalWin: number;
 				/** free game: orbs fly to the running-total plate, not the board */
 				toTotal: boolean;
+				/** the spin goes on to a big-win plaque: the sum holds longer (reference) */
+				bigWin?: boolean;
 				pace: WinPace;
 		  }
 		| {
 				/** watches riding the last refill of a winning spin (TumbleLayer) */
 				type: 'hypnoWatchDrop';
 				animation: MedusaAnimation;
+				/** the caster acts this long after the event (the burst) */
+				castDelayMs?: number;
 				releaseMs: number;
 				pace: WinPace;
 				drops: WatchDrop[];
@@ -289,7 +293,10 @@
 	};
 	let beams = $state<{ id: number; x: number; y: number; color: number; beam: number; flash: number; smoke: number }[]>([]);
 	let nextRevealAt = 0;
-	const revealWatch = async (id: number, x: number, y: number, value: number, fast: boolean, _freegame: boolean) => {
+	// reference (天使奧丁 FX1): the strike comes 0.15 s after the pearl's cell stops
+	const STRIKE_DELAY_MS = 150;
+	const revealWatch = async (id: number, x: number, y: number, value: number, fast: boolean, _freegame: boolean, strikeDelayMs = 0) => {
+		if (strikeDelayMs > 0) await wait(strikeDelayMs * (fast ? 0.6 : 1));
 		const now = performance.now();
 		const startAt = Math.max(now, nextRevealAt);
 		nextRevealAt = startAt + revealStagger * (fast ? 0.6 : 1);
@@ -312,17 +319,21 @@
 		await tween(180 * k, (t) => set({ beam: 0, flash: 0, smoke: t }));
 		fx?.impact({ x, y }, value, 'orb');
 		if (voiced) broadcast({ type: 'soundMedusa', cue: 'orbHit', value, speed: fast ? 1.25 : 1 });
-		await tween(130 * k, (t) => update(id, { reveal: t, sx: 1 + 0.12 * Math.sin(Math.PI * t), sy: 1 + 0.12 * Math.sin(Math.PI * t) }));
+		// the struck pearl rings once (its value was on it from the moment it appeared)
+		await tween(130 * k, (t) => update(id, { sx: 1 + 0.12 * Math.sin(Math.PI * t), sy: 1 + 0.12 * Math.sin(Math.PI * t) }));
 		update(id, { reveal: 1, sx: 1, sy: 1 });
 		beams = beams.filter((b) => b.id !== beamId);
 	};
 
 	/** The hypnotist casts as the refill starts; each blank watch rides its column's refill. */
-	const dropWatches = async ({ drops, animation, releaseMs, pace }: { drops: WatchDrop[]; animation: MedusaAnimation; releaseMs: number; pace: WinPace }) => {
+	const dropWatches = async ({ drops, animation, castDelayMs = 0, releaseMs, pace }: { drops: WatchDrop[]; animation: MedusaAnimation; castDelayMs?: number; releaseMs: number; pace: WinPace }) => {
 		const fast = pace === 'turbo' || pace === 'turboFreegame';
 		const freegame = pace === 'freegame' || pace === 'turboFreegame';
-		broadcast({ type: 'medusaAction', animation, releaseMs });
-		broadcast({ type: 'soundMedusa', cue: 'gaze', speed: fast ? 1.5 : 1 });
+		// the caster acts at the burst; the pearls already ride the refill clock
+		void wait(castDelayMs).then(() => {
+			broadcast({ type: 'medusaAction', animation, releaseMs });
+			broadcast({ type: 'soundMedusa', cue: 'gaze', speed: fast ? 1.5 : 1 });
+		});
 		nextRevealAt = 0;
 		mass = false; massHit = false; revealStagger = REVEAL_STAGGER_MS;
 		const order = [...drops].sort((a, b) => a.delayMs + a.durationMs - (b.delayMs + b.durationMs));
@@ -330,7 +341,7 @@
 			order.map(async (drop) => {
 				await wait(drop.delayMs);
 				const id = nextId++;
-				orbs = [...orbs, { id, value: drop.value, x: drop.x, y: drop.fromY, scale: CELL_SCALE, alpha: 0, stone: 0, crack: 0, angle: 0, sx: 1, sy: 1, trail: [], cell: true, reveal: 0 }];
+				orbs = [...orbs, { id, value: drop.value, x: drop.x, y: drop.fromY, scale: CELL_SCALE, alpha: 0, stone: 0, crack: 0, angle: 0, sx: 1, sy: 1, trail: [], cell: true, reveal: 1 }];
 				await tween(drop.durationMs, (t) => {
 					const y = drop.fromY + (drop.toY - drop.fromY) * gravityProgress(t);
 					// fades in as it crosses the top edge of the board
@@ -350,10 +361,10 @@
 	 * flies in first (free game), then each watch pulses and sends its value, the
 	 * readout holds "win ×N" and only then pays.
 	 */
-	const collectWatches = async ({ mult, baseWin, totalWin, toTotal, fast }: { mult: number; baseWin: number; totalWin: number; toTotal: boolean; fast: boolean }) => {
+	const collectWatches = async ({ mult, baseWin, totalWin, toTotal, fast, bigWin = false }: { mult: number; baseWin: number; totalWin: number; toTotal: boolean; fast: boolean; bigWin?: boolean }) => {
 		const watches = orbs.filter((orb) => orb.cell);
 		const previous = toTotal ? totalValue : 0;
-		const plan = watchCollectTiming({ turbo: fast, watchCount: watches.length, carriesTotal: toTotal && previous > 0, topTier: watches.some((watch) => watchTier(watch.value) === 5) });
+		const plan = watchCollectTiming({ turbo: fast, watchCount: watches.length, carriesTotal: toTotal && previous > 0, topTier: watches.some((watch) => watchTier(watch.value) === 5), freegame: toTotal, bigWin });
 		const readout = { x: center.x, y: center.y - 37 };
 		baseAmount = bookEventAmountToCurrencyString(baseWin);
 		formulaDone = false;
@@ -364,12 +375,15 @@
 		// never sits on the readout's lettering.
 		const covered = watches.filter((watch) => watch.y > READOUT_TOP - 44 && watch.y < READOUT_TOP + READOUT_HEIGHT + 44 && Math.abs(watch.x - center.x) < READOUT_HALF_WIDTH + 40);
 		const lifts = covered.map((watch) => ({ id: watch.id, from: watch.y }));
-		await tween(plan.openMs, (t) => {
+		const opening = tween(plan.openMs, (t) => {
 			if (pop) pop = { ...pop, alpha: t };
 			if (amount) amount = { ...amount, alpha: t };
 			for (const lift of lifts) update(lift.id, { y: lift.from + (READOUT_TOP - 44 - lift.from) * easeOut(t) });
+		}).then(() => {
+			for (const watch of covered) watch.y = READOUT_TOP - 44;
 		});
-		for (const watch of covered) watch.y = READOUT_TOP - 44;
+		// reference: the free-game TOTAL pops 0.2 s in; a base-game pearl pops with the readout
+		if (plan.leadMs > 0) await opening;
 		let shown = 0;
 		const arrive = (value: number) => {
 			shown = value;
@@ -390,26 +404,38 @@
 			orbs = orbs.filter((orb) => orb.id !== id);
 			totalBump = 0;
 			arrive(previous);
+			await wait(plan.afterTotalMs);
 		}
+		const flights: Promise<void>[] = [];
 		for (const [index, watch] of watches.entries()) {
-			if (index > 0) await wait(Math.max(0, plan.staggerMs - plan.pulseMs));
-			const from = { x: watch.x, y: watch.y };
-			await tween(plan.pulseMs, (t) => update(watch.id, { scale: CELL_SCALE * (1 + 0.18 * Math.sin(Math.PI * t)) }));
-			// its value flies to the readout; the watch itself keeps its cell, spent
-			const copy = nextId++;
-			orbs = [...orbs, { id: copy, value: watch.value, ...from, scale: CELL_SCALE, alpha: 1, stone: 0, crack: 0, angle: 0, sx: 1, sy: 1, trail: [] }];
-			// ATG: the value leaves with the comet and the watch goes blank
-			update(watch.id, { reveal: 0 });
-			await flyBetween(copy, from, readout, plan.flyMs);
-			fx?.impact(readout, watch.value, 'score');
-			broadcast({ type: 'soundMedusa', cue: 'orbHit', value: watch.value, speed: fast ? 1.25 : 1 });
-			if (watch.value >= HEAVY) shakeBoard(0.6, fast ? 260 : 380);
-			orbs = orbs.filter((orb) => orb.id !== copy);
-			arrive(shown + watch.value);
+			// one pearl every 0.7 s, start to start (reference): in the base game the next pops
+			// while the last is still in the air; all fly the same time, so they land in order
+			if (index > 0) await wait(plan.staggerMs);
+			flights.push(
+				(async () => {
+					await tween(plan.pulseMs, (t) => update(watch.id, { scale: CELL_SCALE * (1 + 0.18 * Math.sin(Math.PI * t)) }));
+					// a pearl lifted clear of the readout leaves from where it was lifted to
+					await opening;
+					const from = { x: watch.x, y: watch.y };
+					// its value flies to the readout; the watch itself keeps its cell, spent
+					const copy = nextId++;
+					orbs = [...orbs, { id: copy, value: watch.value, ...from, scale: CELL_SCALE, alpha: 1, stone: 0, crack: 0, angle: 0, sx: 1, sy: 1, trail: [] }];
+					// ATG: the value leaves with the comet and the watch goes blank
+					update(watch.id, { reveal: 0 });
+					await flyBetween(copy, from, readout, plan.flyMs);
+					fx?.impact(readout, watch.value, 'score');
+					broadcast({ type: 'soundMedusa', cue: 'orbHit', value: watch.value, speed: fast ? 1.25 : 1 });
+					if (watch.value >= HEAVY) shakeBoard(0.6, fast ? 260 : 380);
+					orbs = orbs.filter((orb) => orb.id !== copy);
+					arrive(shown + watch.value);
+				})(),
+			);
 		}
+		await Promise.all(flights);
+		await opening;
 		// The book is authoritative for the multiplier that pays.
 		if (shown !== mult) arrive(mult);
-		await wait(plan.holdMs);
+		await wait(plan.settleMs + plan.holdMs);
 		formulaDone = true;
 		amount = { text: baseAmount, alpha: 1 };
 		broadcast({ type: 'soundLoop', name: 'sfx_multiplier_update' });
@@ -468,9 +494,15 @@
 			const previousRaw = new Set(context.stateGame.board.flatMap((reel) => reel.reelState.symbols.map((symbol) => symbol.rawSymbol)));
 			const freegame = pace === 'freegame' || pace === 'turboFreegame';
 			const animation = pace === 'freegame' ? 'fg_gaze' : pace === 'turboFreegame' ? 'fg_gaze_turbo' : fast ? 'gaze_turbo' : 'gaze';
-			// ATG: the caster acts as the spin starts; the beam strikes ~1.5 s later
-			broadcast({ type: 'medusaAction', animation });
-			broadcast({ type: 'soundMedusa', cue: 'gaze', speed: fast ? 1.5 : 1 });
+			// reference (FirstBoardOdinShowDelay): the caster acts 0.25 s after the old board starts
+			// to leave. A base spin's board has already left when its book arrives, so there he acts
+			// at once; each pearl falls in with its value on it and is struck 0.15 s after it lands
+			const cast = () => {
+				broadcast({ type: 'medusaAction', animation });
+				broadcast({ type: 'soundMedusa', cue: 'gaze', speed: fast ? 1.5 : 1 });
+			};
+			if (fast || context.stateGame.board.every((reel) => reel.reelState.motion === 'hanging')) cast();
+			else void wait(250).then(cast);
 			nextRevealAt = 0;
 			mass = count >= MASS; massHit = false;
 			revealStagger = mass ? Math.max(35, 1000 / count) : REVEAL_STAGGER_MS;
@@ -492,15 +524,17 @@
 							let id = ids.get(key);
 							if (id === undefined) {
 								id = nextId++; ids.set(key, id);
-								orbs = [...orbs, { id, value, x: getSymbolX(reelIndex), y: symbol.symbolY.current, scale: CELL_SCALE, alpha: 0, stone: 0, crack: 0, angle: 0, sx: 1, sy: 1, trail: [], cell: true, reveal: 0 }];
+								orbs = [...orbs, { id, value, x: getSymbolX(reelIndex), y: symbol.symbolY.current, scale: CELL_SCALE, alpha: 0, stone: 0, crack: 0, angle: 0, sx: 1, sy: 1, trail: [], cell: true, reveal: 1 }];
 							}
 							const y = symbol.symbolY.current;
 							update(id, { y, alpha: Math.max(0, Math.min(1, (y + 20) / 60)) });
-							if (reel.reelState.motion === 'stopped') {
+							// reference FX1: the strike is timed off the pearl's own cell (it lands into
+							// its bounce here), not off the whole column coming to rest
+							if (reel.reelState.motion === 'stopped' || y >= getSymbolY(slot - 1) - SYMBOL_SIZE * 0.2) {
 								landed++;
 								if (!impacts.has(key)) {
 									impacts.add(key);
-									reveals.push(revealWatch(id, getSymbolX(reelIndex), y, value, fast, freegame));
+									reveals.push(revealWatch(id, getSymbolX(reelIndex), y, value, fast, freegame, STRIKE_DELAY_MS));
 								}
 							}
 						});
@@ -539,12 +573,12 @@
 			};
 			requestAnimationFrame(follow);
 		},
-		hypnoThrow: async ({ multipliers, applied, mult, baseWin, totalWin, toTotal, pace }) => {
+		hypnoThrow: async ({ multipliers, applied, mult, baseWin, totalWin, toTotal, bigWin, pace }) => {
 			if (multipliers.length === 0) return;
 			const fast = pace === 'turbo' || pace === 'turboFreegame';
 			await watchesLanded;
 			if (applied && orbs.some((orb) => orb.cell)) {
-				await collectWatches({ mult, baseWin, totalWin, toTotal, fast });
+				await collectWatches({ mult, baseWin, totalWin, toTotal, fast, bigWin });
 				return;
 			}
 			if (applied) {

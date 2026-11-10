@@ -20,6 +20,8 @@ for(const turbo of [false,true])for(const carriesTotal of [false,true])for(let c
  const plan=watchCollectTiming({turbo,carriesTotal,watchCount:count});
  assert.equal(plan.totalFlyMs>0,carriesTotal);
  assert.ok(plan.holdMs>0&&plan.collapseMs>0&&plan.formulaMs>plan.totalFlyMs);
+ assert.equal(plan.staggerMs,(turbo?0.55:1)*700,"one pearl every 0.7 s, start to start");
+ assert.equal(plan.leadMs>0,carriesTotal,"base-game pearls pop with the readout; the free-game TOTAL 0.2 s in");
 }
 const books=JSON.parse(readFileSync(new URL('../src/dev/devBooks.json',import.meta.url),'utf8'));
 let checked=0;

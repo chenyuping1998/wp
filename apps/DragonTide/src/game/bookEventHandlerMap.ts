@@ -6,13 +6,14 @@ import { waitForTimeout } from 'utils-shared/wait';
 
 import { eventEmitter } from './eventEmitter';
 import { playBookEvent } from './utils';
-import { winLevelMap, type WinLevel, type WinLevelData } from './winLevelMap';
+import { winLevelMap, type WinLevelData } from './winLevelMap';
 import { stateGame, stateGameDerived } from './stateGame.svelte';
 import type { BookEvent, BookEventOfType, BookEventContext } from './typesBookEvent';
 import type { Position, RawSymbol, SymbolName } from './types';
 import { BOARD_DIMENSIONS } from './constants';
 import config from './config';
 import { featureTotal } from './featureTotal';
+import { plaqueLevelForAmount } from './winTiers';
 import {medusaAnimations} from './animationTimeline';
 
 // The math numbers the reels after the one where the third Aegis landed 1, 2,
@@ -42,7 +43,7 @@ export type ScatterWinDatum = {
 	overlay: Position;
 };
 
-const winLevelSoundsPlay = ({ winLevelData }: { winLevelData: WinLevelData }) => {
+const winLevelSoundsPlay = ({ winLevelData, blastTier }: { winLevelData: WinLevelData; blastTier?: 1 | 2 | 3 | 4 | 5 }) => {
 	if (winLevelData?.alias === 'max') eventEmitter.broadcastAsync({ type: 'uiHide' });
 	if (winLevelData?.sound?.sfx) {
 		eventEmitter.broadcast({ type: 'soundOnce', name: winLevelData.sound.sfx });
@@ -52,7 +53,7 @@ const winLevelSoundsPlay = ({ winLevelData }: { winLevelData: WinLevelData }) =>
 	if (winLevelData?.type === 'big') {
 		eventEmitter.broadcast({
 			type: 'soundBigWinBlast',
-			tier: Math.min(5, Math.max(1, winLevelData.level - 5)) as 1 | 2 | 3 | 4 | 5,
+			tier: blastTier ?? (Math.min(5, Math.max(1, winLevelData.level - 5)) as 1 | 2 | 3 | 4 | 5),
 		});
 		eventEmitter.broadcast({ type: 'soundMedusa', cue: 'laugh' });
 		eventEmitter.broadcast({
@@ -130,6 +131,12 @@ export const bookEventHandlerMap: BookEventHandlerMap<BookEvent, BookEventContex
 		const pearls = visiblePearls(bookEvent.board);
 		if (pearls > 0) eventEmitter.broadcast({ type: 'hypnoWatchReveal', pace: currentPace(), count: pearls });
 		eventEmitter.broadcast({ type: 'soundScatterCounterClear' });
+		// reference: a free spin empties its board like a base spin, reel by reel left to right
+		// (the shared spin would drop the whole board at once); a base spin already did this
+		// before its book arrived
+		if (bookEvent.gameType === 'freegame' && stateGame.board.some((reel) => reel.reelState.motion === 'stopped')) {
+			await stateGameDerived.enhancedBoard.preSpin({ paddingBoard: config.paddingReels[bookEvent.gameType] as RawSymbol[][] });
+		}
 		await stateGameDerived.enhancedBoard.spin({
 			revealEvent: {
 				...bookEvent,
@@ -212,6 +219,8 @@ export const bookEventHandlerMap: BookEventHandlerMap<BookEvent, BookEventContex
 			baseWin: bookEvent.winInfo.tumbleWin,
 			totalWin: bookEvent.winInfo.totalWin,
 			toTotal: isFree,
+			// a big-win plaque follows (25x+, winTiers)
+			bigWin: plaqueLevelForAmount(bookEvent.winInfo.totalWin) >= 6,
 			pace: currentPace(),
 		});
 		if (isFree) stateGame.medusaTotal = bookEvent.winInfo.boardMult;
@@ -244,7 +253,9 @@ export const bookEventHandlerMap: BookEventHandlerMap<BookEvent, BookEventContex
 				await animateSymbols({ positions: [position] });
 			}),
 		);
-		await waitForTimeout(Math.max(0, 2000 - (performance.now() - triggerStart)));
+		// reference §5.1: the gates' light 0.5-1.5 s, the plaque and the caster's wind-up at ~2.2 s
+		// after the 4th gate lands (the bar takes ~0.4 s to clear first)
+		await waitForTimeout(Math.max(0, 1100 - (performance.now() - triggerStart)));
 		eventEmitter.broadcast({ type: 'soundOnce', name: 'sfx_superfreespin' });
 		await eventEmitter.broadcastAsync({ type: 'uiHide' });
 		// 天使奧丁 (research/xinstar-angelodin §5.1): the feature plaque comes in on
@@ -260,12 +271,14 @@ export const bookEventHandlerMap: BookEventHandlerMap<BookEvent, BookEventContex
 		});
 		eventEmitter.broadcast({ type: 'medusaAction', animation: 'fg_transform' });
 		eventEmitter.broadcast({ type: 'soundMedusa', cue: 'gaze' });
+		let swappedAt = performance.now();
 		await eventEmitter.broadcastAsync({
 			type: 'transition',
 			kind: 'portal',
 			tone: 'violet',
 			oncover: () => {
 				// the plaque stays up until the spiral has swallowed it
+				swappedAt = performance.now();
 				eventEmitter.broadcast({ type: 'freeSpinIntroHide' });
 				eventEmitter.broadcast({ type: 'medusaPose', pose: 'idle' });
 				stateGame.gameType = 'freegame';
@@ -296,6 +309,8 @@ export const bookEventHandlerMap: BookEventHandlerMap<BookEvent, BookEventContex
 		await eventEmitter.broadcastAsync({ type: 'uiShow' });
 		await eventEmitter.broadcastAsync({ type: 'drawerButtonShow' });
 		eventEmitter.broadcast({ type: 'drawerFold' });
+		// reference §5.1: the first free spin comes 1.5 s after the scene swapped under the flash
+		await waitForTimeout(Math.max(0, 1500 - (performance.now() - swappedAt)));
 	},
 
 	updateFreeSpin: async (bookEvent: BookEventOfType<'updateFreeSpin'>) => {
@@ -348,9 +363,12 @@ export const bookEventHandlerMap: BookEventHandlerMap<BookEvent, BookEventContex
 
 	freeSpinEnd: async (bookEvent: BookEventOfType<'freeSpinEnd'>) => {
 		// the plaque shows the WHOLE round, trigger spin included (featureTotal)
-		const total = featureTotal(bookEvent.amount, bookEvent.winLevel);
-		const winLevelData = winLevelMap[total.winLevel as WinLevel];
+		const total = featureTotal(bookEvent.amount);
+		const winLevelData = winLevelMap[total.winLevel];
 
+		// reference §5.3: the end plaque comes in ~0.5 s after the last spin stops (the bar takes
+		// ~0.4 s to clear first)
+		await waitForTimeout(100);
 		await eventEmitter.broadcastAsync({ type: 'uiHide' });
 		const fgEndStarted=performance.now();
 		eventEmitter.broadcast({ type: 'medusaAction', animation: 'fg_end' });
@@ -387,11 +405,14 @@ export const bookEventHandlerMap: BookEventHandlerMap<BookEvent, BookEventContex
 	 * tumble counter and the win ticker.
 	 */
 	setWin: async (bookEvent: BookEventOfType<'setWin'>) => {
-		const winLevelData = winLevelMap[bookEvent.winLevel as WinLevel];
+		// the maths sends the reference tiers 1-5 (2 BIG 25x+ ... 5 EPIC 200x+); the plaque table
+		// numbers them 6-9, MAX 10 at the win cap (winTiers)
+		const winLevelData = winLevelMap[plaqueLevelForAmount(bookEvent.amount)];
 		if (!isCelebratedWinLevel(winLevelData)) return;
 
 		eventEmitter.broadcast({ type: 'winShow' });
-		winLevelSoundsPlay({ winLevelData });
+		// the plaque opens on BIG and climbs (Win.svelte sounds each tier it reaches)
+		winLevelSoundsPlay({ winLevelData, blastTier: 1 });
 		await eventEmitter.broadcastAsync({
 			type: 'winUpdate',
 			amount: bookEvent.amount,

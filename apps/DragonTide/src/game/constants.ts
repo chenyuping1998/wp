@@ -121,29 +121,27 @@ const CASCADE_SHARED = {
 	symbolFallInBounceSizeMulti: 0.08,
 };
 
-// Normal speed follows the GoO 1000 transcription (research/goo1000_motion, 60 fps
-// frames, 98 px cell): reels fall out 6 f apart, bottom row first 1.2 f apart,
-// at 0.35 cell/f; new symbols enter 8.6 f apart per reel (reelFallInDelay x
-// (1.2c + 0.2) on top of the fall-out stagger), bottom first, at a near-constant
-// 0.39 cell/f, and overshoot 0.12 cell before settling in 6 f. GoO spawns 5 f
-// apart but upper symbols fall shorter, so they LAND 2-3 f apart; ours all fall
-// the same distance, so the interval is that landing gap (40 ms): a reel lands
-// in 0.52 s, GoO 0.53 s.
+// Normal speed follows 天使奧丁's GameConfig.NormalTimeParameter and its recorded first board
+// (SPEC §2.1; 22 recorded spins): new symbols come in left to right 0.15 s a reel
+// (reelFallInDelay x 1.2: the shared reel scales it by the padding accumulated across the
+// reels), bottom first, and land with an overshoot that settles over 0.2 s; old symbols leave
+// left to right, 0.03 s a cell, bottom first. The reference starts a reel's new symbols while
+// the later reels are still emptying (new board ~0.72 s after SPIN, a pearl in reel 1 struck at
+// ~1.0 s, each reel to the right 0.15 s later, all at rest ~1.9 s); the shared reel waits for
+// the whole board to empty and drops each symbol 6.5 rows from above, so the old board leaves
+// 0.04 s a reel and the new symbols fall faster (3.0 units/ms, ~0.16 s in view, as there) to
+// keep that clock. Cells land 40 ms apart (reference 80).
 export const SPIN_OPTIONS_DEFAULT = {
 	...CASCADE_SHARED,
-	symbolFallInSpeed: 2.29,
+	symbolFallInSpeed: 3.0,
 	symbolFallInInterval: 40,
-	symbolFallInBounceSpeed: 0.118,
+	symbolFallInBounceSpeed: 0.059,
 	symbolFallInBounceSizeMulti: 0.12,
-	symbolFallOutSpeed: 2.06,
-	symbolFallOutInterval: 20,
-	// ATG 戰神賽特 (research ATG-Seth-Capture §1): the whole old board leaves
-	// first, the board stays EMPTY ~0.22 s, then the new one falls in left to
-	// right 0.13 s a reel. The padding fall and the book request already give
-	// most of the empty beat (measured 11-03), so the lead only tops it up.
-	reelFallInLeadMs: 60,
-	reelFallInDelay: 25,
-	reelFallOutDelay: 100,
+	symbolFallOutSpeed: 3.0,
+	symbolFallOutInterval: 30,
+	reelFallInLeadMs: 0,
+	reelFallInDelay: 125,
+	reelFallOutDelay: 40,
 };
 
 // A teasing reel drops slower than a normal one, so the extra padding reads as

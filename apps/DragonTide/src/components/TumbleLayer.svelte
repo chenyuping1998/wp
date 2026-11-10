@@ -120,12 +120,15 @@
 				crumbleMs: timing.clearMs,
 				fallMs: fall(first),
 				columnDelayMs: first.reel * timing.columnStaggerMs,
+				// the caster acts at the burst, in the same beat as the winners blow
+				castDelayMs: timing.restMs + timing.flashMs,
 			});
 			gapMs = drop.gapMs;
 			// A multiplier is the incoming symbol in its slot, sharing the refill clock.
 			context.eventEmitter.broadcast({
 				type: 'hypnoWatchDrop',
 				animation: drop.animation,
+				castDelayMs: drop.castDelayMs,
 				releaseMs: drop.releaseMs,
 				pace,
 				drops: cells.map((cell, i) => ({

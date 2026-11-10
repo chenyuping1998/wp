@@ -27,7 +27,8 @@
 
 	// 天使奧丁 starts its free game on its own after ~2.5 loops of the panel
 	// (research/xinstar-angelodin §5.1); a press still skips the wait.
-	const AUTO_CONTINUE_MS = 3200;
+	// reference §5.1: the plaque comes in (1.52 s), loops ~2.5 times and starts on its own
+	const AUTO_CONTINUE_MS = 4300;
 	// title: stamped in, 1 → 1.9 at 0.18 s → 0.93 → 1.025 → rests at 0.72 s;
 	// the count pops in after it, 1.3 → 0.8 → 1 (FG_Board_Start In)
 	const TITLE_SCALE = [[0, 1], [180, 1.9], [400, 0.93], [520, 1.025], [720, 1]] as const;

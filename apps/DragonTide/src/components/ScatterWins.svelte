@@ -59,6 +59,7 @@
 				if (!winning.has(`${reel}:${row}`)) g.rect(getSymbolX(reel) - SYMBOL_SIZE / 2, slotY(row) - SYMBOL_SIZE / 2, SYMBOL_SIZE, SYMBOL_SIZE).fill({ color: 0x000000, alpha: 0.4 });
 			}
 		}} />
+		<!-- the gold win frame (reference: a gold frame round every winner for the whole mark) -->
 		<Graphics draw={(g) => {
 			g.clear();
 			const entrance = smooth(age / markMs / 0.1);
@@ -69,9 +70,9 @@
 				const x = getSymbolX(pos.reel) - SYMBOL_SIZE * 0.46;
 				const y = slotY(pos.row) - SYMBOL_SIZE * 0.46;
 				g.roundRect(x, y, SYMBOL_SIZE * 0.92, SYMBOL_SIZE * 0.92, 10)
-					.stroke({ color: 0xb877ef, width: 6 + heat, alpha: entrance * (0.15 + pulse * 0.15) });
+					.stroke({ color: 0xe8b84a, width: 6 + heat, alpha: entrance * (0.2 + pulse * 0.15) });
 				g.roundRect(x, y, SYMBOL_SIZE * 0.92, SYMBOL_SIZE * 0.92, 10)
-					.stroke({ color: heat >= 2 ? 0xffd75e : 0xedd6ff, width: 2, alpha: entrance * (0.65 + pulse * 0.3) });
+					.stroke({ color: heat >= 2 ? 0xffd75e : 0xfff1c4, width: 2, alpha: entrance * (0.65 + pulse * 0.3) });
 			}
 		}} />
 		{#each wins as win, index (index)}

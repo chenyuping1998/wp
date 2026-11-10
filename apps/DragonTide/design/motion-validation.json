@@ -6,7 +6,7 @@
   "fractureArea": 1,
   "landingFootFixed": true,
   "independentColumnLandings": true,
-  "eightLinkTimingBudgetMs": 19647.5,
+  "eightLinkTimingBudgetMs": 24400,
   "meshGrid": 32,
   "invertedTriangles": 0,
   "minMeshAreaRatio": 0.3384164908928961,
