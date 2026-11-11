@@ -16,7 +16,11 @@ INSET, RULE, PAD = 34, 7, 16  # rule inset from tile edge, rule width, art gap i
 tile = Image.open(D / 'low_label.png').convert('RGBA')
 x0, y0, x1, y1 = tile.getchannel('A').getbbox()
 rule_box = (x0 + INSET, y0 + INSET, x1 - INSET, y1 - INSET)
-inner = rule_box[2] - rule_box[0] - 2 * (RULE + PAD)
+# 11-03 review (5.3 "Low quality assets"): fitted inside the rule the art
+# filled ~60% of the cell and the board read empty. The art now breaks out of
+# the salmon rule (premium pop-out) and fills ART_FILL of the paper tile.
+ART_FILL = 0.94
+inner = round((x1 - x0) * ART_FILL)
 for n in range(1, 5):
     out = tile.copy()
     ImageDraw.Draw(out).rounded_rectangle(rule_box, radius=18, outline=SALMON, width=RULE)

@@ -955,6 +955,13 @@
 		border: 2px solid #282828 !important;
 		box-shadow: none !important;
 		text-shadow: none !important;
+		/* the shared button centres by line-height 0, which left the × 2.3px
+		   below the box centre (ui_center_audit, 2026-11-03) */
+		display: flex !important;
+		align-items: center !important;
+		justify-content: center !important;
+		line-height: 1 !important;
+		padding: 0 !important;
 	}
 
 	:global(.pop-up-wrap input), :global(.pop-up-wrap select),

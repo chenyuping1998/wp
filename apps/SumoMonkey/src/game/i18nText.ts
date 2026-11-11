@@ -203,6 +203,18 @@ const TEXTS = {
 		zh: "土俵對決開始！",
 		ja: "土俵対決スタート！",
 	},
+	// the bar names the feature actually being played: the bought tier, or plain
+	// Free Spins when Scatters opened it from the base game
+	yokozunaOn: {
+		en: "YOKOZUNA CLASH IS ON!",
+		zh: "橫綱對決開始！",
+		ja: "横綱対決スタート！",
+	},
+	freeSpinsOn: {
+		en: "FREE SPINS ARE ON!",
+		zh: "免費遊戲開始！",
+		ja: "フリースピン開始！",
+	},
 	// the opening feature cards (FeatureIntro.svelte); {placeholders} are
 	// filled from the maths config at runtime
 	introFreeSpinsBody: {

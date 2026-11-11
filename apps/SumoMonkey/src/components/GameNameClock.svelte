@@ -6,10 +6,13 @@
 	// close to invisible. Ink with a paper rim reads on the cream sky AND on the
 	// free game's dark green — same clock, same placement as the shared one.
 	import { SvelteDate } from 'svelte/reactivity';
-	import { Text, REM } from 'pixi-svelte';
+	import { Sprite, Text, REM } from 'pixi-svelte';
 	import { uiTheme } from 'components-ui-pixi';
 
-	type Props = { name: string };
+	// showLogo: the wordmark beside the clock is only drawn where the larger
+	// top-right one is not (portrait, narrow or pop-out windows) — one name on
+	// screen at a time (UI check 2026-11-07 U2: two logos at once on desktop).
+	type Props = { name: string; showLogo?: boolean };
 	const props: Props = $props();
 
 	const reactiveDate = new SvelteDate();
@@ -34,4 +37,7 @@
 </script>
 
 <Text text={clock} onresize={(value) => (clockSizes = value)} {style} />
-<Text text={props.name} x={clockSizes.width + 5} {style} />
+<!-- Match the clock row height so the free-spin card below cannot cover the rope. -->
+{#if props.showLogo ?? true}
+	<Sprite key="sumoLogoHeader" x={clockSizes.width + 12} y={-4} width={128} height={32} />
+{/if}

@@ -25,6 +25,8 @@
 		// lands (see ReelSymbol, which knows both the reel motion and the tier)
 		blur?: number;
 		impact?: number;
+		/** board cell, for the settled-board idle act */
+		rowIndex?: number;
 	};
 
 	const props: Props = $props();
@@ -37,7 +39,6 @@
 	// The inherited mesh wins contain miner-specific layers. Flat ink symbols
 	// use the shared motion until their own print-style win rigs are authored.
 	const isMeshWin = $derived(false);
-	const lowLetter = $derived(({ L1: 'A', L2: 'K', L3: 'Q', L4: 'J', L5: '10' } as Record<string, string>)[props.rawSymbol.name]);
 	// The dynamite's landing is a mesh too (meshWin/landB.ts): the bundle hits
 	// and squashes, the fuse whips and fizzes. SymbolMeshWin plays any spec;
 	// this one reports the land complete instead of a win.
@@ -68,7 +69,7 @@
 		/>
 	{:else if isSprite && isWin}
 		<!-- Win state for sprite symbols: GB100's per-symbol win move -->
-		<SymbolWinAnim {symbolInfo} symbolName={props.rawSymbol.name} letter={lowLetter} x={0} y={0} {oncomplete} />
+		<SymbolWinAnim {symbolInfo} symbolName={props.rawSymbol.name} x={0} y={0} {oncomplete} />
 	{:else if isSprite}
 		<SymbolSprite
 			{symbolInfo}
@@ -77,7 +78,9 @@
 			blur={props.state === 'spin' ? (props.blur ?? 1) : 0}
 			landing={props.state === 'land'}
 			impact={props.impact}
-			letter={lowLetter}
+			symbolName={props.rawSymbol.name}
+			cell={props.reelIndex !== undefined && props.rowIndex !== undefined ? { reel: props.reelIndex, row: props.rowIndex } : undefined}
+			idle={props.state === 'static' || props.state === 'postWinStatic'}
 			{oncomplete}
 		/>
 	{:else}

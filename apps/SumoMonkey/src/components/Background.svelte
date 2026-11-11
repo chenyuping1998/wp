@@ -1,5 +1,6 @@
 <script lang="ts">
-	import { Rectangle, Sprite } from 'pixi-svelte';
+	import { Graphics, Rectangle, Sprite } from 'pixi-svelte';
+	import type { Graphics as PixiGraphics } from 'pixi.js';
 	import { FadeContainer } from 'components-pixi';
 	import { SECOND } from 'constants-shared/time';
 	import { onMount } from 'svelte';
@@ -36,6 +37,44 @@
 		};
 	});
 
+	// PLATE LIFE, drawn in the plate's own 1920×1080 pixels and carried by the
+	// same cover + drift as the plate, so nothing slides across the painting.
+	// Review 2026-11-03 (5.3): the arena read as a still print. The painted
+	// balcony lanterns now breathe with candle light, and the left stand's crowd
+	// waves uchiwa fans over the rail in turn. The right stand stays still: the
+	// rikishi stands in front of it (cast-reads-off-background).
+	const LANTERNS: [number, number, number][] = [
+		[22, 315, 30], [100, 360, 28], [168, 395, 26], [222, 425, 24], [268, 450, 22], [312, 470, 20],
+		[1895, 305, 30], [1818, 360, 28], [1750, 395, 26], [1698, 425, 24], [1650, 450, 22], [1606, 470, 20],
+	];
+	const FANS: [number, number][] = [[48, 640], [122, 655], [196, 648], [262, 668], [318, 662], [86, 690], [230, 700]];
+	const FAN_CYCLE = 5.6;
+	const drawLife = (g: PixiGraphics) => {
+		g.clear();
+		const t = clock;
+		for (const [i, [x, y, r]] of LANTERNS.entries()) {
+			const flicker = 0.5 + 0.3 * Math.sin(t * 2.3 + i * 1.9) + 0.2 * Math.sin(t * 7.1 + i * 3.3);
+			g.ellipse(x, y + r * 0.15, r * 1.9, r * 2.2).fill({ color: 0xf0a07a, alpha: 0.1 + 0.16 * flicker });
+			g.ellipse(x, y + r * 0.15, r * 0.95, r * 1.25).fill({ color: 0xffd9b8, alpha: 0.1 + 0.22 * flicker });
+		}
+		for (const [i, [x, y]] of FANS.entries()) {
+			// each fan rises over the rail for 1.8s of its 5.6s turn, staggered
+			const p = (((t + i * (FAN_CYCLE / FANS.length) * 2.3) % FAN_CYCLE) + FAN_CYCLE) % FAN_CYCLE;
+			if (p > 1.8) continue;
+			const u = p / 1.8;
+			const up = Math.sin(Math.PI * u);
+			const lift = 60 * Math.min(1, up * 1.6);
+			const a = Math.sin(u * Math.PI * 5) * 0.45 * up + (i % 2 ? 0.15 : -0.15);
+			const bx = x, by = y - lift;
+			const hx = bx + Math.sin(a) * 46, hy = by - Math.cos(a) * 46;
+			g.moveTo(bx, by + 30).lineTo(hx, hy).stroke({ width: 8, color: 0x282828, alpha: Math.min(1, up * 2) });
+			g.ellipse(hx + Math.sin(a) * 26, hy - Math.cos(a) * 26, 32, 28)
+				.fill({ color: 0xefeadc, alpha: Math.min(1, up * 2) })
+				.stroke({ width: 5, color: 0x282828, alpha: Math.min(1, up * 2) });
+			g.circle(hx + Math.sin(a) * 26, hy - Math.cos(a) * 26, 11).fill({ color: 0xc47d60, alpha: Math.min(1, up * 2) });
+		}
+	};
+
 	// requestAnimationFrame, not setInterval: the review checker flags interval
 	// animation, and rAF stops with the tab instead of piling up.
 	onMount(() => {
@@ -61,5 +100,15 @@
 <FadeContainer show={showFeatureBackground} duration={SECOND} zIndex={-1}>
 	<Sprite key="gbBgFeature" {...parallax} alpha={.84} />
 </FadeContainer>
+
+<Graphics
+	x={parallax.x}
+	y={parallax.y}
+	scale={parallax.width / PLATE[0]}
+	zIndex={-0.75}
+	alpha={.84}
+	draw={drawLife}
+	eventMode="none"
+/>
 
 <SumoArenaLife />

@@ -1,4 +1,6 @@
 export default {
+	sumoLogoMain: {type:'sprite',src:new URL('../../assets/sprites/sumoV8/logo_main.png',import.meta.url).href,preload:true},
+	sumoLogoHeader: {type:'sprite',src:new URL('../../assets/sprites/sumoV8/logo_header.png',import.meta.url).href,preload:true},
 	sumo_mg_arm_back_lower: {type:'sprite',src:new URL('../../assets/sumoCast/mg/arm_back_lower.png',import.meta.url).href,preload:true},
 	sumo_mg_arm_back_upper: {type:'sprite',src:new URL('../../assets/sumoCast/mg/arm_back_upper.png',import.meta.url).href,preload:true},
 	sumo_mg_arm_front_lower: {type:'sprite',src:new URL('../../assets/sumoCast/mg/arm_front_lower.png',import.meta.url).href,preload:true},
@@ -110,9 +112,9 @@ export default {
 	v8Digitreceipt14: {type:'sprite',src:new URL('../../assets/sprites/sumoV8/digit_receipt_14.png',import.meta.url).href,preload:true},
 	v8Digitreceipt15: {type:'sprite',src:new URL('../../assets/sprites/sumoV8/digit_receipt_15.png',import.meta.url).href,preload:true},
 	v8MenuFrame: {type:'sprite',src:new URL('../../assets/sprites/sumoV8/menu_frame.png',import.meta.url).href,preload:true},
-	v8IntroCollect: {type:'sprite',src:new URL('../../assets/sprites/sumoV8/intro_collect.png',import.meta.url).href,preload:true},
-	v8IntroSlice: {type:'sprite',src:new URL('../../assets/sprites/sumoV8/intro_slice.png',import.meta.url).href,preload:true},
-	v8IntroReceipt: {type:'sprite',src:new URL('../../assets/sprites/sumoV8/intro_receipt.png',import.meta.url).href,preload:true},
+	v8IntroCollect: {type:'sprite',src:new URL('../../assets/sprites/sumoV8/intro_rikishi.png',import.meta.url).href,preload:true},
+	v8IntroSlice: {type:'sprite',src:new URL('../../assets/sprites/sumoV8/intro_freespins.png',import.meta.url).href,preload:true},
+	v8IntroReceipt: {type:'sprite',src:new URL('../../assets/sprites/sumoV8/intro_maxwin.png',import.meta.url).href,preload:true},
 	v8WinBig: {type:'sprite',src:new URL('../../assets/sprites/sumoV8/win_big.png',import.meta.url).href,preload:true},
 	v8WinBigDecor: {type:'sprite',src:new URL('../../assets/sprites/sumoV8/win_big_decor.png',import.meta.url).href,preload:true},
 	v8WinSuper: {type:'sprite',src:new URL('../../assets/sprites/sumoV8/win_super.png',import.meta.url).href,preload:true},
@@ -296,27 +298,27 @@ export default {
 	},
 	gbL1: {
 		type: 'sprite',
-		src: new URL('../../assets/sprites/sumoSymbols/low_label.png', import.meta.url).href,
+		src: new URL('../../assets/sprites/sumoSymbols/l1_a.png', import.meta.url).href,
 		preload: true,
 	},
 	gbL2: {
 		type: 'sprite',
-		src: new URL('../../assets/sprites/sumoSymbols/low_label.png', import.meta.url).href,
+		src: new URL('../../assets/sprites/sumoSymbols/l2_k.png', import.meta.url).href,
 		preload: true,
 	},
 	gbL3: {
 		type: 'sprite',
-		src: new URL('../../assets/sprites/sumoSymbols/low_label.png', import.meta.url).href,
+		src: new URL('../../assets/sprites/sumoSymbols/l3_q.png', import.meta.url).href,
 		preload: true,
 	},
 	gbL4: {
 		type: 'sprite',
-		src: new URL('../../assets/sprites/sumoSymbols/low_label.png', import.meta.url).href,
+		src: new URL('../../assets/sprites/sumoSymbols/l4_j.png', import.meta.url).href,
 		preload: true,
 	},
 	gbL5: {
 		type: 'sprite',
-		src: new URL('../../assets/sprites/sumoSymbols/low_label.png', import.meta.url).href,
+		src: new URL('../../assets/sprites/sumoSymbols/l5_10.png', import.meta.url).href,
 		preload: true,
 	},
 	gbW: {

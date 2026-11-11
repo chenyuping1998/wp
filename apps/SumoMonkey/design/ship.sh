@@ -1,6 +1,7 @@
 #!/bin/zsh
-# Sushi Monkey — the packaging pipeline, in the one order that works.
-# Ported from Capo Nostra's design/ship.sh (see its header for the history).
+# Sumo Monkey — the packaging pipeline, in the one order that works.
+# Until 2026-11-10 this file was a byte-for-byte copy of Sushi Monkey's script: running it here
+# rebuilt and restaged SUSHI Monkey (a live game). Ported to this game's own paths that day.
 #
 #   ./design/ship.sh          full pipeline, staged into upload/<Game>/ — NO zips
 #   ./design/ship.sh --zip    the same, and then build the three zips
@@ -11,20 +12,21 @@
 # build (step 4 always rebuilds). A green run is not a verified game — open
 # the playtest shell and look.
 #
-# Differences from Capo's copy: the app lives in the wp-banandit worktree, the
-# math config sync is the app's node script, max win is 10,000x (`1e4`), and
-# the contamination list is Go Boomana's (the source) plus its siblings.
+# Differences from Sushi's copy: store art is built into upload/SumoMonkey/{thumbnail,cover}
+# by its own scripts and only VERIFIED here (nothing is copied over it); the contamination list
+# adds Sushi Monkey's player-visible words (the internal "SushiReceipt" font name and the
+# sushi* asset folders are still used by this game and are not hits); a missing `rg` fails.
 set -e
 
 ROOT=/Users/stone/stake-engine
-APP=$ROOT/wp-banandit/apps/SushiMonkey
-GAME=SushiMonkey
-NAME=SushiMonkey
+APP=$ROOT/wp-banandit/apps/SumoMonkey
+GAME=SumoMonkey
+NAME=SumoMonkey
 PY=/Applications/anaconda3/envs/math-sdk/bin/python
-PLAYTEST=$ROOT/dist/sushimonkey-playtest
+PLAYTEST=$ROOT/dist/sumomonkey-playtest
 
 if [[ -f "$APP/design/WORK_IN_PROGRESS" ]]; then
-  print "Sushi Monkey is in production: finish art and math verification before packaging."
+  print "Sumo Monkey is in production: finish art and math verification before packaging."
   exit 1
 fi
 
@@ -33,6 +35,9 @@ say() { print -P "%F{cyan}==> $1%f"; }
 checks() {
   say "7. sanity checks (the actual gate, not the zip)"
   local fail=0
+  # A missing tool must fail, never pass: Sushi's copy once printed "all clean" without rg.
+  command -v rg >/dev/null || { print "  FAIL: rg (ripgrep) is not on PATH — the checks below cannot run"; return 1; }
+  [[ -f $ROOT/upload/$NAME/frontend/index.html ]] || { print "  FAIL: nothing staged at upload/$NAME/frontend"; return 1; }
   # Old-game contamination. Greps the BUILT bundle, never src: a stale build is
   # how a correct source change still ships the old behaviour.
   #
@@ -40,7 +45,8 @@ checks() {
   # named, and folder names ship inside the bundle's URLs even when no visible
   # text mentions the other game. It was 35 occurrences until 2026-09-20.
   for term in "GoBanandit" "Banandit" "banandit" "Boomana" "BOOMANA" "Dynamite" "DYNAMITE" "Hold and Spin" "HOLDANDSPIN" \
-              "Golden Bananas" "Miner" "Pickaxe" "Delta" "Bananaut" "Bananubis"; do
+              "Golden Bananas" "Miner" "Pickaxe" "Delta" "Bananaut" "Bananubis" \
+              "Sushi Monkey" "SUSHI" "SushiMonkey" "Chef" "CHEF" "CHOOSE YOUR MENU" "Conveyor" "Wasabi"; do
     local n=$(rg -o --glob "*.html" --glob "*.js" "$term" $ROOT/upload/$NAME/frontend 2>/dev/null | wc -l | tr -d ' ')
     [[ "$n" != "0" ]] && { print "  FAIL: '$term' x$n in the upload frontend"; fail=1; }
   done
@@ -62,7 +68,15 @@ checks() {
   grep -rqE "1e4|10000" $ROOT/upload/$NAME/frontend/_app 2>/dev/null \
     || { print "  FAIL: 10,000x cap not present in the shipped bundle"; fail=1; }
 
-  [[ $fail == 1 ]] && { print "\nPACKAGE IS CONTAMINATED — do not zip."; return 1; }
+  # Staged math is the math library, and store art is present (built elsewhere, verified here).
+  diff -rq $ROOT/math-sdk/games/$GAME/library/publish_files/ $ROOT/upload/$NAME/math >/dev/null \
+    || { print "  FAIL: staged math differs from the math library"; fail=1; }
+  for f in thumbnail/$NAME-Thumbnail-BG.png thumbnail/$NAME-Thumbnail-FG.png thumbnail/Silverstars-Logo.png \
+           cover/$NAME-Cover-BG.png cover/$NAME-Cover-FG.png README.md; do
+    [[ -f $ROOT/upload/$NAME/$f ]] || { print "  FAIL: missing in the package: $f"; fail=1; }
+  done
+
+  [[ $fail == 1 ]] && { print "\nPACKAGE IS CONTAMINATED — do not upload."; return 1; }
   print "  all clean"
 }
 
@@ -128,12 +142,7 @@ else
   rsync -a $APP/static/fonts/ $ROOT/upload/$NAME/frontend/fonts/
 fi
 
-say "6b. thumbnail (BG / FG hero only / provider logo) and README"
-mkdir -p $ROOT/upload/$NAME/thumbnail
-cp $APP/design/thumbnail/SushiMonkey-BG.png $APP/design/thumbnail/SushiMonkey-FG.png \
-   $APP/design/thumbnail/Silverstars-Logo.png $ROOT/upload/$NAME/thumbnail/
-mkdir -p $ROOT/upload/$NAME/cover
-cp $APP/design/cover/SushiMonkey-Cover-BG.png $APP/design/cover/SushiMonkey-Cover-FG.png $ROOT/upload/$NAME/cover/
+say "6b. README (thumbnail and cover are built by their own scripts and verified in the checks)"
 cp $APP/design/UPLOAD_README.md $ROOT/upload/$NAME/README.md
 
 checks

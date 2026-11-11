@@ -234,7 +234,7 @@
 			<section class="wp-card">
 				<h3 style="color: #c47d60 !important"><span class="wp-accent-bar"></span>Prize Medallions &amp; the Rikishi</h3>
 				<p>
-					Every <strong>Prize Medallion</strong> (the prize medallion) lands with its value
+					Every <strong>Prize Medallion</strong> (the round plate) lands with its value
 					shown on a tag on the plate, as a multiple of the {T.bet}. Possible values are
 					1&times;, 2&times;, 3&times;, 4&times;, 5&times;, 10&times;, 15&times;, 20&times;, 25&times;
 					and 50&times;; in Free Spins a Medallion can also show 100&times; or 250&times;. A Medallion does
@@ -292,7 +292,7 @@
 					<strong>Scatters cannot retrigger Free Spins.</strong> Scatters do not appear on the
 					reels during the feature. Extra spins come only from the Rikishi meter, as described
 					above. This applies to Free Spins entered by landing Scatters and to every round
-					{T.bought} from the {T.betMenu}.
+					{T.bought} from the feature menu.
 				</p>
 				<p>
 					<strong>Maximum Free Spins.</strong> The meter has {meter.thresholds.length} marks and each

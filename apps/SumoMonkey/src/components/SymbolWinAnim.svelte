@@ -102,6 +102,33 @@
 	// the frame is brightest while the tile is furthest out
 	const lift = $derived(Math.min(1, Math.max(0, (Math.max(scale.x, scale.y) - 1) / 0.35)));
 
+	// SALT THROW. A rikishi throws salt before the bout, so a winning tile
+	// throws it too: an ink impact ring and a handful of salt grains that burst
+	// from the tile in the first 0.7s of its move. Drawn outside the moving
+	// container so the grains fly in board space rather than swing with the tile.
+	const SALT_MS = 700;
+	const seed = props.symbolName.split('').reduce((a, c) => a + c.charCodeAt(0), 0);
+	const grains = Array.from({ length: 14 }, (_, i) => {
+		const a = (i / 14) * Math.PI * 2 + Math.sin(seed + i * 2.3) * 0.35;
+		return { a, v: 0.55 + 0.25 * Math.abs(Math.sin(seed * 1.7 + i)), s: 3 + (i % 3) * 2 };
+	});
+	const drawSalt = (g: PixiGraphics) => {
+		g.clear();
+		const u = (t * 1000) / SALT_MS;
+		if (u <= 0 || u >= 1) return;
+		const out = 1 - (1 - u) ** 3;
+		const r = SYMBOL_SIZE * (0.42 + 0.3 * out);
+		g.circle(0, 0, r).stroke({ width: 6 * (1 - u), color: 0x282828, alpha: 0.55 * (1 - u) });
+		g.circle(0, 0, r * 0.92).stroke({ width: 3 * (1 - u), color: 0xc47d60, alpha: 0.7 * (1 - u) });
+		for (const p of grains) {
+			const d = SYMBOL_SIZE * (0.3 + p.v * out);
+			const x = Math.cos(p.a) * d;
+			const y = Math.sin(p.a) * d + SYMBOL_SIZE * 0.25 * u * u;
+			const s = p.s * (1 - u * 0.5);
+			g.poly([x, y - s, x + s, y, x, y + s, x - s, y]).fill({ color: 0xefeadc, alpha: 1 - u }).stroke({ width: 1.5, color: 0x282828, alpha: 0.8 * (1 - u) });
+		}
+	};
+
 	const w = $derived(SYMBOL_SIZE * props.symbolInfo.sizeRatios.width);
 	const h = $derived(SYMBOL_SIZE * props.symbolInfo.sizeRatios.height);
 
@@ -132,3 +159,4 @@
 	{/if}
 	<Graphics draw={drawFrame} />
 </Container>
+<Graphics x={props.x ?? 0} y={props.y ?? 0} draw={drawSalt} />

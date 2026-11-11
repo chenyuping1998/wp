@@ -435,3 +435,230 @@ Platform: 2026-10-29 15:2x UTC uploaded (7 files + 3 deletes, replan 0) and PUBL
 Platform: 2026-10-29 15:50 UTC uploaded (3 files + 1 delete, replan 0) and PUBLISHED front v9 (intro MAX WIN off the trophy; math v1, no approval). Receipts: _upload_backups/SumoMonkey-publish-v9-20261029.
 2026-10-30: MG+FG all four leg layers — 補畫_v5 straight chord cuts undone (outline blended back to 重拆_v2 away from the knee; v5 knee tuck kept). Copies 角色生圖_相撲猴/腿部重修_20261030/. Staged 423 files; cover/thumbnail refreshed. Platform still front v9 until uploaded. Backup _upload_backups/SumoMonkey-before-legfix2-20261030.
 Platform: 2026-10-30 03:00 UTC uploaded (11 files + 1 delete, replan 0) and PUBLISHED front v10 (MG+FG leg fix; math v1, no approval). FG checked in-game desktop + portrait 390×844 cut-in before upload. Receipts: _upload_backups/SumoMonkey-publish-v10-20261030.
+
+
+## 2026-11-02: Neon spin-feel local trial
+
+Stone requested the same GoBananeon spin treatment used on corrected Turf and Pickle trials. Added ReelMotion/reelMotion velocity sampler with padding identity rebase,45ms build/24ms sharpen and smaller bounce blur. Removed SymbolSprite's two translucent ghosts,30% vertical stretch and15% opacity reduction. Both games use140px cells, so the normal profile matches Neon directly: pre2.8px/ms, sweep4.2, brake2.8, settle0.22, normal padding1, start stagger100ms, rebound0.12cells. Sumo's anticipation/turbo profiles, art, rigs, feature presentation, audio and math remain unchanged.
+
+Full build and guards PASS (13 existing baseline type errors; no new per-file errors). Added Neon behavioral blur check to build. Actual production Chrome:3 complete normal spins, median stop gap200ms and first-to-last800ms. Desktop moving frame viewed (stopped left reel sharp, remaining reels blurred), settled desktop and390x844 portrait play viewed. Caught window errors empty. Explicit labelled-reel scene check at rest: all5 reels stopped with empty filters. This is a base-game presentation trial, not full bonus/physical-device/platform acceptance.
+
+Preview http://localhost:8020/?rgs_url=stub.local&sessionID=playtest&currency=USD&lang=en ; output `dist/sumomonkey-neon-motion/`, build log/timing/screenshots/source hashes in `evidence/`. No upload staging or platform upload/publication; thumbnail/cover unchanged.
+
+
+## 2026-11-02: Neon motion uploaded and published
+
+Stone requested publication of all3 new trials. Uploaded the exact tested frontend to silver-stars/sumo-monkey; publish success **front v11**, get_game confirmed **math v1** unchanged. Plan3 uploads +1 obsolete-bundle deletion; post-upload replan0 actions, math replan0 actions. Existing thumbnail/cover retained; no platform store-art replacement, approval-version update or new review submission. Build/source hashes and incremental official checklist (with inherited coverage gaps clearly marked) are in `design/qa/neon_release_20261102/`; release receipt and self-check copied to `upload/SumoMonkey/`. No ZIP produced.
+
+
+## 2026-11-04 — Review 5.3 art brief B1–B4 implemented (local package)
+
+Implemented design/ART_REQUEST_2026-11-03.md with twelve new built-in ImageGen PNGs:
+1280-square timber/tawara frame plus washi liner; five independent 512-square
+brush-letter tags; 1600×600 main and 800×200 simplified wordmarks; three 640×400
+intro scenes. Exact frame opening remains [140,140,1141,1141), with 76px ring.
+Removed runtime low-letter overprint in both static and win paths. Wired the logo
+to loading/intro/header; kept code-rendered 10,000× in the reserved paper strip.
+Fixed desktop intro top clipping and compacted the left logo to clear the FS card.
+Preserved all existing 11-03 animation/review work and included its four updated
+high-symbol paper tiles when staging the tested build. No shared source edits.
+
+Final build and guards PASS (198 assets/keys,39 audio, reel motion, symbol idle;
+13 inherited type diagnostics, no new regressions). Headful production Chrome
+with local fake RGS and real published books: BASE collect + BONUS level3 both
+completed wallet/end-round;4→5→6→7 observed, desktop1440×810 and portrait390×844
+captured each row count, plus400×225. Runtime/console/HTTP errors empty. Final
+screenshots include the smaller left logo; source art, bakes, crops and placement
+of the animated cast are unchanged. All twelve assets have light/dark exports
+and a96px low-symbol contact; main logo's generated haze was removed before use.
+
+Delivery+prompts+raw images: 角色生圖_相撲猴/交件/美術_20261103/.
+Evidence/report: design/qa/art_20261103/. Reproducible export, QA and staging:
+export_review_art_20261103.py, qa_art_20261103.cjs, stage_art_20261103.py.
+Local observer helper now accepts '$' in minified identifiers (diagnostics only).
+Staged root upload/SumoMonkey/frontend with nineteen changed files and one old
+hashed-bundle deletion; twelve delivery/static/build/stage hashes match.
+Art source and QA archived under upload/SumoMonkey/art-source/review-art-20261103/.
+Backup: _upload_backups/SumoMonkey-before-art-20261103/.
+Math, thumbnail and cover hashes unchanged; no new store-art request.
+No platform upload/publication/review submission. This is local-book validation,
+not a live RGS session. Preview localhost:8023 with normal stub playtest params.
+
+
+## 2026-11-07 — Thick-limbs request + UI check (scheduled task, no file changes in the game)
+
+Stone 11-07: limbs too thin for sumo; polish details; check UI. Measured every limb layer every 5% along the
+bone (design/qa/thick_limbs_20261107/measure.py → 量測_現況.json): MG upper arm 0.34 head width, forearm
+0.19–0.22, thigh 0.67, calf 0.34–0.41; FG 0.27/0.17/0.44–0.49/0.34–0.37, FG torso only 0.74 head. Pixel widening
+prototype (widen.py, ink band kept) smeared the fur hatching, widened toes and doubled muscle lines → not
+acceptable, so no layer was touched. Generation request (Codex generates only, Claude splits/QA):
+角色生圖_相撲猴/四肢加粗_20261107/需求單.md with target ratios, both casts' joint points, refs in 參考圖/.
+UI reviewed from 11-04 v13 screenshots only (swap 7/8 GB → no build; preview server start was declined):
+A/J tags narrow in the art itself (A 146 px vs K 430 px wide), two header logos (GameNameClock 128×32 +
+Game.svelte 200×50), intro tagline low contrast, portrait intro body text ~7 px. Nothing fixed, nothing
+staged, platform untouched (front v13 / math v1). Report: design/qa/thick_limbs_20261107/報告.md.
+
+
+## 2026-11-10 — Thick-limb cast integrated, PUBLISHED front v14 / math v1
+
+Source: 角色生圖_相撲猴/四肢加粗_20261107 (Codex generated the two full bodies + stage-2 repaints only; Claude split
+them into the existing 14 layers, assembled, patched and QA'd — scripts in 拆層/, progress in 進度_20261109.md).
+FG front thigh uses the re-generated repaint (補畫/FG/leg_front_upper_補畫_重生.png; v1 kept as _v1.png).
+Assembled vs master: alpha diff 0 px for both casts; colour diffs are only the deliberate ink lines.
+
+Install: design/sumo_install_thicklimbs.py (backup → _upload_backups/SumoMonkey-before-thicklimbs-20261110/cast.tgz),
+then the usual pipeline: sumo_trim_layers.py → sumo_generate_motion.ts --no-gif → sumo_export_motion.ts →
+measure_cast_placement.py → pnpm build (all guards PASS). joints.json / layers.json / motion.params.json unchanged
+(same rig and motion recipe). Kit report MG/FG 「可以用」 (six motions 100, no seams, no flips).
+
+Motion QA: every 3rd frame (0.12 s) of all six motions rendered at 2× (拆層/motion/<C>_frames) and gap-scanned;
+remaining openings are the natural silhouette notches of the master (chin, hair, crotch) plus 1–2-frame
+thumb/forearm wedges (MG f066/f069/f201/f216, FG f210) — small, transient, left as is. In game (local playtest
+shell dist/sumomonkey-thicklimbs, stub RGS): desktop MG + FG, portrait base + FS, portrait DOSUKOI cut-in
+(forceBook 37026, paused via qa_slice) and the 4→5-row expansion — no gaps/fragments, cast faces the board and
+stays off it. Screenshots: design/qa/thick_limbs_20261107/ingame_20261110/.
+
+Build vs staged v13 = 28 cast crops + bundle/index/version only. Source check: LoadingScreen/Game/FeatureIntro/
+GameNameClock/Symbol/assets.ts identical to the 11-04 staged copies; config.ts is regenerated by sync_math_config
+(no git diff); shared LayoutBottomBar/theme gained Pickle's opt-in barHideCapRule (undefined for Sumo → no change).
+Staging: design/stage_thicklimbs_20261110.py (asserts 交件 == design/sumo_cast == Spine images, static == build ==
+upload; math/thumbnail/cover hashes unchanged; frontend backup frontend.tgz). Old-cast previews + SumoMonkey-Spine43.zip
+moved to upload/SumoMonkey/archive-before-thicklimbs-20261110/; new previews sumo-current-motion.gif,
+preview-thicklimbs-before-after.png, preview-current-desktop(-fg).jpg, preview-current-portrait-cutin.jpg;
+current Spine 4.3 projects in upload/SumoMonkey/spine43/{mg,fg}/ (folders, no zip); sources/evidence in
+upload/SumoMonkey/art-source/thicklimbs-20261110/.
+
+Upload (Stone 11-09 21:45: go through upload + publish without asking): design/upload_publish_front.py —
+plan 31 uploads + 1 obsolete bundle delete (402 unchanged), scratch 433 files, replan 0/0, publish → **front v14**;
+get_game: math v1 unchanged, approval not open (no approval-version update, no review submission). Log:
+_upload_backups/SumoMonkey-before-thicklimbs-20261110/upload_log.json.
+
+Not done: thumbnail/cover still show the earlier (thinner) figures — not re-made, platform store art untouched.
+UI nits from 11-07 (A/J tag width, two header logos, intro tagline contrast, portrait intro text size) not fixed.
+The 01:12 / 06:15 scheduled continuations both stopped at permission prompts; this session finished the work.
+
+
+## 2026-11-10 (later) — 11-07 UI nits fixed + wide A/J tags, PUBLISHED front v15 / math v1
+
+Stone 「第二點先修」 = the UI items from design/qa/thick_limbs_20261107/報告.md §5.
+- U5 bar dots: the three squares under the strip's top-right edge were Sushi's retro-window title-bar buttons, carried over
+  by design/sumo_port_ui_plates.py. That script now paints them back to the strip's paper (drop_window_buttons, 150 px,
+  alpha untouched); re-running it reproduces every other plate byte-identically.
+- U2 two logos: one wordmark on screen at a time. Landscape ≥760 px: only the top-right one, now 200→260 px wide with the
+  window (Game.svelte wideHeader/headerLogoW); portrait, narrower windows and the 400×225 pop-out: only the small one
+  beside the clock (GameNameClock showLogo). Desktop modal open: neither (top-right hidden as before, × sits there).
+- U3 intro tagline: ink on a paper slip with the cards' ink edge + salmon offset, min 14 px (was salmon on the dimmed
+  scene, ~2:1, 8 px on a phone).
+- U4 portrait intro card text: body min 12 px (was ~9 px font / 7 px caps), title/body moved up, column centred between
+  art and frame (x .205 cardW); all three cards' text stays inside the frame at 390×844.
+- Extra: Buy Feature subtitle "CHOOSE YOUR MENU" (Sushi leftover) → "CHOOSE YOUR BOUT".
+- U1 A/J tags narrow: new art. Codex generated 3 candidates each (角色生圖_相撲猴/AJ牌加寬_20261110/生圖/); Claude cut
+  out and exported all six with export_aj.py (same fit/clean rule as export_review_art_20261103.py, 84 % of 512) and
+  picked A_2 (wide hinoki ema plaque) + J_3 (wide hexagonal plaque) → static/assets/sprites/sumoSymbols/l1_a.png,
+  l4_j.png (visible 430 px wide, like K). J idle swing pivot −0.45 → −0.37 (cord top of the new plaque).
+  NOTE: re-running export_review_art_20261103.py would put the OLD narrow A/J back — A/J now come from export_aj.py.
+Backups: _upload_backups/SumoMonkey-before-ui-nits-20261110/. Evidence: design/qa/ui_nits_20261110/ (1440×810, 1024×768,
+1280×800, 760×428, 700×400, 400×225, 390×844 intro + base, desktop Buy Feature open, new A/J in base and in
+the forced level-3 bonus up to 7 rows on desktop and portrait).
+
+Stone 「要」 (stage + upload + publish): design/stage_uinits_20261110.py (asserts the delta vs v14 is exactly bundle +
+index + version + l1_a + l4_j + bar_strip; math/thumbnail/cover unchanged; frontend.tgz backup) → design/upload_publish_front.py
+with SUMO_UPLOAD_LOG=_upload_backups/SumoMonkey-before-ui-nits-20261110/upload_log.json: plan 6 uploads + 1 delete
+(427 unchanged), scratch 433, replan 0/0, **published front v15**; get_game: math v1, approval not open.
+
+
+## 2026-11-10 — Store art re-composed with the thick-limb cast (upload folder only)
+
+Stone 「做」: design/build_sumo_store_20261110.py re-uses build_sumo_store.cast() (same arena BG, same heights) but
+writes only thumbnail/ + cover/ and refreshes upload art-source/cast to the current cast (put() replaces the
+read-only joints.json). Cover: MG x .59 / FG x .835 (was .61 / .82) so FG is not half hidden by the thicker MG.
+check_thumbnail.py --upload PASS (thumbnail BG mean 212.6, cover BG 190.0). Before/after 200 h + 540 h:
+design/qa/store_20261110/. Backup _upload_backups/SumoMonkey-before-store-20261110/store.tgz.
+Not on the platform: stakecli has no store-image upload — BG + FG go up through the Stake Engine dashboard.
+
+
+## 2026-11-10 night — armpit "怪東西", punching-glove fringe, bigger/higher cast, PUBLISHED front v16 / math v1
+
+Stone: 「腋下怎麼有怪東西」「出拳的那隻手好像怪怪的有點毛邊」「角色太小隻放大一點，往上一點，腳要切齊盤面下緣」.
+Cause: parts hidden at rest got uncovered in motion with unfinished shapes. Fixed in the delivery layers
+(角色生圖_相撲猴/四肢加粗_20261107/拆層/fixes_<C>.json, new ops in fix_layers.py, both casts):
+- front armpit: the torso lobe under the upper arm hung down as a pointed "tongue" when the arm lifted →
+  new body side line (fill_behind + clip_side + hidden-only ink), MG 745..764 / FG 688..684 contours;
+- hidden torso/neck spikes and islands removed (smooth_hidden), hidden torso top rounded (round_hidden),
+  MG light/dark mix cleaned (clean_mix), MG neck light strokes → dark fur (clean_light);
+- throat opened when the head tips back (celebrate) and the paper background showed as white scraps →
+  solid neck column behind head/torso (fill_behind * on neck), FG neck trimmed at the trapezius line;
+- gloves carried stuck fur (thumb tuft, cuff fringe) that hung off in punch → glove_outline keeps the light body
+  + its own dark line within 7 px (no recolour), seal_rest makes the rest pose solid again where a removed tuft
+  had covered an anti-aliased edge (no new holes; rest alpha differs from the master only by the removed tufts).
+Pipeline re-run (install → trim → generate → export → placement → build PASS), kit 「可以用」 both.
+Placement (src/components/Mascot.svelte): band starts at .60 of the board width (was .64), margin 6 (was 16),
+soles on the frame's visible bottom edge (FRAME_RING .084 of the 4-row opening; was 0.14 → feet below the frame);
+height also capped so the deepest reach of any animation stops at the reel opening (punch may cross the wood as
+before, never the symbols). 1440×810: rig height ≈440 (was ≈408, +8%). Checked 1440×810, 1280×800, 1024×768,
+punch at 1440 and 4:3, FG in free spins. Evidence: design/qa/armpit_placement_20261110/.
+Backups: _upload_backups/SumoMonkey-before-armpit-20261110/ (fixes, fix_layers, 交件 layers, cast_v15.tgz, Mascot.svelte).
+Stone 「上傳發布」: design/stage_armpit_20261110.py (delta = 13 cast crops + bundle/index/version; math/thumbnail/cover
+unchanged; frontend_v15.tgz backup) → upload_publish_front.py: 16 up + 1 delete (417 unchanged), scratch 433,
+replan 0/0, **published front v16**; get_game: math v1, approval not open.
+
+
+## 2026-11-11 — armpit "leaf", punching-glove wrist tuft, FG shoulder box (built + QA'd, NOT staged/uploaded)
+
+Stone (in-game screenshot): 「還是有啊 腋下處有一片葉子形狀的東西」. Cause: the 11-10 MG front-armpit fix cut the torso side
+with a near-straight clip line (clip_side 745..770) ending in a pointed tip over the background notch under the elbow — a
+chord cut, against the no-chord-cut rule. Fixed in 角色生圖_相撲猴/四肢加粗_20261107/拆層 (new ops in fix_layers.py):
+- side_outline (new): one smooth organic outline through a spline, body inside, hidden pixels outside removed, inside gaps
+  filled with the layer's own fur, a band re-cloned (old heavy ink / light specks go), ink with an anti-aliased edge;
+  `rest_zone` = where the rest pose may change on purpose; `ink_mix`/`fade_y` = soft dark edge; `fill_holes`.
+  "Hidden" = front layers' composite alpha ≥ 0.98 (an anti-aliased rim of a front part keeps what it showed).
+  MG torso: armpit → flank in one line; the small background notch under the elbow is now body (the ONLY intended
+  rest-pose change: 1052 px at 738..768 × 661..732).
+- merge_into (new): pixels of one layer composited into a neighbour in stacking order (rest identical, they move with the
+  part they sit on). MG: wrist fur drawn between the glove's bottom outline and the cuff → fist_front; its left end and the
+  tuft under the thumb → arm_front_upper; detached forearm specks along the thumb (= the upper arm's own pinholes, moved
+  there by the 11-10 glove_outline) → arm_front_upper. arm_front_lower is one piece again; its crop top moved 389 → 490.
+- MG forearm inner edge beside the cuff (fur on the upper arm at rest, bare fuzzy edge when the elbow opens in celebrate):
+  side_outline with ink_mix .55 fading out at y 575..606 (at rest only a faint shading arc, 998 px of fur-on-fur change).
+- FG (same parts checked): armpit and cuff were fine; the front shoulder under the deltoid was a box (rectangular hidden
+  fills from 11-09 ops 20/21) that showed as a flat top + vertical side when the arm went up → side_outline on torso
+  (fill_holes) and neck along one trapezius curve (625,429)…(695,535). FG rest pose unchanged (0 px).
+- Reproducibility: fix_layers.py `borrow` and assemble_layers.py read the old layers from design/sumo_cast/<c>/layers,
+  which every install overwrites, so each rebuild borrowed from the previous one (hidden pixels drifted). Both now read the
+  frozen copy 拆層/old_game_layers_v15/<c> (= cast_v15.tgz); without the new ops the rebuild reproduces v16 byte-for-byte
+  (0 px both casts).
+Pipeline: install → trim → generate (kit 「可以用」 both, six motions 100) → export → placement (sumoCastPlacement.json
+unchanged; MG motion json differs only in arm_front_lower's baked translation, from the new crop) → pnpm build (guards OK).
+QA: every 3rd frame of all six motions at 2× for both casts (armpit/cuff/shoulder sheets; gap scan vs v16: no new holes
+except the narrower elbow V notch); in game via headless Chrome on dist/sumomonkey-thicklimbs (stub RGS): 1440×810 MG + FG
+celebrate/punch mid-motion, 390×844 base + FS (no side cast in portrait, as before). Portrait DOSUKOI cut-in (FG punch)
+not re-shot this round (needs a bought bonus); FG punch checked in renders + desktop. Evidence:
+design/qa/leaf_cuff_shoulder_20261111/ (01–08 + sumo_cast_cdp.mjs, headless 1× capture; 2× hangs on swiftshader).
+Backups: _upload_backups/SumoMonkey-before-leaf-20261111/ (fixes, fix_layers, assemble_layers, 交件 layers tgz,
+cast_v16.tgz). Not staged, not uploaded: platform still front v16 / math v1. Store art unaffected (built from master full.png).
+Stone 「好了的話上傳發佈」: portrait DOSUKOI cut-in now shot too (headless, BASE.levelUp book via __stub.force +
+qa_slice pause → design/qa/leaf_cuff_shoulder_20261111/09_*): FG punch clean. Official motion frames re-rendered
+(拆層/motion/<C>_frames). STAGED with design/stage_leaf_20261111.py (9 changed + 1 bundle removed; math/thumbnail/cover
+unchanged; frontend_v16.tgz backup; MG desktop preview replaced, FG preview kept — FG rest pose identical). Upload dry run:
+9 up + 1 delete, 424 unchanged. Preflight: 1 FAIL [B10] all 39 audio files byte-identical to SushiMonkey (pre-existing,
+live since v1) + WARNs A5 flat-fill scene art, A8 "young champion" wording in ART_BRIEF.md:43, A9 Sushi identifiers in
+8 src files, B9 three duplicate audio pairs — all pre-existing. Upload held for Stone's call on the B10 FAIL.
+Stone 「先上傳發佈」 (accepts the B10 audio FAIL for this upload): upload_publish_front.py with
+SUMO_UPLOAD_LOG=_upload_backups/SumoMonkey-before-leaf-20261111/upload_log.json — 9 up + 1 delete (424 unchanged),
+scratch 433, replan 0/0, **published front v17**; get_game: math v1, approval not open, nothing submitted.
+Audio still Sushi's (B10) — needs its own task before any review submission.
+
+
+## 2026-11-11 evening — MG elbow notch bared by the v17 armpit fix (staged, NOT uploaded; platform front v17)
+
+Stone (in-game screenshot): 「不對啊 變成手有缺角 不要再發生這種事」. The upper arm's underside at the elbow had a notch +
+hanging strip from the 11-09 clip_side/move (ops 24–26); the torso "leaf" used to sit in front of it in punch, so it showed
+once the leaf was gone. Fix: side_outline on arm_front_upper (convex elbow line (742,600)…(868,688), fill_holes behind the
+forearm); rest pose 0 px change. Pipeline re-run, kit 「可以用」 both, build OK; only mg/arm_front_upper crop changed (crop
+origin same → baked motion identical). New check: 拆層/motion/silhouette_diff.py (also wp/.claude/skills/game-reskin/scripts/):
+v16 vs new per-frame silhouettes, 22 MG clusters / 3 FG clusters all reviewed (all intended: armpit, glove tuft, elbow,
+FG shoulder). In game: headless 1440×810 punch/celebrate v17 vs new. Rule written to house-rules B9, spine-character
+SKILL.md, AGENTS.md. Staged with design/stage_elbow_20261111.py (4 changed + 1 bundle removed). Dry run 4 up + 1 delete.
+Preflight: pre-existing B10 audio FAIL only. Waiting for Stone's upload go-ahead. Backups: _upload_backups/SumoMonkey-before-elbow-20261111/.
+Stone 「上傳發佈」: upload_publish_front.py (log _upload_backups/SumoMonkey-before-elbow-20261111/upload_log.json) —
+4 up + 1 delete (429 unchanged), scratch 433, replan 0/0, **published front v18**; math v1, approval not open, nothing submitted.

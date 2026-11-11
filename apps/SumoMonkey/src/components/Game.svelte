@@ -48,6 +48,13 @@
 
 	const context = getContext();
 
+	// Where the top-right wordmark is drawn (landscape, 760px and wider) it is the
+	// game's only name on screen; elsewhere the small one beside the clock is.
+	const wideHeader = $derived(
+		context.stateLayoutDerived.layoutType() !== 'portrait' && context.stateLayoutDerived.canvasSizes().width >= 760,
+	);
+	const headerLogoW = $derived(Math.round(Math.min(260, Math.max(200, context.stateLayoutDerived.canvasSizes().width * 0.2))));
+
 	// A touch of depth-of-field on the scene so the reels read as the subject.
 	// Screenprint backgrounds are flat colour masses, so the blur stays light;
 	// one filter, eased over the same second the plates crossfade.
@@ -130,7 +137,12 @@
 
 		<UI>
 			{#snippet gameName()}
-				<GameNameClock name="SUMO MONKEY" />
+				<!-- fixed-size text: in a 400×225 pop-out it ran down onto the board
+				     frame, so it shrinks with the window below 450px tall -->
+				<Container scale={Math.max(0.55, Math.min(1, context.stateLayoutDerived.canvasSizes().height / 450))}>
+					<!-- one name on screen: the small wordmark only where the top-right one is not drawn -->
+					<GameNameClock name="SUMO MONKEY" showLogo={!wideHeader} />
+				</Container>
 			{/snippet}
 			{#snippet logo()}
 				<!-- The same name again, top right. Not in portrait: on a phone's
@@ -140,20 +152,13 @@
 				     and below ~760px they ran together as "SUMO MONKEYSUMO MONKEY"
 				     (Stake flagged the same on Deadwood Express, 2026-10-04). The
 				     clock-and-name on the left still says it. -->
-				{#if context.stateLayoutDerived.layoutType() !== 'portrait' && context.stateLayoutDerived.canvasSizes().width >= 760}
-					<Text
-						anchor={{ x: 1, y: 0 }}
-						text="SUMO MONKEY"
-						style={{
-							fontFamily: GAME_FONT,
-							fontSize: REM * 1.5,
-							fontWeight: GAME_FONT_WEIGHT,
-							lineHeight: REM * 2,
-							// ink on a paper rim: white was lost on the cream sky
-							fill: 0x282828,
-							stroke: { color: 0xefeadc, width: 5, join: 'round' },
-						}}
-					/>
+				<!-- ...nor behind an open modal: the modal's close button sits in the
+				     same corner and cut the name off as "SUMO MONK×". -->
+				<!-- ...and it is now the only wordmark on a wide screen (the one beside
+				     the clock is dropped there, UI check 2026-11-07 U2), so it grows with
+				     the window from the old 200×50 up to 260×65 on 1300px and wider. -->
+				{#if wideHeader && !stateModal.modal}
+					<Sprite key="sumoLogoHeader" anchor={{ x: 1, y: 0 }} width={headerLogoW} height={headerLogoW / 4} />
 				{/if}
 			{/snippet}
 		</UI>

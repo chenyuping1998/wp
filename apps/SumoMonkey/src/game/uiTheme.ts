@@ -90,6 +90,7 @@ setUiTheme({
 	// 2026-10-01 (user rule, every game): hover never greys a control out —
 	// the control lights in the game's own red-orange instead of a white film.
 	hoverPlateLight: 0xc47d60,
+	hoverRimOnly: true,
 
 	// 旋轉鍵的呼吸光暈
 	spinButtonGlow: false,
@@ -401,6 +402,7 @@ if (skin === 'platform' || skin === 'print') {
 		// 2026-10-01 (user rule, every game): hover never greys a control out —
 		// the control lights in the game's own red-orange instead of a white film.
 		hoverPlateLight: 0xc47d60,
+		hoverRimOnly: true,
 		pressFeedback: true,
 
 		// THE ICONS HAVE TO BE SWAPPED, not recoloured. UiButton draws a

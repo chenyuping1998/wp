@@ -7,6 +7,7 @@
 
 	type Props = {
 		reelIndex: number;
+		rowIndex?: number;
 		reelSymbol: ReelSymbol;
 	};
 
@@ -67,6 +68,7 @@
 	>
 		<Symbol
 			reelIndex={props.reelIndex}
+			rowIndex={props.rowIndex}
 			state={props.reelSymbol.symbolState}
 			rawSymbol={props.reelSymbol.rawSymbol}
 			{blur}

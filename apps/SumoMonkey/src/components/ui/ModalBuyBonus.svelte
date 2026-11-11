@@ -86,6 +86,11 @@
 	// social play: no betting words anywhere the player can read
 	const social = $derived(stateUrlDerived.social());
 
+	// Stake review 2026-10-15 (Go Banandit): a feature the balance cannot cover
+	// is greyed out and cannot be chosen — it never reaches the confirm step.
+	const affordable = (costMultiplier: number) =>
+		stateBet.betAmount > 0 && stateBet.betAmount * costMultiplier <= stateBet.balanceAmount;
+
 	const close = () => (stateModal.modal = null);
 	const choose = (mode: string) => {
 		stateBonus.selectedBetModeKey = mode;
@@ -109,7 +114,8 @@
 			<div class="head">
 				<div class="titles">
 					<h2 style="color: #282828 !important">{social ? 'FEATURES' : 'BUY FEATURE'}</h2>
-					<div class="sub">CHOOSE YOUR MENU</div>
+					<!-- was Sushi's "CHOOSE YOUR MENU" (2026-11-10); a sumo match is a bout -->
+					<div class="sub">CHOOSE YOUR BOUT</div>
 				</div>
 				<div class="amount"><BetMenuAmountToggle /></div>
 			</div>
@@ -118,7 +124,8 @@
 				{#each modes as mode (mode.mode)}
 					{@const card = CARDS[mode.mode]}
 					{#if card}
-						<section class="card" class:hot={card.hot} style:--accent={card.accent}>
+						{@const ok = affordable(mode.costMultiplier)}
+						<section class="card" class:hot={card.hot} class:poor={!ok} style:--accent={card.accent}>
 							<div class="scene" style:background-image={`url('${card.scene}')`} style:background-position={card.focus ?? 'center'}>
 								<div class="light"></div>
 								<div class="heroes">
@@ -147,8 +154,8 @@
 									{#each card.points as p (p)}<li>{p}</li>{/each}
 								</ul>
 								<div class="cost">{mode.costMultiplier}<small>×</small></div>
-								<button class="buy" onclick={() => choose(mode.mode)}>
-									{mode.text.button}
+								<button class="buy" disabled={!ok} aria-disabled={!ok} onclick={() => ok && choose(mode.mode)}>
+									{ok ? mode.text.button : 'INSUFFICIENT BALANCE'}
 									<span>{numberToCurrencyString(stateBet.betAmount * mode.costMultiplier)}</span>
 								</button>
 							</div>
@@ -207,6 +214,8 @@
 	.buy:active { transform: translate(2px, 2px); }
 	/* ink accent: ink lettering on it vanished into a blank black bar */
 	.card:not(.hot) .buy { color: var(--paper); }
+	.card.poor .scene, .card.poor .meter, .card.poor .cost { filter: grayscale(1); opacity: 0.5; }
+	.buy:disabled, .card:not(.hot) .buy:disabled { background: #8b8578; color: #e6dcc4; cursor: not-allowed; outline: none; transform: none; }
 	.buy span { display: block; margin-top: 2px; font: 700 12px var(--gb-body-font, sans-serif); }
 	.foot { margin-top: 12px; color: var(--green); font-size: 12px; font-weight: 700; }
 	@media (max-height: 700px) { .menu { padding: 12px; } .cards { margin-top: 8px; } .scene { height: 95px; } ul { display: none; } .cost { font-size: 28px; } .foot { display: none; } }

@@ -6,15 +6,15 @@
 
 	import { getSymbolInfo } from '../game/utils';
 	import { SYMBOL_SIZE } from '../game/constants';
+	import { stateGame } from '../game/stateGame.svelte';
+	import { idleClock, useIdleClock } from '../game/idleClock.svelte';
+	import { symbolIdleFrame } from '../game/symbolIdleMotion';
 
 	type Props = {
 		x?: number;
 		y?: number;
 		symbolInfo: ReturnType<typeof getSymbolInfo>;
-		// How fast the reel is travelling, 0..1, driving a cheap motion blur
-		// (vertical stretch + ghosts). Continuous rather than a boolean so the
-		// blur eases off through the bounce instead of snapping away the instant
-		// the reel changes state.
+		// Moving-reel marker. ReelMotion owns the actual velocity-based blur.
 		blur?: number;
 		// symbol just landed: impact squash before settling to static
 		landing?: boolean;
@@ -23,14 +23,28 @@
 		// every tile bouncing identically.
 		impact?: number;
 		letter?: string;
+		/** settled-board idle act (game/symbolIdleMotion.ts); needs the cell */
+		symbolName?: string;
+		cell?: { reel: number; row: number };
+		idle?: boolean;
 		oncomplete?: () => void;
 	};
 
 	const props: Props = $props();
 
+	// One cell at a time performs its own act on a settled board; the rest hold
+	// their source pose. Off while spinning, landing or presenting a win.
+	const idling = $derived(!!props.idle && !!props.cell && !props.blur && !props.landing && !stateGame.winLitCells);
+	$effect(() => {
+		if (!idling) return;
+		return useIdleClock();
+	});
+	const idleFrame = $derived(
+		idling && props.cell ? symbolIdleFrame(props.symbolName ?? '', idleClock.t, props.cell.reel, props.cell.row) : null,
+	);
+
 	const width = $derived(SYMBOL_SIZE * props.symbolInfo.sizeRatios.width);
 	const height = $derived(SYMBOL_SIZE * props.symbolInfo.sizeRatios.height);
-	const blur = $derived(Math.max(0, Math.min(1, props.blur ?? 0)));
 
 	// landing squash: hammer down, rebound, settle (~240ms). Amplitude scales with
 	// `impact`, timings do not — a lighter symbol should look lighter, not slower,
@@ -93,35 +107,15 @@
 	});
 </script>
 
-{#if blur > 0.01}
-	<!-- ghost trail: same art, offset and faded, sells the motion blur. Offset,
-	     opacity and stretch all scale with speed, so the trail shortens and fades
-	     as the reel brakes rather than vanishing in one frame. -->
-	<Sprite
-		x={props.x}
-		y={(props.y ?? 0) - height * 0.42 * blur}
-		anchor={0.5}
-		key={props.symbolInfo.assetKey}
-		width={width * 0.96}
-		height={height * (1 + 0.18 * blur)}
-		alpha={0.22 * blur}
-	/>
-	<Sprite
-		x={props.x}
-		y={(props.y ?? 0) + height * 0.42 * blur}
-		anchor={0.5}
-		key={props.symbolInfo.assetKey}
-		width={width * 0.96}
-		height={height * (1 + 0.18 * blur)}
-		alpha={0.22 * blur}
-	/>
-{/if}
+<!-- ReelMotion owns the measured vertical smear for the entire strip.
+     Keep each symbol's natural silhouette, opacity and proportions. -->
 
 <Container
-	x={props.x ?? 0}
-	y={props.y ?? 0}
-	scale={{ x: sx.current, y: blur > 0.01 ? 1 + 0.3 * blur : sy.current }}
-	alpha={1 - 0.15 * blur}
+	x={(props.x ?? 0) + (idleFrame ? idleFrame.dx * SYMBOL_SIZE : 0)}
+	y={(props.y ?? 0) + (idleFrame ? idleFrame.dy * SYMBOL_SIZE : 0)}
+	rotation={idleFrame?.rotation ?? 0}
+	scale={{ x: sx.current * (idleFrame?.scaleX ?? 1), y: sy.current * (idleFrame?.scaleY ?? 1) }}
+	alpha={idleFrame?.alpha ?? 1}
 >
 	<Sprite anchor={0.5} key={props.symbolInfo.assetKey} {width} {height} />
 	{#if props.letter}

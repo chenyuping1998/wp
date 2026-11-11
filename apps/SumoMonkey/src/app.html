@@ -18,6 +18,10 @@
 		     alone still zooms on iOS Safari; the canvas is already touch-action:
 		     none (Pixi), the body rule covers the DOM panels over it. -->
 		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+		<title>Sumo Monkey</title>
+		<!-- Engine guideline 227: the wrapper div below used to leave a 4-5px
+		     line-height gap under the canvas, so the page could scroll by that much. -->
+		<style>html, body { height: 100%; overflow: hidden; } body > div { height: 100%; } canvas { display: block; }</style>
 		%sveltekit.head%
 	</head>
 	<body style="margin: 0; padding: 0; overflow: hidden; touch-action: manipulation; background-color: #E4E0D4">

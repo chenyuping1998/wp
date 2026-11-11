@@ -99,11 +99,17 @@ const SPIN_OPTIONS_SHARED = {
 	reelSpinDelay: 145,
 };
 
+// Go Bananeon's normal cadence; both games use 140px cells.
+// Keep Sumo's anticipation and turbo profiles; blur is measured per reel.
 export const SPIN_OPTIONS_DEFAULT = {
 	...SPIN_OPTIONS_SHARED,
-	reelPreSpinSpeed: 2,
-	reelSpinSpeed: 3,
-	reelBounceSizeMulti: 0.3,
+	reelPreSpinSpeed: 2.8,
+	reelSpinSpeed: 4.2,
+	reelSpinSpeedBeforeBounce: 2.8,
+	reelBounceBackSpeed: 0.22,
+	reelPaddingMultiplierNormal: 1,
+	reelSpinDelay: 100,
+	reelBounceSizeMulti: 0.12,
 };
 
 export const SPIN_OPTIONS_FAST = {

@@ -19,7 +19,10 @@
 	// draws it. Rendered inside Board's BoardContainer, so it is already in board
 	// coordinates.
 	const SCRIM = 0x282828;
-	const SCRIM_ALPHA = 0.62;
+	// 0.62 turned the whole board a flat grey slab under every win (review
+	// 2026-11-03 "Poor animations / Low quality assets"); the winners pop
+	// through their own move and salt throw, so the losers only need to recede.
+	const SCRIM_ALPHA = 0.4;
 
 	// same formula as getSymbolX in utils.ts
 	const cellX = (reel: number) => SYMBOL_SIZE * (reel + REEL_PADDING) - SYMBOL_SIZE / 2;
