@@ -1,0 +1,106 @@
+{
+  "leg_r_upper": {
+    "removed_px": 233,
+    "added_px": 337
+  },
+  "hat": {
+    "removed_px": 0,
+    "added_px": 0
+  },
+  "head_idle": {
+    "removed_px": 0,
+    "added_px": 0
+  },
+  "leg_l_upper": {
+    "removed_px": 360,
+    "added_px": 359
+  },
+  "hand_r_grip": {
+    "removed_px": 0,
+    "added_px": 23
+  },
+  "hand_r_hatheld": {
+    "removed_px": 0,
+    "added_px": 0
+  },
+  "leg_r_lower": {
+    "removed_px": 4587,
+    "added_px": 0
+  },
+  "leg_l_lower": {
+    "removed_px": 4548,
+    "added_px": 0
+  },
+  "foot_l": {
+    "removed_px": 0,
+    "added_px": 0
+  },
+  "hand_l_point": {
+    "removed_px": 15,
+    "added_px": 2
+  },
+  "head_blink": {
+    "removed_px": 0,
+    "added_px": 0
+  },
+  "arm_l_upper": {
+    "removed_px": 208,
+    "added_px": 1369
+  },
+  "hand_r_pinch": {
+    "removed_px": 0,
+    "added_px": 0
+  },
+  "arm_r_upper": {
+    "removed_px": 668,
+    "added_px": 1149
+  },
+  "hand_l_hip": {
+    "removed_px": 428,
+    "added_px": 101
+  },
+  "foot_r": {
+    "removed_px": 0,
+    "added_px": 0
+  },
+  "torso": {
+    "removed_px": 0,
+    "added_px": 0
+  },
+  "arm_l_lower": {
+    "removed_px": 1945,
+    "added_px": 54
+  },
+  "head_grin": {
+    "removed_px": 0,
+    "added_px": 0
+  },
+  "neck": {
+    "removed_px": 119,
+    "added_px": 0
+  },
+  "pelvis": {
+    "removed_px": 307,
+    "added_px": 511
+  },
+  "hand_l_open": {
+    "removed_px": 67,
+    "added_px": 2
+  },
+  "hand_r_open": {
+    "removed_px": 0,
+    "added_px": 0
+  },
+  "head_annoyed": {
+    "removed_px": 0,
+    "added_px": 0
+  },
+  "head_spiral": {
+    "removed_px": 0,
+    "added_px": 0
+  },
+  "arm_r_lower": {
+    "removed_px": 2084,
+    "added_px": 208
+  }
+}

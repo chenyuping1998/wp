@@ -3,6 +3,8 @@ from pathlib import Path
 import re,json,shutil
 ROOT=Path('/Users/stone/stake-engine');APP=ROOT/'wp-banandit/apps/StaticShift';SRC=APP/'build';DST=ROOT/'upload/StaticShift/frontend'
 paths=set(re.findall(r"new URL\('../../(assets/[^']+)'",(APP/'src/game/assets.ts').read_text()))
+# the Spine 4.3 cast rigs are fetched by CastFigure43 itself, not through the registry
+paths.update(re.findall(r"new URL\('../../(assets/[^']+)'",(APP/'src/components/CastFigure43.svelte').read_text()))
 paths.update('assets/audio/'+s for s in re.findall(r"'((?:radio)/[^']+\.wav)'",(APP/'src/components/Sound.svelte').read_text()))
 paths.update('assets/sprites/staticShiftIcons/'+name+'.png' for name in ['spin','decrease','increase','turbo','autoSpin','menu','payTable','soundOn','settings'])
 paths.update(['assets/sprites/staticShiftUi/card_bonus.png','assets/sprites/staticShiftUi/card_superbonus.png'])

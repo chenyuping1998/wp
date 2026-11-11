@@ -1,0 +1,79 @@
+{
+  "dj": {
+    "changed_layers": [
+      "arm_r_lower.png",
+      "arm_r_upper.png"
+    ],
+    "unchanged_layers": [
+      "arm_l_lower.png",
+      "arm_l_upper.png",
+      "foot_l.png",
+      "foot_r.png",
+      "hand_l_hip.png",
+      "hand_l_open.png",
+      "hand_l_point.png",
+      "hand_r_grip.png",
+      "hand_r_hatheld.png",
+      "hand_r_open.png",
+      "hand_r_pinch.png",
+      "hat.png",
+      "head_annoyed.png",
+      "head_blink.png",
+      "head_grin.png",
+      "head_idle.png",
+      "head_spiral.png",
+      "leg_l_lower.png",
+      "leg_l_upper.png",
+      "leg_r_lower.png",
+      "leg_r_upper.png",
+      "neck.png",
+      "pelvis.png",
+      "torso.png"
+    ]
+  },
+  "host": {
+    "changed_layers": [
+      "arm_l_lower.png",
+      "arm_r_lower.png",
+      "hand_r_grip.png"
+    ],
+    "unchanged_layers": [
+      "arm_l_upper.png",
+      "arm_r_upper.png",
+      "foot_l.png",
+      "foot_r.png",
+      "glasses.png",
+      "hand_l_hip.png",
+      "hand_l_open.png",
+      "hand_l_point.png",
+      "hand_r_hatheld.png",
+      "hand_r_open.png",
+      "hand_r_pinch.png",
+      "head_annoyed.png",
+      "head_blink.png",
+      "head_grin.png",
+      "head_idle.png",
+      "head_spiral.png",
+      "leg_l_lower.png",
+      "leg_l_upper.png",
+      "leg_r_lower.png",
+      "leg_r_upper.png",
+      "neck.png",
+      "pelvis.png",
+      "torso.png"
+    ]
+  },
+  "host_grip": {
+    "only_wrist_root": true,
+    "changed_pixels": 681,
+    "fingers_microphone_bangles_byte_exact": true,
+    "mask_sha256": "f811bdcbaa6bcb36b578c64c6d376fddaac7c9595e0750beadae0ee81f3d6df1"
+  },
+  "accepted_far_elbows": {
+    "both_arm_l_upper_byte_exact": true,
+    "dj_arm_l_lower_byte_exact": true,
+    "host_arm_l_lower_alpha_byte_exact": true,
+    "host_far_elbow_first_50px_byte_exact": true,
+    "host_midshaft_rgb_pixels": 132
+  }
+}

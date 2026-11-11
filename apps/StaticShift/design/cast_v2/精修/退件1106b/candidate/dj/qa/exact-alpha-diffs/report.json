@@ -1,0 +1,14 @@
+{
+  "arm_r_lower": {
+    "removed_alpha_pixels": 5206,
+    "added_alpha_pixels": 1887,
+    "removed_alpha_coverage": 221909,
+    "added_alpha_coverage": 364114
+  },
+  "arm_r_upper": {
+    "removed_alpha_pixels": 1580,
+    "added_alpha_pixels": 30,
+    "removed_alpha_coverage": 363627,
+    "added_alpha_coverage": 520
+  }
+}

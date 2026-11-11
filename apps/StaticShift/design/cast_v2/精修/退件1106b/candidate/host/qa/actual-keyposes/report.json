@@ -1,0 +1,50 @@
+{
+  "gaze-0.9": {
+    "src": "/Users/stone/stake-engine/wp-banandit/apps/StaticShift/design/cast_v2/\u7cbe\u4fee/\u9000\u4ef61106b/candidate/host/qa/actual-keyposes/gaze-0.9.png",
+    "edge_px": 9605,
+    "uninked_px": 0,
+    "uninked_share": 0.0,
+    "runs": [],
+    "verdict": "PASS"
+  },
+  "win_big-0.6": {
+    "src": "/Users/stone/stake-engine/wp-banandit/apps/StaticShift/design/cast_v2/\u7cbe\u4fee/\u9000\u4ef61106b/candidate/host/qa/actual-keyposes/win_big-0.6.png",
+    "edge_px": 8834,
+    "uninked_px": 0,
+    "uninked_share": 0.0,
+    "runs": [],
+    "verdict": "PASS"
+  },
+  "win_big_loop-0.5": {
+    "src": "/Users/stone/stake-engine/wp-banandit/apps/StaticShift/design/cast_v2/\u7cbe\u4fee/\u9000\u4ef61106b/candidate/host/qa/actual-keyposes/win_big_loop-0.5.png",
+    "edge_px": 9229,
+    "uninked_px": 0,
+    "uninked_share": 0.0,
+    "runs": [],
+    "verdict": "PASS"
+  },
+  "win_big_end-0.2": {
+    "src": "/Users/stone/stake-engine/wp-banandit/apps/StaticShift/design/cast_v2/\u7cbe\u4fee/\u9000\u4ef61106b/candidate/host/qa/actual-keyposes/win_big_end-0.2.png",
+    "edge_px": 8059,
+    "uninked_px": 0,
+    "uninked_share": 0.0,
+    "runs": [],
+    "verdict": "PASS"
+  },
+  "win_big_end-0.25": {
+    "src": "/Users/stone/stake-engine/wp-banandit/apps/StaticShift/design/cast_v2/\u7cbe\u4fee/\u9000\u4ef61106b/candidate/host/qa/actual-keyposes/win_big_end-0.25.png",
+    "edge_px": 7957,
+    "uninked_px": 0,
+    "uninked_share": 0.0,
+    "runs": [],
+    "verdict": "PASS"
+  },
+  "win_big_end-0.3": {
+    "src": "/Users/stone/stake-engine/wp-banandit/apps/StaticShift/design/cast_v2/\u7cbe\u4fee/\u9000\u4ef61106b/candidate/host/qa/actual-keyposes/win_big_end-0.3.png",
+    "edge_px": 7660,
+    "uninked_px": 0,
+    "uninked_share": 0.0,
+    "runs": [],
+    "verdict": "PASS"
+  }
+}

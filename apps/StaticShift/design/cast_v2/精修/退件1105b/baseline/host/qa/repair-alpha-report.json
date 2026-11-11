@@ -1,0 +1,68 @@
+{
+  "arm_l_lower": {
+    "removed_alpha_px": 707,
+    "added_alpha_px": 619,
+    "before_sha256": "f49cf042d560c512f315ecdda8e1e1eedcb1c75cb4f4f9ff8171166662fe92b5",
+    "after_sha256": "960b249ac7161ba28adfd0cf0dfad680bc9a6e82fcd39ecba5eef62edea1fea5"
+  },
+  "arm_l_upper": {
+    "removed_alpha_px": 68,
+    "added_alpha_px": 287,
+    "before_sha256": "cf70442e1229d8b746a6d42fe08d111858d8f513dd4dbc8797e370b8ece2013d",
+    "after_sha256": "17e193783c9f79541eb77c4e4bd4d989d1b6fecb6ee55e09fec504fcaee201a5"
+  },
+  "arm_r_lower": {
+    "removed_alpha_px": 834,
+    "added_alpha_px": 108,
+    "before_sha256": "3ef61f11f139d009456e2d04e322e1a533e8e7d33908ff9a52e6c6b095cf4633",
+    "after_sha256": "e960e7ef3fa2c32780ebe59cbb87cf831518f37a7c41b4be2f2e3f71c899aa72"
+  },
+  "arm_r_upper": {
+    "removed_alpha_px": 36,
+    "added_alpha_px": 105,
+    "before_sha256": "937c5d7ba9732d9f4b0950ae5c58c7c8655a3d3a62e8c3c146bb11e1d6ff2445",
+    "after_sha256": "0d17a30c1f601f67e871f8fb65074080e1b4323cb5cef4d5956070d5d6e8fb73"
+  },
+  "hand_l_hip": {
+    "removed_alpha_px": 386,
+    "added_alpha_px": 85,
+    "before_sha256": "685001713ca7cec78e8c81539b0832f173ecbb2c65becc9d670411f3d8474caa",
+    "after_sha256": "7034c6ffd458c84907c39323885d1d8f446b02e327a26fed5d3256fd45065be4"
+  },
+  "hand_l_open": {
+    "removed_alpha_px": 0,
+    "added_alpha_px": 0,
+    "before_sha256": "d4cf16f67d703e710a46d2e3e82544955abe51c91d1a8af8b67c6c3adbe55512",
+    "after_sha256": "e95d158e91e61516a9a1213a74bd876fb6c7e2015c2d666572d6c8e086df4e6d"
+  },
+  "hand_l_point": {
+    "removed_alpha_px": 0,
+    "added_alpha_px": 0,
+    "before_sha256": "5e737adea131074532d9090c7b70876c9f37acf96e4a1479f082bd38dad8ed0e",
+    "after_sha256": "3d94a2ff27a5581ee9f42b80924929cf4e336735c85a9ab2e01453074db5b6eb"
+  },
+  "hand_r_grip": {
+    "removed_alpha_px": 25,
+    "added_alpha_px": 97,
+    "before_sha256": "b2f09b9db8e84c8a90c9528aa3ceee8a78994f9d88db399982415c6c1966f56a",
+    "after_sha256": "207642da598c1357011d638010b1c8aefcb19cbc68d796d4eabc51cf6c3c2618"
+  },
+  "hand_r_hatheld": {
+    "removed_alpha_px": 0,
+    "added_alpha_px": 0,
+    "before_sha256": "1e1d92818ce882c5d751e9544d26c71ba8e90ea33e032e804c3dc383427ac044",
+    "after_sha256": "ed42ba7bac7d35478b2454c91efe15478f137e8f036fda7bfd8eacfdcba1ad7e"
+  },
+  "hand_r_open": {
+    "removed_alpha_px": 0,
+    "added_alpha_px": 0,
+    "before_sha256": "e2765a21edc6a5a3759511bf7dcdae376d3967ac938de5e123f875584406db0b",
+    "after_sha256": "c62e8b46f12d2c60cc1be74849d15a89fab8a10f0df1d885e6b322eb106911f7"
+  },
+  "hand_r_pinch": {
+    "removed_alpha_px": 0,
+    "added_alpha_px": 0,
+    "before_sha256": "73308b3bc655395b96be2360e439bc965de4ce070fc3514526300e7b73748841",
+    "after_sha256": "afd93f84eeb8cb8b720566e2aebc37830bb4e17cefb2048c7b41cae96206e1c8"
+  }
+}

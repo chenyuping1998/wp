@@ -1,0 +1,10 @@
+{
+  "hand_r_hatheld": {
+    "removed_px": 2061,
+    "added_px": 1
+  },
+  "arm_r_lower": {
+    "removed_px": 0,
+    "added_px": 1
+  }
+}

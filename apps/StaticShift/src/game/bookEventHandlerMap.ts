@@ -137,8 +137,9 @@ export const bookEventHandlerMap: BookEventHandlerMap<BookEvent, BookEventContex
 		// released, so its flying sacks never sit over a board that is moving.
 		eventEmitter.broadcast({ type: 'banditCollectClear' });
 
+		const anticipation = gateAnticipation(bookEvent.anticipation, bookEvent.board);
 		await stateGameDerived.enhancedBoard.spin({
-			revealEvent: { ...bookEvent, anticipation: gateAnticipation(bookEvent.anticipation, bookEvent.board) },
+			revealEvent: { ...bookEvent, anticipation },
 			paddingBoard: config.paddingReels[bookEvent.gameType] as RawSymbol[][],
 			// Turbo does not apply to the free game's reels. It still applies to
 			// everything around them — no pre-spin wind-up on autoplay, the short
@@ -147,6 +148,13 @@ export const bookEventHandlerMap: BookEventHandlerMap<BookEvent, BookEventContex
 			isTurboOverride: bookEvent.gameType === 'freegame' ? false : undefined,
 		});
 		eventEmitter.broadcast({ type: 'soundScatterCounterClear' });
+		// The reels teased the feature and it did not come: the DJ shrugs.
+		if (
+			bookEvent.gameType === 'basegame' &&
+			anticipation.some((value) => value > 0) &&
+			!bookEvents.some((event) => event?.type === 'freeSpinTrigger')
+		)
+			eventEmitter.broadcast({ type: 'mascotDud' });
 	},
 	winInfo: async (bookEvent: BookEventOfType<'winInfo'>) => {
 		eventEmitter.broadcast({ type: 'soundOnce', name: 'sfx_winlevel_small' });

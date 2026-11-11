@@ -1,0 +1,36 @@
+{
+ "idle": {
+  "gripRest": 1
+ },
+ "idle_fidget": {
+  "gripRest": 1,
+  "touch": 0
+ },
+ "gaze": {
+  "gripRest": 1,
+  "pull": 0,
+  "reach": 1.04,
+  "pointUp": 6,
+  "swing": 1,
+  "handTilt": 10
+ },
+ "react_small": {
+  "gripRest": 1,
+  "touch": 0
+ },
+ "gaze_dud": {
+  "gripRest": 1
+ },
+ "win_big": {
+  "gripRest": 1,
+  "farHip": 1
+ },
+ "win_big_loop": {
+  "gripRest": 1,
+  "farHip": 1
+ },
+ "win_big_end": {
+  "gripRest": 1,
+  "farHip": 1
+ }
+}

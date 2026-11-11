@@ -1,0 +1,18 @@
+{
+  "arm_l_upper": {
+    "removed_px": 2083,
+    "added_px": 110
+  },
+  "arm_r_upper": {
+    "removed_px": 2007,
+    "added_px": 91
+  },
+  "arm_l_lower": {
+    "removed_px": 266,
+    "added_px": 401
+  },
+  "arm_r_lower": {
+    "removed_px": 361,
+    "added_px": 6
+  }
+}

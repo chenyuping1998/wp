@@ -1,0 +1,75 @@
+{
+  "checks": "PASS: sizes, alpha, exact aperture, identical MG/FG alpha, opaque card center",
+  "assets": {
+    "board_frame": {
+      "size": [
+        1640,
+        1400
+      ],
+      "alpha_range": [
+        0,
+        255
+      ]
+    },
+    "board_frame_fg": {
+      "size": [
+        1640,
+        1400
+      ],
+      "alpha_range": [
+        0,
+        255
+      ]
+    },
+    "cell_card": {
+      "size": [
+        280,
+        280
+      ],
+      "alpha_range": [
+        0,
+        255
+      ]
+    },
+    "logo": {
+      "size": [
+        1600,
+        700
+      ],
+      "alpha_range": [
+        0,
+        255
+      ]
+    },
+    "logo_small": {
+      "size": [
+        800,
+        260
+      ],
+      "alpha_range": [
+        0,
+        255
+      ]
+    },
+    "bar_plate": {
+      "size": [
+        1920,
+        160
+      ],
+      "alpha_range": [
+        0,
+        255
+      ]
+    },
+    "intro_card": {
+      "size": [
+        900,
+        640
+      ],
+      "alpha_range": [
+        0,
+        255
+      ]
+    }
+  }
+}

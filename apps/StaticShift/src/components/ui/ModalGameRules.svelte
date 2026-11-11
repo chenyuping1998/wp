@@ -18,9 +18,10 @@
 	// Icons come from static/, not the pixi asset pipeline — this panel is DOM.
 	const ICONS = `${base}/assets/sprites/staticShiftIcons`;
 	// `icons` is a list because a control can be a pair — the stepper is two keys,
-	// and showing only one of them would misrepresent it. Buy Bonus has none: on
-	// the bar it is a labelled plate rather than a glyph, so there is no icon that
-	// would actually match what the player sees.
+	// and showing only one of them would misrepresent it. Rewritten 2026-11-10
+	// for bar v3 (ui/MummyBar.svelte): the stake steps on ▲/▼ (drawn here, the bar
+	// draws them too), the BET box opens the list, Buy Bonus is the recorder tile,
+	// Auto Spin is a rounds panel (no stop conditions), volume lives in the menu.
 	const controls = [
 		{
 			icons: ['spin'],
@@ -28,19 +29,19 @@
 			text: `Starts a round for the current ${T.bet}. The space bar does the same thing. While the reels are turning it becomes Stop, which brings them to rest early.`,
 		},
 		{
-			icons: ['decrease', 'increase'],
-			name: 'Decrease / increase',
-			text: `Steps the ${T.bet} up or down through the available ${T.betLevels}.`,
+			icons: ['chevUp', 'chevDown'],
+			name: 'Up / down arrows',
+			text: `Step the ${T.bet} up or down through the available ${T.betLevels}. The box beside them shows the current ${T.bet}; press it to pick from the whole list.`,
 		},
 		{
-			icons: [],
+			icons: ['buyTile'],
 			name: T.buyBonusName,
 			text: `Opens the feature menu, where either Free Spins round can be ${T.bought} outright for the stated multiple of your ${T.bet}. The ${T.cost} is shown before you confirm.`,
 		},
 		{
 			icons: ['autoSpin'],
 			name: 'Auto Spin',
-			text: 'Plays a chosen number of rounds automatically. Open it to set the count and any stop conditions; press it again to stop early.',
+			text: 'Plays a chosen number of rounds automatically. Open it, pick the number of rounds, then press START or Spin. Press it again to stop early.',
 		},
 		{
 			icons: ['turbo'],
@@ -50,7 +51,7 @@
 		{
 			icons: ['menu'],
 			name: 'Menu',
-			text: `Opens the ${T.payTable}, these rules, and the sound and settings controls.`,
+			text: `Opens these rules, the ${T.payTable}, the settings, and the two volume sliders.`,
 		},
 		{
 			icons: ['payTable'],
@@ -59,8 +60,8 @@
 		},
 		{
 			icons: ['soundOn'],
-			name: 'Sound',
-			text: 'Mutes and unmutes the game. Volume is adjusted under Settings.',
+			name: 'Volume',
+			text: 'The two sliders in the menu set the sound effects volume and the music volume. Slide either one fully left to mute it.',
 		},
 		{
 			icons: ['settings'],
@@ -172,7 +173,13 @@
 							{#if control.icons.length}
 								<span class="wp-control-icons">
 									{#each control.icons as name (name)}
+										{#if name === 'chevUp' || name === 'chevDown'}
+											<svg class="wp-chev" viewBox="0 0 48 48" aria-hidden="true"><path d={name === 'chevUp' ? 'M8 32 L24 14 L40 32' : 'M8 16 L24 34 L40 16'} fill="none" stroke="#15191f" stroke-width="13" stroke-linecap="round" stroke-linejoin="round" /><path d={name === 'chevUp' ? 'M8 32 L24 14 L40 32' : 'M8 16 L24 34 L40 16'} fill="none" stroke="#b8d080" stroke-width="6" stroke-linecap="round" stroke-linejoin="round" /></svg>
+										{:else if name === 'buyTile'}
+											<img class="wp-buy-tile" src={`${base}/assets/sprites/staticShiftSymbolsInk/s.png`} alt="" aria-hidden="true" />
+										{:else}
 										<img src={`${ICONS}/${name}.png`} alt="" aria-hidden="true" />
+										{/if}
 									{/each}
 								</span>
 							{/if}
@@ -485,6 +492,20 @@
 		object-fit: contain;
 		/* nudge down so the glyph optically centres on the first line of text */
 		margin-top: -0.15rem;
+	}
+
+	.wp-chev {
+		width: 2.1rem;
+		height: 2.1rem;
+		margin-top: -0.15rem;
+	}
+
+	.wp-controls img.wp-buy-tile {
+		box-sizing: border-box;
+		padding: 0.12rem;
+		border: 2px solid #e7aa53;
+		border-radius: 0.35rem;
+		background: #a6d6a4;
 	}
 
 	.wp-control-name {

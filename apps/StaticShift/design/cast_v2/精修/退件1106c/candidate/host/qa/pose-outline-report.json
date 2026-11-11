@@ -1,0 +1,66 @@
+{
+  "extended": {
+    "src": "/Users/stone/stake-engine/wp-banandit/apps/StaticShift/design/cast_v2/\u7cbe\u4fee/\u9000\u4ef61106c/candidate/host/qa/transparent-poses/extended.png",
+    "edge_px": 11324,
+    "uninked_px": 0,
+    "uninked_share": 0.0,
+    "runs": [],
+    "verdict": "PASS"
+  },
+  "folded": {
+    "src": "/Users/stone/stake-engine/wp-banandit/apps/StaticShift/design/cast_v2/\u7cbe\u4fee/\u9000\u4ef61106c/candidate/host/qa/transparent-poses/folded.png",
+    "edge_px": 9550,
+    "uninked_px": 0,
+    "uninked_share": 0.0,
+    "runs": [],
+    "verdict": "PASS"
+  },
+  "knees": {
+    "src": "/Users/stone/stake-engine/wp-banandit/apps/StaticShift/design/cast_v2/\u7cbe\u4fee/\u9000\u4ef61106c/candidate/host/qa/transparent-poses/knees.png",
+    "edge_px": 9339,
+    "uninked_px": 0,
+    "uninked_share": 0.0,
+    "runs": [],
+    "verdict": "PASS"
+  },
+  "overhead0": {
+    "src": "/Users/stone/stake-engine/wp-banandit/apps/StaticShift/design/cast_v2/\u7cbe\u4fee/\u9000\u4ef61106c/candidate/host/qa/transparent-poses/overhead0.png",
+    "edge_px": 10435,
+    "uninked_px": 0,
+    "uninked_share": 0.0,
+    "runs": [],
+    "verdict": "PASS"
+  },
+  "raised": {
+    "src": "/Users/stone/stake-engine/wp-banandit/apps/StaticShift/design/cast_v2/\u7cbe\u4fee/\u9000\u4ef61106c/candidate/host/qa/transparent-poses/raised.png",
+    "edge_px": 10072,
+    "uninked_px": 0,
+    "uninked_share": 0.0,
+    "runs": [],
+    "verdict": "PASS"
+  },
+  "rest": {
+    "src": "/Users/stone/stake-engine/wp-banandit/apps/StaticShift/design/cast_v2/\u7cbe\u4fee/\u9000\u4ef61106c/candidate/host/qa/transparent-poses/rest.png",
+    "edge_px": 10566,
+    "uninked_px": 0,
+    "uninked_share": 0.0,
+    "runs": [],
+    "verdict": "PASS"
+  },
+  "shrug": {
+    "src": "/Users/stone/stake-engine/wp-banandit/apps/StaticShift/design/cast_v2/\u7cbe\u4fee/\u9000\u4ef61106c/candidate/host/qa/transparent-poses/shrug.png",
+    "edge_px": 10477,
+    "uninked_px": 0,
+    "uninked_share": 0.0,
+    "runs": [],
+    "verdict": "PASS"
+  },
+  "straight0": {
+    "src": "/Users/stone/stake-engine/wp-banandit/apps/StaticShift/design/cast_v2/\u7cbe\u4fee/\u9000\u4ef61106c/candidate/host/qa/transparent-poses/straight0.png",
+    "edge_px": 11729,
+    "uninked_px": 0,
+    "uninked_share": 0.0,
+    "runs": [],
+    "verdict": "PASS"
+  }
+}

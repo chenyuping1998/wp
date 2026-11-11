@@ -1,0 +1,82 @@
+{
+  "canvas": [
+    1024,
+    1536
+  ],
+  "ground_y": 1456,
+  "joints": {
+    "shoulder_l": [
+      437,
+      390
+    ],
+    "elbow_l": [
+      306,
+      545
+    ],
+    "wrist_l": [
+      420,
+      650
+    ],
+    "shoulder_r": [
+      651,
+      405
+    ],
+    "elbow_r": [
+      729,
+      566
+    ],
+    "wrist_r": [
+      733,
+      482
+    ],
+    "hip_l": [
+      481,
+      721
+    ],
+    "knee_l": [
+      392,
+      1025
+    ],
+    "ankle_l": [
+      347,
+      1271
+    ],
+    "hip_r": [
+      641,
+      722
+    ],
+    "knee_r": [
+      646,
+      1027
+    ],
+    "ankle_r": [
+      686,
+      1274
+    ],
+    "neck": [
+      555,
+      321
+    ]
+  },
+  "draw_order": [
+    "arm_l_upper",
+    "arm_r_upper",
+    "leg_l_upper",
+    "leg_r_upper",
+    "foot_l",
+    "foot_r",
+    "leg_l_lower",
+    "leg_r_lower",
+    "pelvis",
+    "neck",
+    "torso",
+    "head_idle",
+    "glasses",
+    "arm_l_lower",
+    "arm_r_lower",
+    "hand_l_hip",
+    "hand_r_grip"
+  ],
+  "tool": "master masks + generated underpainting/variants",
+  "status": "WORK_IN_PROGRESS"
+}

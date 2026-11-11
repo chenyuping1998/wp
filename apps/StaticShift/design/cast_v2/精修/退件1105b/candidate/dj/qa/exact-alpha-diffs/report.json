@@ -1,0 +1,86 @@
+{
+  "arm_l_lower": {
+    "removed_alpha_pixels": 2066,
+    "added_alpha_pixels": 61,
+    "removed_alpha_coverage": 431066,
+    "added_alpha_coverage": 4215
+  },
+  "arm_l_upper": {
+    "removed_alpha_pixels": 4474,
+    "added_alpha_pixels": 1412,
+    "removed_alpha_coverage": 47207,
+    "added_alpha_coverage": 305714
+  },
+  "arm_r_lower": {
+    "removed_alpha_pixels": 2137,
+    "added_alpha_pixels": 226,
+    "removed_alpha_coverage": 497828,
+    "added_alpha_coverage": 36098
+  },
+  "arm_r_upper": {
+    "removed_alpha_pixels": 5533,
+    "added_alpha_pixels": 1209,
+    "removed_alpha_coverage": 153572,
+    "added_alpha_coverage": 261827
+  },
+  "hand_l_hip": {
+    "removed_alpha_pixels": 432,
+    "added_alpha_pixels": 105,
+    "removed_alpha_coverage": 107641,
+    "added_alpha_coverage": 19068
+  },
+  "hand_l_open": {
+    "removed_alpha_pixels": 69,
+    "added_alpha_pixels": 2,
+    "removed_alpha_coverage": 15837,
+    "added_alpha_coverage": 510
+  },
+  "hand_l_point": {
+    "removed_alpha_pixels": 16,
+    "added_alpha_pixels": 2,
+    "removed_alpha_coverage": 1932,
+    "added_alpha_coverage": 415
+  },
+  "hand_r_grip": {
+    "removed_alpha_pixels": 0,
+    "added_alpha_pixels": 27,
+    "removed_alpha_coverage": 0,
+    "added_alpha_coverage": 2225
+  },
+  "leg_l_lower": {
+    "removed_alpha_pixels": 4632,
+    "added_alpha_pixels": 0,
+    "removed_alpha_coverage": 1104125,
+    "added_alpha_coverage": 0
+  },
+  "leg_l_upper": {
+    "removed_alpha_pixels": 471,
+    "added_alpha_pixels": 440,
+    "removed_alpha_coverage": 59570,
+    "added_alpha_coverage": 44155
+  },
+  "leg_r_lower": {
+    "removed_alpha_pixels": 4709,
+    "added_alpha_pixels": 0,
+    "removed_alpha_coverage": 1119635,
+    "added_alpha_coverage": 0
+  },
+  "leg_r_upper": {
+    "removed_alpha_pixels": 330,
+    "added_alpha_pixels": 419,
+    "removed_alpha_coverage": 24632,
+    "added_alpha_coverage": 39242
+  },
+  "neck": {
+    "removed_alpha_pixels": 124,
+    "added_alpha_pixels": 0,
+    "removed_alpha_coverage": 27002,
+    "added_alpha_coverage": 0
+  },
+  "pelvis": {
+    "removed_alpha_pixels": 310,
+    "added_alpha_pixels": 522,
+    "removed_alpha_coverage": 69685,
+    "added_alpha_coverage": 121144
+  }
+}

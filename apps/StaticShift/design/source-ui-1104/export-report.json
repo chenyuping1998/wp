@@ -1,0 +1,86 @@
+{
+  "board_frame": {
+    "size": [
+      1640,
+      1400
+    ],
+    "raw_sha256": "031d7f2828dcdb5dab1d1b9594c2b2df8d1fa01dc65f6436a1b1e5bf92cd8e29",
+    "sha256": "394b6a0faa27f0c80add058b3a8f050f9f3f92f18285613f7ac37d2f588c1197",
+    "alpha": [
+      0,
+      255
+    ]
+  },
+  "board_frame_fg": {
+    "size": [
+      1640,
+      1400
+    ],
+    "raw_sha256": "0f15aba062a4b400abc838038f012a8c7641f2ced79a065079c86616aab8c88c",
+    "sha256": "711c66d2a30c4e511642f9089f0f731675580fb2e85fd69851a6eaa327ff98d1",
+    "alpha": [
+      0,
+      255
+    ]
+  },
+  "cell_card": {
+    "size": [
+      280,
+      280
+    ],
+    "raw_sha256": "b74a0fe91fa09db599f8d9fbef79828e7ca853a9c205e31e6ff90c90b2fa2d47",
+    "sha256": "ee43bf48bbc839c6b9c3bd5fbc2298e214222feaeb7700ed5f7a69d75ccba8a0",
+    "alpha": [
+      0,
+      255
+    ]
+  },
+  "logo": {
+    "size": [
+      1600,
+      700
+    ],
+    "raw_sha256": "061d981a2c0c0e9ccf3e2fc2fe23a36218e9eb325dff1df1857db769b40a570c",
+    "sha256": "d3924e678451c142cf23a0134e630205cacca94154d9390619ca8908ce4be083",
+    "alpha": [
+      0,
+      255
+    ]
+  },
+  "logo_small": {
+    "size": [
+      800,
+      260
+    ],
+    "raw_sha256": "f3dc02c46b17b9edf78b3ef391e9c018099f42fe1a500a0c500911f5a3794785",
+    "sha256": "eb5b1ce0a5f42d32db0a538530cb3227cd49d982d6e580c3ea97faac88d929c3",
+    "alpha": [
+      0,
+      255
+    ]
+  },
+  "bar_plate": {
+    "size": [
+      1920,
+      160
+    ],
+    "raw_sha256": "d9ecb784cd1be9153ff05f1c4c080fbe94ccf1ec09757d454624d967910ead19",
+    "sha256": "08438513222ade464230054ff61c454d527afc7721ab4689ee1d7afeb5bd87d0",
+    "alpha": [
+      0,
+      255
+    ]
+  },
+  "intro_card": {
+    "size": [
+      900,
+      640
+    ],
+    "raw_sha256": "e53442d0f444576e2d2f59410ea8f7c02d9bb5a656234caf65eac42b7be2abf2",
+    "sha256": "3e0f17d9f63cb41f741ca40ef4e452c474c17859fa223436b21c278c70601a23",
+    "alpha": [
+      0,
+      255
+    ]
+  }
+}

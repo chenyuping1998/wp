@@ -1,0 +1,245 @@
+{
+  "revision": "staticshift-cast-20261105-r4",
+  "layers": {
+    "arm_l_lower.png": {
+      "sha256": "d77819fbdf51b7b5172b032f68788fb3d6d9e047922ec389b80257503d56b81c",
+      "canvas": [
+        1024,
+        1536
+      ]
+    },
+    "arm_l_upper.png": {
+      "sha256": "5d76fd183bc5d6baac36c4c828886eccbcda3325d652a5df3c275c60fb3a4358",
+      "canvas": [
+        1024,
+        1536
+      ]
+    },
+    "arm_r_lower.png": {
+      "sha256": "511d746dd5546543470f7f504b97febc798f9ad27e86ed7ab859ef3d9dfc7f27",
+      "canvas": [
+        1024,
+        1536
+      ]
+    },
+    "arm_r_upper.png": {
+      "sha256": "6f96363f4c71d21b446a6147ec0856b34b73e026621045bbf8065813f600e43c",
+      "canvas": [
+        1024,
+        1536
+      ]
+    },
+    "foot_l.png": {
+      "sha256": "e0aba394f48772411813f53afb66dcb9085e12ec20d92205b444d56334fd1339",
+      "canvas": [
+        1024,
+        1536
+      ]
+    },
+    "foot_r.png": {
+      "sha256": "64b40a752fd354ba3e6d225057334d1644abeb756e25bd76c11bc8584efc2786",
+      "canvas": [
+        1024,
+        1536
+      ]
+    },
+    "glasses.png": {
+      "sha256": "0daef917b5ae6d00181eb60273af0c558482e475d585e115b08b758b6a23dc42",
+      "canvas": [
+        1024,
+        1536
+      ]
+    },
+    "hand_l_hip.png": {
+      "sha256": "06efe06a662abd4cd59421b289c55c9c9c19a9e879378e232e13be8aa8bea836",
+      "canvas": [
+        1024,
+        1536
+      ]
+    },
+    "hand_l_open.png": {
+      "sha256": "ff6407ef652c53f096a29930e5e35e405908b0871996e96075b7abffa80aab66",
+      "canvas": [
+        1024,
+        1536
+      ]
+    },
+    "hand_l_point.png": {
+      "sha256": "52c30a47a808e2a9aaf1ee309d27a54882051078d0cba6775f9103be5e7749b2",
+      "canvas": [
+        1024,
+        1536
+      ]
+    },
+    "hand_r_grip.png": {
+      "sha256": "84bebc09d736d979b8e577c6cea316b87ac9b2b6c5ead9972d492c1ed32c4463",
+      "canvas": [
+        1024,
+        1536
+      ]
+    },
+    "hand_r_hatheld.png": {
+      "sha256": "f22168a0689183a2048f7442fc9e7f43713eb7593a80483a01d4e61cb3f4ff03",
+      "canvas": [
+        1024,
+        1536
+      ]
+    },
+    "hand_r_open.png": {
+      "sha256": "c494f34abf46f0e3ec4c318a984ffefcdf29f792b2d76c3718b4e8155c04faaf",
+      "canvas": [
+        1024,
+        1536
+      ]
+    },
+    "hand_r_pinch.png": {
+      "sha256": "f6c15a720488562c7fcf2667da19b75fc274db383d6a4df4b15fac4de74426b7",
+      "canvas": [
+        1024,
+        1536
+      ]
+    },
+    "head_annoyed.png": {
+      "sha256": "e387d0ee9f9babcf7d88b1e44c0f765594dbdad49dca6ec0e51d69ad6fab61c5",
+      "canvas": [
+        1024,
+        1536
+      ]
+    },
+    "head_blink.png": {
+      "sha256": "1c013db3a6a4cf485e63b32a80628304b2eba1401b2228844e120576d36544f4",
+      "canvas": [
+        1024,
+        1536
+      ]
+    },
+    "head_grin.png": {
+      "sha256": "5002f1de3b1d61ae860f54f2926b303b96ffafd092f4965051c3309664a50059",
+      "canvas": [
+        1024,
+        1536
+      ]
+    },
+    "head_idle.png": {
+      "sha256": "0f62fe10a655be3f1a7ba6d6e7906404bd0fb093d56a7d925210a10a08d8fa0f",
+      "canvas": [
+        1024,
+        1536
+      ]
+    },
+    "head_spiral.png": {
+      "sha256": "c3255024b6f2dd4955627aa13f09e783717c9bbb00927528f83ad48284871393",
+      "canvas": [
+        1024,
+        1536
+      ]
+    },
+    "leg_l_lower.png": {
+      "sha256": "7a04e61e75c6aaaa6acfd9aa4c147ded7271dd2e575e42a49954980133ceed3a",
+      "canvas": [
+        1024,
+        1536
+      ]
+    },
+    "leg_l_upper.png": {
+      "sha256": "4ebdd5a9e680f8be169977e04e07cec34966505720bf68fd5e2833290cd13399",
+      "canvas": [
+        1024,
+        1536
+      ]
+    },
+    "leg_r_lower.png": {
+      "sha256": "f2e6a2e5dfe5b53ad38c3b65234b48c0d54670c2ef606d35afcfa3ee92e2ba34",
+      "canvas": [
+        1024,
+        1536
+      ]
+    },
+    "leg_r_upper.png": {
+      "sha256": "ebce0eae7ba71ec355b3ff34bead01129664cf805d815a9fd96a04c818f94cf8",
+      "canvas": [
+        1024,
+        1536
+      ]
+    },
+    "neck.png": {
+      "sha256": "3b0b6788b31d1a0afc477ab04de7d07352048c3309545853e0c5193eb53d51d7",
+      "canvas": [
+        1024,
+        1536
+      ]
+    },
+    "pelvis.png": {
+      "sha256": "f393320c6f3ecb734f6c2ed98f2dc03e2bebb96e45cebfb7a6f364676f832950",
+      "canvas": [
+        1024,
+        1536
+      ]
+    },
+    "torso.png": {
+      "sha256": "cc41296ba4735473614a9dbf344ca64abae6679bdefc705221dda0119179f2cb",
+      "canvas": [
+        1024,
+        1536
+      ]
+    }
+  },
+  "assembled_sha256": "50c95fe8c03ef97fe06f1893acbae352208ce0c0e09c7f8e050c08adcd5dbe2b",
+  "master_sha256": "50c95fe8c03ef97fe06f1893acbae352208ce0c0e09c7f8e050c08adcd5dbe2b",
+  "minimum_joint_overlap_px": 50.8,
+  "original_joints_preserved": true,
+  "original_draw_order_preserved": true,
+  "static_outline": {
+    "src": "交件/host",
+    "edge_px": 10691,
+    "uninked_px": 0,
+    "uninked_share": 0.0,
+    "runs": [],
+    "verdict": "PASS"
+  },
+  "six_rigid_pose_verdicts": {
+    "extended": "PASS",
+    "folded": "PASS",
+    "knees": "PASS",
+    "raised": "PASS",
+    "rest": "PASS",
+    "shrug": "PASS"
+  },
+  "qa_sha256": {
+    "all-layers-paper-dark.jpg": "7cc30705ad5d55fc9883c7b8cb6c84f8de625ea6dec911a6d73fef03e486b433",
+    "all-wrists-paper.jpg": "946dd7bad55ab7e8f34be440ad716b9c59086e3befd25a17701a3fc384e3c8f3",
+    "alpha-diff-report.json": "2c96c39227da859b20d6acc53944edaac4d5160c7c8820f804d7b1341c98cd0a",
+    "assembled-paper.jpg": "af8214e6a033b9b2c17ea2b7104d4962e2ae1aca30677c2bd9f981fb2661b7b8",
+    "exact-alpha-diffs/leg_l_upper-added.png": "993faf9e1f20fc3b6173fbedf02a0decb733598c91f73a98bbee71badd3629ab",
+    "exact-alpha-diffs/leg_l_upper-removed.png": "96b3a4c6baeeaa00a49bef1e76740a79215caf3a90e6556dffd6e5cb87f97372",
+    "exact-alpha-diffs/leg_r_upper-added.png": "3d30e467fef7ca574b7aed5419dbbb72d3725c8d3ac1c39a9c7e0dfebcb13791",
+    "exact-alpha-diffs/leg_r_upper-removed.png": "55e22f25a2f549fde403e57d63418fe428a86042b68b3429cbd720f7d032b6eb",
+    "exact-alpha-diffs/regions-1.jpg": "7f6c1e541ac74373d8f76f66da5837aba65362b823b93355d3caa861adc33c0b",
+    "exact-alpha-diffs/report.json": "873341fe9e590070879967cbdfcff8f7c8c93f41886edf99e80e137cd86bf5bd",
+    "joint-extended.png": "487cff85e51a5f58cd862bf160ec5e2c5519e629a39d9c7f06156834329779ce",
+    "joint-folded.png": "1075825a357f62543082d47eb85a7a22971f5c4942dfcbc08d828847fff77bc8",
+    "joint-knees.png": "cda368bb641f83307637eb360b0c8b593d6299065bc549562c992ee4b4dce4b8",
+    "joint-proof-sheet.jpg": "38bd0027ee9aa963c97b8ab9d95f0a9567cf9d9f909693995b35d048915ef443",
+    "joint-raised.png": "3811d1ba19853121281646f1cd9a994a604ea60ce4111d7c03252521fdde2d38",
+    "joint-rest.png": "2824aa927616ae5f561255f0254f69455349866e1c7f9bed751644a19ab6cc75",
+    "joint-shrug.png": "9c9bf7fb89beca6988762614812990846ab31810cba86ade82a68be615a5cadb",
+    "leg_l_upper-alpha-diff.jpg": "34bfff02f45ea8f776cdfbdb7b4493ebe8cd7aca6dbed2f251dd52bcf21c4482",
+    "leg_l_upper-removed-alpha.png": "bd4cef54a782d53fee1db94a9c510ffd64df72da6208bbef5bf6ab30aef220b7",
+    "leg_r_upper-alpha-diff.jpg": "a9bf4aea2b1a9eef0fe4fcce812299bf608e5c5427a4a1c4b0cb53008d3b65e7",
+    "leg_r_upper-removed-alpha.png": "89d7b3c01149c2c8a7b005614b4ab811728d22c5075491244fd5a9c3d625e698",
+    "native-joints-1.jpg": "10a982e39cffb076614f4f0eb44dfd2671ec7ffd607b5d877715b1af4909dc50",
+    "native-joints-2.jpg": "55fb7f30ba18545c323eee68c0b3ad14558ee23ac90a8c9611f01234786bfd6f",
+    "outline-ink.jpg": "e26c8f982156a7b9ecc63eb4ae82676c405b7474ffadc95adc41c6b331937210",
+    "outline-ink.json": "9abb078df42ecd4fe9c36f7d40351f7130c7cb69d3a109d5e4a53ef3e10b48b8",
+    "overlap-report.json": "6b188d1a1fa4fe3f4a2554a6800d1ae660707ff1b967fe3c7b859c6d4d68f894",
+    "pose-outline-report.json": "66db7fafd9e699482b451bb8060ac720ab3d8ea42ce15aaa922739955172658e",
+    "rendering-notes.json": "c5cd4ea024ff534cee6ed51f642179dc3b336c7fc08e8defcc68209defc95cd3",
+    "transparent-poses/extended.png": "0a500793ddb225bca74d6441f1d4fbb0940f577878c403735f271ec6f4b4b7c5",
+    "transparent-poses/folded.png": "173a6dfe1e687ce9fd40ab6686f51adbcbb1ba1210753317d9d5c9aed23332d7",
+    "transparent-poses/knees.png": "e5a1181a74b40a357c3f90d325fa3894597af6db4fb0cc52fdb89b21d453eba5",
+    "transparent-poses/raised.png": "ddfdcf7b7cf6cb584759f987e026aa28751d197b5dd1bc67abaaf2a5bbe4a141",
+    "transparent-poses/rest.png": "1a2a0ec90c88e39c27e9257333d800e9c94b42c209f88d987b52d6c726d46cf5",
+    "transparent-poses/shrug.png": "706c70301f4ead0b2e02c178a275ca0a199f14bd9251fc1b85482e381099b689"
+  },
+  "visual_acceptance": "Third-round crotch and sleeve-cap localized repairs; 47 layers byte-identical to r3, knee joint pixels unchanged. Premultiplied-alpha interpolation corrected to eliminate false circular highlight. Source paper/dark layers, all original rigid poses, wrists and exact alpha removals reviewed. Static art only."
+}

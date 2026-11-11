@@ -4,7 +4,8 @@
 	// Reuse the shared modals for everything except the pay table / game rules,
 	// which we override locally with WildParty-specific content.
 	import ModalError from 'components-ui-html/src/components/ModalError.svelte';
-	import ModalBetMenu from 'components-ui-html/src/components/ModalBetMenu.svelte';
+	// bar v3: the amount list opens as a panel beside the BET box
+	import InlineBetMenu from './InlineBetMenu.svelte';
 	import ModalBuyBonusConfirm from 'components-ui-html/src/components/ModalBuyBonusConfirm.svelte';
 	import ModalAutoSpin from 'components-ui-html/src/components/ModalAutoSpin.svelte';
 	import ModalAutoSpinMessage from 'components-ui-html/src/components/ModalAutoSpinMessage.svelte';
@@ -28,7 +29,7 @@
 </script>
 
 <ModalError />
-<ModalBetMenu />
+<InlineBetMenu />
 <ModalBuyBonus />
 <ModalBuyBonusConfirm />
 <ModalAutoSpin />

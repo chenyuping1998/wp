@@ -12,7 +12,8 @@
 	import { App, Container, Sprite, Text, REM } from 'pixi-svelte';
 	import { stateModal, stateBet } from 'state-shared';
 
-	import { UI } from 'components-ui-pixi';
+	// bar v3 (the connected console), mounted by the game: ui/StaticUI.svelte
+	import StaticUI from './ui/StaticUI.svelte';
 	import GameNameClock from './GameNameClock.svelte';
 	import { GameVersion } from 'components-ui-html';
 	import Modals from './ui/Modals.svelte';
@@ -127,7 +128,7 @@ import {sceneMotion} from '../game/sceneMotion.svelte';
 
 		<EntryReveal />
 
-		<UI>
+		<StaticUI>
 			{#snippet gameName()}
 				<GameNameClock name="STATIC SHIFT" />
 			{/snippet}
@@ -139,9 +140,12 @@ import {sceneMotion} from '../game/sceneMotion.svelte';
 				     and below ~760px they ran together as "STATIC SHIFTSTATIC SHIFT"
 				     (Stake flagged the same on Deadwood Express, 2026-10-04). The
 				     clock-and-name on the left still says it. -->
-				
+				<!-- ...nor behind an open modal: its close button sits in this corner. -->
+				{#if context.stateLayoutDerived.layoutType() !== 'portrait' && context.stateLayoutDerived.canvasSizes().width >= 760 && !stateModal.modal}
+					<Sprite key="ssLogoSmall" anchor={{ x: 1, y: 0 }} width={200} height={65} />
+				{/if}
 			{/snippet}
-		</UI>
+		</StaticUI>
 		<BarMessage />
 		<Win />
 		<FreeSpinIntro />

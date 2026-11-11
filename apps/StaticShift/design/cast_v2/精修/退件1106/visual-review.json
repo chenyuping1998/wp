@@ -1,0 +1,15 @@
+{
+  "status": "ACCEPTED",
+  "source_sha256": {
+    "dj": "05876b03d9ea381e6937a25508a0ba8bcf9d651d364ca9360b1cd9c6b85dd708",
+    "host": "f965e1327a5a9abbf54dcd26fa35c40d29decc229f6b0b3313b04869035653ef"
+  },
+  "reviewed": [
+    "Both characters; both arm sides; straight 0 degrees / overhead V / standing native 2x proofs",
+    "All eight actual r4 animations, 0.12 second samples plus end frames: 126 per character, 252 total, both elbows",
+    "All changed source elbow regions against paper and dark backgrounds",
+    "All exact alpha removed regions compared with r4",
+    "All 16 original-angle/static source poses; unchanged r4 bones, animation keys, source joints, draw order"
+  ],
+  "scope": "Elbow art repair only, no game/runtime/Spine delivery or platform publication"
+}

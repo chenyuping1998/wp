@@ -99,3 +99,14 @@ Both recolours are in `design/retouch_brand_details.py` (idempotent; originals i
 ## 圖騰動態優化 — 2026-10-29
 
 12 種圖騰改為電台物件局部動態與各自中獎編排；固定人像 reaction 與共用低階彈跳已替換。來源、逐格證據及驗證限制見 design/qa/symbol-craft-20261029/REPORT.md。本機 upload/StaticShift 已同步；數學與本次前備份相同，平台未更新。
+
+## 2026-11-10 人物放大＋動作修正＋下注列第三版（Claude，只到試玩版）
+
+Stone：「人物太小隻、太瘦，動作很奇怪，伸出的手有很不自然的彎曲；UI 改成像酸黃瓜那樣」。
+
+- **動作（r8）**：`design/cast_v2/spine_r8/狀態.md`。指盤面的手打直、出手改成先往下打開再甩上去、主持人指的手掌對齊前臂、大獎三段遠手留在腰上。圖層沒變（交件 r7／r7.1）。工具改在 `~/tools/spine-generator-ss`（未 commit）。
+- **人物大小**：`Mascot.svelte` 改成用「身體寬度」決定大小（原本用最寬的伸手動作），伸手時人物往後退一步（`lean`），指尖停在盤面外框邊。16:9 人物高度由畫面的 44% → 60%。
+- **下注列第三版**：`src/components/ui/MummyBar.svelte`（從酸黃瓜複製、換成 Static Shift 的皮）、`StaticUI.svelte`、`InlineBetMenu.svelte`、`mummyBarGeometry.ts`；盤面位置 `src/game/stageLayout.ts`（依螢幕與下注列實際形狀放大盤面，16:10／4:3 不再縮在黑邊框內）。規則頁的操作說明已照新下注列重寫。
+- 試玩版：`dist/staticshift-ui1110`（launch `staticshift-ui1110` :4243）。證據 `design/qa/ui-cast-20261110/`。
+- **沒做**：沒打包、沒上傳（平台仍是 front v12）。沒重跑官方 self-check、preflight。購買選單、規則頁、大獎牌、重播、餘額不足在新版面下還沒逐一截圖。「太瘦」是圖本身的體型，要重生圖（house-rules B14），還沒開單。4:3 人物仍偏小（側欄只有 24% 寬）。
+- 11-10 晚：「太瘦」的生圖單開好了：`design/cast_v3_加粗_20261110/`（需求單.md、兩份提示詞、輸入圖、給Codex的訊息.txt）。第一階段只要兩位的全身定稿圖各 3 張候選；Stone 點頭後 Claude 才拆層。量到的問題：兩位前臂太細（DJ 55–63 px、主持人 47–54 px，身高 1365），主持人腰 145 px；腿和 DJ 軀幹不動。另修了押注清單關閉鈕用 Arial 的 preflight FAIL。

@@ -1,0 +1,11 @@
+{
+  "revision": "staticshift-cast-20261106-r6",
+  "status": "ACCEPTED_AND_STAGED_LOCAL_ART_ONLY",
+  "outline": {
+    "dj": "PASS",
+    "host": "PASS"
+  },
+  "changed_png_count": 5,
+  "unchanged_r5_png_count": 47,
+  "platform_updated": false
+}

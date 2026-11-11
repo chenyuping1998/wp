@@ -1,0 +1,12 @@
+{
+  "dj": {
+    "rest": "dd336868a770aa54184983d60f896e4d5b4efe9ca528c325e5d35f313fdcfcbb",
+    "straight0": "097392f19a08366dfb8b27600db3063ae1198968142eca8edda632fafaa748c3",
+    "overhead0": "c51a1a3d2a701561d2de40607962eb5ccdec492c55dfb6260908ee9a606fea93"
+  },
+  "host": {
+    "rest": "c459501a1e7d780697ba8489caac5066d2ddd9c70932e565f0211b05e7358519",
+    "straight0": "aa151dad996be3339b5eccaec2e5c70e35df282dfd2e6ea3e43c16974f4321b1",
+    "overhead0": "44b74d2e5f5268b160541ee847bbaa439e8c7a584c16d6fb42e172fc6470bf63"
+  }
+}

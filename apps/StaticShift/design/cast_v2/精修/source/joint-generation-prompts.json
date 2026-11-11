@@ -1,0 +1,61 @@
+[
+  {
+    "file": "dj_forearm.png",
+    "tool": "built-in image_gen",
+    "transparent_background": true,
+    "reference": "../../交件/dj/reference-master.png",
+    "prompt": "Use case: precise-object-edit. Input image is STYLE AND SKIN COLOR REFERENCE ONLY. Deliver ONE isolated anatomically natural adult male DJ forearm, peach skin with fine sparse hair hatching sprite, elbow end above and wrist end below, vertical straight relaxed forearm. ONLY the forearm segment from the elbow to wrist; NO upper arm, NO hand, NO fingers, NO sleeve, NO bracelets, NO other body parts. Entire segment connected. Slender natural taper toward wrist, no lumps or bulbous joints. Elbow is smoothly rounded oval 90px wide, wrist softly rounded 48px wide; forearm length about 480px, center of image. Add 60px of concealed anatomical overlap at both ends; those rounded terminal caps have skin pigment with NO black outline across either end. Outer side contours have the same bold black ink as the reference, taper the black line out 60px before each terminal end. Match the exact reference character's skin palette and hand-drawn ink comic art. Truly transparent background, no labels. This is clean skeletal animation underpainting, no severed injury, no blood.",
+    "usage": "first generation, replaced by ink correction; retained as ../history/dj_forearm-realistic-rejected.png"
+  },
+  {
+    "file": "dj_joint_cloth.png",
+    "tool": "built-in image_gen",
+    "transparent_background": true,
+    "reference": "../../交件/dj/reference-master.png",
+    "prompt": "Use case: precise-object-edit. This is an animation underpainting edit target. Preserve the exact character, pose, trouser silhouette, scale and placement in the input image, transparent background. Change ONLY the trousers: remove ALL internal trouser pockets, seams, black crease markings and fold hatching. Keep the exact original muted slate blue trouser fabric color, restrained hand-painted cel shaded fabric volume, and the original external silhouette with its black external outline. The entire inside of the pants is continuous calm fabric shading, WITHOUT ANY black lines or internal details. All visible folds in the outside silhouette stay exactly the same; no shrinking or straightening the legs. Keep every other part of the person exactly unchanged. This will supply hidden overlap fabric for hip and knee joints, so absolutely no printed linework inside trousers. Real alpha transparency, no glow.",
+    "usage": "discarded quiet-cloth experiment; not used by final split"
+  },
+  {
+    "file": "host_forearm.png",
+    "tool": "built-in image_gen",
+    "transparent_background": true,
+    "reference": "../../交件/host/reference-master.png",
+    "prompt": "Use case: precise-object-edit. Input image is STYLE AND SKIN COLOR REFERENCE ONLY. Deliver ONE isolated anatomically natural adult female host forearm, warm brown skin, smooth flat cel shading sprite, elbow end above and wrist end below, vertical straight relaxed forearm. ONLY the forearm segment from the elbow to wrist; NO upper arm, NO hand, NO fingers, NO sleeve, NO bracelets, NO other body parts. Entire segment connected. Slender natural taper toward wrist, no lumps or bulbous joints. Elbow is smoothly rounded oval 90px wide, wrist softly rounded 48px wide; forearm length about 480px, center of image. Add 60px of concealed anatomical overlap at both ends; those rounded terminal caps have skin pigment with NO black outline across either end. Outer side contours have the same bold black ink as the reference, taper the black line out 60px before each terminal end. Match the exact reference character's skin palette and hand-drawn ink comic art. Truly transparent background, no labels. This is clean skeletal animation underpainting, no severed injury, no blood.",
+    "usage": "final source"
+  },
+  {
+    "file": "host_joint_cloth.png",
+    "tool": "built-in image_gen",
+    "transparent_background": true,
+    "reference": "../../交件/host/reference-master.png",
+    "prompt": "Use case: precise-object-edit. This is an animation underpainting edit target. Preserve the exact character, pose, trouser silhouette, scale and placement in the input image, transparent background. Change ONLY the trousers: remove ALL internal trouser pockets, seams, black crease markings and fold hatching. Keep the exact original deep purple trouser fabric color, restrained hand-painted cel shaded fabric volume, and the original external silhouette with its black external outline. The entire inside of the pants is continuous calm fabric shading, WITHOUT ANY black lines or internal details. All visible folds in the outside silhouette stay exactly the same; no shrinking or straightening the legs. Keep every other part of the person exactly unchanged. This will supply hidden overlap fabric for hip and knee joints, so absolutely no printed linework inside trousers. Real alpha transparency, no glow.",
+    "usage": "discarded quiet-cloth experiment; not used by final split"
+  },
+  {
+    "file": "dj_leg_revision.png",
+    "usage": "final imagegen leg repaint source",
+    "tool": "built-in image_gen",
+    "transparent_background": true,
+    "reference": "../../交件/dj/reference-master.png",
+    "prompt": "Use case: precise-object-edit. Edit this adult comic character, ONLY redesign the trousers so this art can be split into clean animation limbs. Preserve the entire upper body, face, arms, hair, accessories, pose, scale, canvas placement, shoe positions and ground exactly. Trousers remain slate blue cargo/work pants, with matching bold comic ink, flat cel colors and restrained hatching. Keep a SINGLE side cargo pocket on each UPPER THIGH, ending at least 140 pixels above each knee. NO calf pockets. Legs are relaxed and slightly bent, continuous anatomically natural silhouettes with smooth tapered organic curves; remove the sharp angular trouser bulges, hard corners and notches near knees. Do NOT create skinny legs or tube legs. Knee centers are around y=1100; leave a generous 180px-tall CALM UNMARKED FLAT FABRIC AREA around each knee, with no black folds, internal seams, hatched shadows or pockets in that band. Similarly around hips, clean fabric beneath the waistband without ink radiating from crotch into joint areas. Place a few clear ink fabric folds farther down calf and near ankle, and on thigh well away from joints. Entirely drawn dark external contour stays continuous, clean and rounded. Keep boots/sneakers separate-looking, exact previous size, soles y=1456. Preserve adult body's overall proportions, leg volume and wide stance, no shrinking. This is polished ink comic character art, NOT blurred/airbrushed or 3D shading. Same real alpha transparency, no backdrop, no glow, no labels."
+  },
+  {
+    "file": "host_leg_revision.png",
+    "usage": "final imagegen leg repaint source",
+    "tool": "built-in image_gen",
+    "transparent_background": true,
+    "reference": "../../交件/host/reference-master.png",
+    "prompt": "Use case: precise-object-edit. Edit this adult comic character, ONLY redesign the trousers so this art can be split into clean animation limbs. Preserve the entire upper body, face, arms, hair, accessories, pose, scale, canvas placement, shoe positions and ground exactly. Trousers remain deep purple cargo/work pants, with matching bold comic ink, flat cel colors and restrained hatching. Keep a SINGLE side cargo pocket on each UPPER THIGH, ending at least 140 pixels above each knee. NO calf pockets. Legs are relaxed and slightly bent, continuous anatomically natural silhouettes with smooth tapered organic curves; remove the sharp angular trouser bulges, hard corners and notches near knees. Do NOT create skinny legs or tube legs. Knee centers are around y=1025; leave a generous 180px-tall CALM UNMARKED FLAT FABRIC AREA around each knee, with no black folds, internal seams, hatched shadows or pockets in that band. Similarly around hips, clean fabric beneath the waistband without ink radiating from crotch into joint areas. Place a few clear ink fabric folds farther down calf and near ankle, and on thigh well away from joints. Entirely drawn dark external contour stays continuous, clean and rounded. Keep boots/sneakers separate-looking, exact previous size, soles y=1456. Preserve adult body's overall proportions, leg volume and wide stance, no shrinking. This is polished ink comic character art, NOT blurred/airbrushed or 3D shading. Same real alpha transparency, no backdrop, no glow, no labels."
+  },
+  {
+    "file": "dj_forearm.png",
+    "usage": "final ink correction source",
+    "tool": "built-in image_gen",
+    "transparent_background": true,
+    "references": [
+      "../history/dj_forearm-realistic-rejected.png",
+      "../../交件/dj/reference-master.png"
+    ],
+    "prompt": "Use case: style-transfer / precise-object-edit. Image 1 is the EDIT TARGET: the isolated vertical adult forearm source sprite. Image 2 is STYLE REFERENCE ONLY: the comic DJ. Preserve Image 1's EXACT silhouette, shape, narrow wrist, height, canvas position and orientation, change ONLY the drawing style and skin paint. Draw that SAME isolated segment with Image 2's flat peach skin, BOLD BLACK COMIC INK outer side contours, sparse COARSE ink hair dashes, flat hard-edged cel shading. No photographic pores, no fine realistic hair, no diffuse gradient, no airbrush lighting. The upper and lower rounded 50-pixel terminal overlap caps have flat skin pigment and no black outline across the ends; fade each side contour before the extreme terminal caps. Keep outer sides clean and opaque. True transparent background with clean alpha: absolutely no glow, haze, shadow or light fringe. Do not add hand, fingers, sleeve, clothes, upper arm, body, labels or anything else. No geometry changes. This is a complete organic, naturally tapered forearm from elbow to wrist for a skeletal animation cutout."
+  }
+]

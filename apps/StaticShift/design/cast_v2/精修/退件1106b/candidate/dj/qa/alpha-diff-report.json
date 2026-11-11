@@ -1,0 +1,10 @@
+{
+  "arm_r_upper": {
+    "removed_px": 1532,
+    "added_px": 12
+  },
+  "arm_r_lower": {
+    "removed_px": 911,
+    "added_px": 1750
+  }
+}

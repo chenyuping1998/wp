@@ -1,0 +1,456 @@
+{
+  "character": "host",
+  "canvas": [
+    1024,
+    1536
+  ],
+  "draw_order": [
+    "arm_l_upper",
+    "arm_l_lower",
+    "hand_l_hip",
+    "leg_l_upper",
+    "leg_l_lower",
+    "foot_l",
+    "pelvis",
+    "leg_r_upper",
+    "leg_r_lower",
+    "foot_r",
+    "neck",
+    "torso",
+    "head_idle",
+    "glasses",
+    "arm_r_upper",
+    "arm_r_lower",
+    "hand_r_grip"
+  ],
+  "layers": {
+    "arm_l_lower": {
+      "bbox_alpha128": [
+        241,
+        452,
+        450,
+        683
+      ],
+      "size": [
+        1024,
+        1536
+      ],
+      "alpha_range": [
+        0,
+        254
+      ],
+      "sha256": "7abb8beb8b54dcd09d903173955b76d35fd09ba6c8062aa93087f9a9f20b93d3"
+    },
+    "arm_l_upper": {
+      "bbox_alpha128": [
+        242,
+        343,
+        516,
+        664
+      ],
+      "size": [
+        1024,
+        1536
+      ],
+      "alpha_range": [
+        0,
+        254
+      ],
+      "sha256": "65b7667391897b6ef8c17f07e9bb402980c78a86b0951c663457006ae099554e"
+    },
+    "arm_r_lower": {
+      "bbox_alpha128": [
+        665,
+        619,
+        806,
+        833
+      ],
+      "size": [
+        1024,
+        1536
+      ],
+      "alpha_range": [
+        0,
+        254
+      ],
+      "sha256": "891e0c6b6bf1ce22a246c1d7459b5b75a098dea1f5569d619ea8ab5f6e130d5c"
+    },
+    "foot_l": {
+      "bbox_alpha128": [
+        228,
+        1262,
+        423,
+        1457
+      ],
+      "size": [
+        1024,
+        1536
+      ],
+      "alpha_range": [
+        0,
+        254
+      ],
+      "sha256": "a115ff83281807f60a17c90f1c9a826fe21d8e5fe68424c0c807e6a877e4ce4c"
+    },
+    "foot_r": {
+      "bbox_alpha128": [
+        615,
+        1276,
+        794,
+        1457
+      ],
+      "size": [
+        1024,
+        1536
+      ],
+      "alpha_range": [
+        0,
+        254
+      ],
+      "sha256": "bf450f16bd2b8f4a425748cb6519c10ce00fd53dcdb25f62d697ff4ea0ad5806"
+    },
+    "glasses": {
+      "bbox_alpha128": [
+        439,
+        178,
+        621,
+        250
+      ],
+      "size": [
+        1024,
+        1536
+      ],
+      "alpha_range": [
+        0,
+        254
+      ],
+      "sha256": "4fd20538906c8f6a84f9a02b1203f0d62ab5750127d5a4232c8b72e719d64722"
+    },
+    "hand_l_hip": {
+      "bbox_alpha128": [
+        340,
+        609,
+        594,
+        767
+      ],
+      "size": [
+        1024,
+        1536
+      ],
+      "alpha_range": [
+        0,
+        254
+      ],
+      "sha256": "1dbea48c4f3a34b8be40de1141cf2dcc4fbe3d024b52e58f1e9108af79e6ec6e"
+    },
+    "hand_l_open": {
+      "bbox_alpha128": [
+        440,
+        624,
+        785,
+        816
+      ],
+      "size": [
+        1024,
+        1536
+      ],
+      "alpha_range": [
+        0,
+        254
+      ],
+      "sha256": "2c5fa300b76a601f5a3ca5f2cdcec00583baf000aa2104365b766d76fc33c6ee"
+    },
+    "hand_l_point": {
+      "bbox_alpha128": [
+        257,
+        618,
+        536,
+        764
+      ],
+      "size": [
+        1024,
+        1536
+      ],
+      "alpha_range": [
+        0,
+        254
+      ],
+      "sha256": "fdeb8a0040a9029078374951a4570d9b2d2579e02e11d53901ffdbfd382431ec"
+    },
+    "hand_r_grip": {
+      "bbox_alpha128": [
+        596,
+        307,
+        811,
+        758
+      ],
+      "size": [
+        1024,
+        1536
+      ],
+      "alpha_range": [
+        0,
+        254
+      ],
+      "sha256": "fa9551ca19710f1d6e41fe5d1d4ccf41cc459be0cf4848f32404bc5100841d1c"
+    },
+    "hand_r_hatheld": {
+      "bbox_alpha128": [
+        665,
+        316,
+        779,
+        555
+      ],
+      "size": [
+        1024,
+        1536
+      ],
+      "alpha_range": [
+        0,
+        254
+      ],
+      "sha256": "5c6227a592f7af8a4d4e8f5aa2b2772721c9f2b6f3a12131267753fcd03a8f42"
+    },
+    "hand_r_open": {
+      "bbox_alpha128": [
+        701,
+        314,
+        936,
+        547
+      ],
+      "size": [
+        1024,
+        1536
+      ],
+      "alpha_range": [
+        0,
+        254
+      ],
+      "sha256": "cd87b5b68dd857be643ac71a47ba517ba4bdd3d11f94c0356af3d30a29e2d630"
+    },
+    "hand_r_pinch": {
+      "bbox_alpha128": [
+        633,
+        310,
+        776,
+        543
+      ],
+      "size": [
+        1024,
+        1536
+      ],
+      "alpha_range": [
+        0,
+        254
+      ],
+      "sha256": "be77b018b16e8f004fc2fc975be2285560c369bdc7afc816f91aff29e098204e"
+    },
+    "head_annoyed": {
+      "bbox_alpha128": [
+        365,
+        88,
+        731,
+        394
+      ],
+      "size": [
+        1024,
+        1536
+      ],
+      "alpha_range": [
+        0,
+        254
+      ],
+      "sha256": "e016ca032fb4c4c3a9c2e5a67caedd44208f02a94f24295e6f7112dbd209bf44"
+    },
+    "head_blink": {
+      "bbox_alpha128": [
+        383,
+        90,
+        711,
+        369
+      ],
+      "size": [
+        1024,
+        1536
+      ],
+      "alpha_range": [
+        0,
+        254
+      ],
+      "sha256": "aa927a8e413331c3f92b12471b784caacee8c1943f033d890817b9062d7fc38f"
+    },
+    "head_grin": {
+      "bbox_alpha128": [
+        185,
+        99,
+        876,
+        679
+      ],
+      "size": [
+        1024,
+        1536
+      ],
+      "alpha_range": [
+        0,
+        254
+      ],
+      "sha256": "9fa8068128f0ddda069851595c323982d960eb66ec7ea29d5b2f356d4b054dc6"
+    },
+    "head_idle": {
+      "bbox_alpha128": [
+        245,
+        94,
+        860,
+        611
+      ],
+      "size": [
+        1024,
+        1536
+      ],
+      "alpha_range": [
+        0,
+        254
+      ],
+      "sha256": "5f8fcc7075189bf226e5159ac165467132fb39addc15637fe6e65451f8858cea"
+    },
+    "head_spiral": {
+      "bbox_alpha128": [
+        111,
+        197,
+        939,
+        873
+      ],
+      "size": [
+        1024,
+        1536
+      ],
+      "alpha_range": [
+        0,
+        254
+      ],
+      "sha256": "2e7d7f709ea3fbc7890a20630664b4a9e4ebfe914645f582d794692563ed2b66"
+    },
+    "leg_l_lower": {
+      "bbox_alpha128": [
+        271,
+        785,
+        527,
+        1282
+      ],
+      "size": [
+        1024,
+        1536
+      ],
+      "alpha_range": [
+        0,
+        254
+      ],
+      "sha256": "e5af621dc835269a48178d7c9f66742f7977a9cd118a3912d97d0a1355d756b4"
+    },
+    "leg_l_upper": {
+      "bbox_alpha128": [
+        296,
+        638,
+        601,
+        1176
+      ],
+      "size": [
+        1024,
+        1536
+      ],
+      "alpha_range": [
+        0,
+        254
+      ],
+      "sha256": "29431daf8feff47beedaf04a42c84ed1fbef8b8f602b260fe8af6f142266db97"
+    },
+    "leg_r_lower": {
+      "bbox_alpha128": [
+        559,
+        973,
+        770,
+        1293
+      ],
+      "size": [
+        1024,
+        1536
+      ],
+      "alpha_range": [
+        0,
+        254
+      ],
+      "sha256": "0fe2c3eea9d1c35dfb51a3e1acd19891816f7314ce4a56c4fccb1615ca7495aa"
+    },
+    "leg_r_upper": {
+      "bbox_alpha128": [
+        517,
+        637,
+        766,
+        1275
+      ],
+      "size": [
+        1024,
+        1536
+      ],
+      "alpha_range": [
+        0,
+        254
+      ],
+      "sha256": "f7abe0289c0b7194d2b4c3ffe6528f7c7095d1e38a354ef1e951ed3f060179b2"
+    },
+    "neck": {
+      "bbox_alpha128": [
+        515,
+        314,
+        622,
+        446
+      ],
+      "size": [
+        1024,
+        1536
+      ],
+      "alpha_range": [
+        0,
+        254
+      ],
+      "sha256": "bcf90b68461566de1bfb585e271ed680dc23814af34470dcb3a9684adb171f05"
+    },
+    "pelvis": {
+      "bbox_alpha128": [
+        330,
+        596,
+        738,
+        1014
+      ],
+      "size": [
+        1024,
+        1536
+      ],
+      "alpha_range": [
+        0,
+        254
+      ],
+      "sha256": "2c3701f315fdaefc1e01a4710ec8efe06f7a3a6cbdea68392fe5f62ae7b1e4b3"
+    },
+    "torso": {
+      "bbox_alpha128": [
+        373,
+        318,
+        753,
+        775
+      ],
+      "size": [
+        1024,
+        1536
+      ],
+      "alpha_range": [
+        0,
+        254
+      ],
+      "sha256": "9b13699a0412376f088c54c517b3bec4c1b64a21fe1108c5d64c620eeea9b0f7"
+    }
+  },
+  "missing_default_layers": [
+    "arm_r_upper"
+  ]
+}

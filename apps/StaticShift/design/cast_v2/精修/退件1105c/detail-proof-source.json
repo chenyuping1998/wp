@@ -1,0 +1,120 @@
+{
+  "paper": "#e5e2d6",
+  "scale": 2,
+  "interpolation": "nearest; actual source pixels",
+  "cases": [
+    {
+      "title": "DJ 屈膝：褲襠內緣",
+      "ch": "dj",
+      "pose": "knees",
+      "box": [
+        690,
+        1290,
+        930,
+        1490
+      ]
+    },
+    {
+      "title": "主持人 屈膝：褲襠內緣",
+      "ch": "host",
+      "pose": "knees",
+      "box": [
+        730,
+        1195,
+        970,
+        1395
+      ]
+    },
+    {
+      "title": "DJ 收胸前：圓順袖頂",
+      "ch": "dj",
+      "pose": "folded",
+      "box": [
+        790,
+        765,
+        1030,
+        965
+      ]
+    },
+    {
+      "title": "DJ 屈膝：左膝",
+      "ch": "dj",
+      "pose": "knees",
+      "box": [
+        463,
+        1465,
+        703,
+        1665
+      ],
+      "rest_box": [
+        538,
+        1500,
+        778,
+        1700
+      ]
+    },
+    {
+      "title": "DJ 屈膝：右膝",
+      "ch": "dj",
+      "pose": "knees",
+      "box": [
+        879,
+        1492,
+        1119,
+        1692
+      ],
+      "rest_box": [
+        818,
+        1505,
+        1058,
+        1705
+      ]
+    },
+    {
+      "title": "主持人 屈膝：左膝",
+      "ch": "host",
+      "pose": "knees",
+      "box": [
+        453,
+        1376,
+        693,
+        1576
+      ],
+      "rest_box": [
+        552,
+        1425,
+        792,
+        1625
+      ]
+    },
+    {
+      "title": "主持人 屈膝：右膝",
+      "ch": "host",
+      "pose": "knees",
+      "box": [
+        885,
+        1415,
+        1125,
+        1615
+      ],
+      "rest_box": [
+        806,
+        1427,
+        1046,
+        1627
+      ]
+    }
+  ],
+  "source_sha256": {
+    "dj": {
+      "rest": "9247e3c04aa5eee2e98f6bc406d77eca8b08f49b6ad14471072291f64c3c1965",
+      "folded": "b6ff015943b9b1344d24a86156fb5374443e7d0ac3fcd1b87c1bfbbd1bba33f7",
+      "knees": "005abf6b5d1874d556f68b3f3ef9367c8f289365d3b3498d85828296a3feebb1"
+    },
+    "host": {
+      "rest": "2824aa927616ae5f561255f0254f69455349866e1c7f9bed751644a19ab6cc75",
+      "folded": "1075825a357f62543082d47eb85a7a22971f5c4942dfcbc08d828847fff77bc8",
+      "knees": "cda368bb641f83307637eb360b0c8b593d6299065bc549562c992ee4b4dce4b8"
+    }
+  }
+}

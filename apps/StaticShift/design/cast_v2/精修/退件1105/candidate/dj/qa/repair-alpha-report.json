@@ -1,0 +1,92 @@
+{
+  "arm_l_lower": {
+    "removed_alpha_px": 530,
+    "added_alpha_px": 132,
+    "before_sha256": "b04fc00abf46439e07f7f566ae69d2648f16047f6ceaafb520fde41dab70347a",
+    "after_sha256": "e98d9aab28481a8ddaa97d924031dfd6bb630b5877521934f65f0398977f8849"
+  },
+  "arm_l_upper": {
+    "removed_alpha_px": 148,
+    "added_alpha_px": 183,
+    "before_sha256": "59261602bb86146b7e1cf5981a85163090267bb6465c40ce16837faa27e57f19",
+    "after_sha256": "423d63a68a0fb1f71ab08f04f9b1ce81ff35f080da5e5adb4d5de31981ea0edf"
+  },
+  "arm_r_lower": {
+    "removed_alpha_px": 852,
+    "added_alpha_px": 289,
+    "before_sha256": "618d729e88751c9eb383337c02fcb27e4002c05e496f765c386c49e88d5ff754",
+    "after_sha256": "8e698aeacb9e1973d4e5f818d0fe6b7333c6ded828fb6bd178554f01b54e2672"
+  },
+  "arm_r_upper": {
+    "removed_alpha_px": 1052,
+    "added_alpha_px": 221,
+    "before_sha256": "99f5fbb3cf51f636903b4d5df24a1ec0550884897c5225beae5a90b36dfb9f27",
+    "after_sha256": "84e5f156995c66ec079cc94a7880efce04accc4239cefbc413b3371e60c4179d"
+  },
+  "hand_l_hip": {
+    "removed_alpha_px": 120,
+    "added_alpha_px": 112,
+    "before_sha256": "4841b07aa1ab475d3f9a97d74d9dc81ccd28e30132a66b7cb122c58f596a68e8",
+    "after_sha256": "4f686f87665759b24672d6a2cc0c4921e1d6b61ba028eb317d4b5bb6416dc5bc"
+  },
+  "hand_l_open": {
+    "removed_alpha_px": 0,
+    "added_alpha_px": 0,
+    "before_sha256": "9b502f636658d730801c0f17c1906f1d9354b34e02f837586b31d483c4a9a3d2",
+    "after_sha256": "e981440df802ab7fa0e668755d97676cc3c7f24285f892356a3e652a09717a2e"
+  },
+  "hand_l_point": {
+    "removed_alpha_px": 0,
+    "added_alpha_px": 0,
+    "before_sha256": "e26651c867f516843817420f12c0a0f61faf0581d6d2587373d860e41a7d9b48",
+    "after_sha256": "bbe6ed5be80881c79641fa8664269ee3a004c0b643f2f18012c0bfdbf49869a5"
+  },
+  "hand_r_grip": {
+    "removed_alpha_px": 0,
+    "added_alpha_px": 23,
+    "before_sha256": "6abd5877b5d2d9f787f778bb07bfcb3ffe7548b9fce42216a9c6c8cc0cb1973c",
+    "after_sha256": "79af9bcced328ea66cfb7036e9bd442b1dabf698095c1d63aa7859dfaa3ed02a"
+  },
+  "hand_r_hatheld": {
+    "removed_alpha_px": 0,
+    "added_alpha_px": 0,
+    "before_sha256": "5c57c64278ad710b71772d6461df65f5b12cfa9828062dd205572eb9d4f6ee4c",
+    "after_sha256": "fac9daedd06d02f1131d2fd9969ae793cb255dd6f292c1b95d6909095cb845ce"
+  },
+  "hand_r_open": {
+    "removed_alpha_px": 0,
+    "added_alpha_px": 0,
+    "before_sha256": "073438789fb8d81668ccbc4538be242326062c73c59200a8226ca656aac0e24a",
+    "after_sha256": "094b57d627b9b4906609e8ac8c487625e8554538aca00d57b18d3dbd4d67a5b7"
+  },
+  "hand_r_pinch": {
+    "removed_alpha_px": 0,
+    "added_alpha_px": 0,
+    "before_sha256": "323cb6e5391d02316380c4cfc5e6fa4e1cb01702397de69ab4bdf5ca89fb7ec6",
+    "after_sha256": "03efb49187c28a8a16fcfdc998f6d82184dc0b48bf44fdab435b4cb2fa30388f"
+  },
+  "leg_l_upper": {
+    "removed_alpha_px": 184,
+    "added_alpha_px": 3,
+    "before_sha256": "9e33e8409e389e83061ecaf8e4d5d6b3ad1b39bf95a994ac4927ade68de1c89e",
+    "after_sha256": "bc20b4b1cbcabd430a9e36490390275376fa6a0c2f338a769c28a5f690c765c2"
+  },
+  "leg_r_upper": {
+    "removed_alpha_px": 42,
+    "added_alpha_px": 2,
+    "before_sha256": "7ee82ee9f40c3498c2512b6bc2d6242493c9a97d202b8bb96fa8781e98f16917",
+    "after_sha256": "c659c637971c4be1ea4295d8c82475df0e5e3fd247112f12990cf167f2fa3c29"
+  },
+  "neck": {
+    "removed_alpha_px": 119,
+    "added_alpha_px": 0,
+    "before_sha256": "3ec22d97e7dfb0742489088908146630daa99e75e04bb4eeaae4f220b60876dd",
+    "after_sha256": "6ff9accb53f56a623103a2c844da7af6077476d0374675b6ded2f6cb6a2dabd0"
+  },
+  "pelvis": {
+    "removed_alpha_px": 307,
+    "added_alpha_px": 511,
+    "before_sha256": "b6529ee9b8f732bfc5c677f75722283824bff2d46f0fb0284f58166d94837e86",
+    "after_sha256": "ee2aaf2d6a7af72e0cd89d3e85555476989e3eed2f279e0b86521a5c68221705"
+  }
+}

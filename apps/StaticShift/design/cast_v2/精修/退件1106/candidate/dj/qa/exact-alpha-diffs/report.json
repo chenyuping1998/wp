@@ -1,0 +1,26 @@
+{
+  "arm_l_lower": {
+    "removed_alpha_pixels": 397,
+    "added_alpha_pixels": 291,
+    "removed_alpha_coverage": 76989,
+    "added_alpha_coverage": 50757
+  },
+  "arm_l_upper": {
+    "removed_alpha_pixels": 2345,
+    "added_alpha_pixels": 3542,
+    "removed_alpha_coverage": 519636,
+    "added_alpha_coverage": 11219
+  },
+  "arm_r_lower": {
+    "removed_alpha_pixels": 766,
+    "added_alpha_pixels": 0,
+    "removed_alpha_coverage": 166777,
+    "added_alpha_coverage": 0
+  },
+  "arm_r_upper": {
+    "removed_alpha_pixels": 2657,
+    "added_alpha_pixels": 3500,
+    "removed_alpha_coverage": 615195,
+    "added_alpha_coverage": 11662
+  }
+}

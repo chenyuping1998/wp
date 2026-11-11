@@ -1,0 +1,20 @@
+{
+  "arm_r_upper": {
+    "removed_alpha_pixels": 1428,
+    "added_alpha_pixels": 18,
+    "removed_alpha_coverage": 343235,
+    "added_alpha_coverage": 701
+  },
+  "leg_l_upper": {
+    "removed_alpha_pixels": 1243,
+    "added_alpha_pixels": 4,
+    "removed_alpha_coverage": 309100,
+    "added_alpha_coverage": 206
+  },
+  "leg_r_upper": {
+    "removed_alpha_pixels": 2046,
+    "added_alpha_pixels": 5,
+    "removed_alpha_coverage": 513117,
+    "added_alpha_coverage": 238
+  }
+}

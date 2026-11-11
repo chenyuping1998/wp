@@ -1,0 +1,14 @@
+{
+  "tool": "built-in image_gen",
+  "purpose": "Connected straight-arm elbow repaint reference; only local elbow pixels used, all other character layers locked to r4.",
+  "prompts": [
+    {
+      "ch": "dj",
+      "prompt": "Use case: precise-object-edit. Reference input is the full original character, the man in red short sleeves, light peach skin and headphones. Create a clean connected waist-up pose reference with BOTH arms stretched straight sideways horizontally, elbows naturally straight, hands present. Keep exact identity, same clothes, same skin pigment, same black comic ink style. The purpose is an anatomically smooth elbow repaint reference: sleeves flow into upper-arm flesh, upper and lower arm taper continuously through the elbow, NO round elbow knobs or separate joint balls, NO black circles around joints, NO light rings or circular seams. Preserve human muscle volume, no tubes, no straight sliced edges. Continuous ink only along outer silhouette, small natural elbow crease if needed. Show both complete arms unobscured at generous size, head and torso connected. Wide waist-up framing with space around hands. Real transparent background, no labels or grid."
+    },
+    {
+      "ch": "host",
+      "prompt": "Use case: precise-object-edit. Reference input is the full original character, the female broadcaster with white rolled sleeves, brown skin, green glasses and blonde locs. Create a clean connected waist-up pose reference with BOTH arms stretched straight sideways horizontally, elbows naturally straight, hands present. Keep exact identity, same clothes, same skin pigment, same black comic ink style. The purpose is an anatomically smooth elbow repaint reference: sleeves flow into upper-arm flesh, upper and lower arm taper continuously through the elbow, NO round elbow knobs or separate joint balls, NO black circles around joints, NO light rings or circular seams. Preserve human muscle volume, no tubes, no straight sliced edges. Continuous ink only along outer silhouette, small natural elbow crease if needed. Show both complete arms unobscured at generous size, head and torso connected. Wide waist-up framing with space around hands. Real transparent background, no labels or grid."
+    }
+  ]
+}

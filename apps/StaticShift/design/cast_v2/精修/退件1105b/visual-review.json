@@ -1,0 +1,15 @@
+{
+  "status": "ACCEPTED",
+  "source_sha256": {
+    "dj": "dc7833a8333238cea1afe47059791125a73881dee6061b6d41861c06d89f77c1",
+    "host": "9e9629ded6a0a1e07c046d2bce79b1fad93ef35f6bc573d43825777eef13941b"
+  },
+  "reviewed": [
+    "source layer light/dark inventory",
+    "all original rigid pose angles",
+    "native shoulders/elbows/wrists/hips/knees",
+    "all seven hands per character",
+    "exact original alpha removal maps"
+  ],
+  "scope": "static art only; no Spine/runtime certification"
+}

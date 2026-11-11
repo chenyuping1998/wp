@@ -247,25 +247,12 @@
 			word. Size, a warmer hue and a glow of its own are what make it the
 			thing being announced.
 		-->
-		<Container
-			x={context.stateLayoutDerived.mainLayout().width * 0.5}
-			y={context.stateLayoutDerived.mainLayout().height * 0.155}
-		>
-			<Text
-				anchor={{ x: 0, y: 0.5 }}
-				x={-titleMetrics.total / 2}
-				style={titleStyle}
-				text={TITLE_MAIN}
-			/>
-
-
-			<Text
-				anchor={{ x: 0, y: 0.5 }}
-				x={-titleMetrics.total / 2 + titleMetrics.name + TITLE_GAP}
-				style={accentStyle}
-				text={TITLE_ACCENT}
-			/>
-		</Container>
+		<!-- 2026-11-05: the drawn logo (design/source-ui-1104/logo.png) replaces
+		     the typed title; 960×420, fitted to the top band so it clears the
+		     feature cards below (they start at 0.31h stacked, 0.36h wide). -->
+		{@const ml = context.stateLayoutDerived.mainLayout()}
+		{@const logoH = Math.min(ml.height * 0.25, (ml.width * 0.56) / (960 / 420))}
+		<Sprite key="ssLogo" anchor={0.5} x={ml.width * 0.5} y={ml.height * 0.155} width={logoH * (960 / 420)} height={logoH} />
 	</MainContainer>
 </FadeContainer>
 

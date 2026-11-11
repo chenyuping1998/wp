@@ -1,0 +1,17 @@
+[
+  {
+    "key": "host_forearm",
+    "file": "host-arm_r_lower-edit.png",
+    "prompt": "Use case: precise-object-edit. Edit target: isolated brown human forearm layer in the input, vertical with wrist at TOP and rounded elbow overlap at BOTTOM. Repaint this ONE forearm as finished inked comic art. Preserve the same silhouette proportions, placement, overall length, width and original medium brown skin palette. Replace ragged, broken, pale edges with a smooth CLEAR CONTINUOUS SOLID BLACK outer ink contour on both long sides and the top wrist cap; final stroke about 4 percent of forearm width, crisp and even. Remove the square flat TOP: finish it with a compact organically rounded wrist cap, slightly tapered and concealed by a hand on assembly. Lower elbow end is hidden: leave only that bottommost rounded concealed half-cap free of black ink, sides above it fully inked. The forearm must look solid and cylindrical, with restrained warm highlights along center and a clearly drawn darker brown side shadow following the muscle, subtle short organic muscle line if needed, not a flat uniform brown cutout. Natural continuous taper from forearm muscle belly toward wrist, no blobs or hourglass, no fuzzy fringe, no gaps in ink. No hand, jewelry, sleeve, background, extra parts or text. Keep genuine transparent alpha background."
+  },
+  {
+    "key": "host_grip",
+    "file": "host-hand_r_grip-edit.png",
+    "prompt": "Use case: precise-object-edit. Edit this existing isolated comic illustration of a brown hand gripping a black microphone, with gold finger rings and three gold wrist bangles. ONLY fix the short exposed brown wrist-root cap BELOW THE LOWEST GOLD BANGLE at the bottom of the image. Its two bare brown outer edges currently have no ink. Paint smooth clear black ink outer contour following the EXISTING rounded brown root, naturally rounded compact wrist. Remove stray black vertical slash through the middle of this little bottom cap by matching brown skin, keep black only on its outer contour. Preserve the exact existing alpha silhouette, placement, colors and details everywhere else. The microphone, fingers, fist, finger rings, all three wrist bangles, and their black strokes MUST remain unchanged. Do not redraw upper parts. Do not enlarge the hand, root or bangles. Only the bottom brown wrist-root exterior gets clean dark ink. No background, labels or additional parts. True transparent background."
+  },
+  {
+    "key": "dj_upper",
+    "file": "dj-arm_r_upper-edit.png",
+    "prompt": "Use case: precise-object-edit. Edit target existing isolated red comic sleeve plus peach upper arm. TWO TINY LOCAL CLEANUPS ONLY, preserve all other pixels as closely as possible. (1) Just below the sleeve cuff at the inward elbow side, round the small sharp inward notch/corner into a smooth gentle continuous organic flesh contour. No new lump, no ball, no widening beyond a few pixels at native scale, no straight cut; keep black ink along visible contour. (2) At the rounded red shoulder cap near upper right contour remove the faint grey double fringe and finish one clean opaque dark ink edge, keeping cap tucked in and round. Preserve sleeve fabric, folds, cuff shape, arm skin color, muscle shape, length, overall silhouette and placement. Clean any remaining isolated tiny dark specks inside the peach skin below cuff. Do not add anything. One connected arm layer only, true transparent background."
+  }
+]

@@ -1,0 +1,14 @@
+{
+  "revision": "staticshift-cast-20261106-r5",
+  "status": "ACCEPTED_AND_STAGED_LOCAL_ART_ONLY",
+  "outline": {
+    "dj": "PASS",
+    "host": "PASS"
+  },
+  "unchanged_r4_layers": 44,
+  "formal_paths": [
+    "../../交件/dj",
+    "../../交件/host"
+  ],
+  "platform_updated": false
+}

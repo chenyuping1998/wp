@@ -266,4 +266,54 @@
 		font-size: 0.7rem;
 		opacity: 0.6;
 	}
+
+	/* Popout S (400×225, guideline 243): the full card is 333px tall, so Start
+	   Replay sat below the fold inside a scrolling card. Short windows get the
+	   same six facts in two columns, tighter, with Start on screen. */
+	@media (max-height: 300px) {
+		.replay-backdrop {
+			padding: 0.5rem;
+		}
+		.replay-card {
+			width: min(30rem, 100%);
+			padding: 0.5rem 0.75rem;
+		}
+		.replay-badge {
+			display: none;
+		}
+		h2 {
+			margin: 0 0 0.35rem;
+			font-size: 1rem;
+		}
+		.replay-rows {
+			display: grid;
+			grid-template-columns: 1fr 1fr;
+			column-gap: 0.75rem;
+			padding: 0.35rem 0.5rem;
+		}
+		.row {
+			padding: 0.08rem 0;
+			gap: 0.5rem;
+			font-size: 0.7rem;
+		}
+		.row.spacer {
+			margin-top: 0;
+		}
+		.row.highlight {
+			margin-top: 0;
+			padding: 0.12rem 0.35rem;
+		}
+		.big {
+			font-size: 0.8rem;
+		}
+		.replay-start {
+			margin-top: 0.4rem;
+			padding: 0.3rem 0.75rem;
+			font-size: 0.85rem;
+		}
+		.replay-foot {
+			margin: 0.25rem 0 0;
+			font-size: 0.58rem;
+		}
+	}
 </style>

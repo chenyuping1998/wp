@@ -1,0 +1,342 @@
+{
+  "tool": "built-in image_gen",
+  "date": "2026-11-04",
+  "status": "NOT_ACCEPTED",
+  "jobs": [
+    {
+      "char": "dj",
+      "name": "torso",
+      "prompt": "Precise-object-edit for anatomical animation layer from this approved full-body MASTER of male DJ, orange red T-shirt and bare hairy forearms. Output ONE isolated layer only on full 1024x1536 TRANSPARENT canvas, ALL artwork stays in exact original canvas coordinates and original scale. Do NOT center, move, resize, mirror or change the pose. ONLY upper-body clothing torso, from shoulder caps to waist, NO head, neck, arms, hands or trousers. Remove BOTH arms entirely and paint a COMPLETE natural shoulder/side/armpit contour and all chest/waist cloth previously hidden underneath hands and arms. Entire orange T-shirt including curved hem. Preserve master ink line weight, exact costume colors, flat comic paint/halftone. Paint genuinely complete hidden anatomy, no rectangles, straight cuts, notches, seams, swollen joint balls, detached fragments, light fringes, ground shadow or background fog. All pixels outside the requested single connected body part must be alpha zero. No whole figure, labels, atlas or other body parts.",
+      "output": "Generated images are saved to /Users/stone/.codex/generated_images/01a1a6d9-fea1-7d42-9fee-d3afd422905e as /Users/stone/.codex/generated_images/01a1a6d9-fea1-7d42-9fee-d3afd422905e/exec-dd598242-2986-4217-9604-84a48ae3c1e4.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link."
+    },
+    {
+      "char": "dj",
+      "name": "arm_l_upper",
+      "prompt": "Precise-object-edit for anatomical animation layer from this approved full-body MASTER of male DJ, orange red T-shirt and bare hairy forearms. Output ONE isolated layer only on full 1024x1536 TRANSPARENT canvas, ALL artwork stays in exact original canvas coordinates and original scale. Do NOT center, move, resize, mirror or change the pose. ONLY SCREEN LEFT far upper arm, including shirt/jacket sleeve and complete upper arm down to elbow. No forearm, hand, torso, head or other limb. Preserve exact original shoulder-to-elbow position/angle. At shoulder end extend anatomical cap 40px under torso; elbow end extend 40px as organically rounded continuation into forearm. Concealed overlap caps have NO black outline. Outer visible contours maintain original natural taper. Preserve master ink line weight, exact costume colors, flat comic paint/halftone. Paint genuinely complete hidden anatomy, no rectangles, straight cuts, notches, seams, swollen joint balls, detached fragments, light fringes, ground shadow or background fog. All pixels outside the requested single connected body part must be alpha zero. No whole figure, labels, atlas or other body parts.",
+      "output": "Generated images are saved to /Users/stone/.codex/generated_images/01a1a6d9-fea1-7d42-9fee-d3afd422905e as /Users/stone/.codex/generated_images/01a1a6d9-fea1-7d42-9fee-d3afd422905e/exec-b23d5339-3d30-49a1-a351-f524374b3075.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link."
+    },
+    {
+      "char": "dj",
+      "name": "arm_l_lower",
+      "prompt": "Precise-object-edit for anatomical animation layer from this approved full-body MASTER of male DJ, orange red T-shirt and bare hairy forearms. Output ONE isolated layer only on full 1024x1536 TRANSPARENT canvas, ALL artwork stays in exact original canvas coordinates and original scale. Do NOT center, move, resize, mirror or change the pose. ONLY SCREEN LEFT far forearm, from elbow to wrist in exact original bent elbow-to-hip pose; no hand, upper arm, torso or fragments. Complete connected organic forearm. At both ends paint 40px concealed anatomical overlap, rounded organically, with NO ink border on overlap. Keep natural tapered arm silhouette, no elbow balls or flat-cut ends. Preserve master ink line weight, exact costume colors, flat comic paint/halftone. Paint genuinely complete hidden anatomy, no rectangles, straight cuts, notches, seams, swollen joint balls, detached fragments, light fringes, ground shadow or background fog. All pixels outside the requested single connected body part must be alpha zero. No whole figure, labels, atlas or other body parts.",
+      "output": "Generated images are saved to /Users/stone/.codex/generated_images/01a1a6d9-fea1-7d42-9fee-d3afd422905e as /Users/stone/.codex/generated_images/01a1a6d9-fea1-7d42-9fee-d3afd422905e/exec-c78ea8b2-4629-4390-bea8-d01c7fe7202d.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link."
+    },
+    {
+      "char": "dj",
+      "name": "arm_r_upper",
+      "prompt": "Precise-object-edit for anatomical animation layer from this approved full-body MASTER of male DJ, orange red T-shirt and bare hairy forearms. Output ONE isolated layer only on full 1024x1536 TRANSPARENT canvas, ALL artwork stays in exact original canvas coordinates and original scale. Do NOT center, move, resize, mirror or change the pose. ONLY SCREEN RIGHT near upper arm, including sleeve and upper arm down to elbow in original bent chest-hand pose; no forearm, hands, torso, head or stray fragments. Preserve original location/angle. Paint shoulder and elbow hidden anatomy 40px overlap, organic tapered contour with no black outline around concealed overlaps. Preserve master ink line weight, exact costume colors, flat comic paint/halftone. Paint genuinely complete hidden anatomy, no rectangles, straight cuts, notches, seams, swollen joint balls, detached fragments, light fringes, ground shadow or background fog. All pixels outside the requested single connected body part must be alpha zero. No whole figure, labels, atlas or other body parts.",
+      "output": "Generated images are saved to /Users/stone/.codex/generated_images/01a1a6d9-fea1-7d42-9fee-d3afd422905e as /Users/stone/.codex/generated_images/01a1a6d9-fea1-7d42-9fee-d3afd422905e/exec-20d92684-9a80-4879-9956-c24711c985fd.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link."
+    },
+    {
+      "char": "dj",
+      "name": "arm_r_lower",
+      "prompt": "Precise-object-edit for anatomical animation layer from this approved full-body MASTER of male DJ, orange red T-shirt and bare hairy forearms. Output ONE isolated layer only on full 1024x1536 TRANSPARENT canvas, ALL artwork stays in exact original canvas coordinates and original scale. Do NOT center, move, resize, mirror or change the pose. ONLY SCREEN RIGHT near forearm from elbow to wrist, original raised/bent pose hand at chest; no hand, upper arm, torso, head or accessory prop. One complete naturally tapered anatomical forearm with 40px organic overlap beyond elbow and wrist, no outline on concealed overlap. Preserve exact location/angle. Preserve master ink line weight, exact costume colors, flat comic paint/halftone. Paint genuinely complete hidden anatomy, no rectangles, straight cuts, notches, seams, swollen joint balls, detached fragments, light fringes, ground shadow or background fog. All pixels outside the requested single connected body part must be alpha zero. No whole figure, labels, atlas or other body parts.",
+      "output": "Generated images are saved to /Users/stone/.codex/generated_images/01a1a6d9-fea1-7d42-9fee-d3afd422905e as /Users/stone/.codex/generated_images/01a1a6d9-fea1-7d42-9fee-d3afd422905e/exec-0f1c2d06-bc9c-46e0-a3a0-1e87a6021d7a.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link."
+    },
+    {
+      "char": "host",
+      "name": "torso",
+      "prompt": "Precise-object-edit for anatomical animation layer from this approved full-body MASTER of female host, white rolled-sleeve cropped jacket and bare brown forearms with gold bangles. Output ONE isolated layer only on full 1024x1536 TRANSPARENT canvas, ALL artwork stays in exact original canvas coordinates and original scale. Do NOT center, move, resize, mirror or change the pose. ONLY upper-body clothing torso, from shoulder caps to waist, NO head, neck, arms, hands or trousers. Remove BOTH arms entirely and paint a COMPLETE natural shoulder/side/armpit contour and all chest/waist cloth previously hidden underneath hands and arms. Entire white jacket body AND black crop top AND bare midriff down to belt; necklace lower pendant stays, NO belt or trousers. Preserve master ink line weight, exact costume colors, flat comic paint/halftone. Paint genuinely complete hidden anatomy, no rectangles, straight cuts, notches, seams, swollen joint balls, detached fragments, light fringes, ground shadow or background fog. All pixels outside the requested single connected body part must be alpha zero. No whole figure, labels, atlas or other body parts.",
+      "output": "Generated images are saved to /Users/stone/.codex/generated_images/01a1a6d9-fea1-7d42-9fee-d3afd422905e as /Users/stone/.codex/generated_images/01a1a6d9-fea1-7d42-9fee-d3afd422905e/exec-67ace154-6181-45b2-9eba-ed928768223e.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link."
+    },
+    {
+      "char": "host",
+      "name": "arm_l_upper",
+      "prompt": "Precise-object-edit for anatomical animation layer from this approved full-body MASTER of female host, white rolled-sleeve cropped jacket and bare brown forearms with gold bangles. Output ONE isolated layer only on full 1024x1536 TRANSPARENT canvas, ALL artwork stays in exact original canvas coordinates and original scale. Do NOT center, move, resize, mirror or change the pose. ONLY SCREEN LEFT far upper arm, including shirt/jacket sleeve and complete upper arm down to elbow. No forearm, hand, torso, head or other limb. Preserve exact original shoulder-to-elbow position/angle. At shoulder end extend anatomical cap 40px under torso; elbow end extend 40px as organically rounded continuation into forearm. Concealed overlap caps have NO black outline. Outer visible contours maintain original natural taper. Preserve master ink line weight, exact costume colors, flat comic paint/halftone. Paint genuinely complete hidden anatomy, no rectangles, straight cuts, notches, seams, swollen joint balls, detached fragments, light fringes, ground shadow or background fog. All pixels outside the requested single connected body part must be alpha zero. No whole figure, labels, atlas or other body parts.",
+      "output": "Generated images are saved to /Users/stone/.codex/generated_images/01a1a6d9-fea1-7d42-9fee-d3afd422905e as /Users/stone/.codex/generated_images/01a1a6d9-fea1-7d42-9fee-d3afd422905e/exec-a6943d03-729c-4745-895b-2a0403e8abc7.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link."
+    },
+    {
+      "char": "host",
+      "name": "arm_l_lower",
+      "prompt": "Precise-object-edit for anatomical animation layer from this approved full-body MASTER of female host, white rolled-sleeve cropped jacket and bare brown forearms with gold bangles. Output ONE isolated layer only on full 1024x1536 TRANSPARENT canvas, ALL artwork stays in exact original canvas coordinates and original scale. Do NOT center, move, resize, mirror or change the pose. ONLY SCREEN LEFT far forearm, from elbow to wrist in exact original bent elbow-to-hip pose; no hand, upper arm, torso or fragments. Complete connected organic forearm. At both ends paint 40px concealed anatomical overlap, rounded organically, with NO ink border on overlap. Keep natural tapered arm silhouette, no elbow balls or flat-cut ends. Preserve master ink line weight, exact costume colors, flat comic paint/halftone. Paint genuinely complete hidden anatomy, no rectangles, straight cuts, notches, seams, swollen joint balls, detached fragments, light fringes, ground shadow or background fog. All pixels outside the requested single connected body part must be alpha zero. No whole figure, labels, atlas or other body parts.",
+      "output": "Generated images are saved to /Users/stone/.codex/generated_images/01a1a6d9-fea1-7d42-9fee-d3afd422905e as /Users/stone/.codex/generated_images/01a1a6d9-fea1-7d42-9fee-d3afd422905e/exec-db5c019e-aec3-45da-a46f-0560c8669f88.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link."
+    },
+    {
+      "char": "host",
+      "name": "arm_r_upper",
+      "prompt": "Precise-object-edit for anatomical animation layer from this approved full-body MASTER of female host, white rolled-sleeve cropped jacket and bare brown forearms with gold bangles. Output ONE isolated layer only on full 1024x1536 TRANSPARENT canvas, ALL artwork stays in exact original canvas coordinates and original scale. Do NOT center, move, resize, mirror or change the pose. ONLY SCREEN RIGHT near upper arm, including sleeve and upper arm down to elbow in original bent chest-hand pose; no forearm, hands, torso, head or stray fragments. Preserve original location/angle. Paint shoulder and elbow hidden anatomy 40px overlap, organic tapered contour with no black outline around concealed overlaps. Preserve master ink line weight, exact costume colors, flat comic paint/halftone. Paint genuinely complete hidden anatomy, no rectangles, straight cuts, notches, seams, swollen joint balls, detached fragments, light fringes, ground shadow or background fog. All pixels outside the requested single connected body part must be alpha zero. No whole figure, labels, atlas or other body parts."
+    },
+    {
+      "char": "host",
+      "name": "arm_r_lower",
+      "prompt": "Precise-object-edit for anatomical animation layer from this approved full-body MASTER of female host, white rolled-sleeve cropped jacket and bare brown forearms with gold bangles. Output ONE isolated layer only on full 1024x1536 TRANSPARENT canvas, ALL artwork stays in exact original canvas coordinates and original scale. Do NOT center, move, resize, mirror or change the pose. ONLY SCREEN RIGHT near forearm from elbow to wrist, original raised/bent pose hand at chest; no hand, upper arm, torso, head or accessory prop. One complete naturally tapered anatomical forearm with 40px organic overlap beyond elbow and wrist, no outline on concealed overlap. Preserve exact location/angle. Preserve master ink line weight, exact costume colors, flat comic paint/halftone. Paint genuinely complete hidden anatomy, no rectangles, straight cuts, notches, seams, swollen joint balls, detached fragments, light fringes, ground shadow or background fog. All pixels outside the requested single connected body part must be alpha zero. No whole figure, labels, atlas or other body parts.",
+      "output": "Generated images are saved to /Users/stone/.codex/generated_images/01a1a6d9-fea1-7d42-9fee-d3afd422905e as /Users/stone/.codex/generated_images/01a1a6d9-fea1-7d42-9fee-d3afd422905e/exec-0e9150bd-a906-40f2-868b-b051f310424b.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link."
+    },
+    {
+      "char": "dj",
+      "name": "leg_l_upper",
+      "desc": "SCREEN LEFT trouser UPPER LEG ONLY from hip to knee; no lower leg, foot, pelvis belt or other parts. Preserve the original clothing folds, external silhouette and exact pose. Paint a natural rounded continuation at the hip and knee extending40px concealed behind neighbouring pieces, NO black border around concealed overlap. No straight chopped ends or ball-shaped knees.",
+      "output": "Generated images are saved to /Users/stone/.codex/generated_images/01a1a6d9-fea1-7d42-9fee-d3afd422905e as /Users/stone/.codex/generated_images/01a1a6d9-fea1-7d42-9fee-d3afd422905e/exec-c955c24e-bad2-49e3-a71e-ea7d4716aadb.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link."
+    },
+    {
+      "char": "dj",
+      "name": "leg_l_lower",
+      "desc": "SCREEN LEFT trouser LOWER LEG ONLY from knee to ankle; no upper leg, foot/shoe, belt or other parts. Preserve original muscle/fabric shape and original pose, taper naturally from calf to ankle. Paint40px continuation around knee concealed under upper leg, with NO black border on concealed overlap. No tube shapes, corners, notches or flat cuts at knee.",
+      "output": "Generated images are saved to /Users/stone/.codex/generated_images/01a1a6d9-fea1-7d42-9fee-d3afd422905e as /Users/stone/.codex/generated_images/01a1a6d9-fea1-7d42-9fee-d3afd422905e/exec-6d647237-56ec-46ca-aac6-b9c5404f2101.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link."
+    },
+    {
+      "char": "dj",
+      "name": "foot_l",
+      "desc": "ONLY SCREEN LEFT plain off-white sneaker with a small concealed40px ankle insert; no trousers, calf, other shoe or other parts. Keep the sole exactly flat on original y1456 ground line, keep the original shoe size, shape, perspective and position. No brands or yellow welt thread.",
+      "output": "Generated images are saved to /Users/stone/.codex/generated_images/01a1a6d9-fea1-7d42-9fee-d3afd422905e as /Users/stone/.codex/generated_images/01a1a6d9-fea1-7d42-9fee-d3afd422905e/exec-5b42c1c6-45cc-44e4-889d-d5e32f33f443.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link."
+    },
+    {
+      "char": "dj",
+      "name": "leg_r_upper",
+      "desc": "SCREEN RIGHT trouser UPPER LEG ONLY from hip to knee; no lower leg, foot, pelvis belt or other parts. Preserve the original clothing folds, external silhouette and exact pose. Paint a natural rounded continuation at the hip and knee extending40px concealed behind neighbouring pieces, NO black border around concealed overlap. No straight chopped ends or ball-shaped knees.",
+      "output": "Generated images are saved to /Users/stone/.codex/generated_images/01a1a6d9-fea1-7d42-9fee-d3afd422905e as /Users/stone/.codex/generated_images/01a1a6d9-fea1-7d42-9fee-d3afd422905e/exec-d8d1a2ab-a211-43d7-9b46-9349dd65c420.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link."
+    },
+    {
+      "char": "dj",
+      "name": "leg_r_lower",
+      "desc": "SCREEN RIGHT trouser LOWER LEG ONLY from knee to ankle; no upper leg, foot/shoe, belt or other parts. Preserve original muscle/fabric shape and original pose, taper naturally from calf to ankle. Paint40px continuation around knee concealed under upper leg, with NO black border on concealed overlap. No tube shapes, corners, notches or flat cuts at knee.",
+      "output": "Generated images are saved to /Users/stone/.codex/generated_images/01a1a6d9-fea1-7d42-9fee-d3afd422905e as /Users/stone/.codex/generated_images/01a1a6d9-fea1-7d42-9fee-d3afd422905e/exec-a761d572-d1c8-4e22-83c6-8635bbdadf4b.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link."
+    },
+    {
+      "char": "dj",
+      "name": "foot_r",
+      "desc": "ONLY SCREEN RIGHT plain off-white sneaker with a small concealed40px ankle insert; no trousers, calf, other shoe or other parts. Keep the sole exactly flat on original y1456 ground line, keep the original shoe size, shape, perspective and position. No brands or yellow welt thread.",
+      "output": "Generated images are saved to /Users/stone/.codex/generated_images/01a1a6d9-fea1-7d42-9fee-d3afd422905e as /Users/stone/.codex/generated_images/01a1a6d9-fea1-7d42-9fee-d3afd422905e/exec-cff336d5-6156-4b31-9712-b73d86abf9dd.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link."
+    },
+    {
+      "char": "host",
+      "name": "leg_l_upper",
+      "desc": "SCREEN LEFT trouser UPPER LEG ONLY from hip to knee; no lower leg, foot, pelvis belt or other parts. Preserve the original clothing folds, external silhouette and exact pose. Paint a natural rounded continuation at the hip and knee extending40px concealed behind neighbouring pieces, NO black border around concealed overlap. No straight chopped ends or ball-shaped knees.",
+      "output": "Generated images are saved to /Users/stone/.codex/generated_images/01a1a6d9-fea1-7d42-9fee-d3afd422905e as /Users/stone/.codex/generated_images/01a1a6d9-fea1-7d42-9fee-d3afd422905e/exec-00c9ef21-9e34-4cfc-9a1e-055ffa95b8ef.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link."
+    },
+    {
+      "char": "host",
+      "name": "leg_l_lower",
+      "desc": "SCREEN LEFT trouser LOWER LEG ONLY from knee to ankle; no upper leg, foot/shoe, belt or other parts. Preserve original muscle/fabric shape and original pose, taper naturally from calf to ankle. Paint40px continuation around knee concealed under upper leg, with NO black border on concealed overlap. No tube shapes, corners, notches or flat cuts at knee.",
+      "output": "Generated images are saved to /Users/stone/.codex/generated_images/01a1a6d9-fea1-7d42-9fee-d3afd422905e as /Users/stone/.codex/generated_images/01a1a6d9-fea1-7d42-9fee-d3afd422905e/exec-c385ea11-6230-4528-ae7d-692d49fb1e44.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link."
+    },
+    {
+      "char": "host",
+      "name": "foot_l",
+      "desc": "ONLY SCREEN LEFT plain black chunky boot with a small concealed40px ankle insert; no trousers, calf, other shoe or other parts. Keep the sole exactly flat on original y1456 ground line, keep the original shoe size, shape, perspective and position. No brands or yellow welt thread.",
+      "output": "Generated images are saved to /Users/stone/.codex/generated_images/01a1a6d9-fea1-7d42-9fee-d3afd422905e as /Users/stone/.codex/generated_images/01a1a6d9-fea1-7d42-9fee-d3afd422905e/exec-4a1a0322-f760-46d0-bc4a-515f86e794c0.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link."
+    },
+    {
+      "char": "host",
+      "name": "leg_r_upper",
+      "desc": "SCREEN RIGHT trouser UPPER LEG ONLY from hip to knee; no lower leg, foot, pelvis belt or other parts. Preserve the original clothing folds, external silhouette and exact pose. Paint a natural rounded continuation at the hip and knee extending40px concealed behind neighbouring pieces, NO black border around concealed overlap. No straight chopped ends or ball-shaped knees.",
+      "output": "Generated images are saved to /Users/stone/.codex/generated_images/01a1a6d9-fea1-7d42-9fee-d3afd422905e as /Users/stone/.codex/generated_images/01a1a6d9-fea1-7d42-9fee-d3afd422905e/exec-61a45998-65fb-4f96-b1c3-9b252efe9b0d.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link."
+    },
+    {
+      "char": "host",
+      "name": "leg_r_lower",
+      "desc": "SCREEN RIGHT trouser LOWER LEG ONLY from knee to ankle; no upper leg, foot/shoe, belt or other parts. Preserve original muscle/fabric shape and original pose, taper naturally from calf to ankle. Paint40px continuation around knee concealed under upper leg, with NO black border on concealed overlap. No tube shapes, corners, notches or flat cuts at knee.",
+      "output": "Generated images are saved to /Users/stone/.codex/generated_images/01a1a6d9-fea1-7d42-9fee-d3afd422905e as /Users/stone/.codex/generated_images/01a1a6d9-fea1-7d42-9fee-d3afd422905e/exec-418752e1-9be8-408a-ae48-ec56e8d0cdf9.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link."
+    },
+    {
+      "char": "host",
+      "name": "foot_r",
+      "desc": "ONLY SCREEN RIGHT plain black chunky boot with a small concealed40px ankle insert; no trousers, calf, other shoe or other parts. Keep the sole exactly flat on original y1456 ground line, keep the original shoe size, shape, perspective and position. No brands or yellow welt thread.",
+      "output": "Generated images are saved to /Users/stone/.codex/generated_images/01a1a6d9-fea1-7d42-9fee-d3afd422905e as /Users/stone/.codex/generated_images/01a1a6d9-fea1-7d42-9fee-d3afd422905e/exec-c8861572-191c-4b9a-90e0-028252f0df12.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link."
+    },
+    {
+      "char": "dj",
+      "name": "pelvis",
+      "desc": "ONLY the trouser WAISTBAND and HIP section down to the two upper thigh roots in the exact master position. Blue cargo trousers. Remove hip-resting hand and paint the hidden waistband and trouser hip COMPLETELY. No shirt/jacket, arms, head, lower thighs/legs or shoes. Extend the concealed thigh-root connection40px as natural curved fabric with no black outline in concealed overlaps.",
+      "output": "Generated images are saved to /Users/stone/.codex/generated_images/01a1a6d9-fea1-7d42-9fee-d3afd422905e as /Users/stone/.codex/generated_images/01a1a6d9-fea1-7d42-9fee-d3afd422905e/exec-c0a5da96-7688-4bdb-b88a-721cc0e684fd.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link."
+    },
+    {
+      "char": "host",
+      "name": "pelvis",
+      "desc": "ONLY the trouser WAISTBAND and HIP section down to the two upper thigh roots in the exact master position. Purple cargo trousers with black belt and gold buckle. Remove hip-resting hand and paint the hidden waistband and trouser hip COMPLETELY. No shirt/jacket, arms, head, lower thighs/legs or shoes. Extend the concealed thigh-root connection40px as natural curved fabric with no black outline in concealed overlaps.",
+      "output": "Generated images are saved to /Users/stone/.codex/generated_images/01a1a6d9-fea1-7d42-9fee-d3afd422905e as /Users/stone/.codex/generated_images/01a1a6d9-fea1-7d42-9fee-d3afd422905e/exec-1663cc0f-46b8-4b13-be73-5900c1ccec28.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link."
+    },
+    {
+      "char": "dj",
+      "name": "head_idle",
+      "desc": "ONLY the complete head (face, hair, ears) in EXACT master head position/size/orientation, with same relaxed neutral facial expression. Remove the headphones and reconstruct the hair/ears naturally beneath them. No headphones, neck, torso or collar. Extend the chin/neck attachment concealed40px naturally, no straight-cut chin. All five expressions must preserve the same original facial proportions and neck attachment point.",
+      "output": "Generated images are saved to /Users/stone/.codex/generated_images/01a1a6d9-fea1-7d42-9fee-d3afd422905e as /Users/stone/.codex/generated_images/01a1a6d9-fea1-7d42-9fee-d3afd422905e/exec-9de5da1a-2610-402b-a608-4cfebd0a9623.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link."
+    },
+    {
+      "char": "dj",
+      "name": "head_blink",
+      "desc": "ONLY the complete head (face, hair, ears) in EXACT master head position/size/orientation, with eyes completely closed in a natural blink, rest of face unchanged. Remove the headphones and reconstruct the hair/ears naturally beneath them. No headphones, neck, torso or collar. Extend the chin/neck attachment concealed40px naturally, no straight-cut chin. All five expressions must preserve the same original facial proportions and neck attachment point.",
+      "output": "Generated images are saved to /Users/stone/.codex/generated_images/01a1a6d9-fea1-7d42-9fee-d3afd422905e as /Users/stone/.codex/generated_images/01a1a6d9-fea1-7d42-9fee-d3afd422905e/exec-695e5dcb-6abf-444a-83f9-fb77a310176e.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link."
+    },
+    {
+      "char": "dj",
+      "name": "head_spiral",
+      "desc": "ONLY the complete head (face, hair, ears) in EXACT master head position/size/orientation, with mouth wide open shouting excitedly toward screen left; no actual spirals. Remove the headphones and reconstruct the hair/ears naturally beneath them. No headphones, neck, torso or collar. Extend the chin/neck attachment concealed40px naturally, no straight-cut chin. All five expressions must preserve the same original facial proportions and neck attachment point.",
+      "output": "Generated images are saved to /Users/stone/.codex/generated_images/01a1a6d9-fea1-7d42-9fee-d3afd422905e as /Users/stone/.codex/generated_images/01a1a6d9-fea1-7d42-9fee-d3afd422905e/exec-d4f00eb5-e001-4484-993a-44ea69d10779.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link."
+    },
+    {
+      "char": "dj",
+      "name": "head_grin",
+      "desc": "ONLY the complete head (face, hair, ears) in EXACT master head position/size/orientation, with big warm amused smile. Remove the headphones and reconstruct the hair/ears naturally beneath them. No headphones, neck, torso or collar. Extend the chin/neck attachment concealed40px naturally, no straight-cut chin. All five expressions must preserve the same original facial proportions and neck attachment point.",
+      "output": "Generated images are saved to /Users/stone/.codex/generated_images/01a1a6d9-fea1-7d42-9fee-d3afd422905e as /Users/stone/.codex/generated_images/01a1a6d9-fea1-7d42-9fee-d3afd422905e/exec-858c50dc-e5a4-4dc0-9f17-f5bfdd6837c6.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link."
+    },
+    {
+      "char": "dj",
+      "name": "head_annoyed",
+      "desc": "ONLY the complete head (face, hair, ears) in EXACT master head position/size/orientation, with mildly annoyed frown and brows, still same person. Remove the headphones and reconstruct the hair/ears naturally beneath them. No headphones, neck, torso or collar. Extend the chin/neck attachment concealed40px naturally, no straight-cut chin. All five expressions must preserve the same original facial proportions and neck attachment point.",
+      "output": "Generated images are saved to /Users/stone/.codex/generated_images/01a1a6d9-fea1-7d42-9fee-d3afd422905e as /Users/stone/.codex/generated_images/01a1a6d9-fea1-7d42-9fee-d3afd422905e/exec-da9e3c82-86c7-4ae3-94cb-5cc8c4ade864.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link."
+    },
+    {
+      "char": "dj",
+      "name": "neck",
+      "desc": "ONLY the short NECK connector in original master position from beneath jaw to collar. Extend40px concealed under head and40px under torso, organically curved ends with no ink border on hidden overlaps.  No chin, head, shirt, shoulders, arms or other fragments.",
+      "output": "Generated images are saved to /Users/stone/.codex/generated_images/01a1a6d9-fea1-7d42-9fee-d3afd422905e as /Users/stone/.codex/generated_images/01a1a6d9-fea1-7d42-9fee-d3afd422905e/exec-6e8df8ff-d0e5-4927-8691-621816d4270d.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link."
+    },
+    {
+      "char": "dj",
+      "name": "hat",
+      "desc": "ONLY the complete black headphones with silver-edged earcups, EXACTLY as worn over the head in the master, original position/scale. Include continuous headband and both full earcups including concealed sections. No cable. Remove all hair, face, ears, body, or other fragments. Actual open spaces between band/earcups are transparent.",
+      "output": "Generated images are saved to /Users/stone/.codex/generated_images/01a1a6d9-fea1-7d42-9fee-d3afd422905e as /Users/stone/.codex/generated_images/01a1a6d9-fea1-7d42-9fee-d3afd422905e/exec-94849667-2670-4547-bb44-3e398ebd2c65.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link."
+    },
+    {
+      "char": "dj",
+      "name": "hand_l_hip",
+      "desc": "ONLY SCREEN LEFT hand resting on hip, same original pose and size; remove all waist clothing and other parts. Include40px wrist continuation tucked under forearm with NO ink border around concealed overlap. One complete hand with correct thumb and four fingers. No forearm, torso, face, hair or other fragments. Preserve original skin tone and any rings/bracelets belonging to hand.",
+      "output": "Generated images are saved to /Users/stone/.codex/generated_images/01a1a6d9-fea1-7d42-9fee-d3afd422905e as /Users/stone/.codex/generated_images/01a1a6d9-fea1-7d42-9fee-d3afd422905e/exec-e7c2b2d7-b8b6-4086-ba0b-28276a987ae9.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link."
+    },
+    {
+      "char": "dj",
+      "name": "hand_l_point",
+      "desc": "ONLY SCREEN LEFT hand only pointing toward screen left, index finger extended; use same wrist attachment position/angle/size as original hip hand. Include40px wrist continuation tucked under forearm with NO ink border around concealed overlap. One complete hand with correct thumb and four fingers. No forearm, torso, face, hair or other fragments. Preserve original skin tone and any rings/bracelets belonging to hand.",
+      "output": "Generated images are saved to /Users/stone/.codex/generated_images/01a1a6d9-fea1-7d42-9fee-d3afd422905e as /Users/stone/.codex/generated_images/01a1a6d9-fea1-7d42-9fee-d3afd422905e/exec-9f0a78be-b60b-4789-b436-f25049115098.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link."
+    },
+    {
+      "char": "dj",
+      "name": "hand_l_open",
+      "desc": "ONLY SCREEN LEFT hand only, natural open palm shrug gesture, fingers relaxed; use same wrist attachment position/angle/size as original hip hand. Include40px wrist continuation tucked under forearm with NO ink border around concealed overlap. One complete hand with correct thumb and four fingers. No forearm, torso, face, hair or other fragments. Preserve original skin tone and any rings/bracelets belonging to hand.",
+      "output": "Generated images are saved to /Users/stone/.codex/generated_images/01a1a6d9-fea1-7d42-9fee-d3afd422905e as /Users/stone/.codex/generated_images/01a1a6d9-fea1-7d42-9fee-d3afd422905e/exec-407a03f4-55cb-44ae-b507-d8d37889bf4f.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link."
+    },
+    {
+      "char": "dj",
+      "name": "hand_r_pinch",
+      "desc": "ONLY SCREEN RIGHT hand only, thumb/index pinch gesture for pressing headphone earcup; same wrist connection point/angle/scale as original raised chest hand. No prop in this variant. Include40px wrist continuation tucked under forearm with NO ink border around concealed overlap. One complete hand with correct thumb and four fingers. No forearm, torso, face, hair or other fragments. Preserve original skin tone and any rings/bracelets belonging to hand.",
+      "output": "Generated images are saved to /Users/stone/.codex/generated_images/01a1a6d9-fea1-7d42-9fee-d3afd422905e as /Users/stone/.codex/generated_images/01a1a6d9-fea1-7d42-9fee-d3afd422905e/exec-bd7c6852-08c8-4f5f-899f-6d13a82b02db.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link."
+    },
+    {
+      "char": "dj",
+      "name": "hand_r_open",
+      "desc": "ONLY SCREEN RIGHT hand only, open relaxed palm shrug; same wrist connection point/angle/scale as original raised chest hand. Include40px wrist continuation tucked under forearm with NO ink border around concealed overlap. One complete hand with correct thumb and four fingers. No forearm, torso, face, hair or other fragments. Preserve original skin tone and any rings/bracelets belonging to hand.",
+      "output": "Generated images are saved to /Users/stone/.codex/generated_images/01a1a6d9-fea1-7d42-9fee-d3afd422905e as /Users/stone/.codex/generated_images/01a1a6d9-fea1-7d42-9fee-d3afd422905e/exec-5945e9a2-ab9f-469f-b50e-addd0ec14850.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link."
+    },
+    {
+      "char": "dj",
+      "name": "hand_r_grip",
+      "desc": "ONLY SCREEN RIGHT hand only, relaxed half-closed empty fist at chest; original wrist connection point/angle/size. Include40px wrist continuation tucked under forearm with NO ink border around concealed overlap. One complete hand with correct thumb and four fingers. No forearm, torso, face, hair or other fragments. Preserve original skin tone and any rings/bracelets belonging to hand.",
+      "output": "Generated images are saved to /Users/stone/.codex/generated_images/01a1a6d9-fea1-7d42-9fee-d3afd422905e as /Users/stone/.codex/generated_images/01a1a6d9-fea1-7d42-9fee-d3afd422905e/exec-f56ad9cb-352a-417d-b2cf-42741db5d591.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link."
+    },
+    {
+      "char": "dj",
+      "name": "hand_r_hatheld",
+      "desc": "ONLY SCREEN RIGHT hand only gripping the complete black/silver HEADPHONES by the middle of the headband, for raising overhead, no cable. Same wrist connection point/angle/hand-size as original raised chest hand. Prop is fully painted in this layer and has no fragments of face/clothes. Include entire prop with clear shape. Include40px wrist continuation tucked under forearm with NO ink border around concealed overlap. One complete hand with correct thumb and four fingers. No forearm, torso, face, hair or other fragments. Preserve original skin tone and any rings/bracelets belonging to hand.",
+      "output": "Generated images are saved to /Users/stone/.codex/generated_images/01a1a6d9-fea1-7d42-9fee-d3afd422905e as /Users/stone/.codex/generated_images/01a1a6d9-fea1-7d42-9fee-d3afd422905e/exec-082693f0-6628-43c9-921e-4105987ddeea.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link."
+    },
+    {
+      "char": "host",
+      "name": "head_idle",
+      "desc": "ONLY the complete head (face, hair, ears) in EXACT master head position/size/orientation, with same relaxed neutral facial expression. Remove the sunglasses entirely and paint expressive eyes underneath them. Keep dreadlocks and hoop earrings. No glasses, neck, torso, shirt or necklace. Extend the chin/neck attachment concealed40px naturally, no straight-cut chin. All five expressions must preserve the same original facial proportions and neck attachment point.",
+      "output": "Generated images are saved to /Users/stone/.codex/generated_images/01a1a6d9-fea1-7d42-9fee-d3afd422905e as /Users/stone/.codex/generated_images/01a1a6d9-fea1-7d42-9fee-d3afd422905e/exec-00e27b8e-47eb-4cbd-8b45-72da92051e54.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link."
+    },
+    {
+      "char": "host",
+      "name": "head_blink",
+      "desc": "ONLY the complete head (face, hair, ears) in EXACT master head position/size/orientation, with eyes completely closed in a natural blink, rest of face unchanged. Remove the sunglasses entirely and paint expressive eyes underneath them. Keep dreadlocks and hoop earrings. No glasses, neck, torso, shirt or necklace. Extend the chin/neck attachment concealed40px naturally, no straight-cut chin. All five expressions must preserve the same original facial proportions and neck attachment point.",
+      "output": "Generated images are saved to /Users/stone/.codex/generated_images/01a1a6d9-fea1-7d42-9fee-d3afd422905e as /Users/stone/.codex/generated_images/01a1a6d9-fea1-7d42-9fee-d3afd422905e/exec-82ecd579-5da3-45ca-ab7d-c4cf27393cca.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link."
+    },
+    {
+      "char": "host",
+      "name": "head_spiral",
+      "desc": "ONLY the complete head (face, hair, ears) in EXACT master head position/size/orientation, with mouth wide open shouting excitedly toward screen left; no actual spirals. Remove the sunglasses entirely and paint expressive eyes underneath them. Keep dreadlocks and hoop earrings. No glasses, neck, torso, shirt or necklace. Extend the chin/neck attachment concealed40px naturally, no straight-cut chin. All five expressions must preserve the same original facial proportions and neck attachment point.",
+      "output": "Generated images are saved to /Users/stone/.codex/generated_images/01a1a6d9-fea1-7d42-9fee-d3afd422905e as /Users/stone/.codex/generated_images/01a1a6d9-fea1-7d42-9fee-d3afd422905e/exec-3f54c7cd-df43-464c-b8c8-19ed02b4d0d4.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link."
+    },
+    {
+      "char": "host",
+      "name": "head_grin",
+      "desc": "ONLY the complete head (face, hair, ears) in EXACT master head position/size/orientation, with big warm amused smile. Remove the sunglasses entirely and paint expressive eyes underneath them. Keep dreadlocks and hoop earrings. No glasses, neck, torso, shirt or necklace. Extend the chin/neck attachment concealed40px naturally, no straight-cut chin. All five expressions must preserve the same original facial proportions and neck attachment point.",
+      "output": "Generated images are saved to /Users/stone/.codex/generated_images/01a1a6d9-fea1-7d42-9fee-d3afd422905e as /Users/stone/.codex/generated_images/01a1a6d9-fea1-7d42-9fee-d3afd422905e/exec-f7c7a3ff-d06b-4061-8cb4-931d83d3140c.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link."
+    },
+    {
+      "char": "host",
+      "name": "head_annoyed",
+      "desc": "ONLY the complete head (face, hair, ears) in EXACT master head position/size/orientation, with mildly annoyed frown and brows, still same person. Remove the sunglasses entirely and paint expressive eyes underneath them. Keep dreadlocks and hoop earrings. No glasses, neck, torso, shirt or necklace. Extend the chin/neck attachment concealed40px naturally, no straight-cut chin. All five expressions must preserve the same original facial proportions and neck attachment point.",
+      "output": "Generated images are saved to /Users/stone/.codex/generated_images/01a1a6d9-fea1-7d42-9fee-d3afd422905e as /Users/stone/.codex/generated_images/01a1a6d9-fea1-7d42-9fee-d3afd422905e/exec-898a0547-4e6d-4298-b46a-5399ca0b749e.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link."
+    },
+    {
+      "char": "host",
+      "name": "neck",
+      "desc": "ONLY the short NECK connector in original master position from beneath jaw to collar. Extend40px concealed under head and40px under torso, organically curved ends with no ink border on hidden overlaps. Keep only upper necklace chain, lower pendant belongs to torso. No chin, head, shirt, shoulders, arms or other fragments.",
+      "output": "Generated images are saved to /Users/stone/.codex/generated_images/01a1a6d9-fea1-7d42-9fee-d3afd422905e as /Users/stone/.codex/generated_images/01a1a6d9-fea1-7d42-9fee-d3afd422905e/exec-f085b75f-59c5-442b-9969-8d39e99603fe.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link."
+    },
+    {
+      "char": "host",
+      "name": "glasses",
+      "desc": "ONLY the green round sunglasses at exact original face position, size and angle. Complete both green lenses, thin rims, bridge and temples, with transparent openings around them. No face, eyes, hair, ears or other fragments.",
+      "output": "Generated images are saved to /Users/stone/.codex/generated_images/01a1a6d9-fea1-7d42-9fee-d3afd422905e as /Users/stone/.codex/generated_images/01a1a6d9-fea1-7d42-9fee-d3afd422905e/exec-07a9f223-4872-4144-8b5a-fc07a935dcb7.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link."
+    },
+    {
+      "char": "host",
+      "name": "hand_l_hip",
+      "desc": "ONLY SCREEN LEFT hand resting on hip, same original pose and size; remove all waist clothing and other parts. Include40px wrist continuation tucked under forearm with NO ink border around concealed overlap. One complete hand with correct thumb and four fingers. No forearm, torso, face, hair or other fragments. Preserve original skin tone and any rings/bracelets belonging to hand.",
+      "output": "Generated images are saved to /Users/stone/.codex/generated_images/01a1a6d9-fea1-7d42-9fee-d3afd422905e as /Users/stone/.codex/generated_images/01a1a6d9-fea1-7d42-9fee-d3afd422905e/exec-4a99a506-6f4b-4abe-abff-84e712ae3de7.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link."
+    },
+    {
+      "char": "host",
+      "name": "hand_l_point",
+      "desc": "ONLY SCREEN LEFT hand only pointing toward screen left, index finger extended; use same wrist attachment position/angle/size as original hip hand. Include40px wrist continuation tucked under forearm with NO ink border around concealed overlap. One complete hand with correct thumb and four fingers. No forearm, torso, face, hair or other fragments. Preserve original skin tone and any rings/bracelets belonging to hand.",
+      "output": "Generated images are saved to /Users/stone/.codex/generated_images/01a1a6d9-fea1-7d42-9fee-d3afd422905e as /Users/stone/.codex/generated_images/01a1a6d9-fea1-7d42-9fee-d3afd422905e/exec-de0875c2-b1f0-43b8-aedd-635f1c6e3749.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link."
+    },
+    {
+      "char": "host",
+      "name": "hand_l_open",
+      "desc": "ONLY SCREEN LEFT hand only, natural open palm shrug gesture, fingers relaxed; use same wrist attachment position/angle/size as original hip hand. Include40px wrist continuation tucked under forearm with NO ink border around concealed overlap. One complete hand with correct thumb and four fingers. No forearm, torso, face, hair or other fragments. Preserve original skin tone and any rings/bracelets belonging to hand.",
+      "output": "Generated images are saved to /Users/stone/.codex/generated_images/01a1a6d9-fea1-7d42-9fee-d3afd422905e as /Users/stone/.codex/generated_images/01a1a6d9-fea1-7d42-9fee-d3afd422905e/exec-3435ddcc-8b92-4814-bee8-2a18060ba3c5.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link."
+    },
+    {
+      "char": "host",
+      "name": "hand_r_pinch",
+      "desc": "ONLY SCREEN RIGHT hand only, thumb/index pinch gesture for pinching sunglasses frame; same wrist connection point/angle/scale as original raised chest hand. No prop in this variant. Include40px wrist continuation tucked under forearm with NO ink border around concealed overlap. One complete hand with correct thumb and four fingers. No forearm, torso, face, hair or other fragments. Preserve original skin tone and any rings/bracelets belonging to hand.",
+      "output": "Generated images are saved to /Users/stone/.codex/generated_images/01a1a6d9-fea1-7d42-9fee-d3afd422905e as /Users/stone/.codex/generated_images/01a1a6d9-fea1-7d42-9fee-d3afd422905e/exec-9855b1bf-97d9-44c4-b618-27b7328f9a5f.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link."
+    },
+    {
+      "char": "host",
+      "name": "hand_r_open",
+      "desc": "ONLY SCREEN RIGHT hand only, open relaxed palm shrug; same wrist connection point/angle/scale as original raised chest hand. Include40px wrist continuation tucked under forearm with NO ink border around concealed overlap. One complete hand with correct thumb and four fingers. No forearm, torso, face, hair or other fragments. Preserve original skin tone and any rings/bracelets belonging to hand.",
+      "output": "Generated images are saved to /Users/stone/.codex/generated_images/01a1a6d9-fea1-7d42-9fee-d3afd422905e as /Users/stone/.codex/generated_images/01a1a6d9-fea1-7d42-9fee-d3afd422905e/exec-66110ea0-7ecf-49c4-9137-1269077678ef.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link."
+    },
+    {
+      "char": "host",
+      "name": "hand_r_grip",
+      "desc": "ONLY SCREEN RIGHT hand only, holding the complete upward-pointing black wireless microphone exactly as master; original wrist connection point/angle/size. Include40px wrist continuation tucked under forearm with NO ink border around concealed overlap. One complete hand with correct thumb and four fingers. No forearm, torso, face, hair or other fragments. Preserve original skin tone and any rings/bracelets belonging to hand.",
+      "output": "Generated images are saved to /Users/stone/.codex/generated_images/01a1a6d9-fea1-7d42-9fee-d3afd422905e as /Users/stone/.codex/generated_images/01a1a6d9-fea1-7d42-9fee-d3afd422905e/exec-0adf3370-a490-4149-987b-8571c719e812.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link."
+    },
+    {
+      "char": "host",
+      "name": "hand_r_hatheld",
+      "desc": "ONLY SCREEN RIGHT hand only holding the full wireless microphone firmly for overhead waving, microphone points upward. Same wrist connection point/angle/hand-size as original raised chest hand. Prop is fully painted in this layer and has no fragments of face/clothes. Include entire prop with clear shape. Include40px wrist continuation tucked under forearm with NO ink border around concealed overlap. One complete hand with correct thumb and four fingers. No forearm, torso, face, hair or other fragments. Preserve original skin tone and any rings/bracelets belonging to hand.",
+      "output": "Generated images are saved to /Users/stone/.codex/generated_images/01a1a6d9-fea1-7d42-9fee-d3afd422905e as /Users/stone/.codex/generated_images/01a1a6d9-fea1-7d42-9fee-d3afd422905e/exec-e8aaed7e-749b-4e6f-8db9-d25af2d28b4e.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link."
+    }
+  ],
+  "revisions": [
+    {
+      "char": "dj",
+      "name": "arm_r_upper",
+      "prompt": "Extract only the DJ's SCREEN RIGHT short T-shirt sleeve with the small upper-arm section beneath it, ending at elbow. This is an orange costume rig piece, not the full arm. Preserve exact original position inside bbox x620..805,y345..590 on FULL1024x1536 transparent canvas. No chest hand or raised forearm, no head, no body. Shoulder end continues40px under shirt body; elbow ends as smooth rounded concealed overlap with no border. Keep flat comic inks and orange fabric. One part, no labels. Do not center or enlarge."
+    },
+    {
+      "char": "host",
+      "name": "arm_r_upper",
+      "prompt": "Extract only the host's SCREEN RIGHT white JACKET SLEEVE with upper-arm connector underneath it, ending at elbow. Keep exact original position within bbox x615..780,y360..600 on FULL1024x1536 transparent canvas. One white cloth sleeve game-rig part, not full arm. No forearm, microphone, hand, head, chest or torso. Paint concealed40px cloth overlap at shoulder and elbow, organic ends, no ink border at concealed overlap. Same flat comic white fabric and ink as reference, do not center, enlarge or move."
+    },
+    {
+      "char": "dj",
+      "name": "torso",
+      "ref": "/Users/stone/.codex/generated_images/01a1a6d9-fea1-7d42-9fee-d3afd422905e/exec-b94b694e-ccdd-4bed-bcde-14ccb825b877.png",
+      "prompt": "Edit this game clothing torso layer. Remove BOTH projecting short sleeves entirely; sleeves belong to separate arm layers. Keep only the central orange T-shirt chest and belly with complete shirt fabric at the two shoulder seams and sides. No outward sleeve tubes, sleeve holes, arm stubs or forearms. Repaint natural rounded shoulder cap at x360,y385 and x685,y390 without projecting beyond torso silhouette; these overlaps go40px behind arm pieces and have no black contour on hidden overlap. Preserve all remaining torso drawing, exact original position and scale on full1024x1536 transparent canvas. No head or neck. Keep flat orange comic ink art."
+    },
+    {
+      "char": "host",
+      "name": "torso",
+      "ref": "/Users/stone/.codex/generated_images/01a1a6d9-fea1-7d42-9fee-d3afd422905e/exec-15d7176a-ea88-42c0-a139-c6f2a5ff51e0.png",
+      "prompt": "Edit this adult game costume torso layer. Remove BOTH projecting jacket sleeves entirely; the arm layers supply all sleeves. Keep central white jacket body, black top and waist only, with complete cloth sides and shoulder seams. No outward sleeve tubes, sleeve holes, arm stubs, hands or arm fragments. Natural rounded shoulder caps under the separate arms, concealed overlap has no ink contour. Preserve original torso position/scale, adult costume, flat comic ink style on full1024x1536 transparent canvas. No head, neck, belt or trousers."
+    }
+  ]
+}

@@ -10,7 +10,7 @@
 <script lang="ts">
 	import { everyFrame } from '../game/frameLoop';
 	import { onDestroy } from 'svelte';
-	import { Container, Sprite, Text } from 'pixi-svelte';
+	import { Container, Graphics, Sprite, Text } from 'pixi-svelte';
 	import { GAME_FONT, GAME_FONT_WEIGHT, NUMBER_FONT } from '../game/fonts';
 	import BannerMesh from './BannerMesh.svelte';
 	import { FadeContainer, WinCountUpProvider } from 'components-pixi';
@@ -93,6 +93,28 @@
   };fxRaf=requestAnimationFrame(tick);
  };
  onDestroy(stopBannerFx);
+
+ // Small-win stamp: 1.45 → 1 over 140 ms with a slight counter-turn, then a
+ // 60 ms settle — the same contact language as the plaque, a size down.
+ let smallPop=$state({scale:1,rotation:0});let popRaf=0;
+ const startSmallPop=()=>{
+  cancelAnimationFrame(popRaf);const start=performance.now();
+  const tick=(now:number)=>{const t=(now-start)/1000;
+   if(t<.14){const k=1-(1-t/.14)**3;smallPop={scale:1.45-.45*k,rotation:-.07*(1-k)};}
+   else if(t<.2){const k=(t-.14)/.06;smallPop={scale:1-.04*Math.sin(k*Math.PI),rotation:0};}
+   else{smallPop={scale:1,rotation:0};return;}
+   popRaf=requestAnimationFrame(tick);};
+  popRaf=requestAnimationFrame(tick);
+ };
+ onDestroy(()=>cancelAnimationFrame(popRaf));
+ const TICKET_W=SYMBOL_SIZE*3.3,TICKET_H=SYMBOL_SIZE*1.08;
+ const drawTicket=(g: import('pixi.js').Graphics)=>{
+  const w=TICKET_W/2,h=TICKET_H/2;g.clear();
+  // off-register shadow plate, then the ink ticket with a paper keyline
+  g.poly([-w+10,-h+12,w+12,-h+8,w+9,h+12,-w+8,h+10]).fill({color:0x15191f,alpha:.55});
+  g.poly([-w,-h+3,-w*.2,-h,w,-h+2,w-3,h,w*.3,h+2,-w+2,h-1]).fill(0x22252e).stroke({width:5,color:0x15191f});
+  g.poly([-w+9,-h+11,w-10,-h+10,w-11,h-9,-w+10,h-10]).stroke({width:2,color:0xe5e2d6,alpha:.55});
+ };
  const bannerPose=$derived.by(()=>{
   const t=Math.max(0,fxNow);const strength=winLevelData?(TIER_FX[winLevelData.alias]?.mult??1):1;
   const scale=t<.145?1.55-.55*(1-(1-t/.145)**2):t<.205?1:1+.035*Math.sin(Math.min(1,(t-.205)/.15)*Math.PI)*Math.max(0,1-(t-.205)/.15);
@@ -116,7 +138,9 @@
 	});
 </script>
 
-<FadeContainer {show}>
+<!-- 140 ms for a small win: the shared 400 ms default ate most of its time on
+     screen, so the amount only ever showed half-transparent -->
+<FadeContainer {show} duration={winLevelData?.type === 'big' ? 400 : 140}>
 	{#if winLevelData}
 		{@const isBigWin = winLevelData.type === 'big'}
 		{@const duration = winLevelData.presentDuration}
@@ -128,11 +152,13 @@
 
 				<OnMount
 					onmount={async () => {
+						if (!isBigWin) startSmallPop();
 						// impact hold: freeze a few frames under the white flash before
 						// the numbers start rolling
 						if (isBigWin) await waitForTimeout(205);
 						await startCountUp();
-						await waitForTimeout(isBigWin ? 700 : 180);
+						// a small win has to be read before the ways take over the board
+						await waitForTimeout(isBigWin ? 700 : 420);
 						oncomplete();
 					}}
 				/>
@@ -193,13 +219,16 @@
 								</Container>
 							</Container>
 						{:else}
-							<!-- small wins: just the rolling amount over the board -->
-							<GoldText
-								maxWidth={context.stateLayoutDerived.canvasSizes().width /
-									context.stateLayoutDerived.mainLayout().scale}
-								text={bookEventAmountToCountUpString(countUpAmount, amount)}
-								fontSize={SYMBOL_SIZE}
-							/>
+							<!-- small wins: the amount is stamped onto an ink ticket, never
+							     straight over the symbol art, and lands with a short slam -->
+							<Container scale={smallPop.scale} rotation={smallPop.rotation}>
+								<Graphics draw={drawTicket} />
+								<GoldText
+									maxWidth={SYMBOL_SIZE * 2.9}
+									text={bookEventAmountToCountUpString(countUpAmount, amount)}
+									fontSize={SYMBOL_SIZE * 0.78}
+								/>
+							</Container>
 						{/if}
 					</Container>
 				</MainContainer>

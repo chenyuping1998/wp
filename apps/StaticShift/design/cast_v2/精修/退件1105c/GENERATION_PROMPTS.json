@@ -1,0 +1,20 @@
+{
+  "tool": "built-in image_gen",
+  "prompts": [
+    {
+      "key": "dj-thigh",
+      "prompt": "Use case: precise-object-edit. Edit target: two isolated blue cargo-trouser THIGH sprite layers in supplied transparent square. Repair only the inner upper crotch edges facing the center gap: the left sprite has a dangling sharp black triangular sliver sticking down its upper right edge; the right sprite has a long jagged black pointed sliver on its upper left edge. Repaint these two tiny crotch edge regions as continuous smoothly bowed cloth curves with a clean black comic outline. Fill/round the notch into the original thigh volume, no straight cuts or sliced muscle, no dangling spikes, no tiny fragments. The top of each thigh must remain complete as concealed overlap under the pelvis. Preserve exact position, size, pockets, colors, creases, round knee ends and every other part. Same two parts only, do not assemble or add waistband or lower leg. Transparent background. No labels.",
+      "file": "dj-thigh-edit.png"
+    },
+    {
+      "key": "host-thigh",
+      "prompt": "Use case: precise-object-edit. Edit target: two isolated purple cargo-trouser THIGH sprite layers on transparent square. Change only inner upper crotch edges facing center gap. Left sprite currently has a narrow dangling sharp black/purple sliver from its upper right crotch edge. Right sprite has a jagged pointed black sliver on upper left inner edge. Repaint these tiny edge regions as smoothly bowed continuous cloth curves with clean uninterrupted black comic outlines; fill/round the notches into the existing volume, no straight cuts. Remove tiny bright-purple fragments in this crotch area. Preserve all original thigh volume, exact placement, lengths, pockets, wrinkles, purple palette, and round knee ends. Top root overlap remains complete. Two separate thigh parts only, no pelvis, no lower legs, no assembly, no text. Real transparent background.",
+      "file": "host-thigh-edit.png"
+    },
+    {
+      "key": "dj-shoulder",
+      "prompt": "Use case: precise-object-edit. Edit target: isolated red short sleeve with attached upper arm on transparent square. Repair ONLY the upper right sleeve cap at the shoulder root, where there is a small sharp corner at the highest point. Repaint this shoulder sleeve cap as a smoothly rounded organic sleeve-head arc with continuous black comic line, no spike, flat cut, staircase, square corner, or socket ring. Preserve sleeve width and fabric volume, extend concealed root slightly only if necessary to make a rounded cap. Keep every other part exactly unchanged: original position, shape/size of sleeve cuff, red color, all wrinkles, complete skin upper arm/elbow and length. Do not add a torso, hands, forearm or other objects. Transparent background.",
+      "file": "dj-shoulder-edit.png"
+    }
+  ]
+}

@@ -4,8 +4,11 @@ from PIL import Image,ImageOps
 import shutil
 APP=Path(__file__).resolve().parents[1];D=APP/'design';SP=APP/'static/assets/sprites';src=D/'source-v2/store-background.png'
 bg=Image.open(src).convert('RGBA')
+# 2026-11-09: the stand34 cast the game now draws (design/cast_v2/交件, art r7/r7.1),
+# not the retired source/{mg,fg} cut — store art and game show the same people
+CAST={'mg':'dj','fg':'host'}
 def assembled(cast):
- im=Image.open(D/'source'/cast/'_assembled.png').convert('RGBA')
+ im=Image.open(D/'cast_v2'/'交件'/CAST[cast]/'assembled.png').convert('RGBA')
  return im.crop(im.getbbox())
 mg=assembled('mg');fg=assembled('fg')
 def scaled(im,h):return im.resize((round(im.width*h/im.height),h),Image.Resampling.LANCZOS)

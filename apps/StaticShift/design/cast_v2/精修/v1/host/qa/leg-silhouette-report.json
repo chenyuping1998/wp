@@ -1,0 +1,10 @@
+{
+  "reference": "精修/source/host_leg_revision.png",
+  "visible_leg_interior_pixels_removed": 0,
+  "domain_y": [
+    802,
+    1201
+  ],
+  "criterion": "3px內縮後的原始腿部肌肉／褲管不得被刪除；鞋與根部遮擋區另驗收。",
+  "pass": true
+}

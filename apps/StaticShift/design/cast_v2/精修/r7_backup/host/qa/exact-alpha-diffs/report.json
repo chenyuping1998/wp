@@ -1,0 +1,32 @@
+{
+  "arm_l_lower": {
+    "removed_alpha_pixels": 85,
+    "added_alpha_pixels": 65,
+    "removed_alpha_coverage": 6230,
+    "added_alpha_coverage": 4078
+  },
+  "hand_l_open": {
+    "removed_alpha_pixels": 918,
+    "added_alpha_pixels": 20,
+    "removed_alpha_coverage": 204594,
+    "added_alpha_coverage": 801
+  },
+  "hand_l_point": {
+    "removed_alpha_pixels": 1053,
+    "added_alpha_pixels": 21,
+    "removed_alpha_coverage": 240470,
+    "added_alpha_coverage": 577
+  },
+  "hand_r_grip": {
+    "removed_alpha_pixels": 76,
+    "added_alpha_pixels": 27,
+    "removed_alpha_coverage": 433,
+    "added_alpha_coverage": 98
+  },
+  "hand_r_hatheld": {
+    "removed_alpha_pixels": 1478,
+    "added_alpha_pixels": 0,
+    "removed_alpha_coverage": 359978,
+    "added_alpha_coverage": 0
+  }
+}

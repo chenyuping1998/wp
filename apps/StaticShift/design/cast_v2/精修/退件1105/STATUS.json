@@ -1,0 +1,88 @@
+{
+  "status": "NOT_ACCEPTED_DO_NOT_STAGE",
+  "formal_delivery_unchanged": true,
+  "static_outline": {
+    "dj": {
+      "src": "design/cast_v2/精修/退件1105/candidate/dj",
+      "edge_px": 9259,
+      "uninked_px": 0,
+      "uninked_share": 0.0,
+      "runs": [],
+      "verdict": "PASS"
+    },
+    "host": {
+      "src": "design/cast_v2/精修/退件1105/candidate/host",
+      "edge_px": 10827,
+      "uninked_px": 0,
+      "uninked_share": 0.0,
+      "runs": [],
+      "verdict": "PASS"
+    }
+  },
+  "visual_review": {
+    "status": "REJECTED",
+    "blockers": [
+      "Raised/folded source articulation still reveals elbow-cap seams and upper-arm remnants.",
+      "Wrist-root pigment/contour joins are not consistently clean in all interchange poses."
+    ],
+    "note": "Static outline PASS alone does not authorize delivery; do not use the pose proofs as acceptance evidence."
+  },
+  "candidate_layer_sha256": {
+    "dj": {
+      "arm_l_lower.png": "e98d9aab28481a8ddaa97d924031dfd6bb630b5877521934f65f0398977f8849",
+      "arm_l_upper.png": "423d63a68a0fb1f71ab08f04f9b1ce81ff35f080da5e5adb4d5de31981ea0edf",
+      "arm_r_lower.png": "8e698aeacb9e1973d4e5f818d0fe6b7333c6ded828fb6bd178554f01b54e2672",
+      "arm_r_upper.png": "84e5f156995c66ec079cc94a7880efce04accc4239cefbc413b3371e60c4179d",
+      "foot_l.png": "cefa47e478829bc4cb693d8f1ef2873a3fcd2f6a68c10d385c1e9fb8e21819d1",
+      "foot_r.png": "8dadb2bd93e13222473671aba118a4d65afa183e2cf786521ccf771145b683c1",
+      "hand_l_hip.png": "4f686f87665759b24672d6a2cc0c4921e1d6b61ba028eb317d4b5bb6416dc5bc",
+      "hand_l_open.png": "e981440df802ab7fa0e668755d97676cc3c7f24285f892356a3e652a09717a2e",
+      "hand_l_point.png": "bbe6ed5be80881c79641fa8664269ee3a004c0b643f2f18012c0bfdbf49869a5",
+      "hand_r_grip.png": "79af9bcced328ea66cfb7036e9bd442b1dabf698095c1d63aa7859dfaa3ed02a",
+      "hand_r_hatheld.png": "fac9daedd06d02f1131d2fd9969ae793cb255dd6f292c1b95d6909095cb845ce",
+      "hand_r_open.png": "094b57d627b9b4906609e8ac8c487625e8554538aca00d57b18d3dbd4d67a5b7",
+      "hand_r_pinch.png": "03efb49187c28a8a16fcfdc998f6d82184dc0b48bf44fdab435b4cb2fa30388f",
+      "hat.png": "08d5fab5ee0f22cfab6194ec165045e0a518d94c6c8b9b041ee172a63b56008b",
+      "head_annoyed.png": "49dfad30e2eb98448bbb3ec1303493d6aa0747d2031408e39f8b345f68dfdce1",
+      "head_blink.png": "d5f44d92e3039ed875227b4ac58557efe5a471a585115ef80417388d0696b9df",
+      "head_grin.png": "25a8eeb5faa4f1b22be4ef8c2309e4d0316c0f8cd2667d10acc6511587da07a8",
+      "head_idle.png": "720ae5c066f4fd585f0b8a10c2826d4f213eebde84d33f9e4cd0f710f9ca5988",
+      "head_spiral.png": "8c3d0bcdf797199a6fee4a5ae371aa506f2e8076fae197f1424968249a655852",
+      "leg_l_lower.png": "ba99b879903f2e653dac2b967ceb7ed30bc561fc88b844ca1d3e1a9a7856035d",
+      "leg_l_upper.png": "bc20b4b1cbcabd430a9e36490390275376fa6a0c2f338a769c28a5f690c765c2",
+      "leg_r_lower.png": "3a6501b01c7943c95e2e2a5d6c8f44fcb4cdf0349fc1b1b69164e583abdce837",
+      "leg_r_upper.png": "c659c637971c4be1ea4295d8c82475df0e5e3fd247112f12990cf167f2fa3c29",
+      "neck.png": "6ff9accb53f56a623103a2c844da7af6077476d0374675b6ded2f6cb6a2dabd0",
+      "pelvis.png": "ee2aaf2d6a7af72e0cd89d3e85555476989e3eed2f279e0b86521a5c68221705",
+      "torso.png": "1311f6128d02b1de9e5c517540c88c100296f38cc3d9f557e3d0a4093ff82b26"
+    },
+    "host": {
+      "arm_l_lower.png": "960b249ac7161ba28adfd0cf0dfad680bc9a6e82fcd39ecba5eef62edea1fea5",
+      "arm_l_upper.png": "17e193783c9f79541eb77c4e4bd4d989d1b6fecb6ee55e09fec504fcaee201a5",
+      "arm_r_lower.png": "e960e7ef3fa2c32780ebe59cbb87cf831518f37a7c41b4be2f2e3f71c899aa72",
+      "arm_r_upper.png": "0d17a30c1f601f67e871f8fb65074080e1b4323cb5cef4d5956070d5d6e8fb73",
+      "foot_l.png": "5e1d0f77e520f791645ae8ef13b2170187c2cfa032daa16290f5162d12fb7377",
+      "foot_r.png": "379536c8901da81396f2ea443fa8bbc4187e28caab21431c8187f9a375bb11b2",
+      "glasses.png": "d83f2f4015e1f27fb22005f51c81a15c647c6bfa3c74da50bed5472a7eee8160",
+      "hand_l_hip.png": "7034c6ffd458c84907c39323885d1d8f446b02e327a26fed5d3256fd45065be4",
+      "hand_l_open.png": "e95d158e91e61516a9a1213a74bd876fb6c7e2015c2d666572d6c8e086df4e6d",
+      "hand_l_point.png": "3d94a2ff27a5581ee9f42b80924929cf4e336735c85a9ab2e01453074db5b6eb",
+      "hand_r_grip.png": "207642da598c1357011d638010b1c8aefcb19cbc68d796d4eabc51cf6c3c2618",
+      "hand_r_hatheld.png": "ed42ba7bac7d35478b2454c91efe15478f137e8f036fda7bfd8eacfdcba1ad7e",
+      "hand_r_open.png": "c62e8b46f12d2c60cc1be74849d15a89fab8a10f0df1d885e6b322eb106911f7",
+      "hand_r_pinch.png": "afd93f84eeb8cb8b720566e2aebc37830bb4e17cefb2048c7b41cae96206e1c8",
+      "head_annoyed.png": "33890ca64d87da5e1f14949af5f94062109252c00a3a935868ea033e99eac8b2",
+      "head_blink.png": "91b48726779a454c29989dda31ebfd5b81130d10781ebfc8c4a20e0acdb12eb5",
+      "head_grin.png": "2fefa34f0f822b57f9d10adcf7cb3928c79ae1b2d4239b8cc3bef3ad810e3355",
+      "head_idle.png": "a04fe6e47893cad90d9a82ef8c934e26b8764e361bc59c7c03c048991465ed77",
+      "head_spiral.png": "a67f464df1b0081e37a820c54a53206e4f30ef858fddbf49a1261c460a06f383",
+      "leg_l_lower.png": "4461e8612638c3f07d9ecf7bc595ef456d82bb0234aff1f6f2150ab9c7aeffcb",
+      "leg_l_upper.png": "4fe86eaeb4b36ae97f672e5aa2131ef697c94b35416bbdbff64557964119b11e",
+      "leg_r_lower.png": "9c4bf829eca675c872cbde33ef274d2742bdf25ff0f41f2ae0256be303e9e072",
+      "leg_r_upper.png": "820a7279229e0d2b03eb8c62ab7e985b0ca635a4d9128b3ad83751a9e6274e63",
+      "neck.png": "d664c2513e5624d8db739a257aeac546fc37ec4f44e5cad4c31939f2c2ccd369",
+      "pelvis.png": "c3350dbb5169c566bde2275e55a19e78d8d617c6ae03ecc96d9ae81fa501f63e",
+      "torso.png": "5437defe4a4498f680cd1a6740c00f8c52f9a8ac19f89d7177ec809f71fdb02c"
+    }
+  }
+}

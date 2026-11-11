@@ -1,0 +1,14 @@
+{
+  "arm_r_lower": {
+    "removed_alpha_pixels": 0,
+    "added_alpha_pixels": 3719,
+    "removed_alpha_coverage": 0,
+    "added_alpha_coverage": 4375
+  },
+  "hand_r_hatheld": {
+    "removed_alpha_pixels": 2146,
+    "added_alpha_pixels": 2,
+    "removed_alpha_coverage": 503417,
+    "added_alpha_coverage": 28
+  }
+}

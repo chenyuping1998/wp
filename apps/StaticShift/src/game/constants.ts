@@ -30,6 +30,12 @@ export const INITIAL_BOARD: RawSymbol[][] = [
 
 export const BOARD_DIMENSIONS = { x: INITIAL_BOARD.length, y: INITIAL_BOARD[0].length - 2 };
 
+/** How far the 2026-11-05 frame art reaches past the cards on each side, in
+ *  board units: its 1640×1400 source is drawn at half scale around the
+ *  1400×1120 opening at (120,170). The cast and the portrait WIN plate stand
+ *  clear of THIS edge (VU columns, nameplate bar, fader row), not the cards'. */
+export const BOARD_FRAME_REACH = { left: 120 * 0.5, right: (1640 - 120 - 1400) * 0.5, top: 170 * 0.5, bottom: (1400 - 170 - 1120) * 0.5 };
+
 export const BOARD_SIZES = {
 	width: SYMBOL_SIZE * BOARD_DIMENSIONS.x,
 	height: SYMBOL_SIZE * BOARD_DIMENSIONS.y,
@@ -104,7 +110,9 @@ export const SPIN_OPTIONS_DEFAULT = {
 	...SPIN_OPTIONS_SHARED,
 	reelPreSpinSpeed: 1.54,
 	reelSpinSpeed: 1.54,
-	reelBounceSizeMulti: 0.05,
+	// 0.1 of a cell: Iron Jaw's measured ease-out rebound (iron-jaw-transcript).
+	// 0.05 read as the reel simply stopping, with no weight in the landing.
+	reelBounceSizeMulti: 0.1,
 };
 
 export const SPIN_OPTIONS_FAST = {
@@ -119,7 +127,7 @@ export const SPIN_OPTIONS_FAST = {
 // Feature spins carry their own quicker pulse, with readable column stops.
 export const SPIN_OPTIONS_FREEGAME = {
  ...SPIN_OPTIONS_SHARED, reelPreSpinSpeed:2.8,reelSpinSpeed:2.8,
- reelBounceSizeMulti:.05,reelSpinDelay:90,presentationTravelMs:1150,
+ reelBounceSizeMulti:.08,reelSpinDelay:90,presentationTravelMs:1150,
 };
 
 // Turbo inside the free game. Quicker than the base pace, but still a spin.

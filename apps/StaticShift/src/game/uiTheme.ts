@@ -4,7 +4,8 @@ import { setUiTheme } from 'components-ui-pixi';
 import { stateConfig } from 'state-shared';
 if(typeof document!=='undefined') document.documentElement.dataset.uiSkin='platform';
 setUiTheme({
- fontFamily:BODY_FONT,fontWeight:'700',valueFontFamily:NUMBER_FONT,valueFontWeight:'400',labelFontWeight:'700',
+ // labels in the hand-lettered display face (Archivo bold read as a stock UI font)
+ fontFamily:GAME_FONT,fontWeight:'400',valueFontFamily:NUMBER_FONT,valueFontWeight:'400',labelFontWeight:'400',
  betBarLayout:'compactBottom',barStyle:'flat',barFill:0x22252e,barAlpha:1,
  panelFill:0x22252e,panelBorder:0x535e88,labelFill:0xaab4cb,balanceLabelFill:0xaab4cb,
  winAccent:{border:0xb8d080,label:0xb8d080},betAccent:{border:0x535e88,label:0xaab4cb},
@@ -18,7 +19,9 @@ setUiTheme({
  buyBonusPlateScale:1,buyBonusPlateInset:{width:.96,height:.4},buyBonusHighlightPad:0,
  buyBonusDisabledStyle:'dim',buyBonusDisabledTint:0x8294b6,buyBonusIdleTint:0xffffff,
  buyBonusHoverSprite:'buyBonusGlyph',buyBonusHoverSpriteTint:0xffffff,buyBonusHoverSpriteBlend:'normal',
- sprites:{buyBonus:'gbUiBuyBonusStone',buyBonusGlyph:'gbUiBuyBonusStoneLit'},
+ sprites:{buyBonus:'gbUiBuyBonusStone',buyBonusGlyph:'gbUiBuyBonusStoneLit',bar:'ssBarPlate'},
+ // bar_plate.png (2026-11-05): 64px end caps either side keep their VU/knob; only the dark middle stretches
+ barSpriteSlice:64,
  hoverHighlight:true,hoverPlateLight:0xe7aa53,pressFeedback:true,spinButtonGlow:false,
  portraitSideButtonX:430,portraitStepButtonScale:.68,stepButtonScale:.46,stepButtonGap:28,stepperLayout:'flank',
  valuePop:.12,winFlashTint:0xb8d080,

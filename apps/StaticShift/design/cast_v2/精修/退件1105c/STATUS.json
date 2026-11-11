@@ -1,0 +1,23 @@
+{
+  "status": "ACCEPTED_AND_STAGED",
+  "revision": "staticshift-cast-20261105-r4",
+  "formal_paths": [
+    "../../交件/dj",
+    "../../交件/host"
+  ],
+  "static_checks": {
+    "dj": "PASS",
+    "host": "PASS"
+  },
+  "rigid_pose_checks": "12/12 PASS; original angles and original joints",
+  "source_hashes": {
+    "dj": "402e47005d59362609b502fa81efffcac4ece14a59ea914a67af2231adf2b94c",
+    "host": "50c95fe8c03ef97fe06f1893acbae352208ce0c0e09c7f8e050c08adcd5dbe2b"
+  },
+  "scope": "art only; platform unchanged",
+  "third_round_details": [
+    "第三輪_修正放大.jpg",
+    "第三輪_逐項站姿對照.jpg",
+    "第三輪_修前修後站姿.jpg"
+  ]
+}

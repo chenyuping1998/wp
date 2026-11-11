@@ -1,0 +1,366 @@
+{
+  "layers": {
+    "arm_l_lower.png": {
+      "sha256": "b04fc00abf46439e07f7f566ae69d2648f16047f6ceaafb520fde41dab70347a",
+      "size": [
+        1024,
+        1536
+      ],
+      "nonzero_alpha_components": 1
+    },
+    "arm_l_upper.png": {
+      "sha256": "59261602bb86146b7e1cf5981a85163090267bb6465c40ce16837faa27e57f19",
+      "size": [
+        1024,
+        1536
+      ],
+      "nonzero_alpha_components": 1
+    },
+    "arm_r_lower.png": {
+      "sha256": "618d729e88751c9eb383337c02fcb27e4002c05e496f765c386c49e88d5ff754",
+      "size": [
+        1024,
+        1536
+      ],
+      "nonzero_alpha_components": 1
+    },
+    "arm_r_upper.png": {
+      "sha256": "99f5fbb3cf51f636903b4d5df24a1ec0550884897c5225beae5a90b36dfb9f27",
+      "size": [
+        1024,
+        1536
+      ],
+      "nonzero_alpha_components": 1
+    },
+    "foot_l.png": {
+      "sha256": "cefa47e478829bc4cb693d8f1ef2873a3fcd2f6a68c10d385c1e9fb8e21819d1",
+      "size": [
+        1024,
+        1536
+      ],
+      "nonzero_alpha_components": 1
+    },
+    "foot_r.png": {
+      "sha256": "8dadb2bd93e13222473671aba118a4d65afa183e2cf786521ccf771145b683c1",
+      "size": [
+        1024,
+        1536
+      ],
+      "nonzero_alpha_components": 1
+    },
+    "hand_l_hip.png": {
+      "sha256": "4841b07aa1ab475d3f9a97d74d9dc81ccd28e30132a66b7cb122c58f596a68e8",
+      "size": [
+        1024,
+        1536
+      ],
+      "nonzero_alpha_components": 1
+    },
+    "hand_l_open.png": {
+      "sha256": "9b502f636658d730801c0f17c1906f1d9354b34e02f837586b31d483c4a9a3d2",
+      "size": [
+        1024,
+        1536
+      ],
+      "nonzero_alpha_components": 1
+    },
+    "hand_l_point.png": {
+      "sha256": "e26651c867f516843817420f12c0a0f61faf0581d6d2587373d860e41a7d9b48",
+      "size": [
+        1024,
+        1536
+      ],
+      "nonzero_alpha_components": 1
+    },
+    "hand_r_grip.png": {
+      "sha256": "6abd5877b5d2d9f787f778bb07bfcb3ffe7548b9fce42216a9c6c8cc0cb1973c",
+      "size": [
+        1024,
+        1536
+      ],
+      "nonzero_alpha_components": 1
+    },
+    "hand_r_hatheld.png": {
+      "sha256": "5c57c64278ad710b71772d6461df65f5b12cfa9828062dd205572eb9d4f6ee4c",
+      "size": [
+        1024,
+        1536
+      ],
+      "nonzero_alpha_components": 1
+    },
+    "hand_r_open.png": {
+      "sha256": "073438789fb8d81668ccbc4538be242326062c73c59200a8226ca656aac0e24a",
+      "size": [
+        1024,
+        1536
+      ],
+      "nonzero_alpha_components": 1
+    },
+    "hand_r_pinch.png": {
+      "sha256": "323cb6e5391d02316380c4cfc5e6fa4e1cb01702397de69ab4bdf5ca89fb7ec6",
+      "size": [
+        1024,
+        1536
+      ],
+      "nonzero_alpha_components": 1
+    },
+    "hat.png": {
+      "sha256": "08d5fab5ee0f22cfab6194ec165045e0a518d94c6c8b9b041ee172a63b56008b",
+      "size": [
+        1024,
+        1536
+      ],
+      "nonzero_alpha_components": 1
+    },
+    "head_annoyed.png": {
+      "sha256": "49dfad30e2eb98448bbb3ec1303493d6aa0747d2031408e39f8b345f68dfdce1",
+      "size": [
+        1024,
+        1536
+      ],
+      "nonzero_alpha_components": 1
+    },
+    "head_blink.png": {
+      "sha256": "d5f44d92e3039ed875227b4ac58557efe5a471a585115ef80417388d0696b9df",
+      "size": [
+        1024,
+        1536
+      ],
+      "nonzero_alpha_components": 1
+    },
+    "head_grin.png": {
+      "sha256": "25a8eeb5faa4f1b22be4ef8c2309e4d0316c0f8cd2667d10acc6511587da07a8",
+      "size": [
+        1024,
+        1536
+      ],
+      "nonzero_alpha_components": 1
+    },
+    "head_idle.png": {
+      "sha256": "720ae5c066f4fd585f0b8a10c2826d4f213eebde84d33f9e4cd0f710f9ca5988",
+      "size": [
+        1024,
+        1536
+      ],
+      "nonzero_alpha_components": 1
+    },
+    "head_spiral.png": {
+      "sha256": "8c3d0bcdf797199a6fee4a5ae371aa506f2e8076fae197f1424968249a655852",
+      "size": [
+        1024,
+        1536
+      ],
+      "nonzero_alpha_components": 1
+    },
+    "leg_l_lower.png": {
+      "sha256": "ba99b879903f2e653dac2b967ceb7ed30bc561fc88b844ca1d3e1a9a7856035d",
+      "size": [
+        1024,
+        1536
+      ],
+      "nonzero_alpha_components": 1
+    },
+    "leg_l_upper.png": {
+      "sha256": "9e33e8409e389e83061ecaf8e4d5d6b3ad1b39bf95a994ac4927ade68de1c89e",
+      "size": [
+        1024,
+        1536
+      ],
+      "nonzero_alpha_components": 1
+    },
+    "leg_r_lower.png": {
+      "sha256": "3a6501b01c7943c95e2e2a5d6c8f44fcb4cdf0349fc1b1b69164e583abdce837",
+      "size": [
+        1024,
+        1536
+      ],
+      "nonzero_alpha_components": 1
+    },
+    "leg_r_upper.png": {
+      "sha256": "7ee82ee9f40c3498c2512b6bc2d6242493c9a97d202b8bb96fa8781e98f16917",
+      "size": [
+        1024,
+        1536
+      ],
+      "nonzero_alpha_components": 1
+    },
+    "neck.png": {
+      "sha256": "3ec22d97e7dfb0742489088908146630daa99e75e04bb4eeaae4f220b60876dd",
+      "size": [
+        1024,
+        1536
+      ],
+      "nonzero_alpha_components": 1
+    },
+    "pelvis.png": {
+      "sha256": "b6529ee9b8f732bfc5c677f75722283824bff2d46f0fb0284f58166d94837e86",
+      "size": [
+        1024,
+        1536
+      ],
+      "nonzero_alpha_components": 1
+    },
+    "torso.png": {
+      "sha256": "1311f6128d02b1de9e5c517540c88c100296f38cc3d9f557e3d0a4093ff82b26",
+      "size": [
+        1024,
+        1536
+      ],
+      "nonzero_alpha_components": 1
+    }
+  },
+  "draw_order": [
+    "arm_l_upper",
+    "arm_r_upper",
+    "leg_l_upper",
+    "leg_r_upper",
+    "foot_l",
+    "foot_r",
+    "leg_l_lower",
+    "leg_r_lower",
+    "pelvis",
+    "neck",
+    "torso",
+    "head_idle",
+    "hat",
+    "arm_l_lower",
+    "arm_r_lower",
+    "hand_l_hip",
+    "hand_r_grip"
+  ],
+  "joints": {
+    "shoulder_l": [
+      352,
+      390
+    ],
+    "elbow_l": [
+      230,
+      530
+    ],
+    "wrist_l": [
+      320,
+      682
+    ],
+    "shoulder_r": [
+      681,
+      399
+    ],
+    "elbow_r": [
+      757,
+      567
+    ],
+    "wrist_r": [
+      683,
+      501
+    ],
+    "hip_l": [
+      440,
+      870
+    ],
+    "knee_l": [
+      378,
+      1100
+    ],
+    "ankle_l": [
+      327,
+      1380
+    ],
+    "hip_r": [
+      640,
+      868
+    ],
+    "knee_r": [
+      658,
+      1105
+    ],
+    "ankle_r": [
+      689,
+      1375
+    ],
+    "neck": [
+      527,
+      342
+    ]
+  },
+  "minimum_measured_joint_overlap_px": 51.0,
+  "assembled_sha256": "1dd46b9945722c266f51b197ee98364653997798b3b7d9f840ff1fc775ee4972",
+  "qa_sha256": {
+    "alpha-diffs/all-layer-changes.jpg": "d9b27f89bcba80a5e561e28b1b6ef5fc2d5b35b90ffd123eee01d54ccd96803e",
+    "alpha-diffs/arm_l_lower.jpg": "efa8fbb30e19b7efb84e0b4819e557083372c9fa2f6ae5c2e21230ddd22b86a1",
+    "alpha-diffs/arm_l_upper.jpg": "7ca56c4002011e1f7ace57b1d058c83d8956a249bb7931fa1a6cfff8d83ac63a",
+    "alpha-diffs/arm_r_lower.jpg": "c77569807d26f140af50d95d129bae063b94fd9a2bbfaf141b01ef9a24bea4f0",
+    "alpha-diffs/arm_r_upper.jpg": "7434740e8df319ba6a6a5e4727ce270223c55b8150466b80f09208833adb0141",
+    "alpha-diffs/foot_l.jpg": "059ac4ce02d838d3c2ab90a9054e3c1eeb6a0d916aa11d9a5c731aa1e4c16700",
+    "alpha-diffs/foot_r.jpg": "bf9c74fc1bc67adf62e7cf695e60239146c4269884ed87fbc1f71784adfc816d",
+    "alpha-diffs/hand_l_hip.jpg": "48ed30f973f6c4771afa14baed8d07b67796f1910d8217b8b3c64eaa08b2bf30",
+    "alpha-diffs/hand_l_open.jpg": "f57459f7c43c56d922473d32f85463dbeae64e24e9a0901600ef27a6fbd7e5ce",
+    "alpha-diffs/hand_l_point.jpg": "570861f369a78724666745ab1c7356b0bc11a7ea01933adbd12360b43a3cc432",
+    "alpha-diffs/hand_r_grip.jpg": "2cbd9b38be8232a74613b9d7a9e56c39c572fb7fa71f5bf601fc63a87b2b8b02",
+    "alpha-diffs/hand_r_hatheld.jpg": "35abf987d320a2abf5e09d5ccb43650352a9e0dff7776965f851cb6abf6bd4a5",
+    "alpha-diffs/hand_r_open.jpg": "e2030979aca392413e935a1eb51565b41ea629b5be1031172fa6d045af0dec55",
+    "alpha-diffs/hand_r_pinch.jpg": "9905f30edf158b315c9b305e7eb6ee254d7ce858f79f12395626d3571d91eded",
+    "alpha-diffs/hat.jpg": "843a8ef12a235cb1b8bbcb9a85d20283c07d187f6d2f217c8bf5d1720f560d32",
+    "alpha-diffs/head_annoyed.jpg": "565e0c844e9358ee4ef6c3822bb4e8ed837970301b2e1a7153ae6008f40ad4e4",
+    "alpha-diffs/head_blink.jpg": "24d354a8205332a0e61cb25688d7e09d4f25659da974d9e44043c7b7ee86ca5b",
+    "alpha-diffs/head_grin.jpg": "ae258ef0b6113472df08c68e3c77cf3bf7044c52d5b134e3dcf0397e7580e48b",
+    "alpha-diffs/head_idle.jpg": "9cf59daa0608abdf8b0f0c6bc0287877c44cc0974d5a39bd035c83acc71088af",
+    "alpha-diffs/head_spiral.jpg": "841397fdf388280f4113bb7eacb9bcc7d6d74ed15ab26b682223fe923e438892",
+    "alpha-diffs/leg_l_lower.jpg": "6e1ca5dd004b61a00be7ea25dc36abf8b21385f175b0f7e06bfd881e88095f04",
+    "alpha-diffs/leg_l_upper.jpg": "2fe9e74a13583766be80d70d6c7aa8a15cb212ceb9fea093863cc72d8c415ce5",
+    "alpha-diffs/leg_r_lower.jpg": "268e9085212f16129ef7e9605bd5dda5d14a3319557f294a0b74a6510a975019",
+    "alpha-diffs/leg_r_upper.jpg": "5f571946eb8dae0cb6436848573d387b8555e3a061dfe4c2bbf22b2dece6c4aa",
+    "alpha-diffs/neck.jpg": "2079d6622a1e92c548f7e4b407719dc569f034c50897e9868e1aadb3eb162c06",
+    "alpha-diffs/pelvis.jpg": "bb4e9838fbc7f8fc805550f83d0e1460075bafce1c465f90424d87fff9b5e4a4",
+    "alpha-diffs/regions.json": "7ce3a7905a036870578a4709a0673ce735cf5b0ece19e6f968b0142c4a66964b",
+    "alpha-diffs/torso.jpg": "a0f7d6b5f84a6adef1ed9a6aeeee1638df2092704bf6ab63ac4c2964f5159c77",
+    "anatomy-detail-current.jpg": "2975d808ad954d44d49217d837789d3bdfbe7466d340bd1e6819528211e8c12f",
+    "arm_l_lower-light-dark.jpg": "4a16dace0f6a678b29efb12abb95e41d2196067af11d3ac3970d3f866bfdf63f",
+    "arm_l_upper-light-dark.jpg": "a603dc6c2a6ac70e131c8d868fecc8b2379122a72430b10d8bf268155b397065",
+    "arm_r_lower-light-dark.jpg": "183501aa49b20e1254d5c858ee3cf34da14d223bc2f93b4097052f84335d4866",
+    "arm_r_upper-light-dark.jpg": "20f2e3a202a3093f17c87da327c51b4005024fa0de265b8daa4807948427bad6",
+    "assembled-candidate.png": "1dd46b9945722c266f51b197ee98364653997798b3b7d9f840ff1fc775ee4972",
+    "assembled-light-dark.jpg": "e070225bb570b4d7e59ebe8f2c02ef6e8abc233762938965fe1cfa63426a3100",
+    "component-report.json": "3d1f4001c0a6ccca65014c0d11a263c399f4ff46ffef8b5daa5e20f2aa8eaf51",
+    "foot_l-light-dark.jpg": "92a7b76b60e214e11d039f192db0cb2440667076b5f7c9fef92d58adab99c11e",
+    "foot_r-light-dark.jpg": "70bece389ba213ec6dbf789af42b0888996769d21dd6331ecc4b58317984b0a7",
+    "hand_l_hip-light-dark.jpg": "16773a58d776834bd9d910e388dcfd6d4863b423b79fcd5edd1bca2ceb640b23",
+    "hand_l_open-light-dark.jpg": "fcee57ec75412d106468e593df2805f0bb406761ab3c151426cc1158bd693aff",
+    "hand_l_point-light-dark.jpg": "c2ec617d07e93cf9a1caae1e8b32a5bfa0d29885ffc1fbe61575fe62b1ccdd44",
+    "hand_r_grip-light-dark.jpg": "74090f207abba64e83c65e745792fcbecaa12ea63e75b5ca58bf6e7348a65d46",
+    "hand_r_hatheld-light-dark.jpg": "b39d80eaaad2ee4fb0447f512912816fd28f2580116e934a583af4a0137f633d",
+    "hand_r_open-light-dark.jpg": "fbaaae7b1d772536bfa63d6df6fde4f89fb7af2552b1eece90b0cbcc7dd79c5c",
+    "hand_r_pinch-light-dark.jpg": "4ef9485c1f714fe1eb1d474da9aa4e3fab5bf27159e282e889cb7dd91c953f0e",
+    "hat-light-dark.jpg": "c7848a6a8c839bf9d5adbf6683817a50bf3e41842d046c3a14d8956027b6bd07",
+    "head_annoyed-light-dark.jpg": "e154281247f752440fc2162493e36825f57f024904351f25f95610d1a6d79710",
+    "head_blink-light-dark.jpg": "c67f773afd63ef275a5439b9e1afd9462b475d42f47e99cb7e7432f22bccbf5a",
+    "head_grin-light-dark.jpg": "e19a364f91459f3855251291b95198c9282d84a53be5e1ebdcb175094ee7068c",
+    "head_idle-light-dark.jpg": "f9188482e97c4c91a1ab2e8f85dc750a832156544ef1947e1741992b24feef4e",
+    "head_spiral-light-dark.jpg": "03abca2444ea42fac9a4d8a71f2b404aa09767761905f1b13e7fb49156d613dd",
+    "joint-extended.png": "1ed8e8cb285d172c046fbdd08fbca3023fc9dcab575b0f76f85992ef4f8ebf68",
+    "joint-folded.png": "4ed44ece29122b58f420e1bdb8e26ed5a5b57274dfcf707741ab90ef8ce7397f",
+    "joint-knees.png": "5389d04d77dc8b322c5ce2c40d20ca4f5e7916208ff8daa448aca10a7e89e93b",
+    "joint-proof-sheet.jpg": "612f8803e4f0f1000735b521f08da7db4d06538d82a629de65de8855460073ad",
+    "joint-raised.png": "012a0ae671079f3779202f56e472983022e936b637fa536d95280d583db80942",
+    "joint-rest.png": "2e8d07234eaeb74775a1ea5126952fddf40425441566f29f77f5d05c9b3c3475",
+    "joint-shrug.png": "d2633b36087a6e1df69d49c28f106976e87719c227f68424aeb4c7b5425f98d9",
+    "leg-repaint-source.png": "2884a9538880973d5f0f10e97edaa86871a406fcd0841db93f10817cd2cf1a2d",
+    "leg-silhouette-report.json": "7259745e92bc5517149625db96c922aa65e2876fb9a35a3b7281c20bc4898699",
+    "leg_l_lower-light-dark.jpg": "81dd6b4196442a0a0fe256cb2b88d20330307d3cad81be6edf7c17566e1265a9",
+    "leg_l_upper-light-dark.jpg": "d959045e9092d509ebcf9e505bf89177ff8bdbf775adda4d9c8b41dc7f9b6aca",
+    "leg_r_lower-light-dark.jpg": "506aa46ea912235daa5f83d7f538d57a32fdba74bedbf0a1a0b9b65b42dda12e",
+    "leg_r_upper-light-dark.jpg": "7c026aa717157315ed2a1ea1e9b81112e89f01b937317b9493be666cfdbb5228",
+    "lost-leg-debug.png": "8af35e85b559fc24bf8a2ea4d70585a5c304fe216717b3a8cf719b620bccf7b1",
+    "native-lower-joints.png": "e98a4597f9e945b49ba8f587c75f41085e4ed04081576615efce288e994091b4",
+    "native-upper-joints.png": "f18c5e4fc65f49aa05597876c5df12bee6ace3fd18609216aa8a8015aff5883e",
+    "neck-light-dark.jpg": "617e3848a7b7591f96f6852b4eadc21faff377baaf91d993eee376b83eb1cdfe",
+    "overlap-report.json": "7ac39a94324f9078ade11abdb4e479d170896df51bb732ec083d184aed07f5b3",
+    "pelvis-light-dark.jpg": "cb49eb78967bf07d5d595593f934adbe692f310dda3673160f162dbe15153cd4",
+    "source-repaint/all-removed-regions.jpg": "bc76c7a2f4ec5d217fb6c39fd0436b50e51dd1768d0b2a2ab50316e049cb448e",
+    "source-repaint/before-after-alpha.jpg": "38604bbca0b22eaee100de5c67c62caf8a657945a2a85724b62c1c1f172def18",
+    "source-repaint/report.json": "81eef647b6f0d4eee5dddeafee4f38505021a41f0261aac7ea742adae77013bd",
+    "tight-contact.jpg": "d81657aac5fcf3907c8d56ee3fd5e1aecf6f13c1b2b58c0a20d900cbbfc924fc",
+    "torso-light-dark.jpg": "a29ba40193120c18d7952451395af5bd7d5e2403ec2a3c72206943aa53dfa2ff",
+    "upper-current.png": "5e189e1780ed1fe522f874b4ff8d23b4501b7ccebfbabc4d621911214b2ae582"
+  },
+  "visual_acceptance": "must be reviewed with native light/dark and static articulation proofs; source gates alone do not prove animation"
+}

@@ -1,0 +1,26 @@
+{
+  "host_arm_l": {
+    "upper_joint_inscribed_radius_px": 21.02,
+    "original_root_radius_px": 30.46,
+    "retracted_root_radius_px": 18.52,
+    "unchanged_shaft_beyond_joint_px": 42
+  },
+  "host_arm_r": {
+    "upper_joint_inscribed_radius_px": 18.36,
+    "original_root_radius_px": 28.02,
+    "retracted_root_radius_px": 15.86,
+    "unchanged_shaft_beyond_joint_px": 42
+  },
+  "host_leg_l": {
+    "upper_joint_inscribed_radius_px": 53.76,
+    "original_root_radius_px": 63.29,
+    "retracted_root_radius_px": 51.26,
+    "unchanged_shaft_beyond_joint_px": 120
+  },
+  "host_leg_r": {
+    "upper_joint_inscribed_radius_px": 54.41,
+    "original_root_radius_px": 66.75,
+    "retracted_root_radius_px": 51.91,
+    "unchanged_shaft_beyond_joint_px": 120
+  }
+}

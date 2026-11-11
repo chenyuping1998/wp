@@ -1,0 +1,10 @@
+{
+  "leg_r_upper": {
+    "removed_px": 617,
+    "added_px": 56
+  },
+  "leg_l_upper": {
+    "removed_px": 770,
+    "added_px": 31
+  }
+}

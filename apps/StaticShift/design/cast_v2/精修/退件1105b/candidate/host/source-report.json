@@ -1,0 +1,316 @@
+{
+  "revision": "staticshift-cast-20261105-r3",
+  "layers": {
+    "arm_l_lower.png": {
+      "sha256": "d77819fbdf51b7b5172b032f68788fb3d6d9e047922ec389b80257503d56b81c",
+      "canvas": [
+        1024,
+        1536
+      ]
+    },
+    "arm_l_upper.png": {
+      "sha256": "5d76fd183bc5d6baac36c4c828886eccbcda3325d652a5df3c275c60fb3a4358",
+      "canvas": [
+        1024,
+        1536
+      ]
+    },
+    "arm_r_lower.png": {
+      "sha256": "511d746dd5546543470f7f504b97febc798f9ad27e86ed7ab859ef3d9dfc7f27",
+      "canvas": [
+        1024,
+        1536
+      ]
+    },
+    "arm_r_upper.png": {
+      "sha256": "6f96363f4c71d21b446a6147ec0856b34b73e026621045bbf8065813f600e43c",
+      "canvas": [
+        1024,
+        1536
+      ]
+    },
+    "foot_l.png": {
+      "sha256": "e0aba394f48772411813f53afb66dcb9085e12ec20d92205b444d56334fd1339",
+      "canvas": [
+        1024,
+        1536
+      ]
+    },
+    "foot_r.png": {
+      "sha256": "64b40a752fd354ba3e6d225057334d1644abeb756e25bd76c11bc8584efc2786",
+      "canvas": [
+        1024,
+        1536
+      ]
+    },
+    "glasses.png": {
+      "sha256": "0daef917b5ae6d00181eb60273af0c558482e475d585e115b08b758b6a23dc42",
+      "canvas": [
+        1024,
+        1536
+      ]
+    },
+    "hand_l_hip.png": {
+      "sha256": "06efe06a662abd4cd59421b289c55c9c9c19a9e879378e232e13be8aa8bea836",
+      "canvas": [
+        1024,
+        1536
+      ]
+    },
+    "hand_l_open.png": {
+      "sha256": "ff6407ef652c53f096a29930e5e35e405908b0871996e96075b7abffa80aab66",
+      "canvas": [
+        1024,
+        1536
+      ]
+    },
+    "hand_l_point.png": {
+      "sha256": "52c30a47a808e2a9aaf1ee309d27a54882051078d0cba6775f9103be5e7749b2",
+      "canvas": [
+        1024,
+        1536
+      ]
+    },
+    "hand_r_grip.png": {
+      "sha256": "84bebc09d736d979b8e577c6cea316b87ac9b2b6c5ead9972d492c1ed32c4463",
+      "canvas": [
+        1024,
+        1536
+      ]
+    },
+    "hand_r_hatheld.png": {
+      "sha256": "f22168a0689183a2048f7442fc9e7f43713eb7593a80483a01d4e61cb3f4ff03",
+      "canvas": [
+        1024,
+        1536
+      ]
+    },
+    "hand_r_open.png": {
+      "sha256": "c494f34abf46f0e3ec4c318a984ffefcdf29f792b2d76c3718b4e8155c04faaf",
+      "canvas": [
+        1024,
+        1536
+      ]
+    },
+    "hand_r_pinch.png": {
+      "sha256": "f6c15a720488562c7fcf2667da19b75fc274db383d6a4df4b15fac4de74426b7",
+      "canvas": [
+        1024,
+        1536
+      ]
+    },
+    "head_annoyed.png": {
+      "sha256": "e387d0ee9f9babcf7d88b1e44c0f765594dbdad49dca6ec0e51d69ad6fab61c5",
+      "canvas": [
+        1024,
+        1536
+      ]
+    },
+    "head_blink.png": {
+      "sha256": "1c013db3a6a4cf485e63b32a80628304b2eba1401b2228844e120576d36544f4",
+      "canvas": [
+        1024,
+        1536
+      ]
+    },
+    "head_grin.png": {
+      "sha256": "5002f1de3b1d61ae860f54f2926b303b96ffafd092f4965051c3309664a50059",
+      "canvas": [
+        1024,
+        1536
+      ]
+    },
+    "head_idle.png": {
+      "sha256": "0f62fe10a655be3f1a7ba6d6e7906404bd0fb093d56a7d925210a10a08d8fa0f",
+      "canvas": [
+        1024,
+        1536
+      ]
+    },
+    "head_spiral.png": {
+      "sha256": "c3255024b6f2dd4955627aa13f09e783717c9bbb00927528f83ad48284871393",
+      "canvas": [
+        1024,
+        1536
+      ]
+    },
+    "leg_l_lower.png": {
+      "sha256": "7a04e61e75c6aaaa6acfd9aa4c147ded7271dd2e575e42a49954980133ceed3a",
+      "canvas": [
+        1024,
+        1536
+      ]
+    },
+    "leg_l_upper.png": {
+      "sha256": "adf7d3aff2b6b6b115d74e900737b4b15c733016db3752c5c88853828fb6b5f0",
+      "canvas": [
+        1024,
+        1536
+      ]
+    },
+    "leg_r_lower.png": {
+      "sha256": "f2e6a2e5dfe5b53ad38c3b65234b48c0d54670c2ef606d35afcfa3ee92e2ba34",
+      "canvas": [
+        1024,
+        1536
+      ]
+    },
+    "leg_r_upper.png": {
+      "sha256": "d83bda2d1c1cd1949a330df51136611aa88f577b67ffdb1e1dac47004688d7b0",
+      "canvas": [
+        1024,
+        1536
+      ]
+    },
+    "neck.png": {
+      "sha256": "3b0b6788b31d1a0afc477ab04de7d07352048c3309545853e0c5193eb53d51d7",
+      "canvas": [
+        1024,
+        1536
+      ]
+    },
+    "pelvis.png": {
+      "sha256": "f393320c6f3ecb734f6c2ed98f2dc03e2bebb96e45cebfb7a6f364676f832950",
+      "canvas": [
+        1024,
+        1536
+      ]
+    },
+    "torso.png": {
+      "sha256": "cc41296ba4735473614a9dbf344ca64abae6679bdefc705221dda0119179f2cb",
+      "canvas": [
+        1024,
+        1536
+      ]
+    }
+  },
+  "assembled_sha256": "9e9629ded6a0a1e07c046d2bce79b1fad93ef35f6bc573d43825777eef13941b",
+  "master_sha256": "9e9629ded6a0a1e07c046d2bce79b1fad93ef35f6bc573d43825777eef13941b",
+  "minimum_joint_overlap_px": 50.8,
+  "original_joints_preserved": true,
+  "original_draw_order_preserved": true,
+  "static_outline": {
+    "src": "/Users/stone/stake-engine/wp-banandit/apps/StaticShift/design/cast_v2/精修/退件1105b/candidate/host",
+    "edge_px": 10643,
+    "uninked_px": 0,
+    "uninked_share": 0.0,
+    "runs": [],
+    "verdict": "PASS"
+  },
+  "six_rigid_pose_verdicts": {
+    "extended": "PASS",
+    "folded": "PASS",
+    "knees": "PASS",
+    "raised": "PASS",
+    "rest": "PASS",
+    "shrug": "PASS"
+  },
+  "qa_sha256": {
+    "all-layers-paper-dark.jpg": "f7525779a7ed7f5df24d3a6981413620fce55127137c39829f725474b59a7acc",
+    "all-wrists-paper.jpg": "946dd7bad55ab7e8f34be440ad716b9c59086e3befd25a17701a3fc384e3c8f3",
+    "alpha-diff-report.json": "42f094373c11cba1d1fe26318b2f3c3fd2933c2bfa5223f94652f440f9c4339a",
+    "arm_l_lower-alpha-diff.jpg": "1261ec5635d2d56c696f09c47069da6995fd1b740267ffb253221f4d26cde6e0",
+    "arm_l_lower-removed-alpha.png": "5561abd899c520a48264dff71eb7e509712cf0b8a7b77926829e869e17f6a1f5",
+    "arm_l_upper-alpha-diff.jpg": "9fdfb9496f3d48b27faabe81700266354183307943a33480ba569d9477e82afc",
+    "arm_l_upper-removed-alpha.png": "72bdabe522aa7a437f621e2e1232a55446d0f83b5c1cb72ab565241f1edb8a2b",
+    "arm_r_lower-alpha-diff.jpg": "447ecabb72c9d88b1f18333c93712d9b563b710339ae11ef6d92040afa335756",
+    "arm_r_lower-removed-alpha.png": "700151e0c6ba80fd79f31588daf5fa808961ee70e114689b9fda99b25610ddcd",
+    "arm_r_upper-alpha-diff.jpg": "139a6a505d2ffe5904aa59785a7b39888d5be1435c113d46be0e2a55fad1ad22",
+    "arm_r_upper-removed-alpha.png": "694855df96392abd14536bf21dc2237365d4fa6821d141ae2d1a783ef9844be3",
+    "assembled-paper.jpg": "2cce31a7bb7b8ababda9ed3fad361916add3f2d3cb95378115473a7854eae3ac",
+    "exact-alpha-diffs/arm_l_lower-added.png": "d40ec44dc17279bb5e5089ee48f43e8ceea3b844c8631e2aca73db335345bf27",
+    "exact-alpha-diffs/arm_l_lower-removed.png": "a6e3e35a27185a9fc04d301ef9f77db56c662790d097074368019d1d66ab6c3a",
+    "exact-alpha-diffs/arm_l_upper-added.png": "2c6da13bfa727adf68ae4731cf205f05449de85dfebd88cfbac7cd12dc09c5c8",
+    "exact-alpha-diffs/arm_l_upper-removed.png": "aa75140cb8d88569836d2886102cdaed0f34ca5ddab76b3ef9d71a3ae413f757",
+    "exact-alpha-diffs/arm_r_lower-added.png": "558aa301f650786bf30fcb08d9138367181d9e206b95dca15b4c49b9378ea155",
+    "exact-alpha-diffs/arm_r_lower-removed.png": "e5b357d153de852fad49de3594206cd87fea79b1f555e5e17f34437677127f3f",
+    "exact-alpha-diffs/arm_r_upper-added.png": "8dd7a40358a66ed111dd27bdea8073d8c0ec8282d357669a34be12b2ba3fd3b7",
+    "exact-alpha-diffs/arm_r_upper-removed.png": "3260eaeead55890e21f11df3f74c2b0b254bebe33ff3f84be2efa35a9ab7ca93",
+    "exact-alpha-diffs/hand_l_hip-added.png": "944c1427d30ef5284c3fe33455c6b3bccd3520b87f504b2aaadf768735e9c8f0",
+    "exact-alpha-diffs/hand_l_hip-removed.png": "6d463427d3b14463334692ecb4dd386d55835ab8eb776a15fa577b27a396545f",
+    "exact-alpha-diffs/hand_l_open-added.png": "a0be0b11c50737bf534c5439359a60a67c8891430fc545d1ab83b457e0a39406",
+    "exact-alpha-diffs/hand_l_open-removed.png": "05815a249cebab3719456d72d178689e38bddc6f1c4aa2fce5b794b35d990ac1",
+    "exact-alpha-diffs/hand_l_point-added.png": "15cc6fa17d7675088418ad941fefeb37cf914964975771d26b38b0d7e2b8302e",
+    "exact-alpha-diffs/hand_l_point-removed.png": "46445d618f7bfc0722e20dc81bdafa29f8b7cf412af45bcfc4e0732b7fc6cae7",
+    "exact-alpha-diffs/hand_r_grip-added.png": "a75b1fdc7a70b3ab0d29554dbc5c19e967de82340eca3e48914b80b59309ed3a",
+    "exact-alpha-diffs/hand_r_grip-removed.png": "2f0f5daba052ae0262a1794e4b6bd96defb0e3bdf2ddb1bcc0f6235081d3fb21",
+    "exact-alpha-diffs/leg_l_lower-added.png": "fc3beef814664f2934174815a3f1540a7fa22645c9f6403cb97c4d30559743fe",
+    "exact-alpha-diffs/leg_l_lower-removed.png": "6286a6c0e9ba35e9aeac233d997bc66c56362a376073543ba0dd64951a09b561",
+    "exact-alpha-diffs/leg_l_upper-added.png": "60211455879c82283553cfcb695fef566ea71636281cd625ab0362889c1f965c",
+    "exact-alpha-diffs/leg_l_upper-removed.png": "bfa1a6f69657be1c12c762739c047f67e03c6e3f6c81ff6796b5bc286cf2effd",
+    "exact-alpha-diffs/leg_r_lower-added.png": "fc3beef814664f2934174815a3f1540a7fa22645c9f6403cb97c4d30559743fe",
+    "exact-alpha-diffs/leg_r_lower-removed.png": "70bba18a6c2971d0986d4d6545b724b8af67947bd27256dfa7c8935cb54918a6",
+    "exact-alpha-diffs/leg_r_upper-added.png": "ac4404a7cd8907c00e0fd3d3640e3aaf407dfd2632a77b0724a0d49c407d7f0e",
+    "exact-alpha-diffs/leg_r_upper-removed.png": "03e3650206d7a1a240c2ef522be1162e9c54655d3f775e6d9a7a18e69051433e",
+    "exact-alpha-diffs/regions-1.jpg": "a1d0182831c1fd045db9df09d6b0f21ab1f4053ea6347c8dc40720aff168d83f",
+    "exact-alpha-diffs/regions-2.jpg": "baeb3e844221773638997313203e5213fe3b04b939fbec3eb6ebc54b6e78911c",
+    "exact-alpha-diffs/regions-3.jpg": "1ced04fabe999348534944f6c3a65caea3c34443b2d52437faf85c08cbae1f3a",
+    "exact-alpha-diffs/regions-4.jpg": "38d205e6fade8cd06cccd34d5f0d53a3a534a690ea5c228e9fef118ab06c43b4",
+    "exact-alpha-diffs/report.json": "76748925c6a60fbe8fd57874bdfb071254b92493e3261fa6d911dd3aaad0f5e2",
+    "foot_l-alpha-diff.jpg": "49d8d326d7edffe4a8d7af354cb4fcac90bd951ba2be4851badb3e0e24262cd7",
+    "foot_l-removed-alpha.png": "fc3beef814664f2934174815a3f1540a7fa22645c9f6403cb97c4d30559743fe",
+    "foot_r-alpha-diff.jpg": "e316ecc2447a8e9eef32b25ba1daa31f399106de82ddf71bba3530805114b75e",
+    "foot_r-removed-alpha.png": "fc3beef814664f2934174815a3f1540a7fa22645c9f6403cb97c4d30559743fe",
+    "glasses-alpha-diff.jpg": "685cb47e69da0d75b300315ce19775dd1faa41f1283d68563b50796c5592c689",
+    "glasses-removed-alpha.png": "fc3beef814664f2934174815a3f1540a7fa22645c9f6403cb97c4d30559743fe",
+    "hand_l_hip-alpha-diff.jpg": "0c6fc5141b3f1f3b251024e0f23cac47b06f1a43849b708269653a44c19ba51b",
+    "hand_l_hip-removed-alpha.png": "7ff20876b801d2672ab370ddbfb25624d418e7704d61ba1cdbc9f22185f0d2ce",
+    "hand_l_open-alpha-diff.jpg": "44343fc6d95eed0aed9fa98a1a2d47a87b355759b778a3cb4acf90b6dad957b6",
+    "hand_l_open-removed-alpha.png": "1927020982df0df907ac88fe02d240559c8b295965eed45a4bbb781abdf223d0",
+    "hand_l_point-alpha-diff.jpg": "5cdc2c08e1a974cd6e33c403b262de15b21c0e9db69ec6f8040156a44a8521e2",
+    "hand_l_point-removed-alpha.png": "2d86170cf6cb4f07daef47bd5ab8be77ba2eeead26b100b48b95923e52e98b4f",
+    "hand_r_grip-alpha-diff.jpg": "b602d45bc9f8944fb61cd4b162401ea603f0dba6154ce136b34cc2e0072aaa28",
+    "hand_r_grip-removed-alpha.png": "40ad7cc3acd59f7da74a99750a9cf9f9342affc8691e81b414be523c5a4a3e03",
+    "hand_r_hatheld-alpha-diff.jpg": "c8ddf6fb1e129a64ba5b115146a36d82826ba0069a6c42a3bab44fa70d07d5c2",
+    "hand_r_hatheld-removed-alpha.png": "fc3beef814664f2934174815a3f1540a7fa22645c9f6403cb97c4d30559743fe",
+    "hand_r_open-alpha-diff.jpg": "4cad219b9f774e161dbe5f4caa98ab95c68a265faa6f60e3395d0712f4b557ea",
+    "hand_r_open-removed-alpha.png": "fc3beef814664f2934174815a3f1540a7fa22645c9f6403cb97c4d30559743fe",
+    "hand_r_pinch-alpha-diff.jpg": "cb890698e83f39d48fa36e4e7e3f5498ada5e208ba8b66e2903a00bed1c1cab7",
+    "hand_r_pinch-removed-alpha.png": "fc3beef814664f2934174815a3f1540a7fa22645c9f6403cb97c4d30559743fe",
+    "head_annoyed-alpha-diff.jpg": "3b246ad8a624a3c263f0e2489b34b286da6de2bb40d2b4588ed65fa17685574d",
+    "head_annoyed-removed-alpha.png": "fc3beef814664f2934174815a3f1540a7fa22645c9f6403cb97c4d30559743fe",
+    "head_blink-alpha-diff.jpg": "6f59f472ef87d6852b3e9308e39830124b9a76233f4d21c3841f1a9e216c7e39",
+    "head_blink-removed-alpha.png": "fc3beef814664f2934174815a3f1540a7fa22645c9f6403cb97c4d30559743fe",
+    "head_grin-alpha-diff.jpg": "cdd0f9eb3a129547dbb0ee17cc7c5c9056c141f9197d45c3776e16cf1a6b09a1",
+    "head_grin-removed-alpha.png": "fc3beef814664f2934174815a3f1540a7fa22645c9f6403cb97c4d30559743fe",
+    "head_idle-alpha-diff.jpg": "e86e0741d2fe6fd56292e64cf4c12507161aa61fcc447fe0a4866c71746aafc6",
+    "head_idle-removed-alpha.png": "fc3beef814664f2934174815a3f1540a7fa22645c9f6403cb97c4d30559743fe",
+    "head_spiral-alpha-diff.jpg": "d563d30f781dc9ccabcf3140dd9a1edeb9b0da254b609a1381ae05d0dce31ca6",
+    "head_spiral-removed-alpha.png": "fc3beef814664f2934174815a3f1540a7fa22645c9f6403cb97c4d30559743fe",
+    "joint-extended.png": "6641f2b9472863fc7aeabf91dd3248912ce259b92525bd58f6a0676f3df84fac",
+    "joint-folded.png": "50a895500728cde18ed509fe5f117a6839bb1f86abe286ef973e4bd1653b41c6",
+    "joint-knees.png": "1f282e247f7dd021746a070c61999c084afd685aa9320358d4b761e259b265ee",
+    "joint-proof-sheet.jpg": "d2ecfb8267f9fa9ef7410373f2ec647aecb7b5f605b83d54fef4e5095b7c3096",
+    "joint-raised.png": "0cd793757697d12de83ae2f19465b2e28ab883b085aeec183723ade7559dbe4c",
+    "joint-rest.png": "97e2d476a39390ab692a089c4e3e5cd02e2d531c72de091bc910d6e5c454cad5",
+    "joint-shrug.png": "45f93c5a8576d6835f2c22a4d48b967020df3bd198f28f41a66bb96635f17a45",
+    "leg_l_lower-alpha-diff.jpg": "777492a09063797bf8c9a5cd93c3ade712d0fd82ba7d5471c81ef5adf08e78ea",
+    "leg_l_lower-removed-alpha.png": "ac9ef0e894ce7986fdbdb706b129758eca1ee6b6def47cc5c28908d15d276a1e",
+    "leg_l_upper-alpha-diff.jpg": "37f68ecb7f68d48935758b620fc48e69f818b785594767428a159899116248ad",
+    "leg_l_upper-removed-alpha.png": "689f0a5c49e5970da916083b408a55f8ad272a6069df1341fb78cec41625d29a",
+    "leg_r_lower-alpha-diff.jpg": "1800ede474d3515eddfa753c1c112feea88725acf4fe077514274cbbc8f01b65",
+    "leg_r_lower-removed-alpha.png": "958b6dcae79b331b91fa45526eee1f8659e9c76363ffd461e662d64561b6d619",
+    "leg_r_upper-alpha-diff.jpg": "7df3809df5d6699e877761a9c79f4f9b7302e5b58fa91cfe1b1bd5f179b56ce9",
+    "leg_r_upper-removed-alpha.png": "94a1f130dc792b3b07113cdead73e17c8cd1f5736710428891b257e59d45f500",
+    "native-joints-1.jpg": "aaa743d4f3380900562d645ce3e2c270fcd18c1010e73fd8a48986f2318f9ac6",
+    "native-joints-2.jpg": "2c522f259bf7c6a663f0c379dd55f500d78f5c72b3e907bfa5410f3393aadc7b",
+    "neck-alpha-diff.jpg": "4b21df80065a4b0414e20305c702db6cda0568312e30d16789225bcea1daf080",
+    "neck-removed-alpha.png": "fc3beef814664f2934174815a3f1540a7fa22645c9f6403cb97c4d30559743fe",
+    "outline-ink.jpg": "dc583463c50edba95bd0ce20e6f649c0d0f4d8b0e887143f801765371124999b",
+    "outline-ink.json": "40139a6b3814dc4c2dab37715bc1dae6774387c2be582b572381dcbfa7b7056b",
+    "overlap-report.json": "3f2e3d89c1f4fae29ceba89071e736a523246d7f79dbc631331d565511242934",
+    "pelvis-alpha-diff.jpg": "8ac39aba003e9a2e9d3bbe7badbf9e93df04ff335cb7f2afc8bdf6ea64b813ac",
+    "pelvis-removed-alpha.png": "fc3beef814664f2934174815a3f1540a7fa22645c9f6403cb97c4d30559743fe",
+    "pose-outline-report.json": "cb0122d08a2a4c47e0358a3004e1acb5df934e204397732d2e5c15df67eb6e57",
+    "root-containment.json": "99ee6d30167de71fda63cab4239e892371ae0653f4e7f7a2eaecb3a28073cbb9",
+    "torso-alpha-diff.jpg": "31ba14b83ca289adb3f63f4546591a1129d076dc214cb59bfa8de641ea96ee95",
+    "torso-removed-alpha.png": "fc3beef814664f2934174815a3f1540a7fa22645c9f6403cb97c4d30559743fe",
+    "transparent-poses/extended.png": "2f2fd1839544fe50a6127f95bbb3277e8105b5a519458382efd8eae8c67fc239",
+    "transparent-poses/folded.png": "d6ae66e361a2267b3daaf4cc02494f5f71040b5daf463509b9bb146185a12b3f",
+    "transparent-poses/knees.png": "5499c18564c022de0e6f06b42b03a1b135cfa07913a46ca6b520dc55b54dc91e",
+    "transparent-poses/raised.png": "d9145a9d460a01f614531c7f2e9012d77cbc8cfdcdec2af029582d2f1edb4c3c",
+    "transparent-poses/rest.png": "b28692fed6dd7f220a8687ecbab20f4daeaa3ec0986d4b2c809a11063bdd1401",
+    "transparent-poses/shrug.png": "c1d6ce45d9aea8d2d4d48333b32310617473d9db8a77d68fa1e5ec2d3c6be9a0"
+  },
+  "visual_acceptance": "Source paper/dark layers, all original rigid poses, wrists, exact alpha removals reviewed. These are static art checks, not delivered Spine animations."
+}

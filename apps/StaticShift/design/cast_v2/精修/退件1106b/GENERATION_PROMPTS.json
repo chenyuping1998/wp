@@ -1,0 +1,22 @@
+[
+  {
+    "key": "dj_forearm_r",
+    "file": "dj-forearm-r-edit.png",
+    "prompt": "Use case: precise-object-edit. Edit this transparent horizontal game forearm sprite, elbow on LEFT and wrist on RIGHT. Repaint it as ONE complete anatomically natural forearm, same exact length and horizontal placement. The left elbow center stays at (256,256), right wrist center at (768,256) on the 1024x512 canvas. Keep the existing peach skin color and bold black comic ink. Eliminate squared ends, bites/notches, stray black marks, flared knobs, and any circular internal seams. A modest rounded elbow on the left, a natural forearm muscle belly, then a continuous graceful taper into a slender rounded wrist on the right; the wrist must NEVER widen again into a bulb. Clean continuous black outline along the two long sides; smooth small rounded endcaps suitable for hidden overlap. No hand, fingers, sleeve, bands, labels or other objects. True transparent background. Preserve the original arm's muscle volume rather than making a thin tube. This is a game sprite drawing, not a photograph."
+  },
+  {
+    "key": "host_forearm_r",
+    "file": "host-forearm-r-edit.png",
+    "prompt": "Use case: precise-object-edit. Edit this transparent horizontal brown-skin game forearm sprite, elbow LEFT and wrist RIGHT. Repaint as ONE complete, smoothly connected anatomically natural forearm, not a collection of shapes. Elbow center (256,256), wrist center (768,256), same exact placement/length on the 1024x512 canvas. Preserve brown skin palette and solid black comic ink. Remove the triangular left end, straight cutoffs and the right-side hourglass neck / flared knob. Smooth rounded elbow, natural forearm muscle belly, taper gradually to a slim rounded wrist, no sudden narrowing and re-widening. Both long outside edges need continuous crisp black ink; endcaps should be small and rounded for concealed overlap. No circular internal line, no pale seam, no fuzzy fringe. No hand, fingers, sleeve, jewelry, text or other objects. True transparent background. Preserve natural volume; no thin tube."
+  },
+  {
+    "key": "host_forearm_l",
+    "file": "host-forearm-l-edit.png",
+    "prompt": "Use case: precise-object-edit. Precisely retouch this brown-skin horizontal forearm game sprite. Change ONLY the faint pale dotted arc/line through the middle of the skin, left of center. Remove that old overlap trace so the skin color and texture flow continuously across it. Preserve the exact original silhouette, alpha, outline ink, length, wrist shape, elbow shape, black shadows, palette, location, and all other details. Do not smooth away or redraw the black contour. No new seams, highlights, rings, labels or objects. Keep real transparent background. This edit will be used as a tiny color-only patch; geometry must stay exactly unchanged."
+  },
+  {
+    "key": "dj_upper_r",
+    "file": "dj-upper-r-edit.png",
+    "prompt": "Use case: precise-object-edit. Retouch this single red short-sleeve upper-arm game sprite only in TWO tiny areas. 1) The upper-left red sleeve shoulder cap currently ends in a sharp point: redraw the concealed cap as a gently rounded, shorter inward-tucked sleeve head, no sharp corner. Keep the main sleeve width, cuff, folds and red color exactly. 2) Remove tiny loose black flecks on the exposed peach elbow flesh below the cuff; retain the continuous exterior black line and natural skin shading, no black dirt bits. Preserve the exact overall placement, scale, arm length, cuff geometry, slender elbow end, and every other part. No forearm, hands, torso, additional parts or labels. True transparent background."
+  }
+]

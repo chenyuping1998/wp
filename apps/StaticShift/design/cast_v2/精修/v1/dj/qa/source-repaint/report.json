@@ -1,0 +1,163 @@
+{
+  "scope": "imagegen repaint, not a mask shaving old limbs",
+  "old_reference": "交件/dj/reference-master.png",
+  "new_reference": "精修/source/dj_leg_revision.png",
+  "removed_pixels": 10586,
+  "added_pixels": 5979,
+  "removed_regions_ge16": [
+    {
+      "bbox": [
+        736,
+        878,
+        789,
+        950
+      ],
+      "removed_pixels": 138
+    },
+    {
+      "bbox": [
+        718,
+        933,
+        796,
+        1284
+      ],
+      "removed_pixels": 4273
+    },
+    {
+      "bbox": [
+        262,
+        951,
+        324,
+        1070
+      ],
+      "removed_pixels": 1075
+    },
+    {
+      "bbox": [
+        446,
+        988,
+        516,
+        1108
+      ],
+      "removed_pixels": 707
+    },
+    {
+      "bbox": [
+        277,
+        1032,
+        324,
+        1101
+      ],
+      "removed_pixels": 127
+    },
+    {
+      "bbox": [
+        274,
+        1072,
+        318,
+        1121
+      ],
+      "removed_pixels": 17
+    },
+    {
+      "bbox": [
+        243,
+        1083,
+        314,
+        1267
+      ],
+      "removed_pixels": 1813
+    },
+    {
+      "bbox": [
+        562,
+        1105,
+        607,
+        1167
+      ],
+      "removed_pixels": 74
+    },
+    {
+      "bbox": [
+        421,
+        1123,
+        468,
+        1196
+      ],
+      "removed_pixels": 121
+    },
+    {
+      "bbox": [
+        557,
+        1181,
+        602,
+        1250
+      ],
+      "removed_pixels": 69
+    },
+    {
+      "bbox": [
+        380,
+        1231,
+        449,
+        1323
+      ],
+      "removed_pixels": 483
+    },
+    {
+      "bbox": [
+        225,
+        1244,
+        291,
+        1334
+      ],
+      "removed_pixels": 717
+    },
+    {
+      "bbox": [
+        727,
+        1254,
+        776,
+        1324
+      ],
+      "removed_pixels": 104
+    },
+    {
+      "bbox": [
+        567,
+        1260,
+        619,
+        1334
+      ],
+      "removed_pixels": 214
+    },
+    {
+      "bbox": [
+        371,
+        1300,
+        428,
+        1385
+      ],
+      "removed_pixels": 208
+    },
+    {
+      "bbox": [
+        231,
+        1308,
+        282,
+        1371
+      ],
+      "removed_pixels": 127
+    },
+    {
+      "bbox": [
+        572,
+        1323,
+        627,
+        1391
+      ],
+      "removed_pixels": 259
+    }
+  ],
+  "acceptance": "review every region: organic repaint keeps thigh/calf volume; source split must separately preserve the NEW painted source"
+}

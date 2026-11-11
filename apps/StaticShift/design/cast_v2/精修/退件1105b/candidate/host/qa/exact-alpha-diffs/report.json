@@ -1,0 +1,74 @@
+{
+  "arm_l_lower": {
+    "removed_alpha_pixels": 2761,
+    "added_alpha_pixels": 582,
+    "removed_alpha_coverage": 627621,
+    "added_alpha_coverage": 120422
+  },
+  "arm_l_upper": {
+    "removed_alpha_pixels": 446,
+    "added_alpha_pixels": 4128,
+    "removed_alpha_coverage": 39207,
+    "added_alpha_coverage": 999759
+  },
+  "arm_r_lower": {
+    "removed_alpha_pixels": 2697,
+    "added_alpha_pixels": 50,
+    "removed_alpha_coverage": 635405,
+    "added_alpha_coverage": 3147
+  },
+  "arm_r_upper": {
+    "removed_alpha_pixels": 262,
+    "added_alpha_pixels": 2928,
+    "removed_alpha_coverage": 22608,
+    "added_alpha_coverage": 701373
+  },
+  "hand_l_hip": {
+    "removed_alpha_pixels": 585,
+    "added_alpha_pixels": 17,
+    "removed_alpha_coverage": 147757,
+    "added_alpha_coverage": 2371
+  },
+  "hand_l_open": {
+    "removed_alpha_pixels": 91,
+    "added_alpha_pixels": 12,
+    "removed_alpha_coverage": 13351,
+    "added_alpha_coverage": 3060
+  },
+  "hand_l_point": {
+    "removed_alpha_pixels": 43,
+    "added_alpha_pixels": 9,
+    "removed_alpha_coverage": 7501,
+    "added_alpha_coverage": 2149
+  },
+  "hand_r_grip": {
+    "removed_alpha_pixels": 26,
+    "added_alpha_pixels": 118,
+    "removed_alpha_coverage": 2341,
+    "added_alpha_coverage": 7793
+  },
+  "leg_l_lower": {
+    "removed_alpha_pixels": 3457,
+    "added_alpha_pixels": 0,
+    "removed_alpha_coverage": 811793,
+    "added_alpha_coverage": 0
+  },
+  "leg_l_upper": {
+    "removed_alpha_pixels": 274,
+    "added_alpha_pixels": 365,
+    "removed_alpha_coverage": 13589,
+    "added_alpha_coverage": 31850
+  },
+  "leg_r_lower": {
+    "removed_alpha_pixels": 4168,
+    "added_alpha_pixels": 0,
+    "removed_alpha_coverage": 995209,
+    "added_alpha_coverage": 0
+  },
+  "leg_r_upper": {
+    "removed_alpha_pixels": 328,
+    "added_alpha_pixels": 318,
+    "removed_alpha_coverage": 17814,
+    "added_alpha_coverage": 28163
+  }
+}

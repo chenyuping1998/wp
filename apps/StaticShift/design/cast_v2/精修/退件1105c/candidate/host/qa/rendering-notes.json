@@ -1,0 +1,7 @@
+{
+  "revision": "r4",
+  "paper": "#e5e2d6",
+  "change": "Divide warped premultiplied RGB by raw alpha before clamping alpha. Corrects cubic overshoot halo, including the false circular knee seam.",
+  "source_knee_joint_RGBA_unchanged_radius_px": 80,
+  "original_pose_angles_preserved": true
+}

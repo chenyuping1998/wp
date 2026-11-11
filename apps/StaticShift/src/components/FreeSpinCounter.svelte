@@ -6,6 +6,7 @@
 </script>
 
 <script lang="ts">
+	import { FRAME } from '../game/stageLayout';
 	// The free-spin ticket: spins used of total, the Relay meter towards the next
 	// rung, and the multiplier every collection is getting right now.
 	//
@@ -62,7 +63,7 @@
 					// right edge sitting on the frame's corner rivets. Where the margin
 					// is too narrow for the full ticket it shrinks rather than overlap.
 					const board = context.stateGameDerived.boardLayout();
-					const frameLeft = board.x - (board.width * board.scale * 1.28) / 2;
+					const frameLeft = board.x - FRAME.left * board.scale;
 					const gap = SYMBOL_SIZE * 0.2;
 					const margin = SYMBOL_SIZE * 0.15;
 					const main = context.stateLayoutDerived.mainLayout();

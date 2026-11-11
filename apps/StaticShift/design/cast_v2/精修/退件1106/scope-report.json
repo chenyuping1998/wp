@@ -1,0 +1,158 @@
+{
+  "dj": {
+    "changed_layers": {
+      "arm_l_lower": {
+        "changed_pixels": 4477,
+        "bbox": [
+          206,
+          506,
+          289,
+          603
+        ],
+        "sha256": "e707dde24558414eb00ae347ed1372a0fe9bf49ac9f297dd0f2020b5658e66d1",
+        "outside_elbow_96px_unchanged": true,
+        "wrist_25px_RGBA_unchanged": true
+      },
+      "arm_l_upper": {
+        "changed_pixels": 7000,
+        "bbox": [
+          198,
+          439,
+          318,
+          578
+        ],
+        "sha256": "b9275c48c73ca0d4e2ddb06c7227ec901b0fc6b1038127d612da5988947c52bd",
+        "outside_elbow_96px_unchanged": true,
+        "wrist_25px_RGBA_unchanged": "wrist belongs to lower layer",
+        "cloth_colored_pixels_changed": 1
+      },
+      "arm_r_lower": {
+        "changed_pixels": 3267,
+        "bbox": [
+          691,
+          505,
+          772,
+          584
+        ],
+        "sha256": "34df2419bb2abc5eb7ae5c252e1b5f4c23915fed96e7390bce03bc54bd03d12b",
+        "outside_elbow_96px_unchanged": true,
+        "wrist_25px_RGBA_unchanged": true
+      },
+      "arm_r_upper": {
+        "changed_pixels": 6554,
+        "bbox": [
+          703,
+          481,
+          799,
+          598
+        ],
+        "sha256": "4f8ed78fa3e962909b461c8f325fe4297bb7b7c159951b541f63011e0e9812b8",
+        "outside_elbow_96px_unchanged": true,
+        "wrist_25px_RGBA_unchanged": "wrist belongs to lower layer",
+        "cloth_colored_pixels_changed": 0
+      }
+    },
+    "unchanged_layers": [
+      "foot_l",
+      "foot_r",
+      "hand_l_hip",
+      "hand_l_open",
+      "hand_l_point",
+      "hand_r_grip",
+      "hand_r_hatheld",
+      "hand_r_open",
+      "hand_r_pinch",
+      "hat",
+      "head_annoyed",
+      "head_blink",
+      "head_grin",
+      "head_idle",
+      "head_spiral",
+      "leg_l_lower",
+      "leg_l_upper",
+      "leg_r_lower",
+      "leg_r_upper",
+      "neck",
+      "pelvis",
+      "torso"
+    ]
+  },
+  "host": {
+    "changed_layers": {
+      "arm_l_lower": {
+        "changed_pixels": 3617,
+        "bbox": [
+          284,
+          523,
+          371,
+          612
+        ],
+        "sha256": "8f95fe6ad512c4335090e754d48e9a2ce5aa21b8a17d170ca3d4bfd1871a6d33",
+        "outside_elbow_96px_unchanged": true,
+        "wrist_25px_RGBA_unchanged": true
+      },
+      "arm_l_upper": {
+        "changed_pixels": 4446,
+        "bbox": [
+          248,
+          451,
+          377,
+          595
+        ],
+        "sha256": "fd989044ae160a1edc15ab0ed324bf75c7a17fd91db4c10adff1881ffc76c733",
+        "outside_elbow_96px_unchanged": true,
+        "wrist_25px_RGBA_unchanged": "wrist belongs to lower layer",
+        "cloth_colored_pixels_changed": 6
+      },
+      "arm_r_lower": {
+        "changed_pixels": 1757,
+        "bbox": [
+          704,
+          511,
+          753,
+          578
+        ],
+        "sha256": "923b70076abd6ec0f15447db1a2fa933a275f5b9b74c9a1e205d5fe719dcda67",
+        "outside_elbow_96px_unchanged": true,
+        "wrist_25px_RGBA_unchanged": true
+      },
+      "arm_r_upper": {
+        "changed_pixels": 3305,
+        "bbox": [
+          674,
+          486,
+          786,
+          610
+        ],
+        "sha256": "3309cd4af80d9d33da99e5edd72da610b26fe792a1a5f4172a29dd6d48cd4e48",
+        "outside_elbow_96px_unchanged": true,
+        "wrist_25px_RGBA_unchanged": "wrist belongs to lower layer",
+        "cloth_colored_pixels_changed": 1
+      }
+    },
+    "unchanged_layers": [
+      "foot_l",
+      "foot_r",
+      "glasses",
+      "hand_l_hip",
+      "hand_l_open",
+      "hand_l_point",
+      "hand_r_grip",
+      "hand_r_hatheld",
+      "hand_r_open",
+      "hand_r_pinch",
+      "head_annoyed",
+      "head_blink",
+      "head_grin",
+      "head_idle",
+      "head_spiral",
+      "leg_l_lower",
+      "leg_l_upper",
+      "leg_r_lower",
+      "leg_r_upper",
+      "neck",
+      "pelvis",
+      "torso"
+    ]
+  }
+}

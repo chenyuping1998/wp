@@ -1,0 +1,14 @@
+{
+  "leg_l_upper": {
+    "removed_alpha_pixels": 773,
+    "added_alpha_pixels": 32,
+    "removed_alpha_coverage": 191042,
+    "added_alpha_coverage": 6656
+  },
+  "leg_r_upper": {
+    "removed_alpha_pixels": 618,
+    "added_alpha_pixels": 57,
+    "removed_alpha_coverage": 152086,
+    "added_alpha_coverage": 13260
+  }
+}

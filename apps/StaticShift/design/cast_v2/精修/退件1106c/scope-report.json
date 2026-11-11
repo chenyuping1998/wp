@@ -1,0 +1,72 @@
+{
+  "dj": {
+    "changed_layers": [
+      "hand_r_hatheld.png",
+      "arm_r_lower.png"
+    ],
+    "unchanged_layers": [
+      "leg_r_upper.png",
+      "hat.png",
+      "head_idle.png",
+      "leg_l_upper.png",
+      "hand_r_grip.png",
+      "leg_r_lower.png",
+      "leg_l_lower.png",
+      "foot_l.png",
+      "hand_l_point.png",
+      "head_blink.png",
+      "arm_l_upper.png",
+      "hand_r_pinch.png",
+      "arm_r_upper.png",
+      "hand_l_hip.png",
+      "foot_r.png",
+      "torso.png",
+      "arm_l_lower.png",
+      "head_grin.png",
+      "neck.png",
+      "pelvis.png",
+      "hand_l_open.png",
+      "hand_r_open.png",
+      "head_annoyed.png",
+      "head_spiral.png"
+    ]
+  },
+  "host": {
+    "changed_layers": [
+      "hand_r_grip.png",
+      "hand_r_hatheld.png",
+      "hand_l_point.png",
+      "arm_l_lower.png",
+      "hand_l_open.png",
+      "arm_r_lower.png"
+    ],
+    "unchanged_layers": [
+      "leg_r_upper.png",
+      "head_idle.png",
+      "leg_l_upper.png",
+      "leg_r_lower.png",
+      "leg_l_lower.png",
+      "foot_l.png",
+      "head_blink.png",
+      "arm_l_upper.png",
+      "hand_r_pinch.png",
+      "arm_r_upper.png",
+      "hand_l_hip.png",
+      "foot_r.png",
+      "torso.png",
+      "head_grin.png",
+      "neck.png",
+      "pelvis.png",
+      "hand_r_open.png",
+      "head_annoyed.png",
+      "head_spiral.png",
+      "glasses.png"
+    ]
+  },
+  "accepted_proximal_parts_exact": true,
+  "host_hatheld_accessories_exact": true,
+  "changed_png_count": 8,
+  "unchanged_png_count": 44,
+  "host_hatheld_extra_explicitly_authorized": true,
+  "fingers_rings_and_headphones_preserved": true
+}

@@ -1,0 +1,15 @@
+{
+  "status": "ACCEPTED",
+  "source_sha256": {
+    "dj": "402e47005d59362609b502fa81efffcac4ece14a59ea914a67af2231adf2b94c",
+    "host": "50c95fe8c03ef97fe06f1893acbae352208ce0c0e09c7f8e050c08adcd5dbe2b"
+  },
+  "reviewed": [
+    "original-angle six poses per character",
+    "third-round detail and standing pairs",
+    "five changed sources against paper and dark backgrounds",
+    "all removed alpha regions",
+    "all four knee joints with unchanged source pixels; corrected preview interpolation"
+  ],
+  "scope": "Third-round local static art only; not Spine animation certification."
+}

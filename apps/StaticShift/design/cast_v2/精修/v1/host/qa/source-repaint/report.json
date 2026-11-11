@@ -1,0 +1,127 @@
+{
+  "scope": "imagegen repaint, not a mask shaving old limbs",
+  "old_reference": "交件/host/reference-master.png",
+  "new_reference": "精修/source/host_leg_revision.png",
+  "removed_pixels": 12762,
+  "added_pixels": 8859,
+  "removed_regions_ge16": [
+    {
+      "bbox": [
+        509,
+        793,
+        571,
+        928
+      ],
+      "removed_pixels": 483
+    },
+    {
+      "bbox": [
+        687,
+        843,
+        792,
+        1295
+      ],
+      "removed_pixels": 6779
+    },
+    {
+      "bbox": [
+        451,
+        924,
+        508,
+        1010
+      ],
+      "removed_pixels": 127
+    },
+    {
+      "bbox": [
+        298,
+        929,
+        361,
+        1052
+      ],
+      "removed_pixels": 1047
+    },
+    {
+      "bbox": [
+        540,
+        969,
+        600,
+        1093
+      ],
+      "removed_pixels": 977
+    },
+    {
+      "bbox": [
+        427,
+        1035,
+        481,
+        1139
+      ],
+      "removed_pixels": 557
+    },
+    {
+      "bbox": [
+        250,
+        1080,
+        321,
+        1231
+      ],
+      "removed_pixels": 812
+    },
+    {
+      "bbox": [
+        395,
+        1152,
+        466,
+        1247
+      ],
+      "removed_pixels": 860
+    },
+    {
+      "bbox": [
+        565,
+        1155,
+        615,
+        1230
+      ],
+      "removed_pixels": 221
+    },
+    {
+      "bbox": [
+        261,
+        1212,
+        313,
+        1274
+      ],
+      "removed_pixels": 127
+    },
+    {
+      "bbox": [
+        383,
+        1216,
+        454,
+        1302
+      ],
+      "removed_pixels": 458
+    },
+    {
+      "bbox": [
+        575,
+        1226,
+        627,
+        1293
+      ],
+      "removed_pixels": 181
+    },
+    {
+      "bbox": [
+        591,
+        1261,
+        658,
+        1313
+      ],
+      "removed_pixels": 59
+    }
+  ],
+  "acceptance": "review every region: organic repaint keeps thigh/calf volume; source split must separately preserve the NEW painted source"
+}

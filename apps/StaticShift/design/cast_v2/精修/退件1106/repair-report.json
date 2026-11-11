@@ -1,0 +1,62 @@
+{
+  "dj": {
+    "l": {
+      "joint_half_width_px": 25,
+      "root_pigment": [
+        251.0,
+        164.0,
+        112.0
+      ],
+      "upper_roi": "skin q>-70 and radius<96; sleeve cap/shoulder unchanged",
+      "lower_roi": {
+        "max_axis_px": 65,
+        "radius_px": 96
+      },
+      "near_proximal_alpha_preserved": false
+    },
+    "r": {
+      "joint_half_width_px": 18,
+      "root_pigment": [
+        251.0,
+        161.0,
+        111.0
+      ],
+      "upper_roi": "skin q>-70 and radius<96; sleeve cap/shoulder unchanged",
+      "lower_roi": {
+        "max_axis_px": 65,
+        "radius_px": 96
+      },
+      "near_proximal_alpha_preserved": true
+    }
+  },
+  "host": {
+    "l": {
+      "joint_half_width_px": 23.5,
+      "root_pigment": [
+        192.0,
+        116.0,
+        64.0
+      ],
+      "upper_roi": "skin q>-70 and radius<96; sleeve cap/shoulder unchanged",
+      "lower_roi": {
+        "max_axis_px": 65,
+        "radius_px": 96
+      },
+      "near_proximal_alpha_preserved": false
+    },
+    "r": {
+      "joint_half_width_px": 16,
+      "root_pigment": [
+        192.0,
+        116.0,
+        65.0
+      ],
+      "upper_roi": "skin q>-70 and radius<96; sleeve cap/shoulder unchanged",
+      "lower_roi": {
+        "max_axis_px": 54.095,
+        "radius_px": 96
+      },
+      "near_proximal_alpha_preserved": true
+    }
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "tool": "built-in image_gen",
+  "scope": "local art repair",
+  "prompts": {
+    "arm": "Use case: precise-object-edit. This is an existing comic game character arm layer assembly, edit ONLY the defective exposed elbow and wrist join. Preserve the EXACT framing, position, scale, shoulder, sleeve, fist/fingers and pose. The uninked skin circle at the outside elbow is an erroneous overextended hidden overlap: retract and reshape it into the adjacent upper arm/sleeve silhouette with a small natural anatomical angular-organic elbow tip, NOT a round ball joint. Keep the full forearm length and muscular thickness. Draw continuous bold black comic contour along every exposed elbow/forearm/wrist skin edge, seamlessly continuing the existing side ink. No black transverse line inside sleeve overlap. Wrist join should be naturally tapering with no square or round protruding skin tabs. Preserve the rest of the original artwork pixel-faithfully. Transparent background, single arm assembly, no additional parts, no text.",
+    "neck": "Use case: precise-object-edit. Tiny exact cleanup of this comic character's exposed right-side neck contour: extend the existing bold black outline down from the dark hair edge to the red collar edge, following the skin silhouette on its right side. The skin-to-transparent edge currently lacks ink. Do not alter the skin shape or colors, hair, headphones, collar, shirt, texture, framing or layout. Add no other details. Preserve transparent background. Exact same small crop.",
+    "waist": "Repair only the waistband at the two outside hips of blue cargo trousers under red shirt. Hide horizontal cut upper blue edges beneath shirt; exposed belt rim should be naturally curved with bold comic outline. Preserve framing, pockets, folds, colors and transparent background."
+  },
+  "source_images": {
+    "dj_r": "exec-56b9528a-871c-4f7c-92ee-5de54c1ed719.png",
+    "dj_l": "exec-db1d94a4-368f-4b2d-88ce-969dc1f0647e.png",
+    "host_r": "exec-683ea525-ab00-472e-ace6-3ae0ff41ca83.png",
+    "host_l": "exec-43ac99d0-d51f-430f-bb3a-ac3324f2bedd.png",
+    "dj_waist": "exec-96bff4a2-b5b8-4f0b-a969-feae9f5c312b.png",
+    "dj_neck": "exec-c185896f-02bc-4215-ad9e-e8274ba1d9d9.png"
+  }
+}

@@ -1,0 +1,26 @@
+{
+  "hand_r_grip": {
+    "removed_px": 1,
+    "added_px": 1
+  },
+  "hand_r_hatheld": {
+    "removed_px": 1473,
+    "added_px": 0
+  },
+  "hand_l_point": {
+    "removed_px": 1004,
+    "added_px": 10
+  },
+  "arm_l_lower": {
+    "removed_px": 70,
+    "added_px": 57
+  },
+  "hand_l_open": {
+    "removed_px": 871,
+    "added_px": 12
+  },
+  "arm_r_lower": {
+    "removed_px": 0,
+    "added_px": 0
+  }
+}

@@ -1,0 +1,19 @@
+Original underground pirate radio booth, independent American graphic novel. Varied black brush ink, two or three flat shadow steps, crosshatching, paper texture. Indigo #363741 / #535e88 / #8294b6, paper #e5e2d6, signal green #b8d080, warm amber #e7aa53. Warm skin only on cast and portraits. No glossy rendering.
+
+Redraw the attached full-body character (input 1: 現況_dj_品紅底.png) as the SAME man in the SAME pose, with thicker, sturdier arms. Input 2 (粗細示意_dj.png) shows the target arm widths as blue bands over the current drawing; the red dots and lines are the joints and bones, which must stay exactly where they are.
+
+Character: a mature adult man in his mid forties, not a child, not a teenager. Tired, heavy-set radio sound engineer: messy dark curly hair, stubble, over-ear studio headphones worn on his head, rust-orange crew-neck T-shirt with short sleeves, blue cargo work trousers, white canvas sneakers. Front three-quarter view turned about 30 degrees toward screen left, face looking screen left.
+
+Pose (unchanged): standing, feet apart and flat on the ground, knees slightly bent. The arm on screen left rests its hand on the hip, elbow out. The arm on screen right is bent about 100 degrees with a loose fist in front of the chest. A visible gap between each arm and the body.
+
+WHAT CHANGES — arms only:
+- Both forearms become clearly thicker and sturdier, a heavy working man's forearms: about 86 px wide just below the elbow, tapering smoothly to about 62 px at the wrist (currently about 55-63 px, which reads as thin sticks next to his belly).
+- Both upper arms about 112-118 px wide under the sleeve, tapering slightly toward the elbow. The short sleeves widen with them and still end above the elbow.
+- Each arm tapers continuously from shoulder to wrist: no lumps at the elbow, no stacked round balls, no sausage segments, no straight tube of constant width.
+- Hands stay the same size and the same drawing; the wrists are simply thick enough to meet them naturally.
+
+WHAT MUST NOT CHANGE: the head, face, hair and headphones (same size, same position, same expression), the belly and torso outline, the trousers, legs and shoes, the pose, the joint positions, the overall height (crown about y=90, soles about y=1455 on the 1024x1536 canvas), the ink line weight (outer contour about 8-10 px), the hatching density and the palette.
+
+Canvas 1024 x 1536, the whole figure inside it with at least 40 px clear on every side. Flat, uniform pure magenta #ff00ff background, nothing else behind the figure.
+
+Do not add: any text, letters, numbers or logos; brand look-alikes (three stripes, a round ankle patch, a star on the shoe, yellow welt stitching); cast shadows or a ground shadow; glow, rim light or gradients; a headphone cable; extra props; a cropped or cut-off limb.

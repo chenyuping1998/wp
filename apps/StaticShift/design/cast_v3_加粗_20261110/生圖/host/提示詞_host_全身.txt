@@ -1,0 +1,20 @@
+Original underground pirate radio booth, independent American graphic novel. Varied black brush ink, two or three flat shadow steps, crosshatching, paper texture. Indigo #363741 / #535e88 / #8294b6, paper #e5e2d6, signal green #b8d080, warm amber #e7aa53. Warm skin only on cast and portraits. No glossy rendering.
+
+Redraw the attached full-body character (input 1: 現況_host_品紅底.png) as the SAME woman in the SAME pose and outfit, with a fuller, stronger adult build in the arms and upper body. Input 2 (粗細示意_host.png) shows the targets over the current drawing: blue bands are the arm widths, the three blue horizontal lines are the widths of the ribcage, waist and hips; the red dots and lines are joints and bones, which must stay exactly where they are.
+
+Character: a mature adult woman in her mid thirties, not a child, not a teenager. Confident late-night radio host: blonde dreadlocks, round green sunglasses, large hoop earrings, cream cropped jacket with rolled sleeves over a black crop top, gold chain, black belt with a square gold buckle, plum cargo trousers gathered at the ankle, chunky black lace-up boots, a cordless black microphone held upright in the hand on screen right. Front three-quarter view turned about 30 degrees toward screen left, face looking screen left, smiling.
+
+Pose (unchanged): standing, feet apart and flat on the ground, knees slightly bent. The arm on screen left rests its hand on the hip, elbow out. The arm on screen right is bent with the microphone in front of the shoulder. A visible gap between each arm and the body.
+
+WHAT CHANGES — arms and upper body:
+- Both forearms clearly thicker: about 74 px wide just below the elbow, tapering smoothly to about 52 px at the wrist (currently about 47-54 px at the widest, which reads as stick arms).
+- Both upper arms about 100-104 px wide inside the jacket sleeve; the rolled sleeves widen with them.
+- Each arm tapers continuously from shoulder to wrist: no lumps at the elbow, no stacked round balls, no sausage segments, no straight tube.
+- Torso: an athletic adult woman, not a thin fashion figure. Ribcage about 262 px wide at the bottom edge of the crop top (currently 235), bare waist about 186 px wide at its narrowest (currently 145), hips at the belt about 300 px (currently 278). The waist still curves in, only less.
+- Hands and the microphone stay the same size and drawing; the wrists are thick enough to meet them naturally.
+
+WHAT MUST NOT CHANGE: the head, face, hair, sunglasses and earrings (same size, same position, same expression), the outfit and its colours, the trousers, legs and boots, the pose, the joint positions, the overall height (hair top about y=90, soles about y=1455 on the 1024x1536 canvas), the ink line weight (outer contour about 8-10 px), the hatching density and the palette. The crop top and jacket cover exactly as much as they do now: no added skin exposure, no cleavage.
+
+Canvas 1024 x 1536, the whole figure inside it with at least 40 px clear on every side. Flat, uniform pure magenta #ff00ff background, nothing else behind the figure.
+
+Do not add: any text, letters, numbers or logos (the belt buckle and jacket are plain); brand look-alikes (yellow welt stitching or a heel tab on the boots, a logo on the microphone); cast shadows or a ground shadow; glow, rim light or gradients; a microphone cable; extra props; a cropped or cut-off limb.

@@ -1,4 +1,15 @@
 export default {
+	// 2026-11-05 UI art delivery (design/source-ui-1104, request design/ART_REQUEST_2026-11-04.md)
+	ssBoardFrame: { type: 'sprite', src: new URL('../../assets/sprites/staticShiftUi1104/board_frame.png', import.meta.url).href },
+	ssBoardFrameFg: { type: 'sprite', src: new URL('../../assets/sprites/staticShiftUi1104/board_frame_fg.png', import.meta.url).href },
+	ssCellCard: { type: 'sprite', src: new URL('../../assets/sprites/staticShiftUi1104/cell_card.png', import.meta.url).href },
+	ssLogo: { type: 'sprite', src: new URL('../../assets/sprites/staticShiftUi1104/logo.png', import.meta.url).href, preload: true },
+	ssLogoSmall: { type: 'sprite', src: new URL('../../assets/sprites/staticShiftUi1104/logo_small.png', import.meta.url).href },
+	// bar v3 (ui/MummyBar.svelte): the two line icons the shared bar drew itself
+	ssIconSpin: { type: 'sprite', src: new URL('../../assets/sprites/staticShiftIcons/spin.png', import.meta.url).href, preload: true },
+	ssIconTurbo: { type: 'sprite', src: new URL('../../assets/sprites/staticShiftIcons/turbo.png', import.meta.url).href, preload: true },
+	ssBarPlate: { type: 'sprite', src: new URL('../../assets/sprites/staticShiftUi1104/bar_plate.png', import.meta.url).href },
+	ssIntroCard: { type: 'sprite', src: new URL('../../assets/sprites/staticShiftUi1104/intro_card.png', import.meta.url).href },
 	// jungle-military riveted reel frame (SVG-generated ??see design/generate_theme_jungle.mjs)
 	// soft-falloff FX textures (design/generate_fx_textures.mjs) — every particle
 	// in the game is one of these, tinted and drawn additively
@@ -254,13 +265,13 @@ export default {
 		src: new URL('../../assets/sprites/staticShiftSymbolsInk/p.png', import.meta.url).href + '?v=ff7fd0cfeb',
 		preload: true,
 	},
-	// The two cast figures as cut-out Spine rigs (2026-10-21), from the ink art in
-	// sprites/staticShiftCastInk/ (still the source; no longer loaded itself): design/cut_cast_layers.py
-	// cuts the ink art into 12 pieces, design/generate_cast_spine.mjs builds the
-	// skeleton and the #7 motion set (idle, nod, cheer, chestbeat, alert, glance…).
-	// They replace the single-mesh head slide the user called 「只是身體伸縮」.
-	ssSpineDJ: { type: 'spine', src: { atlas: new URL('../../assets/spines/staticShiftDJ/cast.atlas', import.meta.url).href, skeleton: new URL('../../assets/spines/staticShiftDJ/cast.json', import.meta.url).href, scale: 1 } },
-	ssSpineHost: { type: 'spine', src: { atlas: new URL('../../assets/spines/staticShiftHost/cast.atlas', import.meta.url).href, skeleton: new URL('../../assets/spines/staticShiftHost/cast.json', import.meta.url).href, scale: 1 } },
+	// The two cast figures (2026-11-09): spine-motion-kit Spine 4.3 rigs of the
+	// stand34 cast art (design/cast_v2/交件), drawn by components/CastFigure43.svelte
+	// with the vendored 4.3 runtime. design/cast_v2/build_game_cast.py crops and
+	// packs each figure's 26 drawings into one sheet; frames are ss43dj_* / ss43host_*.
+	// The rigs themselves (castSpine43/<who>/cast.json) are fetched by CastFigure43.
+	ssCast43DJ: { type: 'sprites', src: new URL('../../assets/castSpine43/dj/cast_atlas.json', import.meta.url).href },
+	ssCast43Host: { type: 'sprites', src: new URL('../../assets/castSpine43/host/cast_atlas.json', import.meta.url).href },
 	ssPigeon: { type: 'sprite', src: new URL('../../assets/sprites/staticShiftCastInk/pigeon.png', import.meta.url).href + '?v=eb704e4f42', preload: true },
 	// Expanding wild: monkey eats a banana and grows to fill the reel
 	// Go Bananas jungle backgrounds (SVG-generated ??see design/generate_art.mjs)

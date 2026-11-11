@@ -1,0 +1,13 @@
+工具：內建 image_gen
+輸入取景：800×640 四倍上下文，對應原畫布 (340,580)–(540,740)。
+交回保留工具原始 PNG 尺寸與內容，未裁切、未縮放、未修圖。生成原圖沿用四倍上下文取景，但工具實際輸出尺寸可能不同於提示詞要求，請以 PNG 原始尺寸對位。
+
+Use case: precise-object-edit.
+Asset type: Static Shift host character far-side wrist repaint reference, raw PNG only.
+Edit the first input image, which is the clean 800×640 four-times enlarged context crop corresponding to original canvas rectangle (340,580)–(540,740). Preserve exactly this framing, diagonal arm pose, hand position and scale. Output requested 800×640.
+The second image is a location guide ONLY: its red circular overlay marks the wrist region to repaint (original joint (420,650), radius34). Do not reproduce the red overlay. The third image shows the defect in another animation angle; do not copy that pose or its text.
+Repaint the COMPLETE short anatomical wrist and adjoining forearm segment, not merely an isolated line. Join the forearm to the hand with continuous naturally tapering organic upper and lower silhouettes. Eliminate the abrupt right-angle stair, notches, corners, gaps and doubled overlap ink at the wrist. Both black outlines must flow smoothly from forearm into hand. Keep original mildly irregular hand-drawn black comic ink thickness and original shadow placement, flat warm dark skin about RGB(192,116,64), consistent with original forearm. Preserve all fingers, green/gold ring, palm creases, anatomy, gesture and all art outside the wrist region. No new accessories, no text, no label, no extra body parts. Full flat light paper background #e5e2d6, matching the reference. Draw enough complete wrist/forearm area for later manual cropping; do not split layers or show comparisons.
+Variant: OPEN HAND hand_l_open. Preserve the relaxed spread/open fingers and thumb exactly as shown in image1.
+
+
+工具原始輸出尺寸：1402×1122 px；未重採樣。

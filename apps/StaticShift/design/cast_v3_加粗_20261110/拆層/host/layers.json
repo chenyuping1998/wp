@@ -1,0 +1,21 @@
+{
+ "order": [
+  "arm_l_lower",
+  "arm_l_upper",
+  "leg_l_upper",
+  "leg_l_lower",
+  "foot_l",
+  "pelvis",
+  "leg_r_upper",
+  "leg_r_lower",
+  "foot_r",
+  "neck",
+  "torso",
+  "head",
+  "glasses",
+  "hand_l",
+  "arm_r_upper",
+  "arm_r_lower",
+  "hand_r"
+ ]
+}

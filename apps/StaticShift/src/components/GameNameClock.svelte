@@ -8,9 +8,18 @@
 	import { SvelteDate } from 'svelte/reactivity';
 	import { Text, REM } from 'pixi-svelte';
 	import { uiTheme } from 'components-ui-pixi';
+	import { getContext } from '../game/context';
 
 	type Props = { name: string };
 	const props: Props = $props();
+	const context = getContext();
+	// In a small landscape pop-out (400×225) this fixed-size line reached past
+	// the frame's top-left corner onto its nameplate bar (2026-11-05 frame art
+	// is taller). The clock stays; the name goes, like the top-right logo below
+	// 760px (Game.svelte). Portrait keeps both: the line sits above the cast.
+	const showName = $derived(
+		context.stateLayoutDerived.layoutType() === 'portrait' || context.stateLayoutDerived.canvasSizes().width >= 760,
+	);
 
 	const reactiveDate = new SvelteDate();
 	const clock = $derived(
@@ -34,4 +43,4 @@
 </script>
 
 <Text text={clock} onresize={(value) => (clockSizes = value)} {style} />
-<Text text={props.name} x={clockSizes.width + 16} {style} />
+{#if showName}<Text text={props.name} x={clockSizes.width + 16} {style} />{/if}

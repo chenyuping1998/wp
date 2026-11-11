@@ -1,0 +1,26 @@
+{
+  "dj_arm_l": {
+    "upper_joint_inscribed_radius_px": 24.17,
+    "original_root_radius_px": 29.97,
+    "retracted_root_radius_px": 21.67,
+    "unchanged_shaft_beyond_joint_px": 42
+  },
+  "dj_arm_r": {
+    "upper_joint_inscribed_radius_px": 21.26,
+    "original_root_radius_px": 29.73,
+    "retracted_root_radius_px": 18.76,
+    "unchanged_shaft_beyond_joint_px": 42
+  },
+  "dj_leg_l": {
+    "upper_joint_inscribed_radius_px": 67.78,
+    "original_root_radius_px": 80.22,
+    "retracted_root_radius_px": 65.28,
+    "unchanged_shaft_beyond_joint_px": 120
+  },
+  "dj_leg_r": {
+    "upper_joint_inscribed_radius_px": 66.48,
+    "original_root_radius_px": 79.16,
+    "retracted_root_radius_px": 63.98,
+    "unchanged_shaft_beyond_joint_px": 120
+  }
+}

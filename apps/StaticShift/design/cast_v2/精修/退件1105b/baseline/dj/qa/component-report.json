@@ -1,0 +1,340 @@
+{
+  "arm_l_lower": {
+    "size": [
+      1024,
+      1536
+    ],
+    "alpha_range": [
+      0,
+      255
+    ],
+    "components_gt16": 1,
+    "largest_area": 12739,
+    "edge_touches": false
+  },
+  "arm_l_upper": {
+    "size": [
+      1024,
+      1536
+    ],
+    "alpha_range": [
+      0,
+      255
+    ],
+    "components_gt16": 1,
+    "largest_area": 23367,
+    "edge_touches": false
+  },
+  "arm_r_lower": {
+    "size": [
+      1024,
+      1536
+    ],
+    "alpha_range": [
+      0,
+      255
+    ],
+    "components_gt16": 1,
+    "largest_area": 8061,
+    "edge_touches": false
+  },
+  "arm_r_upper": {
+    "size": [
+      1024,
+      1536
+    ],
+    "alpha_range": [
+      0,
+      255
+    ],
+    "components_gt16": 1,
+    "largest_area": 15942,
+    "edge_touches": false
+  },
+  "foot_l": {
+    "size": [
+      1024,
+      1536
+    ],
+    "alpha_range": [
+      0,
+      255
+    ],
+    "components_gt16": 1,
+    "largest_area": 14147,
+    "edge_touches": false
+  },
+  "foot_r": {
+    "size": [
+      1024,
+      1536
+    ],
+    "alpha_range": [
+      0,
+      255
+    ],
+    "components_gt16": 1,
+    "largest_area": 19447,
+    "edge_touches": false
+  },
+  "hand_l_hip": {
+    "size": [
+      1024,
+      1536
+    ],
+    "alpha_range": [
+      0,
+      255
+    ],
+    "components_gt16": 1,
+    "largest_area": 8318,
+    "edge_touches": false
+  },
+  "hand_l_open": {
+    "size": [
+      1024,
+      1536
+    ],
+    "alpha_range": [
+      0,
+      255
+    ],
+    "components_gt16": 1,
+    "largest_area": 8338,
+    "edge_touches": false
+  },
+  "hand_l_point": {
+    "size": [
+      1024,
+      1536
+    ],
+    "alpha_range": [
+      0,
+      255
+    ],
+    "components_gt16": 1,
+    "largest_area": 6172,
+    "edge_touches": false
+  },
+  "hand_r_grip": {
+    "size": [
+      1024,
+      1536
+    ],
+    "alpha_range": [
+      0,
+      255
+    ],
+    "components_gt16": 1,
+    "largest_area": 7621,
+    "edge_touches": false
+  },
+  "hand_r_hatheld": {
+    "size": [
+      1024,
+      1536
+    ],
+    "alpha_range": [
+      0,
+      255
+    ],
+    "components_gt16": 1,
+    "largest_area": 32757,
+    "edge_touches": false
+  },
+  "hand_r_open": {
+    "size": [
+      1024,
+      1536
+    ],
+    "alpha_range": [
+      0,
+      255
+    ],
+    "components_gt16": 1,
+    "largest_area": 7011,
+    "edge_touches": false
+  },
+  "hand_r_pinch": {
+    "size": [
+      1024,
+      1536
+    ],
+    "alpha_range": [
+      0,
+      255
+    ],
+    "components_gt16": 1,
+    "largest_area": 6630,
+    "edge_touches": false
+  },
+  "hat": {
+    "size": [
+      1024,
+      1536
+    ],
+    "alpha_range": [
+      0,
+      255
+    ],
+    "components_gt16": 1,
+    "largest_area": 20301,
+    "edge_touches": false
+  },
+  "head_annoyed": {
+    "size": [
+      1024,
+      1536
+    ],
+    "alpha_range": [
+      0,
+      255
+    ],
+    "components_gt16": 1,
+    "largest_area": 50348,
+    "edge_touches": false
+  },
+  "head_blink": {
+    "size": [
+      1024,
+      1536
+    ],
+    "alpha_range": [
+      0,
+      255
+    ],
+    "components_gt16": 1,
+    "largest_area": 51186,
+    "edge_touches": false
+  },
+  "head_grin": {
+    "size": [
+      1024,
+      1536
+    ],
+    "alpha_range": [
+      0,
+      255
+    ],
+    "components_gt16": 1,
+    "largest_area": 51617,
+    "edge_touches": false
+  },
+  "head_idle": {
+    "size": [
+      1024,
+      1536
+    ],
+    "alpha_range": [
+      0,
+      255
+    ],
+    "components_gt16": 1,
+    "largest_area": 52022,
+    "edge_touches": false
+  },
+  "head_spiral": {
+    "size": [
+      1024,
+      1536
+    ],
+    "alpha_range": [
+      0,
+      255
+    ],
+    "components_gt16": 1,
+    "largest_area": 52182,
+    "edge_touches": false
+  },
+  "leg_l_lower": {
+    "size": [
+      1024,
+      1536
+    ],
+    "alpha_range": [
+      0,
+      255
+    ],
+    "components_gt16": 1,
+    "largest_area": 49204,
+    "edge_touches": false
+  },
+  "leg_l_upper": {
+    "size": [
+      1024,
+      1536
+    ],
+    "alpha_range": [
+      0,
+      255
+    ],
+    "components_gt16": 1,
+    "largest_area": 76810,
+    "edge_touches": false
+  },
+  "leg_r_lower": {
+    "size": [
+      1024,
+      1536
+    ],
+    "alpha_range": [
+      0,
+      255
+    ],
+    "components_gt16": 1,
+    "largest_area": 49791,
+    "edge_touches": false
+  },
+  "leg_r_upper": {
+    "size": [
+      1024,
+      1536
+    ],
+    "alpha_range": [
+      0,
+      255
+    ],
+    "components_gt16": 1,
+    "largest_area": 72565,
+    "edge_touches": false
+  },
+  "neck": {
+    "size": [
+      1024,
+      1536
+    ],
+    "alpha_range": [
+      0,
+      255
+    ],
+    "components_gt16": 1,
+    "largest_area": 13262,
+    "edge_touches": false
+  },
+  "pelvis": {
+    "size": [
+      1024,
+      1536
+    ],
+    "alpha_range": [
+      0,
+      255
+    ],
+    "components_gt16": 1,
+    "largest_area": 35320,
+    "edge_touches": false
+  },
+  "torso": {
+    "size": [
+      1024,
+      1536
+    ],
+    "alpha_range": [
+      0,
+      255
+    ],
+    "components_gt16": 1,
+    "largest_area": 155344,
+    "edge_touches": false
+  }
+}

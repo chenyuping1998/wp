@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { onDestroy } from 'svelte';
 	import { Graphics } from 'pixi-svelte';
 	import type { Graphics as PixiGraphics } from 'pixi.js';
 
@@ -19,7 +20,37 @@
 	// draws it. Rendered inside Board's BoardContainer, so it is already in board
 	// coordinates.
 	const SCRIM = 0x05070a;
-	const SCRIM_ALPHA = 0.62;
+	// 0.62 blacked the losing cells out; the idle replay then switched that on
+	// and off every pass, which read as the board flashing. Lighter, and faded.
+	const SCRIM_ALPHA = 0.45;
+	const FADE_IN_MS = 160;
+	const FADE_OUT_MS = 240;
+
+	// The scrim fades in and out instead of switching. While it fades out it
+	// keeps drawing the last lit set, since winLitCells is already cleared.
+	let fade = $state(0);
+	let shownLit: string[] | null = null;
+	let raf = 0;
+	const fadeTo = (target: number) => {
+		cancelAnimationFrame(raf);
+		let last = performance.now();
+		const tick = (now: number) => {
+			const dt = now - last;
+			last = now;
+			const step = dt / (target > fade ? FADE_IN_MS : FADE_OUT_MS);
+			fade = target > fade ? Math.min(target, fade + step) : Math.max(target, fade - step);
+			if (fade !== target) raf = requestAnimationFrame(tick);
+			else if (target === 0) shownLit = null;
+		};
+		raf = requestAnimationFrame(tick);
+	};
+	$effect(() => {
+		const lit = stateGame.winLitCells;
+		const on = !!lit && lit.length > 0 && !stateGame.winCelebrationShow;
+		if (on) shownLit = [...lit!];
+		fadeTo(on ? 1 : 0);
+	});
+	onDestroy(() => cancelAnimationFrame(raf));
 
 	// same formula as getSymbolX in utils.ts
 	const cellX = (reel: number) => SYMBOL_SIZE * (reel + REEL_PADDING) - SYMBOL_SIZE / 2;
@@ -29,8 +60,9 @@
 
 	const draw = (g: PixiGraphics) => {
 		g.clear();
-		const lit = stateGame.winLitCells;
-		if (!lit || stateGame.winCelebrationShow) return;
+		const a = fade;
+		const lit = shownLit;
+		if (!lit || a <= 0) return;
 		const set = new Set(lit);
 		for (let reel = 0; reel < BOARD_DIMENSIONS.x; reel++) {
 			for (let row = 1; row <= BOARD_DIMENSIONS.y; row++) {
@@ -38,7 +70,7 @@
 				g.rect(cellX(reel), cellY(row), SYMBOL_SIZE, SYMBOL_SIZE);
 			}
 		}
-		g.fill({ color: SCRIM, alpha: SCRIM_ALPHA });
+		g.fill({ color: SCRIM, alpha: SCRIM_ALPHA * a });
 	};
 </script>
 

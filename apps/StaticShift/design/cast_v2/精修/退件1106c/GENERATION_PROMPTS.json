@@ -1,0 +1,18 @@
+[
+  {
+    "key": "dj-arm_r_lower",
+    "prompt": "Use case: precise-object-edit. Isolated peach comic forearm layer, wrist at UPPER LEFT, elbow at LOWER RIGHT. ONLY refine upper-left wrist half: replace fuzzy pale outer edge by a crisp smooth continuous dark black ink contour, same 2-3 px line weight at native 1024x1536 scale. Preserve exact silhouette, original muscle volume and peach skin palette, do not enlarge, shorten or reshape. Remove stray tiny isolated black specks inside the wrist/forearm. The lower-right rounded elbow hidden overlap stays exactly as reference, uninked inside the joint. Keep central simple skin shading, no new texture, no wrist bracelet or hand, no additional parts. Existing hand/arm joint coordinates stay fixed. Transparent background, same placement and proportions."
+  },
+  {
+    "key": "dj-hand_r_hatheld",
+    "prompt": "Use case: precise-object-edit. Existing comic peach hand holding black/silver over-ear headphones. ONLY change the short wrist-root skin tail projecting diagonally toward bottom RIGHT from the hand. It currently includes an excessive long uninked forearm stub. Make that root a SHORT smooth naturally rounded tapered overlap under the hand, roughly HALF the existing tail length. It must tuck inside a separate forearm layer, no long block or polygon edge. Match the root skin exactly to the main wrist skin, remove pale outline, ghost seam and stray black dot. Its concealed rounded end must have NO black outline. Preserve the hand, all fingers/creases, headphones including band/earcups/chrome, original placement, proportions and all other artwork EXACTLY. No new hand pose, no new objects, true transparent background. Do not repaint the headphones."
+  },
+  {
+    "key": "host-hand_l_open",
+    "prompt": "Use case: precise-object-edit. Existing brown comic open hand with green ring, wrist root extending to UPPER LEFT. ONLY clean the wrist-root area: shorten the excessive hidden forearm stub by about one third, finish the concealed tip with a small smooth round taper, no pale edge or seam. The black upper wrist contour has an abrupt rectangular stair-step at the hand-to-wrist junction: connect it with one smooth organic black curve, preserving the original hand silhouette outside that tiny wrist junction. Keep the existing medium brown skin RGB palette flat and consistent, no new gradients, no pale outline. Preserve all fingers, thumb, ring, creases, hand shape, lengths and original placement EXACTLY. Hidden overlap tip uninked, exposed sides crisp black ink. No sleeve or new parts, transparent background."
+  },
+  {
+    "key": "host-hand_l_point",
+    "prompt": "Use case: precise-object-edit. Existing brown comic pointing hand with green ring, wrist root extending to UPPER LEFT. ONLY clean the wrist-root area: shorten the excessive hidden forearm stub by about one third, finish concealed tip with a compact naturally rounded taper without light outline or ghost seam. At the upper wrist junction, replace the abrupt black rectangular step/notch with a smoothly connected organic black curve. Match the existing flat medium brown skin palette exactly. Preserve all fingers, pointing fingertip, thumb, ring, creases, hand shape, original placement and proportions EXACTLY. Hidden overlap end uninked, exposed wrist sides clear continuous black. Do not add/remove accessories, transparent background."
+  }
+]

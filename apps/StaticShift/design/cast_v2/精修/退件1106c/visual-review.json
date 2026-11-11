@@ -1,0 +1,72 @@
+{
+  "status": "ACCEPTED",
+  "source_layers_sha256": {
+    "dj": {
+      "leg_r_upper.png": "c0847a6b82dcb6f0e59261d1bd36fffeadbe1915ee689e3f787c8767a1e67949",
+      "hat.png": "a5b4c32d3e373d459f71112391006f072f7508bb6b37fe31a3b464ba5d048160",
+      "head_idle.png": "419372250cc3a18cb2d9284159535ad777b2e91d5018b356806ac9ac4bee8aa6",
+      "leg_l_upper.png": "f1248a52905b79688317095b11fec398168391e4e3925ca8682bae17a6fa80d7",
+      "hand_r_grip.png": "f21cf01ece601e4c8555f48d9633f1e8316c842e4eacc694668c28fe9a771bf4",
+      "hand_r_hatheld.png": "4e92293fc8ed3b2e1f4f95d637cb4c10e1ab130442e9bc286b17796513744dee",
+      "leg_r_lower.png": "05a89e802ed6d736857af9daf76aa30900964719bbc52e9f30102616c64cfe6b",
+      "leg_l_lower.png": "66c10d4756cb84f70a97de4bd0f31f7afba7da18621ae41df070bb4803a9b78f",
+      "foot_l.png": "9f867b403b0fc8c77d7b72d23b5e81bba94ffdc9d2114be9d23d9bbbc8613fdc",
+      "hand_l_point.png": "1724168a1167fc1dd623a4de2ff2f4c75c1877a9d39846ab30a85e7369cef584",
+      "head_blink.png": "ba34172e7a9a09cf7af5012586e71e5d9466f8ebcd60d87fc7c9395e19d375ca",
+      "arm_l_upper.png": "b9275c48c73ca0d4e2ddb06c7227ec901b0fc6b1038127d612da5988947c52bd",
+      "hand_r_pinch.png": "dd4ad6291169e043d8e5924d06322445a6525701b4117a974ed258ce8d62b03f",
+      "arm_r_upper.png": "c1726af6a9a00b50b3efd92d2288c880516aec119aaef677be23346fdd1af273",
+      "hand_l_hip.png": "887f86fd14e24eace2311fe2a95d0d2152e85dc6eafec6a604d134659653b00e",
+      "foot_r.png": "62689e2d1cb0b20e42a96cb1dafb9ed79f4e71f019c0a9594fc40b3232d524e4",
+      "torso.png": "d3050445fc396ccd6d424802afb86c452b5c28d5588d7bd5e53e48db35c18667",
+      "arm_l_lower.png": "e707dde24558414eb00ae347ed1372a0fe9bf49ac9f297dd0f2020b5658e66d1",
+      "head_grin.png": "1ba7f05048e21cbc768a9808dc98c980d9be510752114224bf25ec65ae7ff002",
+      "neck.png": "9ab32c8939613abc7dbc55355c7bf7073567d69c9353702c6e824844337f5569",
+      "pelvis.png": "3118958322c959927fca5800a6644ecc2743e41be00e6e768c2d5cc547d8e457",
+      "hand_l_open.png": "18c1e311785fc0faffb0802382e918370835189500a73145dadca0485c695d4d",
+      "hand_r_open.png": "bccd831ba5a52ec7c00901be5236d52dcc525dcb8038a026d72c1f86d26363c2",
+      "head_annoyed.png": "90b10391fd10deb52dcbd8371514e6f3aa53af78eb089a80024d6f8245122a38",
+      "head_spiral.png": "0acb712e5e859bee565efe6be2d4f2d16d29df9b08325a73be73bc9c5f277092",
+      "arm_r_lower.png": "78f6560f4f2a3233ba620823a0b0bff5e4229cd0ae22df506961195b80dfe85e"
+    },
+    "host": {
+      "leg_r_upper.png": "ebce0eae7ba71ec355b3ff34bead01129664cf805d815a9fd96a04c818f94cf8",
+      "head_idle.png": "0f62fe10a655be3f1a7ba6d6e7906404bd0fb093d56a7d925210a10a08d8fa0f",
+      "leg_l_upper.png": "4ebdd5a9e680f8be169977e04e07cec34966505720bf68fd5e2833290cd13399",
+      "hand_r_grip.png": "2da5d27660d342aef402499bfda30db5c54058cba6e3659a0ecaf4aeb81b9072",
+      "hand_r_hatheld.png": "f406545ae48521d91d2f195db0f0ef9e68ce4879f24237816560f56e988944fe",
+      "leg_r_lower.png": "f2e6a2e5dfe5b53ad38c3b65234b48c0d54670c2ef606d35afcfa3ee92e2ba34",
+      "leg_l_lower.png": "7a04e61e75c6aaaa6acfd9aa4c147ded7271dd2e575e42a49954980133ceed3a",
+      "foot_l.png": "e0aba394f48772411813f53afb66dcb9085e12ec20d92205b444d56334fd1339",
+      "hand_l_point.png": "235e938a451b17ca864b5f023e7ee6bb17d5a108d8f230b256ca571b0556defd",
+      "head_blink.png": "1c013db3a6a4cf485e63b32a80628304b2eba1401b2228844e120576d36544f4",
+      "arm_l_upper.png": "fd989044ae160a1edc15ab0ed324bf75c7a17fd91db4c10adff1881ffc76c733",
+      "hand_r_pinch.png": "f6c15a720488562c7fcf2667da19b75fc274db383d6a4df4b15fac4de74426b7",
+      "arm_r_upper.png": "3309cd4af80d9d33da99e5edd72da610b26fe792a1a5f4172a29dd6d48cd4e48",
+      "hand_l_hip.png": "06efe06a662abd4cd59421b289c55c9c9c19a9e879378e232e13be8aa8bea836",
+      "foot_r.png": "64b40a752fd354ba3e6d225057334d1644abeb756e25bd76c11bc8584efc2786",
+      "torso.png": "cc41296ba4735473614a9dbf344ca64abae6679bdefc705221dda0119179f2cb",
+      "arm_l_lower.png": "689359589119b9710a37c0915366fe03647978cdce0827b00d6c89d95b2b8650",
+      "head_grin.png": "5002f1de3b1d61ae860f54f2926b303b96ffafd092f4965051c3309664a50059",
+      "neck.png": "3b0b6788b31d1a0afc477ab04de7d07352048c3309545853e0c5193eb53d51d7",
+      "pelvis.png": "f393320c6f3ecb734f6c2ed98f2dc03e2bebb96e45cebfb7a6f364676f832950",
+      "hand_l_open.png": "0856dbb66be17e2c6862aefe65493ab7d5f0a09f88c2956647125f9408f4f192",
+      "hand_r_open.png": "c494f34abf46f0e3ec4c318a984ffefcdf29f792b2d76c3718b4e8155c04faaf",
+      "head_annoyed.png": "e387d0ee9f9babcf7d88b1e44c0f765594dbdad49dca6ec0e51d69ad6fab61c5",
+      "head_spiral.png": "c3255024b6f2dd4955627aa13f09e783717c9bbb00927528f83ad48284871393",
+      "arm_r_lower.png": "9d4735c8fac0b3f08c8004f4be0587a1598e4cadd535f375ecb163f2b6255774",
+      "glasses.png": "0daef917b5ae6d00181eb60273af0c558482e475d585e115b08b758b6a23dc42"
+    }
+  },
+  "assembled_sha256": {
+    "dj": "6c1f455ce4bd19e6eb14db89a1388cec4b04a337fae3581786613b67771effe7",
+    "host": "8abd9b2c7caf32c45335b28398e0a0cc8b216ea6a621d7da2ffd35edffb91fca"
+  },
+  "notes": [
+    "Three affected original-angle crops reviewed at exactly 3x on #e5e2d6, with r6 before and same-version standing comparison.",
+    "All exact alpha removed regions reviewed: only residual wrist overlaps and small distal contour corrections; no cuts into fingers or accessories.",
+    "All eight original motion sequences per character reviewed via wrist contact sheets; 149 frames each, two wrists per frame.",
+    "Added host hand_r_hatheld root explicitly authorized by Stone; black square and light patch cleared without changing fingers, microphone or bangles.",
+    "All eight scoped PNGs changed; other 44 r6 PNGs exact; accepted proximal/elbow regions exact."
+  ]
+}

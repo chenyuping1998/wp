@@ -1,0 +1,70 @@
+{
+  "dj": {
+    "changed": [
+      "arm_r_upper",
+      "leg_l_upper",
+      "leg_r_upper"
+    ],
+    "unchanged_byte_identical": [
+      "arm_l_lower",
+      "arm_l_upper",
+      "arm_r_lower",
+      "foot_l",
+      "foot_r",
+      "hand_l_hip",
+      "hand_l_open",
+      "hand_l_point",
+      "hand_r_grip",
+      "hand_r_hatheld",
+      "hand_r_open",
+      "hand_r_pinch",
+      "hat",
+      "head_annoyed",
+      "head_blink",
+      "head_grin",
+      "head_idle",
+      "head_spiral",
+      "leg_l_lower",
+      "leg_r_lower",
+      "neck",
+      "pelvis",
+      "torso"
+    ],
+    "knee_joint_80px_RGBA_unchanged": true,
+    "lower_legs_entirely_unchanged": true
+  },
+  "host": {
+    "changed": [
+      "leg_l_upper",
+      "leg_r_upper"
+    ],
+    "unchanged_byte_identical": [
+      "arm_l_lower",
+      "arm_l_upper",
+      "arm_r_lower",
+      "arm_r_upper",
+      "foot_l",
+      "foot_r",
+      "glasses",
+      "hand_l_hip",
+      "hand_l_open",
+      "hand_l_point",
+      "hand_r_grip",
+      "hand_r_hatheld",
+      "hand_r_open",
+      "hand_r_pinch",
+      "head_annoyed",
+      "head_blink",
+      "head_grin",
+      "head_idle",
+      "head_spiral",
+      "leg_l_lower",
+      "leg_r_lower",
+      "neck",
+      "pelvis",
+      "torso"
+    ],
+    "knee_joint_80px_RGBA_unchanged": true,
+    "lower_legs_entirely_unchanged": true
+  }
+}

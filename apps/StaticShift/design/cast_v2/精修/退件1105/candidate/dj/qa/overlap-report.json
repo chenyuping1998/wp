@@ -1,0 +1,122 @@
+{
+  "shoulder_l": {
+    "axis_overlap_px": 136.1,
+    "opaque_overlap_area": 3982,
+    "at_least_40px": true
+  },
+  "elbow_l": {
+    "axis_overlap_px": 61.8,
+    "opaque_overlap_area": 3199,
+    "at_least_40px": true
+  },
+  "wrist_l": {
+    "axis_overlap_px": 87.0,
+    "opaque_overlap_area": 3115,
+    "at_least_40px": true
+  },
+  "hip_l": {
+    "axis_overlap_px": 91.9,
+    "opaque_overlap_area": 9747,
+    "at_least_40px": true
+  },
+  "knee_l": {
+    "axis_overlap_px": 137.7,
+    "opaque_overlap_area": 14953,
+    "at_least_40px": true
+  },
+  "ankle_l": {
+    "axis_overlap_px": 51.0,
+    "opaque_overlap_area": 1429,
+    "at_least_40px": true
+  },
+  "shoulder_r": {
+    "axis_overlap_px": 138.6,
+    "opaque_overlap_area": 3923,
+    "at_least_40px": true
+  },
+  "elbow_r": {
+    "axis_overlap_px": 104.4,
+    "opaque_overlap_area": 4075,
+    "at_least_40px": true
+  },
+  "wrist_r": {
+    "axis_overlap_px": 64.0,
+    "opaque_overlap_area": 2484,
+    "at_least_40px": true
+  },
+  "hip_r": {
+    "axis_overlap_px": 116.8,
+    "opaque_overlap_area": 11051,
+    "at_least_40px": true
+  },
+  "knee_r": {
+    "axis_overlap_px": 135.8,
+    "opaque_overlap_area": 14515,
+    "at_least_40px": true
+  },
+  "ankle_r": {
+    "axis_overlap_px": 58.0,
+    "opaque_overlap_area": 3327,
+    "at_least_40px": true
+  },
+  "swap_hand_l_point": {
+    "axis_overlap_px": 100.7,
+    "opaque_overlap_area": 3331,
+    "at_least_40px": true
+  },
+  "swap_hand_l_hip": {
+    "axis_overlap_px": 87.0,
+    "opaque_overlap_area": 3115,
+    "at_least_40px": true
+  },
+  "swap_hand_l_open": {
+    "axis_overlap_px": 100.7,
+    "opaque_overlap_area": 3276,
+    "at_least_40px": true
+  },
+  "swap_hand_r_grip": {
+    "axis_overlap_px": 64.0,
+    "opaque_overlap_area": 2484,
+    "at_least_40px": true
+  },
+  "swap_hand_r_hatheld": {
+    "axis_overlap_px": 100.9,
+    "opaque_overlap_area": 3500,
+    "at_least_40px": true
+  },
+  "swap_hand_r_pinch": {
+    "axis_overlap_px": 100.9,
+    "opaque_overlap_area": 3277,
+    "at_least_40px": true
+  },
+  "swap_hand_r_open": {
+    "axis_overlap_px": 100.9,
+    "opaque_overlap_area": 3398,
+    "at_least_40px": true
+  },
+  "swap_head_idle": {
+    "axis_overlap_px": 84.0,
+    "opaque_overlap_area": 8423,
+    "at_least_40px": true
+  },
+  "swap_head_blink": {
+    "axis_overlap_px": 84.0,
+    "opaque_overlap_area": 7315,
+    "at_least_40px": true
+  },
+  "swap_head_grin": {
+    "axis_overlap_px": 84.0,
+    "opaque_overlap_area": 7328,
+    "at_least_40px": true
+  },
+  "swap_head_annoyed": {
+    "axis_overlap_px": 80.0,
+    "opaque_overlap_area": 7214,
+    "at_least_40px": true
+  },
+  "swap_head_spiral": {
+    "axis_overlap_px": 84.0,
+    "opaque_overlap_area": 7908,
+    "at_least_40px": true
+  }
+}

@@ -6,10 +6,12 @@
 	//
 	//   design/           asset generators, loose .mjs, never type-checked
 	//   static/           asset helpers
+	//   src/vendor/       third-party bundles typed by their own .d.ts files
+	//                     (the Spine 4.3 runtime is 1,746 untyped-JS errors)
 	//   build-replaytest/ a checked-in build output — 15,573 of the 15,655
 	//                     errors this file's first version reported came from one
 	//                     minified bundle in there
 	//
 	// Excluding them is what makes `check:types` a usable gate on src/.
-	"exclude": ["dist", "build", "build-replaytest", "node_modules", "design", "static"]
+	"exclude": ["dist", "build", "build-replaytest", "node_modules", "design", "static", "src/vendor"]
 }

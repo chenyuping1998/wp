@@ -1,12 +1,16 @@
 <script lang="ts">
- import {Container,Sprite,Text,SpineProvider,SpineTrack} from 'pixi-svelte';
+ import {Container,Sprite,Text} from 'pixi-svelte';
+ import CastFigure43,{loadCast} from './CastFigure43.svelte';
  import {MainContainer} from 'components-layout';
  import {onMount} from 'svelte';
  import {getContext} from '../game/context';
  import {GAME_FONT,BODY_FONT,NUMBER_FONT} from '../game/fonts';
  import {gameText} from '../game/i18nText';
  import config from '../game/config';
- const c=getContext();const l=$derived(c.stateLayoutDerived.mainLayout());const stacked=$derived(l.width/l.height<1.2);
+ const c=getContext();
+ // crown height of each figure at rest, from its rig (CastFigure43)
+ let heights=$state<{dj?:number;host?:number}>({});
+ for(const w of ['dj','host'] as const) void loadCast(w).then(({measure})=>{heights={...heights,[w]:measure.height};});const l=$derived(c.stateLayoutDerived.mainLayout());const stacked=$derived(l.width/l.height<1.2);
  let t=$state(0);
  onMount(()=>{let id=0,start=performance.now();const tick=(now:number)=>{t=now-start;if(t<1400)id=requestAnimationFrame(tick);};id=requestAnimationFrame(tick);return()=>cancelAnimationFrame(id);});
  const cards=[{title:gameText('ssAfterHours'),tag:Object.keys(config.scatterSpins).join(' / '),body:gameText('ssIntroFsBody',{spins:Object.values(config.scatterSpins).join('/')}),cast:'ssCastFG'},
@@ -24,10 +28,8 @@
      breathing in its idle (no still character at a feature beat); h is the
      figure's height, centred on the container like the old mesh -->
 {#snippet figure(cast:string,h:number)}
- <SpineProvider key={cast==='ssCastMG'?'ssSpineDJ':'ssSpineHost'} y={h/2} scale={h/905}>
-  <SpineTrack trackIndex={0} animationName="idle" loop />
-  <SpineTrack trackIndex={1} animationName="flutter" loop />
- </SpineProvider>
+ {@const who=cast==='ssCastMG'?'dj':'host'}
+ {#if heights[who]}<CastFigure43 {who} x={0} y={h/2} scale={h/heights[who]}/>{/if}
 {/snippet}
 <MainContainer>
  {#each cards as card,i}

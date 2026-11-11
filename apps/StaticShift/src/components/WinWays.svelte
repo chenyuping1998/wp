@@ -23,10 +23,10 @@
 
 	import { Sprite, Text } from 'pixi-svelte';
 	import { GAME_FONT } from '../game/fonts';
+	import { inkOffsetY } from 'components-ui-pixi/src/inkCenter';
 	import { gameText } from '../game/i18nText';
 
 	import BoardContainer from './BoardContainer.svelte';
-	import GoldText from './GoldText.svelte';
 	import { getContext } from '../game/context';
 	import { stateGame } from '../game/stateGame.svelte';
 	import { getSymbolInfo } from '../game/utils';
@@ -252,14 +252,18 @@
 	<BoardContainer>
 		<Container zIndex={10}>
 			{#if revealedReels > 0 && current}
-				{@const y = BOARD_SIZES.height + SYMBOL_SIZE * 0.3}
+				<!-- On the board frame's paper nameplate (BoardFrame: plate centre is
+				     42 units above the board's top edge), in place of "1,024 WAYS",
+				     which steps out while a win is lit. Under the board it sat on the
+				     frame's fader strip — a number on the artwork. -->
+				{@const y = -SYMBOL_SIZE * 0.3}
 				<!-- icon then count, as one centred pair: the icon is anchored on its
 				     right edge and the text on its left, so the pair stays balanced
 				     about the board's centre however long the number is. -->
 				<Sprite
 					anchor={{ x: 1, y: 0.5 }}
 					key={current.assetKey}
-					x={BOARD_SIZES.width / 2 - SYMBOL_SIZE * 0.07}
+					x={BOARD_SIZES.width / 2 - SYMBOL_SIZE * 0.02}
 					{y}
 					width={ICON}
 					height={ICON}
@@ -267,7 +271,7 @@
 				{#if current.letter}
 					<Text
 						anchor={0.5}
-						x={BOARD_SIZES.width / 2 - SYMBOL_SIZE * 0.07 - ICON / 2}
+						x={BOARD_SIZES.width / 2 - SYMBOL_SIZE * 0.02 - ICON / 2}
 						{y}
 						text={current.letter}
 						style={{
@@ -278,14 +282,17 @@
 						}}
 					/>
 				{/if}
-				<GoldText
-					text={current.ways===1?gameText('ssWaysWinOne'):gameText('ssWaysWin',{ways:current.ways.toLocaleString('en-US')})}
-					fontSize={SYMBOL_SIZE * 0.22}
-					x={BOARD_SIZES.width / 2 + SYMBOL_SIZE * 0.07}
-					{y}
+				<!-- ink on the paper plate, like the "1,024 WAYS" it replaces (the
+				     gold fill read pale-on-cream there) -->
+				{@const waysLabel = current.ways===1?gameText('ssWaysWinOne'):gameText('ssWaysWin',{ways:current.ways.toLocaleString('en-US')})}
+				{@const waysStyle = { fontFamily: GAME_FONT, fontWeight: '400' as const, fill: 0x15191f, letterSpacing: 1, fontSize: Math.min(SYMBOL_SIZE * 0.2, (BOARD_SIZES.width * 0.3) / Math.max(1, waysLabel.length * 0.6)) }}
+				<!-- ink-centred on the plate like BoardFrame's own label -->
+				<Text
+					text={waysLabel}
+					x={BOARD_SIZES.width / 2 + SYMBOL_SIZE * 0.02}
+					y={y - inkOffsetY(waysLabel, waysStyle)}
 					anchor={{ x: 0, y: 0.5 }}
-					maxWidth={BOARD_SIZES.width * 0.4}
-					letterSpacing={1}
+					style={waysStyle}
 				/>
 			{/if}
 		</Container>

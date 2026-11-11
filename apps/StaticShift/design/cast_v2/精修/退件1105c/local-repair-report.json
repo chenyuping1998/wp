@@ -1,0 +1,61 @@
+{
+  "dj": {
+    "leg_l_upper": {
+      "type": "inner crotch edge",
+      "roi_pixels": 20264,
+      "changed_pixels": 9378,
+      "changed_bbox": [
+        419,
+        880,
+        566,
+        1015
+      ]
+    },
+    "leg_r_upper": {
+      "type": "inner crotch edge",
+      "roi_pixels": 20264,
+      "changed_pixels": 10093,
+      "changed_bbox": [
+        526,
+        878,
+        631,
+        1013
+      ]
+    },
+    "arm_r_upper": {
+      "type": "rounded sleeve cap",
+      "roi_pixels": 19819,
+      "changed_pixels": 3156,
+      "changed_bbox": [
+        647,
+        339,
+        729,
+        416
+      ]
+    }
+  },
+  "host": {
+    "leg_l_upper": {
+      "type": "inner crotch edge",
+      "roi_pixels": 20264,
+      "changed_pixels": 9973,
+      "changed_bbox": [
+        436,
+        731,
+        561,
+        863
+      ]
+    },
+    "leg_r_upper": {
+      "type": "inner crotch edge",
+      "roi_pixels": 20264,
+      "changed_pixels": 10226,
+      "changed_bbox": [
+        522,
+        732,
+        625,
+        865
+      ]
+    }
+  }
+}
