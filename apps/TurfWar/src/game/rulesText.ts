@@ -45,10 +45,10 @@ const english = (T: Terms): GameText => ({
 	scoreTitle: 'The Big Score',
 	score: `On any spin — in normal play and inside every feature — the <strong>entire grid can become a single Loot Bag</strong>. It carries one value from <strong>5× to 50×</strong> applied to every position, so a winning ${T.payline} is multiplied by that value once for each of its positions. The Big Score can turn up whether or not the spin has a winning line — when there is no win it simply passes.`,
 	scatter: (n) =>
-		`The Boombox Scatter appears on all five reels in the base game, and on reels 3 to 5 during free spins. ${T.noPayOnItsOwn}, and does not need to land on a ${T.payline}. The number of Scatters landing together decides which feature opens, and each one awards ${n} free spins:`,
+		`The Boombox Scatter appears on all five reels in the base game, and mainly on reels 3 to 5 during free spins. ${T.noPayOnItsOwn}, and does not need to land on a ${T.payline}. The number of Scatters landing together decides which feature opens, and each one awards ${n} free spins:`,
 	tiers: [
 		'One Loot Bag is on the grid from the start. All Loot Bags are sticky and stay until the feature ends; between spins each is refilled with a new multiplier.',
-		'Two Loot Bags are on the grid from the start. Loot Bag values are sticky, and any Loot Bag that takes part in a win doubles before the next spin. Each Loot Bag doubles at most once per spin.',
+		'Two Loot Bags are on the grid from the start. Loot Bag values are sticky, and any Loot Bag that takes part in a win doubles before the next spin. Each Loot Bag doubles at most once per spin. A Loot Bag can reach at most 1000×.',
 		'One Loot Bag is on the grid from the start and the doubling rule of Muscle applies. In addition, <strong>every reel a Bruiser fills with Wilds stays Wild for the rest of the feature</strong> — held Wild columns build up spin after spin.',
 	],
 	symbols: {
@@ -83,10 +83,10 @@ const TEXT: Record<Exclude<RulesLang, 'en'>, GameText> = {
 		scoreTitle: 'Der große Coup',
 		score: 'In jedem Spin – im normalen Spiel und in jedem Feature – kann <strong>das ganze Raster zu einem einzigen Beutesack werden</strong>. Er trägt einen Wert von <strong>5× bis 50×</strong> für jede Position, sodass eine Gewinnlinie einmal pro Position mit diesem Wert multipliziert wird. Der große Coup kann unabhängig davon erscheinen, ob der Spin eine Gewinnlinie hat – ohne Gewinn zieht er einfach vorbei.',
 		scatter: (n) =>
-			`Der Boombox-Scatter erscheint im Basisspiel auf allen fünf Walzen und in Freispielen auf den Walzen 3 bis 5. Er zahlt nicht allein und muss nicht auf einer Gewinnlinie landen. Die Zahl der gleichzeitig gelandeten Scatter entscheidet, welches Feature startet, und jedes bringt ${n} Freispiele:`,
+			`Der Boombox-Scatter erscheint im Basisspiel auf allen fünf Walzen und in Freispielen überwiegend auf den Walzen 3 bis 5. Er zahlt nicht allein und muss nicht auf einer Gewinnlinie landen. Die Zahl der gleichzeitig gelandeten Scatter entscheidet, welches Feature startet, und jedes bringt ${n} Freispiele:`,
 		tiers: [
 			'Ein Beutesack liegt von Beginn an auf dem Raster. Alle Beutesäcke sind sticky und bleiben bis zum Ende des Features; zwischen den Spins erhält jeder einen neuen Multiplikator.',
-			'Zwei Beutesäcke liegen von Beginn an auf dem Raster. Ihre Werte bleiben erhalten, und jeder Beutesack, der an einem Gewinn beteiligt ist, verdoppelt sich vor dem nächsten Spin. Jeder Beutesack verdoppelt sich höchstens einmal pro Spin.',
+			'Zwei Beutesäcke liegen von Beginn an auf dem Raster. Ihre Werte bleiben erhalten, und jeder Beutesack, der an einem Gewinn beteiligt ist, verdoppelt sich vor dem nächsten Spin. Jeder Beutesack verdoppelt sich höchstens einmal pro Spin. Ein Beutesack kann höchstens 1000× erreichen.',
 			'Ein Beutesack liegt von Beginn an auf dem Raster, und die Verdopplungsregel von Muscle gilt. Zusätzlich <strong>bleibt jede Walze, die ein Schläger mit Wilds füllt, für den Rest des Features Wild</strong> – gehaltene Wild-Walzen sammeln sich Spin für Spin an.',
 		],
 		symbols: {
@@ -119,10 +119,10 @@ const TEXT: Record<Exclude<RulesLang, 'en'>, GameText> = {
 		scoreTitle: 'El Gran Golpe',
 		score: 'En cualquier giro —en el juego normal y dentro de cada función— <strong>toda la cuadrícula puede convertirse en una sola bolsa del botín</strong>. Lleva un valor de <strong>5× a 50×</strong> aplicado a cada posición, así que una línea de pago ganadora se multiplica por ese valor una vez por cada una de sus posiciones. El Gran Golpe puede aparecer tenga o no el giro una línea ganadora; si no hay ganancia, simplemente pasa.',
 		scatter: (n) =>
-			`El Scatter del radiocasete aparece en los cinco carretes en el juego base y en los carretes 3 a 5 durante los giros gratis. No paga por sí solo y no necesita caer en una línea de pago. El número de Scatters que caen a la vez decide qué función se abre, y cada una otorga ${n} giros gratis:`,
+			`El Scatter del radiocasete aparece en los cinco carretes en el juego base y principalmente en los carretes 3 a 5 durante los giros gratis. No paga por sí solo y no necesita caer en una línea de pago. El número de Scatters que caen a la vez decide qué función se abre, y cada una otorga ${n} giros gratis:`,
 		tiers: [
 			'Una bolsa está en la cuadrícula desde el principio. Todas las bolsas son fijas y se quedan hasta que termina la función; entre giros, cada una se recarga con un nuevo multiplicador.',
-			'Dos bolsas están en la cuadrícula desde el principio. Los valores de las bolsas se mantienen, y toda bolsa que participa en una ganancia se duplica antes del siguiente giro. Cada bolsa se duplica como máximo una vez por giro.',
+			'Dos bolsas están en la cuadrícula desde el principio. Los valores de las bolsas se mantienen, y toda bolsa que participa en una ganancia se duplica antes del siguiente giro. Cada bolsa se duplica como máximo una vez por giro. Una bolsa puede alcanzar como máximo 1000×.',
 			'Una bolsa está en la cuadrícula desde el principio y se aplica la regla de duplicación de Muscle. Además, <strong>cada carrete que el Matón llena de Wilds sigue siendo Wild el resto de la función</strong>: las columnas Wild retenidas se acumulan giro tras giro.',
 		],
 		symbols: {
@@ -155,10 +155,10 @@ const TEXT: Record<Exclude<RulesLang, 'en'>, GameText> = {
 		scoreTitle: 'Le Gros Coup',
 		score: 'À n’importe quel tour — en jeu normal et dans chaque fonction — <strong>toute la grille peut devenir un seul sac de butin</strong>. Il porte une valeur de <strong>5× à 50×</strong> appliquée à chaque position : une ligne de paiement gagnante est donc multipliée par cette valeur une fois pour chacune de ses positions. Le Gros Coup peut survenir que le tour ait une ligne gagnante ou non ; sans gain, il passe simplement.',
 		scatter: (n) =>
-			`Le Scatter boombox apparaît sur les cinq rouleaux dans le jeu de base, et sur les rouleaux 3 à 5 pendant les tours gratuits. Il ne paie pas seul et n’a pas besoin de tomber sur une ligne de paiement. Le nombre de Scatters tombés ensemble détermine la fonction qui s’ouvre, et chacune donne ${n} tours gratuits :`,
+			`Le Scatter boombox apparaît sur les cinq rouleaux dans le jeu de base, et principalement sur les rouleaux 3 à 5 pendant les tours gratuits. Il ne paie pas seul et n’a pas besoin de tomber sur une ligne de paiement. Le nombre de Scatters tombés ensemble détermine la fonction qui s’ouvre, et chacune donne ${n} tours gratuits :`,
 		tiers: [
 			'Un sac est sur la grille dès le départ. Tous les sacs sont collants et restent jusqu’à la fin de la fonction ; entre deux tours, chacun reçoit un nouveau multiplicateur.',
-			'Deux sacs sont sur la grille dès le départ. Les valeurs des sacs sont conservées, et tout sac qui participe à un gain double avant le tour suivant. Chaque sac double au plus une fois par tour.',
+			'Deux sacs sont sur la grille dès le départ. Les valeurs des sacs sont conservées, et tout sac qui participe à un gain double avant le tour suivant. Chaque sac double au plus une fois par tour. Un sac peut atteindre au maximum 1000×.',
 			'Un sac est sur la grille dès le départ et la règle de doublement de Muscle s’applique. De plus, <strong>chaque rouleau que la Brute remplit de Wilds reste Wild jusqu’à la fin de la fonction</strong> — les colonnes Wild conservées s’accumulent tour après tour.',
 		],
 		symbols: {
@@ -191,10 +191,10 @@ const TEXT: Record<Exclude<RulesLang, 'en'>, GameText> = {
 		scoreTitle: 'O Grande Golpe',
 		score: 'Em qualquer rodada — no jogo normal e dentro de cada recurso — <strong>a grade inteira pode virar um único saco de saque</strong>. Ele leva um valor de <strong>5× a 50×</strong> aplicado a cada posição, então uma linha de pagamento vencedora é multiplicada por esse valor uma vez para cada uma de suas posições. O Grande Golpe pode aparecer com ou sem linha vencedora na rodada — se não houver ganho, ele simplesmente passa.',
 		scatter: (n) =>
-			`O Scatter do boombox aparece nos cinco rolos no jogo base e nos rolos 3 a 5 durante as rodadas grátis. Ele não paga sozinho e não precisa cair em uma linha de pagamento. O número de Scatters que caem juntos decide qual recurso abre, e cada um concede ${n} rodadas grátis:`,
+			`O Scatter do boombox aparece nos cinco rolos no jogo base e principalmente nos rolos 3 a 5 durante as rodadas grátis. Ele não paga sozinho e não precisa cair em uma linha de pagamento. O número de Scatters que caem juntos decide qual recurso abre, e cada um concede ${n} rodadas grátis:`,
 		tiers: [
 			'Um saco está na grade desde o início. Todos os sacos são fixos e ficam até o fim do recurso; entre as rodadas, cada um recebe um novo multiplicador.',
-			'Dois sacos estão na grade desde o início. Os valores dos sacos são mantidos, e todo saco que participa de um ganho dobra antes da próxima rodada. Cada saco dobra no máximo uma vez por rodada.',
+			'Dois sacos estão na grade desde o início. Os valores dos sacos são mantidos, e todo saco que participa de um ganho dobra antes da próxima rodada. Cada saco dobra no máximo uma vez por rodada. Um saco pode chegar a no máximo 1000×.',
 			'Um saco está na grade desde o início e vale a regra de dobrar do Muscle. Além disso, <strong>todo rolo que o Brutamontes enche de Wilds continua Wild pelo resto do recurso</strong> — as colunas Wild retidas se acumulam rodada após rodada.',
 		],
 		symbols: {
@@ -227,10 +227,10 @@ const TEXT: Record<Exclude<RulesLang, 'en'>, GameText> = {
 		scoreTitle: 'Wielki skok',
 		score: 'W dowolnym obrocie — w zwykłej grze i w każdej funkcji — <strong>cała siatka może stać się jednym workiem z łupem</strong>. Ma on jedną wartość od <strong>5× do 50×</strong> dla każdego pola, więc wygrywająca linia jest mnożona przez tę wartość raz za każde swoje pole. Wielki skok może się pojawić niezależnie od tego, czy obrót ma wygrywającą linię — gdy nie ma wygranej, po prostu mija.',
 		scatter: (n) =>
-			`Scatter boomboks pojawia się w grze podstawowej na wszystkich pięciu bębnach, a podczas darmowych obrotów na bębnach od 3 do 5. Nie płaci samodzielnie i nie musi wylądować na linii wygrywającej. Liczba symboli Scatter, które wylądują jednocześnie, decyduje o tym, która funkcja się otworzy, a każda przyznaje ${n} darmowych obrotów:`,
+			`Scatter boomboks pojawia się w grze podstawowej na wszystkich pięciu bębnach, a podczas darmowych obrotów głównie na bębnach od 3 do 5. Nie płaci samodzielnie i nie musi wylądować na linii wygrywającej. Liczba symboli Scatter, które wylądują jednocześnie, decyduje o tym, która funkcja się otworzy, a każda przyznaje ${n} darmowych obrotów:`,
 		tiers: [
 			'Od początku na siatce jest jeden worek. Wszystkie worki są lepkie i zostają do końca funkcji; między obrotami każdy otrzymuje nowy mnożnik.',
-			'Od początku na siatce są dwa worki. Wartości worków zostają zachowane, a każdy worek biorący udział w wygranej podwaja się przed następnym obrotem. Każdy worek podwaja się najwyżej raz na obrót.',
+			'Od początku na siatce są dwa worki. Wartości worków zostają zachowane, a każdy worek biorący udział w wygranej podwaja się przed następnym obrotem. Każdy worek podwaja się najwyżej raz na obrót. Worek może osiągnąć najwyżej 1000×.',
 			'Od początku na siatce jest jeden worek i obowiązuje zasada podwajania z Muscle. Dodatkowo <strong>każdy bęben, który Osiłek wypełni symbolami Wild, pozostaje Wild do końca funkcji</strong> — zatrzymane kolumny Wild przybywają z obrotu na obrót.',
 		],
 		symbols: {
@@ -263,10 +263,10 @@ const TEXT: Record<Exclude<RulesLang, 'en'>, GameText> = {
 		scoreTitle: 'Крупный куш',
 		score: 'В любом вращении — в обычной игре и внутри каждой функции — <strong>всё поле может стать одним мешком с добычей</strong>. Он несёт одно значение от <strong>5× до 50×</strong> для каждой позиции, поэтому выигрышная линия умножается на это значение один раз за каждую свою позицию. Крупный куш может выпасть независимо от того, есть ли во вращении выигрышная линия, — если выигрыша нет, он просто проходит.',
 		scatter: (n) =>
-			`Scatter «Бумбокс» выпадает на всех пяти барабанах в основной игре и на барабанах 3–5 во время бесплатных вращений. Он не оплачивается сам по себе и не обязан выпадать на линии выплат. Число одновременно выпавших Scatter определяет, какая функция откроется, и каждая даёт ${n} бесплатных вращений:`,
+			`Scatter «Бумбокс» выпадает на всех пяти барабанах в основной игре и в основном на барабанах 3–5 во время бесплатных вращений. Он не оплачивается сам по себе и не обязан выпадать на линии выплат. Число одновременно выпавших Scatter определяет, какая функция откроется, и каждая даёт ${n} бесплатных вращений:`,
 		tiers: [
 			'С самого начала на поле один мешок. Все мешки липкие и остаются до конца функции; между вращениями каждый получает новый множитель.',
-			'С самого начала на поле два мешка. Значения мешков сохраняются, и любой мешок, участвующий в выигрыше, удваивается перед следующим вращением. Каждый мешок удваивается не более одного раза за вращение.',
+			'С самого начала на поле два мешка. Значения мешков сохраняются, и любой мешок, участвующий в выигрыше, удваивается перед следующим вращением. Каждый мешок удваивается не более одного раза за вращение. Значение мешка не может превышать 1000×.',
 			'С самого начала на поле один мешок, и действует правило удвоения из Muscle. Кроме того, <strong>каждый барабан, который Громила заполнил символами Wild, остаётся Wild до конца функции</strong> — удержанные столбцы Wild накапливаются от вращения к вращению.',
 		],
 		symbols: {
@@ -299,10 +299,10 @@ const TEXT: Record<Exclude<RulesLang, 'en'>, GameText> = {
 		scoreTitle: 'Büyük Vurgun',
 		score: 'Herhangi bir dönüşte — normal oyunda ve her özelliğin içinde — <strong>tüm ızgara tek bir Ganimet Çantasına dönüşebilir</strong>. Her konuma uygulanan <strong>5× ile 50×</strong> arasında tek bir değer taşır; böylece kazanan bir ödeme çizgisi, her konumu için bir kez bu değerle çarpılır. Büyük Vurgun, dönüşte kazanan çizgi olsun ya da olmasın gelebilir — kazanç yoksa öylece geçer.',
 		scatter: (n) =>
-			`Müzik Seti Scatter’ı ana oyunda beş makaranın hepsinde, ücretsiz dönüşlerde ise 3–5. makaralarda çıkar. Tek başına ödeme yapmaz ve bir ödeme çizgisine düşmesi gerekmez. Birlikte gelen Scatter sayısı hangi özelliğin açılacağını belirler ve her biri ${n} ücretsiz dönüş verir:`,
+			`Müzik Seti Scatter’ı ana oyunda beş makaranın hepsinde, ücretsiz dönüşlerde ise çoğunlukla 3–5. makaralarda çıkar. Tek başına ödeme yapmaz ve bir ödeme çizgisine düşmesi gerekmez. Birlikte gelen Scatter sayısı hangi özelliğin açılacağını belirler ve her biri ${n} ücretsiz dönüş verir:`,
 		tiers: [
 			'Başlangıçta ızgarada bir çanta vardır. Tüm çantalar yapışkandır ve özellik bitene kadar kalır; dönüşler arasında her birine yeni bir çarpan gelir.',
-			'Başlangıçta ızgarada iki çanta vardır. Çanta değerleri korunur ve bir kazanca katılan her çanta bir sonraki dönüşten önce ikiye katlanır. Her çanta dönüş başına en fazla bir kez katlanır.',
+			'Başlangıçta ızgarada iki çanta vardır. Çanta değerleri korunur ve bir kazanca katılan her çanta bir sonraki dönüşten önce ikiye katlanır. Her çanta dönüş başına en fazla bir kez katlanır. Bir çantanın değeri en fazla 1000× olabilir.',
 			'Başlangıçta ızgarada bir çanta vardır ve Muscle’ın ikiye katlama kuralı geçerlidir. Ayrıca <strong>Kabadayı’nın Wild ile doldurduğu her makara özellik sonuna kadar Wild kalır</strong> — tutulan Wild sütunları dönüş dönüş birikir.',
 		],
 		symbols: {
@@ -335,10 +335,10 @@ const TEXT: Record<Exclude<RulesLang, 'en'>, GameText> = {
 		scoreTitle: 'Iso keikka',
 		score: 'Millä tahansa kierroksella — tavallisessa pelissä ja jokaisessa ominaisuudessa — <strong>koko ruudukosta voi tulla yksi saalissäkki</strong>. Sillä on yksi arvo väliltä <strong>5×–50×</strong> jokaisessa ruudussa, joten voittava voittolinja kerrotaan tällä arvolla kerran jokaista ruutuaan kohden. Iso keikka voi ilmestyä riippumatta siitä, onko kierroksella voittolinjaa — jos voittoa ei ole, se vain menee ohi.',
 		scatter: (n) =>
-			`Boombox-Scatter ilmestyy peruspelissä kaikille viidelle rullalle ja ilmaiskierroksilla rullille 3–5. Se ei maksa yksinään eikä sen tarvitse osua voittolinjalle. Yhtä aikaa osuvien Scatterien määrä ratkaisee, mikä ominaisuus avautuu, ja kukin antaa ${n} ilmaiskierrosta:`,
+			`Boombox-Scatter ilmestyy peruspelissä kaikille viidelle rullalle ja ilmaiskierroksilla enimmäkseen rullille 3–5. Se ei maksa yksinään eikä sen tarvitse osua voittolinjalle. Yhtä aikaa osuvien Scatterien määrä ratkaisee, mikä ominaisuus avautuu, ja kukin antaa ${n} ilmaiskierrosta:`,
 		tiers: [
 			'Ruudukossa on alusta alkaen yksi säkki. Kaikki säkit ovat tahmeita ja pysyvät ominaisuuden loppuun asti; kierrosten välillä kukin saa uuden kertoimen.',
-			'Ruudukossa on alusta alkaen kaksi säkkiä. Säkkien arvot säilyvät, ja jokainen voittoon osallistuva säkki tuplaantuu ennen seuraavaa kierrosta. Kukin säkki tuplaantuu enintään kerran kierroksessa.',
+			'Ruudukossa on alusta alkaen kaksi säkkiä. Säkkien arvot säilyvät, ja jokainen voittoon osallistuva säkki tuplaantuu ennen seuraavaa kierrosta. Kukin säkki tuplaantuu enintään kerran kierroksessa. Säkin arvo voi olla enintään 1000×.',
 			'Ruudukossa on alusta alkaen yksi säkki, ja Musclen tuplaussääntö on voimassa. Lisäksi <strong>jokainen rulla, jonka Rähinäpukari täyttää Wildeillä, pysyy Wildinä ominaisuuden loppuun asti</strong> — pidetyt Wild-sarakkeet kertyvät kierros kierrokselta.',
 		],
 		symbols: {
@@ -371,10 +371,10 @@ const TEXT: Record<Exclude<RulesLang, 'en'>, GameText> = {
 		scoreTitle: 'Jarahan Besar',
 		score: 'Di putaran mana pun — dalam permainan biasa dan di dalam setiap fitur — <strong>seluruh kisi dapat menjadi satu Kantong Jarahan</strong>. Kantong itu membawa satu nilai dari <strong>5× hingga 50×</strong> yang berlaku untuk setiap posisi, sehingga garis pembayaran yang menang dikalikan dengan nilai itu sekali untuk setiap posisinya. Jarahan Besar dapat muncul baik putaran itu punya garis menang maupun tidak — jika tidak ada kemenangan, ia lewat begitu saja.',
 		scatter: (n) =>
-			`Scatter Boombox muncul di kelima gulungan pada permainan dasar, dan di gulungan 3 sampai 5 selama putaran gratis. Scatter tidak membayar sendiri dan tidak perlu mendarat di garis pembayaran. Jumlah Scatter yang mendarat bersamaan menentukan fitur mana yang terbuka, dan masing-masing memberi ${n} putaran gratis:`,
+			`Scatter Boombox muncul di kelima gulungan pada permainan dasar, dan sebagian besar di gulungan 3 sampai 5 selama putaran gratis. Scatter tidak membayar sendiri dan tidak perlu mendarat di garis pembayaran. Jumlah Scatter yang mendarat bersamaan menentukan fitur mana yang terbuka, dan masing-masing memberi ${n} putaran gratis:`,
 		tiers: [
 			'Satu kantong sudah ada di kisi sejak awal. Semua kantong lengket dan bertahan sampai fitur berakhir; di antara putaran, masing-masing diisi ulang dengan pengganda baru.',
-			'Dua kantong sudah ada di kisi sejak awal. Nilai kantong tetap, dan setiap kantong yang ikut dalam kemenangan menjadi dua kali lipat sebelum putaran berikutnya. Setiap kantong paling banyak berlipat sekali per putaran.',
+			'Dua kantong sudah ada di kisi sejak awal. Nilai kantong tetap, dan setiap kantong yang ikut dalam kemenangan menjadi dua kali lipat sebelum putaran berikutnya. Setiap kantong paling banyak berlipat sekali per putaran. Nilai kantong paling tinggi 1000×.',
 			'Satu kantong sudah ada di kisi sejak awal dan aturan pelipatan Muscle berlaku. Selain itu, <strong>setiap gulungan yang diisi Wild oleh Si Preman tetap Wild sampai fitur berakhir</strong> — kolom Wild yang tertahan bertambah dari putaran ke putaran.',
 		],
 		symbols: {
@@ -407,10 +407,10 @@ const TEXT: Record<Exclude<RulesLang, 'en'>, GameText> = {
 		scoreTitle: 'Phi vụ lớn',
 		score: 'Ở bất kỳ lượt quay nào — khi chơi thường và trong mọi tính năng — <strong>toàn bộ lưới có thể trở thành một túi chiến lợi phẩm duy nhất</strong>. Túi mang một giá trị từ <strong>5× đến 50×</strong> áp dụng cho mọi ô, nên một dòng thanh toán thắng được nhân với giá trị đó một lần cho mỗi ô của nó. Phi vụ lớn có thể xuất hiện dù lượt quay có dòng thắng hay không — nếu không có thắng, nó chỉ lướt qua.',
 		scatter: (n) =>
-			`Scatter Máy cát-xét xuất hiện trên cả năm cuộn trong trò chơi chính và trên các cuộn 3 đến 5 trong vòng quay miễn phí. Nó không tự trả thưởng và không cần nằm trên dòng thanh toán. Số Scatter cùng xuất hiện quyết định tính năng nào được mở, và mỗi tính năng cho ${n} vòng quay miễn phí:`,
+			`Scatter Máy cát-xét xuất hiện trên cả năm cuộn trong trò chơi chính và chủ yếu trên các cuộn 3 đến 5 trong vòng quay miễn phí. Nó không tự trả thưởng và không cần nằm trên dòng thanh toán. Số Scatter cùng xuất hiện quyết định tính năng nào được mở, và mỗi tính năng cho ${n} vòng quay miễn phí:`,
 		tiers: [
 			'Một túi có sẵn trên lưới ngay từ đầu. Mọi túi đều cố định và ở lại đến hết tính năng; giữa các lượt quay, mỗi túi được nạp hệ số nhân mới.',
-			'Hai túi có sẵn trên lưới ngay từ đầu. Giá trị túi được giữ nguyên, và túi nào tham gia một khoản thắng sẽ nhân đôi trước lượt quay tiếp theo. Mỗi túi nhân đôi tối đa một lần mỗi lượt.',
+			'Hai túi có sẵn trên lưới ngay từ đầu. Giá trị túi được giữ nguyên, và túi nào tham gia một khoản thắng sẽ nhân đôi trước lượt quay tiếp theo. Mỗi túi nhân đôi tối đa một lần mỗi lượt. Giá trị túi tối đa là 1000×.',
 			'Một túi có sẵn trên lưới ngay từ đầu và áp dụng quy tắc nhân đôi của Muscle. Thêm vào đó, <strong>mỗi cuộn mà Gã đầu gấu lấp đầy Wild sẽ giữ nguyên Wild đến hết tính năng</strong> — các cột Wild được giữ tích lũy dần qua từng lượt.',
 		],
 		symbols: {
@@ -443,10 +443,10 @@ const TEXT: Record<Exclude<RulesLang, 'en'>, GameText> = {
 		scoreTitle: 'ビッグスコア',
 		score: 'どのスピンでも（通常プレイでも各フィーチャー中でも）、<strong>グリッド全体が1つのルートバッグになる</strong>ことがあります。全マスに<strong>5×～50×</strong>の倍率が1つ適用され、当たりペイラインはそのマスごとにこの倍率で1回ずつ倍増します。ビッグスコアは当たりラインの有無にかかわらず出現し、当たりがない場合はそのまま過ぎ去ります。',
 		scatter: (n) =>
-			`ラジカセのスキャッターはベースゲームでは5本すべてのリールに、フリースピン中はリール3～5に出現します。スキャッター単独では配当がなく、ペイライン上に止まる必要もありません。同時に出現したスキャッターの数で開始するフィーチャーが決まり、どれもフリースピン${n}回です：`,
+			`ラジカセのスキャッターはベースゲームでは5本すべてのリールに、フリースピン中は主にリール3～5に出現します。スキャッター単独では配当がなく、ペイライン上に止まる必要もありません。同時に出現したスキャッターの数で開始するフィーチャーが決まり、どれもフリースピン${n}回です：`,
 		tiers: [
 			'開始時からバッグが1つあります。すべてのバッグは固定され、フィーチャー終了まで残ります。スピンごとに新しい倍率に入れ替わります。',
-			'開始時からバッグが2つあります。バッグの倍率は保持され、当たりに関わったバッグは次のスピン前に2倍になります。各バッグが2倍になるのは1スピンにつき1回までです。',
+			'開始時からバッグが2つあります。バッグの倍率は保持され、当たりに関わったバッグは次のスピン前に2倍になります。各バッグが2倍になるのは1スピンにつき1回までです。バッグの倍率の上限は1000×です。',
 			'開始時からバッグが1つあり、Muscleの倍増ルールが適用されます。さらに<strong>ブルーザーがワイルドで埋めたリールは、フィーチャー終了までワイルドのまま残ります</strong>。残ったワイルドのリールはスピンごとに増えていきます。',
 		],
 		symbols: {
@@ -479,10 +479,10 @@ const TEXT: Record<Exclude<RulesLang, 'en'>, GameText> = {
 		scoreTitle: '빅 스코어',
 		score: '어느 스핀에서든(일반 게임과 모든 기능 안에서) <strong>그리드 전체가 하나의 전리품 가방이 될 수 있습니다</strong>. 모든 칸에 <strong>5×~50×</strong>의 값 하나가 적용되므로, 당첨 페이라인은 지나가는 칸마다 그 값으로 한 번씩 곱해집니다. 빅 스코어는 당첨 라인 유무와 관계없이 나올 수 있으며, 당첨이 없으면 그냥 지나갑니다.',
 		scatter: (n) =>
-			`붐박스 스캐터는 기본 게임에서는 다섯 릴 모두에, 프리 스핀 중에는 3~5번 릴에 등장합니다. 스캐터 단독으로는 지급되지 않으며 페이라인 위에 있을 필요가 없습니다. 함께 나온 스캐터 수에 따라 열리는 기능이 정해지며, 각 기능은 프리 스핀 ${n}회를 줍니다:`,
+			`붐박스 스캐터는 기본 게임에서는 다섯 릴 모두에, 프리 스핀 중에는 주로 3~5번 릴에 등장합니다. 스캐터 단독으로는 지급되지 않으며 페이라인 위에 있을 필요가 없습니다. 함께 나온 스캐터 수에 따라 열리는 기능이 정해지며, 각 기능은 프리 스핀 ${n}회를 줍니다:`,
 		tiers: [
 			'시작부터 그리드에 가방 1개가 있습니다. 모든 가방은 고정되어 기능이 끝날 때까지 남으며, 스핀 사이마다 새 배수로 바뀝니다.',
-			'시작부터 그리드에 가방 2개가 있습니다. 가방 값은 유지되며, 당첨에 관여한 가방은 다음 스핀 전에 두 배가 됩니다. 각 가방은 스핀당 최대 한 번만 두 배가 됩니다.',
+			'시작부터 그리드에 가방 2개가 있습니다. 가방 값은 유지되며, 당첨에 관여한 가방은 다음 스핀 전에 두 배가 됩니다. 각 가방은 스핀당 최대 한 번만 두 배가 됩니다. 가방 값은 최대 1000×입니다.',
 			'시작부터 그리드에 가방 1개가 있고 Muscle의 두 배 규칙이 적용됩니다. 추가로 <strong>브루저가 와일드로 채운 릴은 기능이 끝날 때까지 와일드로 남습니다</strong>. 남은 와일드 릴은 스핀마다 쌓여 갑니다.',
 		],
 		symbols: {
@@ -515,10 +515,10 @@ const TEXT: Record<Exclude<RulesLang, 'en'>, GameText> = {
 		scoreTitle: '大撈一筆',
 		score: '任何一手——一般遊戲與每個特色功能中——<strong>整個盤面都可能變成一個贓物袋</strong>。它帶有 <strong>5× 至 50×</strong> 的單一倍數並套用到每一格，因此中獎賠付線會依經過的每一格各乘一次這個倍數。不論這手有沒有中獎線都可能出現大撈一筆——沒有贏分時就只是經過。',
 		scatter: (n) =>
-			`收音機分散符號在一般遊戲出現在全部五輪，免費遊戲中出現在第 3 至第 5 輪。分散符號本身不派彩，也不必落在賠付線上。同時出現的分散符號數量決定開啟哪個特色功能，每個都給 ${n} 次免費遊戲：`,
+			`收音機分散符號在一般遊戲出現在全部五輪，免費遊戲中主要出現在第 3 至第 5 輪。分散符號本身不派彩，也不必落在賠付線上。同時出現的分散符號數量決定開啟哪個特色功能，每個都給 ${n} 次免費遊戲：`,
 		tiers: [
 			'開場時盤面上就有 1 個袋。所有袋都會固定，留到特色功能結束；每手之間各自換上新的倍數。',
-			'開場時盤面上就有 2 個袋。袋的倍數會保留，參與贏分的袋在下一手前加倍。每個袋每手最多加倍一次。',
+			'開場時盤面上就有 2 個袋。袋的倍數會保留，參與贏分的袋在下一手前加倍。每個袋每手最多加倍一次。袋的倍數最高為 1000×。',
 			'開場時盤面上就有 1 個袋，並適用 Muscle 的加倍規則。此外，<strong>打手填滿百搭的每一條輪，都會保持百搭直到特色功能結束</strong>——保留的百搭輪會一手一手累積。',
 		],
 		symbols: {
@@ -551,10 +551,10 @@ const TEXT: Record<Exclude<RulesLang, 'en'>, GameText> = {
 		scoreTitle: 'الضربة الكبرى',
 		score: 'في أي دورة — في اللعب العادي وداخل كل ميزة — <strong>يمكن أن تتحول الشبكة كلها إلى كيس غنيمة واحد</strong>. يحمل قيمة واحدة من <strong>5× إلى 50×</strong> تُطبَّق على كل موضع، فيُضرب خط الدفع الرابح في هذه القيمة مرة لكل موضع من مواضعه. يمكن أن تظهر الضربة الكبرى سواء كان في الدورة خط رابح أم لا — وعند عدم وجود ربح تمر ببساطة.',
 		scatter: (n) =>
-			`يظهر رمز Scatter مسجل الصوت على البكرات الخمس كلها في اللعبة الأساسية، وعلى البكرات من 3 إلى 5 أثناء الدورات المجانية. لا يدفع بمفرده، ولا يلزم أن يهبط على خط دفع. يحدد عدد رموز Scatter الهابطة معًا أي ميزة تُفتح، وتمنح كل ميزة ${n} دورات مجانية:`,
+			`يظهر رمز Scatter مسجل الصوت على البكرات الخمس كلها في اللعبة الأساسية، وغالبًا على البكرات من 3 إلى 5 أثناء الدورات المجانية. لا يدفع بمفرده، ولا يلزم أن يهبط على خط دفع. يحدد عدد رموز Scatter الهابطة معًا أي ميزة تُفتح، وتمنح كل ميزة ${n} دورات مجانية:`,
 		tiers: [
 			'يوجد كيس واحد على الشبكة منذ البداية. جميع الأكياس ثابتة وتبقى حتى نهاية الميزة؛ وبين الدورات يُعاد ملء كل منها بمضاعف جديد.',
-			'يوجد كيسان على الشبكة منذ البداية. تبقى قيم الأكياس، وأي كيس يشارك في ربح تتضاعف قيمته قبل الدورة التالية. يتضاعف كل كيس مرة واحدة على الأكثر في كل دورة.',
+			'يوجد كيسان على الشبكة منذ البداية. تبقى قيم الأكياس، وأي كيس يشارك في ربح تتضاعف قيمته قبل الدورة التالية. يتضاعف كل كيس مرة واحدة على الأكثر في كل دورة. أقصى قيمة للكيس هي 1000×.',
 			'يوجد كيس واحد على الشبكة منذ البداية وتنطبق قاعدة المضاعفة الخاصة بـ Muscle. وإضافة إلى ذلك، <strong>تبقى كل بكرة يملؤها البلطجي برموز Wild على حالها حتى نهاية الميزة</strong> — فتتراكم أعمدة Wild المحتجزة دورة بعد دورة.',
 		],
 		symbols: {
@@ -587,10 +587,10 @@ const TEXT: Record<Exclude<RulesLang, 'en'>, GameText> = {
 		scoreTitle: 'बड़ा हाथ',
 		score: 'किसी भी स्पिन पर — सामान्य खेल में और हर फ़ीचर के अंदर — <strong>पूरा ग्रिड एक ही लूट बैग बन सकता है</strong>। इसका <strong>5× से 50×</strong> तक का एक मान हर स्थान पर लागू होता है, इसलिए जीतने वाली पेलाइन अपने हर स्थान के लिए एक बार उस मान से गुणा होती है। बड़ा हाथ स्पिन में जीतने वाली लाइन हो या न हो, आ सकता है — जीत न हो तो वह बस गुज़र जाता है।',
 		scatter: (n) =>
-			`बूमबॉक्स स्कैटर बेस गेम में पाँचों रीलों पर और फ्री स्पिन के दौरान रील 3 से 5 पर आता है। यह अपने आप भुगतान नहीं करता और इसका पेलाइन पर आना ज़रूरी नहीं है। एक साथ आने वाले स्कैटर की संख्या तय करती है कि कौन-सा फ़ीचर खुलेगा, और हर एक ${n} फ्री स्पिन देता है:`,
+			`बूमबॉक्स स्कैटर बेस गेम में पाँचों रीलों पर और फ्री स्पिन के दौरान ज़्यादातर रील 3 से 5 पर आता है। यह अपने आप भुगतान नहीं करता और इसका पेलाइन पर आना ज़रूरी नहीं है। एक साथ आने वाले स्कैटर की संख्या तय करती है कि कौन-सा फ़ीचर खुलेगा, और हर एक ${n} फ्री स्पिन देता है:`,
 		tiers: [
 			'शुरुआत से ग्रिड पर एक बैग होता है। सभी बैग चिपके रहते हैं और फ़ीचर खत्म होने तक रहते हैं; हर स्पिन के बीच हर एक में नया गुणक भरा जाता है।',
-			'शुरुआत से ग्रिड पर दो बैग होते हैं। बैग के मान बने रहते हैं, और जीत में शामिल हर बैग अगले स्पिन से पहले दोगुना हो जाता है। हर बैग एक स्पिन में अधिकतम एक बार दोगुना होता है।',
+			'शुरुआत से ग्रिड पर दो बैग होते हैं। बैग के मान बने रहते हैं, और जीत में शामिल हर बैग अगले स्पिन से पहले दोगुना हो जाता है। हर बैग एक स्पिन में अधिकतम एक बार दोगुना होता है। किसी बैग का मान अधिकतम 1000× हो सकता है।',
 			'शुरुआत से ग्रिड पर एक बैग होता है और Muscle का दोगुना करने का नियम लागू होता है। इसके अलावा, <strong>ब्रूज़र जिस भी रील को वाइल्ड से भरता है, वह फ़ीचर के अंत तक वाइल्ड रहती है</strong> — रोके गए वाइल्ड कॉलम हर स्पिन के साथ बढ़ते जाते हैं।',
 		],
 		symbols: {

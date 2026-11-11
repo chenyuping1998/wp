@@ -326,3 +326,17 @@ Miami 扛球棒男在反應最高點：上臂 `arm_r` 長度不變（肩→肘 2
 未重新打包：upload/ 仍是上一版，要出貨時跑 `./design/ship.sh`。
 gate rule 6 再改：從「手臂不得擠壓」改成「手臂沿骨頭不得超過 ±6.5%，且主動臂要垂直骨頭鼓起 ≥2%」。
 已驗證：舊的抄錄版與 09-23 的不擠壓版都會被擋下。
+
+
+## 2026-11-02: Neon spin-feel local trial
+
+Stone requested the same GoBananeon spin treatment used on corrected Turf, Pickle and Sumo. Added ReelMotion/reelMotion actual-velocity sampler with padding-key rebase,45ms build/24ms sharpen and smaller bounce blur. Removed SymbolSprite's two translucent ghosts,30% vertical stretch and15% motion opacity reduction. Normal profile converts Neon's140px-cell speeds by118/140: pre2.8, sweep4.2, brake2.8, settle0.22 times scale; normal padding1, start stagger100ms, rebound0.12cells. Hard Time's landOnImpact, anticipation/Turbo profiles, character art/rig, sound, feature logic and math are retained.
+
+Full build/guards PASS, including existing cast Spine/hole/source-art checks and added Neon blur regression check. svelte-check0 errors/1 warning. Actual production Chrome:3 complete normal spins, median stop gap200ms, first-to-last799–801ms. Viewed moving desktop frame, settled desktop and390x844 portrait play. Caught window errors empty. Explicit scene check after settling: all5 labelled reels stopped with empty filter lists. This covers base-game presentation, not complete bonus/physical-device/platform acceptance.
+
+Preview http://localhost:8021/?rgs_url=stub.local&sessionID=playtest&currency=USD&lang=en ; files `dist/hardtime-neon-motion/`, build/timing/screenshots/source hashes in `evidence/`. Local trial only: no upload staging or platform upload/publication; no thumbnail/cover changes.
+
+
+## 2026-11-02: Neon motion uploaded and published
+
+Stone requested publication of all3 new trials. Uploaded the exact tested frontend to silver-stars/hard-time; publish success **front v21**, get_game confirmed **math v3** unchanged. Plan3 uploads +1 obsolete-bundle deletion; post-upload replan0 actions, math replan0 actions. Existing thumbnail/cover retained; no platform store-art replacement, approval-version update or new review submission. Build/source hashes and incremental official checklist (with inherited coverage gaps clearly marked) are in `design/qa/neon_release_20261102/`; release receipt and self-check copied to `upload/HardTime/`. No ZIP produced.

@@ -19,10 +19,8 @@
 		symbolInfo: ReturnType<typeof getSymbolInfo>;
 		/** which symbol this is — selects its landing motion */
 		symbolName?: string;
-		// How fast the reel is travelling, 0..1, driving a cheap motion blur
-		// (vertical stretch + ghosts). Continuous rather than a boolean so the
-		// blur eases off through the bounce instead of snapping away the instant
-		// the reel changes state.
+		// Moving-reel marker used to suppress idle acts. ReelMotion owns
+		// the measured vertical blur for the entire strip.
 		blur?: number;
 		// symbol just landed: impact squash before settling to static
 		landing?: boolean;
@@ -213,30 +211,8 @@
 	});
 </script>
 
-{#if blur > 0.01}
-	<!-- ghost trail: same art, offset and faded, sells the motion blur. Offset,
-	     opacity and stretch all scale with speed, so the trail shortens and fades
-	     as the reel brakes rather than vanishing in one frame. -->
-	<Sprite
-		x={props.x}
-		y={(props.y ?? 0) - height * 0.42 * blur}
-		anchor={0.5}
-		key={props.symbolInfo.assetKey}
-		width={width * 0.96 * focusScale}
-		height={height * (1 + 0.18 * blur) * focusScale}
-		alpha={0.22 * blur}
-	/>
-	<Sprite
-		x={props.x}
-		y={(props.y ?? 0) + height * 0.42 * blur}
-		anchor={0.5}
-		key={props.symbolInfo.assetKey}
-		width={width * 0.96 * focusScale}
-		height={height * (1 + 0.18 * blur) * focusScale}
-		alpha={0.22 * blur}
-	/>
-{/if}
-
+<!-- The entire strip is blurred by ReelMotion using its actual velocity.
+     Keep the symbol artwork sharp in shape, with no duplicate ghosts. -->
 {#if landing && blur <= 0.01}
 	<!--
 		Landing. Wrapped in a Container so the symbol can rotate and offset about
@@ -331,9 +307,9 @@
 		rotation={idling ? idle.rotation : 0}
 		scale={{
 			x: focusScale * breath * (idling ? idle.scaleX : 1),
-			y: focusScale * breath * (idling ? idle.scaleY : 1) * (blur > 0.01 ? 1 + 0.3 * blur : 1),
+			y: focusScale * breath * (idling ? idle.scaleY : 1),
 		}}
-		alpha={(1 - 0.15 * blur) * dimAlpha}
+		alpha={dimAlpha}
 		tint={dimTint}
 	>
 		<SymbolArt
@@ -356,7 +332,7 @@
 			anchor={0.5}
 			key={props.symbolInfo.assetKey}
 			width={width * focusScale}
-			height={(blur > 0.01 ? height * (1 + 0.3 * blur) : height) * focusScale}
+			height={height * focusScale}
 			tint={0xffd6f4}
 			alpha={focusBloom}
 			blendMode="add"

@@ -16,6 +16,8 @@
 					{#if error?.error && error?.message}
 						<span>{JSON.stringify(error.error || 'unknown')}</span>
 						<p>{JSON.stringify(error.message || 'unknown')}</p>
+					{:else if typeof error === 'object'}
+						<p>{JSON.stringify(error)}</p>
 					{:else}
 						<p>{error}</p>
 					{/if}

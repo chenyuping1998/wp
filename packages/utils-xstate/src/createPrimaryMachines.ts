@@ -2,7 +2,7 @@ import { fromPromise } from 'xstate';
 
 import { API_AMOUNT_MULTIPLIER } from 'constants-shared/bet';
 import { stateBet, stateUrlDerived, stateModal } from 'state-shared';
-import { requestBet, requestEndRound } from 'rgs-requests';
+import { requestBalance, requestBet, requestEndRound } from 'rgs-requests';
 
 import type { BaseBet } from './types';
 
@@ -33,9 +33,50 @@ const handleRequestBet = async ({ onError }: { onError: () => void }) => {
 	} catch (error) {
 		onError();
 		stateBet.autoSpinsCounter = 0;
-		stateModal.modal = { name: 'error', error };
+		stateBet.isSpaceHold = false;
+		// A refusal the player can act on gets the player-facing notice, not the
+		// raw error box. The client checks the balance before every round, so
+		// ERR_IPB only arrives when the balance changed outside this game — refresh
+		// it so the bar shows what the server holds.
+		const code = rgsErrorCode(error);
+		if (code === 'ERR_IPB') {
+			await refreshBalance();
+			stateModal.modal = { name: 'message', message: 'insufficientFunds' };
+		} else if (code === 'ERR_GLE') {
+			stateModal.modal = { name: 'message', message: 'lossLimitReached' };
+		} else {
+			stateModal.modal = { name: 'error', error };
+		}
 		console.error(error);
 		throw error;
+	}
+};
+
+// Stake answers `{ error: 'ERR_IPB', message }`; tolerate `{ error: { code } }`
+// and `{ status: { statusCode } }` too.
+const rgsErrorCode = (error: unknown): string | undefined => {
+	const e = error as {
+		error?: string | { code?: string; statusCode?: string };
+		code?: string;
+		status?: { statusCode?: string };
+	} | null;
+	if (!e || typeof e !== 'object') return undefined;
+	if (typeof e.error === 'string') return e.error;
+	if (e.error && typeof e.error === 'object') return e.error.code ?? e.error.statusCode;
+	return e.code ?? e.status?.statusCode;
+};
+
+const refreshBalance = async () => {
+	try {
+		const data = await requestBalance({
+			rgsUrl: stateUrlDerived.rgsUrl(),
+			sessionID: stateUrlDerived.sessionID(),
+		});
+		if (data?.balance?.amount !== undefined) {
+			stateBet.balanceAmount = data.balance.amount / API_AMOUNT_MULTIPLIER;
+		}
+	} catch (error) {
+		console.error('balance refresh failed', error);
 	}
 };
 

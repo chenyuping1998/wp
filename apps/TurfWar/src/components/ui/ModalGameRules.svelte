@@ -7,6 +7,7 @@
 
 	import config from '../../game/config';
 	import { popupGhost } from './popupGhost';
+	import { fitFacts } from './fitFacts';
 	import { getSocialTerms } from '../../game/socialTerms';
 	import {
 		commonText,
@@ -164,10 +165,17 @@
 			<header class="wp-head">
 				<div class="wp-logo" style="font-family:Bungee,sans-serif;font-size:2rem;color:#F5893D">TURF WAR</div>
 				<h2>{C.gameRulesTitle}</h2>
-				<ul class="wp-facts">
+				<ul class="wp-facts" use:fitFacts>
 					<li><b>{reelCount}&times;{rowCount}</b><span>{C.factGrid}</span></li>
 					<li><b>{lineCount}</b><span>{C.factLines}</span></li>
-					<li><b>{rtpRangePct}</b><span>RTP</span></li>
+					<li>
+						{#if rtpLow === rtpHigh}
+							<b>{rtpRangePct}</b>
+						{:else}
+							<b class="wp-rtp"><em>{pct(rtpLow)}&ndash;</em><em>{pct(rtpHigh)}</em></b>
+						{/if}
+						<span>RTP</span>
+					</li>
 					<li><b>{num(maxWin)}&times;</b><span>{C.factMaxWin}</span></li>
 				</ul>
 			</header>
@@ -393,12 +401,28 @@
 	.wp-facts b {
 		color: #ffc38a;
 		font-family: var(--hm-title-font, sans-serif);
-		font-size: 1rem;
+		/* set by fitFacts to the largest size every value fits its plate at */
+		font-size: var(--fact-size, 1rem);
+		line-height: 1.15;
 		letter-spacing: 0.03em;
 		white-space: nowrap;
 	}
+	.wp-facts .wp-rtp em {
+		font-style: normal;
+	}
+	/* too narrow for the range on one line: break it after the dash */
+	:global(.wp-facts--stack) .wp-rtp {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+	}
 	.wp-facts span {
-		font-size: 0.66rem;
+		/* set by fitFacts, like the value above it */
+		font-size: var(--fact-label-size, 0.66rem);
+		/* a multi-word caption wraps ("LINHAS DE / PAGAMENTO"); fitFacts only
+		   shrinks it when one word alone is wider than the plate */
+		line-height: 1.15;
+		overflow-wrap: normal;
 		text-transform: uppercase;
 		letter-spacing: 0.08em;
 		opacity: 0.8;
