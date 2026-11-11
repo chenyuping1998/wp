@@ -3,7 +3,7 @@
 </script>
 
 <script lang="ts">
-	import { waitForResolve } from 'utils-shared/wait';
+	import { waitForResolve, waitForTimeout } from 'utils-shared/wait';
 
 	import TransitionAnimation from './TransitionAnimation.svelte';
 	import { getContext } from '../game/context';
@@ -24,8 +24,9 @@
 		// its own tail (held black, then a one-second reveal) underneath whatever
 		// the caller does next, and unmounts itself when that finishes.
 		transition: async () => {
+			const covered = waitForResolve((resolve) => (onblack = resolve));
 			transitioning = true;
-			await waitForResolve((resolve) => (onblack = resolve));
+			await Promise.race([covered, waitForTimeout(3000)]);
 		},
 	});
 </script>

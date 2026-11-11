@@ -10,10 +10,9 @@
 	import { SYMBOL_SIZE } from '../game/constants';
 	import { getSymbolX } from '../game/utils';
 	import BoardContainer from './BoardContainer.svelte';
-	import FxBurst from './FxBurst.svelte';
+	import ScatterSignal from './ScatterSignal.svelte';
 
-	// Free-game trigger celebration: a gold burst on every scatter, staggered
-	// left to right so the board lights up as a wave.
+	// Boombox trigger: registered speaker waves travel left to right.
 	const context = getContext();
 
 	let bursts = $state<{ id: number; x: number; y: number; delay: number }[]>([]);
@@ -40,10 +39,9 @@
 
 <BoardContainer>
 	{#each bursts as burst (burst.id)}
-		<FxBurst
+		<ScatterSignal
 			x={burst.x}
 			y={burst.y}
-			scale={1.15}
 			delay={burst.delay}
 			oncomplete={() => (bursts = bursts.filter((b) => b.id !== burst.id))}
 		/>

@@ -1,17 +1,10 @@
 <script lang="ts">
-	import { Container, Sprite } from 'pixi-svelte';
+	import { Sprite } from 'pixi-svelte';
 
 	import { SYMBOL_SIZE } from '../game/constants';
 	import { getSymbolInfo } from '../game/utils';
-	import {
-		partFrame,
-		partKey,
-		resolvePivot,
-		glowAlpha,
-	} from '../game/symbolParts';
 	import { poseKeyAt, smearAt } from '../game/posePlan';
 	import { HOLD_MS } from '../game/symbolWinMotion';
-	import { PARTS_MANIFEST } from '../game/partsManifest';
 
 	/**
 	 * The symbol's art, drawn either as the single flat sprite it has always been
@@ -83,7 +76,7 @@
 	// Capo Nostra's object symbols use the new single-piece paintings. The
 	// inherited Miami part rigs depict people, a flamingo, a boombox and a
 	// convertible, so swapping to them during a win would flash the old theme.
-	const rig = $derived(null);
+	const mode = $derived(props.mode ?? 'none');
 	// ── the pose sheet ─────────────────────────────────────────────────────────
 	//
 	// Three more DRAWINGS of this symbol, played as a timeline through the win
@@ -107,8 +100,7 @@
 	// The symbol's own light, on only while it is paying. Skipped entirely when
 	// this instance is drawing the flash or bloom copy — a light drawn three times
 	// over itself is just a white blob.
-	const glow = $derived(null);
-	const mode = $derived(props.mode ?? 'none');
+
 
 	// Sizes are multiples of the symbol's own draw size, not pixels: the car is
 	// 470px of art across and the J is 205, and one pixel value cannot be right
@@ -137,27 +129,7 @@
 	// container sits ON the pivot and the sprite is pushed back by the same
 	// amount, which is what makes a rotation happen about the handle's mounting
 	// point rather than about the middle of the cell.
-	const geometry = $derived(
-		(rig?.parts ?? []).map((part) => {
-			const metrics = PARTS_MANIFEST[(props.symbolName ?? '').toLowerCase()]?.[part.name];
-			const [px, py] = resolvePivot(metrics?.bbox, part.pivot);
-			// Part transforms run only for a deliberate win. Stop/idle use the flat
-			// source art above and never enter this geometry path.
-			const motion = mode === 'none' ? null : partFrame(part, mode, props.t ?? 0);
-			const frame =
-				motion
-					? {
-							dx: motion.dx ?? 0,
-							dy: motion.dy ?? 0,
-							rotation: motion.rotation ?? 0,
-							scaleX: motion.scaleX ?? 1,
-							scaleY: motion.scaleY ?? 1,
-						}
-					: null;
-			const key = partKey(part, { mode, big: props.big, blinking });
-			return { part, px, py, frame, key };
-		}),
-	);
+
 </script>
 
 <!--
@@ -226,28 +198,7 @@
 	{/if}
 {/if}
 
-{#if rig}
-	{#each geometry as { part, px, py, frame, key } (part.name)}
-		<Container
-			x={(px + (frame?.dx ?? 0)) * width}
-			y={(py + (frame?.dy ?? 0)) * height}
-			rotation={frame?.rotation ?? 0}
-			scale={{ x: frame?.scaleX ?? 1, y: frame?.scaleY ?? 1 }}
-		>
-			<Sprite
-				anchor={0.5}
-				{key}
-				x={-px * width}
-				y={-py * height}
-				{width}
-				{height}
-				tint={overlay ? props.overlayTint : undefined}
-				alpha={overlay ? props.overlayAlpha : 1}
-				blendMode={overlay ? 'add' : undefined}
-			/>
-		</Container>
-	{/each}
-{:else}
+
 	<Sprite
 		anchor={0.5}
 		key={poseKey ?? props.symbolInfo.assetKey}
@@ -257,21 +208,3 @@
 		alpha={overlay ? props.overlayAlpha : 1}
 		blendMode={overlay ? 'add' : undefined}
 	/>
-{/if}
-
-{#if glow}
-	<!--
-		The symbol's own light: last, so it sits over the art rather than under it.
-		The boombox's equaliser and the car's headlamps are painted into their base
-		art as dark shapes — the point of the layer is that they light UP, which
-		only reads if it is drawn on top of them.
-	-->
-	<Sprite
-		anchor={0.5}
-		key={glow.key}
-		{width}
-		{height}
-		alpha={glowAlpha(glow, props.t ?? 0)}
-		blendMode="add"
-	/>
-{/if}

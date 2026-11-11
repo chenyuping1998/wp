@@ -1,0 +1,77 @@
+{
+  "canvas": [
+    1024,
+    2048
+  ],
+  "order": [
+    "body",
+    "arm_r",
+    "prop_bat",
+    "arm_l",
+    "head",
+    "dangle_chain",
+    "dangle_mask",
+    "fingers_r"
+  ],
+  "spec": "delivery spec",
+  "composite": "pixel-exact",
+  "psd": "layers match PNGs",
+  "body_holes": 0,
+  "arms": {
+    "arm_l": {
+      "shoulder_overlap_px": 75,
+      "kind": "hanging",
+      "forearm_clearance_px": 55.01
+    },
+    "arm_r": {
+      "shoulder_overlap_px": 144,
+      "kind": "raised_prop"
+    }
+  },
+  "neck_overlap_px": 135,
+  "figure_box": [
+    150,
+    179,
+    945,
+    1672
+  ],
+  "margin_px": 79,
+  "edges": {
+    "body": {
+      "contour_soft": 1.0,
+      "colours": 83210
+    },
+    "arm_r": {
+      "contour_soft": 1.0,
+      "colours": 14825
+    },
+    "prop_bat": {
+      "contour_soft": 1.0,
+      "colours": 11237
+    },
+    "arm_l": {
+      "contour_soft": 0.998,
+      "colours": 16081
+    },
+    "head": {
+      "contour_soft": 1.0,
+      "colours": 21586
+    },
+    "dangle_chain": {
+      "contour_soft": 1.0,
+      "colours": 1047
+    },
+    "dangle_mask": {
+      "contour_soft": 1.0,
+      "colours": 4524
+    },
+    "fingers_r": {
+      "contour_soft": 1.0,
+      "colours": 5273
+    }
+  },
+  "variants": [
+    "design/cast_parts/feature",
+    "design/cast_parts/kingpin"
+  ]
+}

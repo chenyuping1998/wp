@@ -167,5 +167,6 @@ export const getSymbolInfo = ({
 	rawSymbol: RawSymbol;
 	state: SymbolState;
 }) => {
-	return SYMBOL_INFO_MAP[rawSymbol.name][state];
+	const info = SYMBOL_INFO_MAP[rawSymbol.name];
+	return info[state === 'explosion' ? 'win' : state];
 };

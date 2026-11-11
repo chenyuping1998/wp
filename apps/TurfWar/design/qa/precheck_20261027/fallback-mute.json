@@ -1,0 +1,19 @@
+{
+  "before": [
+    {
+      "src": "http://127.0.0.1:8427/game/assets/audio/turf/sfx/gong_feature.wav",
+      "volume": 0.5625,
+      "paused": false,
+      "currentTime": 0.077662
+    }
+  ],
+  "after": [
+    {
+      "src": "http://127.0.0.1:8427/game/assets/audio/turf/sfx/gong_feature.wav",
+      "volume": 0,
+      "paused": false,
+      "currentTime": 0.346455
+    }
+  ],
+  "error": []
+}

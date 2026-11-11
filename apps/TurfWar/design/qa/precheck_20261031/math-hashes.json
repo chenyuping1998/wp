@@ -1,0 +1,38 @@
+{
+  "lookUpTable_base_0.csv": {
+    "sha256": "0133917c80b0cf57f3ba2febd853d73b6df21eb7ebec3e239fc8f0d33589b3e9",
+    "matchesSource": true
+  },
+  "books_bonus_epic.jsonl.zst": {
+    "sha256": "3fedef7d221ceffc3aa26208c242e598fcbcd7ed99d62e03c8488abbcf00cd4a",
+    "matchesSource": true
+  },
+  "lookUpTable_bonus_0.csv": {
+    "sha256": "f673954b5b33e8843fa47c2796e45bda82e80d6dd896c0cbdff51506a1bb9c05",
+    "matchesSource": true
+  },
+  "books_bonus_hits.jsonl.zst": {
+    "sha256": "736695e5c4c40234c6698103976fdb3fd782b26e8983d9bdd04a3df59790e846",
+    "matchesSource": true
+  },
+  "lookUpTable_bonus_hits_0.csv": {
+    "sha256": "c810afd1dfdf8ac082e3f599d42acc8cfb86682d5778a3c790b64f937184990d",
+    "matchesSource": true
+  },
+  "lookUpTable_bonus_epic_0.csv": {
+    "sha256": "aab1f3b992b67e8f00a88754c74695d0e78135f0de463efb1c45af99228c69a0",
+    "matchesSource": true
+  },
+  "books_bonus.jsonl.zst": {
+    "sha256": "df76702d9ad9d5cbb3736faae60f28c817f028206c992efba681f9b93bc332f8",
+    "matchesSource": true
+  },
+  "books_base.jsonl.zst": {
+    "sha256": "481e319c83f1e25701f96463da00b5683cfb7f96631cc84229cb01368db82a01",
+    "matchesSource": true
+  },
+  "index.json": {
+    "sha256": "9cdc4e6a545471c83efa46cac9fa25d99e1c34d7f3896b62804fb6c72dab2968",
+    "matchesSource": true
+  }
+}

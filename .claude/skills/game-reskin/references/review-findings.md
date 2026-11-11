@@ -201,10 +201,177 @@ Note the naming trap when the user reports this: **`ButtonBet` is the spin
 button** in this codebase, and the Bet *panel* is `LabelBet`. "Bet lights up"
 can mean either — fix both rather than guess.
 
+**Mouse hover read as greyed-out (反灰).** `hoverHighlight` draws a 16% white
+overlay on round buttons and a 12% white box on the Bet readout; over painted
+plates that reads as a disabled control. Set `uiTheme.hoverPlateLight` to a warm
+palette colour (Turf War: 0x9c5a22) — buttons then redraw their own plate
+additive in that tint, the Bet readout gets a lit underline — and give Buy
+Bonus a warm `buyBonusHoverSpriteTint` (a grey tint added over the plate is
+still 反灰). Deadwood's brass Buy Bonus is the reference look.
+
 If a game still draws "poor UI" after that, the next lever is the whole
 platform skin (every reskin from Hot Miami carries it as a second `setUiTheme`
 block behind a `DEFAULT_SKIN` switch). It changes the whole bar's look, so ask
 before flipping it.
+
+---
+
+## Deadwood Express, second review: the three presentation tags
+
+Resubmitted after the "poor UI" fixes, Deadwood was rejected again
+(2026-09-26): all three reviewers tagged **Low quality assets**, one added
+**Poor animations**, and the tag set also includes **Poor bet UI bar**. The
+tooltips define them, and each definition names mechanical causes, not taste:
+
+| tag | reviewer's definition (paraphrased) |
+| :-- | :-- |
+| Low quality assets | generic/AI art, **standard fonts, emoji icons, gradient fills** |
+| Poor animations | janky, **missing in key moments**, short of polish |
+| Poor bet UI bar | unclear, hard to use, not the expected UX |
+
+The copy fixes from the first round touched none of them. An audit on
+2026-09-29 found every item below in a game that "looked done". **Run
+`scripts/check_review_tags.py <app> --palette <source hexes>` first** — it finds
+the mechanical causes statically (it cannot judge the art, or whether a moment
+feels flat; the playthrough still has to happen).
+
+### Low quality assets — where "standard fonts" hide
+
+The game's own pixi text was already Cinzel/Saira. Georgia and Arial survived in
+four places no one looks at together:
+
+- **DOM panels' CSS** — the multiplier wheel (`font:bold … Georgia`, captions in
+  Arial), the buy-feature modal's headings and prices, the opening intro card.
+- **pixi `fontFamily:'Georgia'`** written inline in one component (the FG intro).
+- **Text baked into SVG files.** The five big-win plaques were generated SVGs
+  with `<text font-family="Georgia">BIG WIN</text>`. An SVG drawn as an image
+  is sandboxed and cannot load web fonts, so it is ALWAYS a system face, on
+  every machine. Set words at runtime; ship plates blank.
+- **Canvas `measureText` strings** (`'bold 100px Georgia'`) used for fitting.
+  Switching them to the web font also means setting `ctx.font` per call — set
+  once at mount, it measures the fallback while the font is still loading.
+
+After switching to Cinzel, check glyphs you did not think about: its `×` is
+cap-height, so "30×" reads as "30X". Wrap it (`<i class="x">×</i>`, ~0.6em).
+
+**"Gradient fills"** was literal: the plaques were flat octagons, a linear
+gradient enamel under a gradient stroke, and the same file for all five tiers.
+The fix was not a better gradient but a painted asset the game already had —
+the Buy Bonus plate (brass, winged crest, dark inset) — reused for the big-win
+plaque, the FG outro/retrigger plaque and the spin counter, with its inset
+measured once (`apps/DeadwoodExpress/src/game/plate.ts`). One painted plate
+across four surfaces also reads as a designed set. Likewise the big-win sun
+rays were hard-edged filled wedges; a soft shaft texture
+(`design/make_fx_ray.py`, additive, tinted) reads as light.
+
+**Flat vector art beside painted art is the other half of "low quality".**
+Hard Time (2026-09-29) had painted rusted-steel premiums and a UI kit, titles,
+logo and low-pay suits that were all 3-colour flat fills (4-18 KB PNGs) — two
+styles on one screen; Capo Nostra's logo and feature titles were the same.
+`check_review_tags.py` now flags PNGs with ≤ 6 fill colours (icons excluded —
+line icons are meant to be flat). When no image generator is available, a
+material pass holds up: keep every shape and alpha exactly (no code moves),
+split the flat fills into regions by colour, and re-fill each with texture
+taken from the game's OWN painted art (a background wall's grain, a symbol's
+rusted steel, a painted ring's brass), then bevel each region from its mask.
+See `apps/HardTime/design/texture_flat_ui.py` and
+`apps/CapoNostra/design/texture_flat_titles.py` — both back the flat
+originals up once and always read from the backup, so they re-run safely.
+Low-pay symbols come out brighter after bevelling; re-run the game's symbol
+weight guard and dim them until the suits stay below the dimmest premium.
+
+**Pixi 8 draws only the FIRST colour of an array fill.** Every
+`fill: [0xf7e9c6, 0xddbc77, 0xa58145]` in this codebase (GoldText, counters,
+titles) renders flat in the first stop. That quietly removed the "gradient"
+look, but it also means an array meant as a tint does nothing — pass a single
+value (`fill={0xe9cf95}`) when a title should be brass or teal.
+
+**Source-palette leftovers survive in the places that only show at feature
+time**: the FG outro title (yellow→PINK on purple stroke), the press-to-continue
+prompt (pink on purple), anticipation frame lines and beam, big-win bokeh, the
+wheel's top-value and hit tile, a modal scrollbar hover. Grep the source game's
+hexes as `0x…`, `#…` AND `rgba(r, g, b` — the modal one was rgba.
+
+**Shared pop-ups need looking at one by one.** `Modals.svelte` had GoBananas'
+olive panels with one late line repainting SOME classes teal; the bet menu,
+autoplay and notification pop-ups still came up olive, and `.pop-up-wrap` was
+painted solid so every pop-up blacked out the game. Keep the wrap transparent
+(the blur layer dims), re-skin `.rectangle`, `.ui-popup-standard-content-wrap`,
+`.ui-modal-title-wrap`, `.toggle-wrap .amount`, then open each pop-up.
+
+### Poor animations — "missing in key moments"
+
+**The feature trigger is THE key moment.** Deadwood's `FreeSpinIntro` had been
+cut down to a 96%-opaque rectangle with three lines of text — no art, no
+motion, no character — while a full splash component sat unused beside it.
+What replaced it (`apps/DeadwoodExpress/src/components/FreeSpinIntro.svelte`):
+
+- the tier's painted card (art the rules modal already used) dealt in: scale
+  0.6→1 with overshoot, a small turn, a landing flash (additive self-copy);
+- the spin count held back, then dropped from 3× onto the card with a burst
+  and a sound on impact, then a slow breathe;
+- the FG character drawn IN FRONT of the scrim (`CastFigureMesh inline` adds
+  its view to the enclosing container instead of stage index 2; the board's
+  copy stands down via `featureSplashShow`), fading in;
+- a light sweep across the card every few seconds so a waiting screen is alive.
+
+**Start the timeline when the player can see it.** The intro is shown at FULL
+BLACK (the transition resolves there, then holds ~0.33s and fades ~0.65s).
+Started immediately, the whole deal played under the black and the player saw
+a card already sitting there. Offset the entry timeline (T0 ≈ 0.55s); a
+retrigger, which has no transition, starts at once.
+
+**Count-ups must decide their precision from the FINAL amount.**
+`bookEventAmountToCurrencyString` allows 4 decimals, so per frame it prints the
+tween's in-between values: "$48.3293" on the way to $134.00 on the FG total,
+"$84.995" in the bar's WIN readout. Use
+`bookEventAmountToCountUpString(frame, final)` for anything that counts. The
+shared `LabelWin` was fixed on 2026-09-29; each game's own outro/plaque is not.
+
+**No animation on `setInterval`.** The press prompt pulsed at 50 ms (visibly
+stepped), the big-win shake/flash and the transition fade ran on 16 ms
+intervals (out of phase with the display — stutter on 120 Hz). Use
+`requestAnimationFrame` or the pixi ticker, and ease the transition.
+
+**DOM overlays sit above everything in the canvas.** The wheel's held-multiplier
+readout is HTML, so it floated over the fade to black and over the TOTAL WIN
+card. Gate DOM HUD on a "full-screen overlay" flag set by the transition and
+the outro.
+
+### Poor bet UI bar — the compact strip's defaults
+
+The `compactBottom` strip's template stepper is `+` over `−` at scale 0.28 —
+about 28 px across at 1280×720, 15 px on a phone in landscape — and the layout
+leaves the span between Win and Bet empty on purpose, with a faint tick "to
+make it read as designed space". Reviewers read it as unfinished. Theme keys
+(shared, defaults unchanged for other games):
+
+- `stepperLayout: 'flank'` + `stepButtonScale: 0.44` — `−  BET  +` in one row,
+  the stepper as large as autoplay/turbo; Balance/Win cells widen into the gap;
+- `portraitMenuScale / portraitStepScale / portraitStepX / portraitSideClusterX`
+  — the template's portrait row made the menu disc the second-largest control;
+- in 'flank' the Bet readout passes `centerGroup`: caption + value + chevron
+  are centred as ONE group with the chevron beside the amount. Centring the
+  text alone left the chevron hanging in the right-hand gap, and the user read
+  − BET + as lopsided on first sight (2026-09-29). Draw the ± as the game's own
+  line icons (`icons.increase/decrease`) — the text-glyph fallback looks tiny
+  once the stepper is autoplay-sized;
+- `buyBonusHideInFreeSpins` — otherwise the plate stays fully lit through the
+  feature (in storybook it even looks enabled, because xstate sits idle there).
+
+### Checking it: capture tips that saved turns
+
+- The browser pane's screenshot of a viewport that is not 16:9 can crop ~13 px
+  off the bottom — a phone-landscape bar looked clipped and was not. Confirm
+  against the canvas itself before "fixing" it.
+- Full-resolution frames of the pixi canvas: render `window.__PIXI_APP__`, draw
+  its canvas into a 2D canvas, `toDataURL`, and POST to a tiny local sink
+  server (Python `http.server` with CORS) writing into the scratchpad. A
+  fire-and-forget loop grabbing a frame every ~0.4 s through a whole feature
+  gives a contact sheet of every beat; screenshots taken between tool calls
+  miss anything shorter than the tool latency (the wheel's landed state).
+- DOM overlays (wheel, pop-ups) are not in the canvas; use the pane screenshot
+  for those.
 
 ---
 

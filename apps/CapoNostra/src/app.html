@@ -20,21 +20,14 @@
 		-->
 		<link
 			rel="preload"
-			href="%sveltekit.assets%/fonts/TitanOne.ttf"
+			href="%sveltekit.assets%/fonts/Limelight.ttf"
 			as="font"
 			type="font/ttf"
 			crossorigin
 		/>
 		<link
 			rel="preload"
-			href="%sveltekit.assets%/fonts/Cinzel.ttf"
-			as="font"
-			type="font/ttf"
-			crossorigin
-		/>
-		<link
-			rel="preload"
-			href="%sveltekit.assets%/fonts/Orbitron.ttf"
+			href="%sveltekit.assets%/fonts/JosefinSans.ttf"
 			as="font"
 			type="font/ttf"
 			crossorigin
@@ -47,13 +40,6 @@
 			crossorigin
 		/>
 		<style>
-			@font-face {
-				font-family: 'Titan One';
-				src: url('%sveltekit.assets%/fonts/TitanOne.ttf') format('truetype');
-				font-weight: 400;
-				font-style: normal;
-				font-display: block;
-			}
 			/*
 				Orbitron carries the display type — square and wide, the idiom this
 				theme actually belongs to, where Titan One is rounded. Variable
@@ -80,17 +66,28 @@
 				anything a player reads a value off. Letters follow the art; digits
 				follow legibility.
 			*/
+			/*
+				2026-10-04, Art Deco recolour (ART_BRIEF §7): titles move from
+				Cinzel to Limelight (a 1930s Deco display face) and numbers from
+				Orbitron to Josefin Sans (geometric, Deco-era proportions, readable
+				figures). Both SIL OFL, self-hosted from google/fonts; licences in
+				static/fonts/*-OFL.txt.
+
+				Limelight has ONE weight. It is declared across 100..900 so the many
+				`font-weight: 700` rules written for Cinzel resolve to the real face
+				instead of a browser-synthesised bold, which smears a display face.
+			*/
 			@font-face {
-				font-family: 'Cinzel';
-				src: url('%sveltekit.assets%/fonts/Cinzel.ttf') format('truetype-variations');
-				font-weight: 400 900;
+				font-family: 'Limelight';
+				src: url('%sveltekit.assets%/fonts/Limelight.ttf') format('truetype');
+				font-weight: 100 900;
 				font-style: normal;
 				font-display: block;
 			}
 			@font-face {
-				font-family: 'Orbitron';
-				src: url('%sveltekit.assets%/fonts/Orbitron.ttf') format('truetype-variations');
-				font-weight: 400 900;
+				font-family: 'Josefin Sans';
+				src: url('%sveltekit.assets%/fonts/JosefinSans.ttf') format('truetype-variations');
+				font-weight: 100 700;
 				font-style: normal;
 				font-display: block;
 			}
@@ -142,7 +139,10 @@
 					U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
 			}
 		</style>
-		<meta name="viewport" content="width=device-width" />
+		<!-- Engine guideline 223: no double-tap zoom on mobile. width=device-width
+		     alone still zooms on iOS Safari; the canvas is already touch-action:
+		     none (Pixi), the body rule covers the DOM panels over it. -->
+		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
 		<!--
 			display:block on the canvas, and overflow:hidden on <html> as well as
 			<body>.
@@ -174,7 +174,7 @@
 		</style>
 		%sveltekit.head%
 	</head>
-	<body style="margin: 0; padding: 0; overflow: hidden; background-color: black">
+	<body style="margin: 0; padding: 0; overflow: hidden; touch-action: manipulation; background-color: black">
 		<div>%sveltekit.body%</div>
 	</body>
 </html>

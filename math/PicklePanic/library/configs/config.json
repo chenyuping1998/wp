@@ -1,0 +1,93 @@
+{
+  "workingName": "Pickle Panic",
+  "frontendConfig": {
+    "file": "fe_config.json",
+    "sha256": "6009cada99fac4cabbcfd2fddd264fb7c9005248aa40908b075f3cdbc36a9fa9"
+  },
+  "gameID": "PicklePanic",
+  "rtp": 0.96,
+  "betDenomination": 1000,
+  "minDenomination": 10,
+  "providerNumber": 0,
+  "standardForceFile": {
+    "file": "force.json",
+    "sha256": "d4372e69952444cd864a64a47fcbbfad63bd7e7ce7d84b432780bd00a0032d96"
+  },
+  "bookShelfConfig": [
+    {
+      "name": "base",
+      "tables": [
+        {
+          "file": "lookUpTable_base_0.csv",
+          "sha256": "caacab6b8281e8b3216d333b58ec15f920fad88395bd34414f2b2fa401bc8c5e"
+        }
+      ],
+      "cost": 1.0,
+      "rtp": 0.96,
+      "std": 13.12,
+      "bookLength": 100000,
+      "feature": true,
+      "autoEndRoundDisabled": false,
+      "buyBonus": false,
+      "maxWin": 10000,
+      "booksFile": {
+        "file": "books_base.jsonl.zst",
+        "sha256": "23c0a772841168c3393c3c98e6365bef0d6843b52d21b0688c5792e3191aa9b7"
+      },
+      "forceFile": {
+        "file": "force_record_base.json",
+        "sha256": "7c7f1cd1bbcc7927e91f1e12467459627c93328a93f3799c2fa2137190ef4b5d"
+      }
+    },
+    {
+      "name": "bonus",
+      "tables": [
+        {
+          "file": "lookUpTable_bonus_0.csv",
+          "sha256": "85776d77ef0a7acaaa396a9b6099f6ed3a7e90168741f2839558fae23af7050c"
+        }
+      ],
+      "cost": 100.0,
+      "rtp": 0.96,
+      "std": 1.46,
+      "bookLength": 50000,
+      "feature": false,
+      "autoEndRoundDisabled": false,
+      "buyBonus": true,
+      "maxWin": 10000,
+      "booksFile": {
+        "file": "books_bonus.jsonl.zst",
+        "sha256": "37305a2bc1bfee04aacd6e9afdd6df9521892bbdd4932f83a6d0835f5937fb4c"
+      },
+      "forceFile": {
+        "file": "force_record_bonus.json",
+        "sha256": "5e42682e2d59d6f955be3355ac60eb9124afe76923be2f4e4c0e8eab56246dd3"
+      }
+    },
+    {
+      "name": "superbonus",
+      "tables": [
+        {
+          "file": "lookUpTable_superbonus_0.csv",
+          "sha256": "22c816bc17eb82a3add2d19d165952decb0f54a584922916741a36949e621171"
+        }
+      ],
+      "cost": 150.0,
+      "rtp": 0.96,
+      "std": 1.19,
+      "bookLength": 50000,
+      "feature": false,
+      "autoEndRoundDisabled": false,
+      "buyBonus": true,
+      "maxWin": 10000,
+      "booksFile": {
+        "file": "books_superbonus.jsonl.zst",
+        "sha256": "b02a1e325c40ef612d6473ba7a09a8edcde7e162672d9b0c119da29aba9f98cd"
+      },
+      "forceFile": {
+        "file": "force_record_superbonus.json",
+        "sha256": "b02cf0de53332bfe4ae6182c71e3e8a5efbd0ea8e91d2649a03dc75cb3a95c73"
+      }
+    }
+  ]
+}

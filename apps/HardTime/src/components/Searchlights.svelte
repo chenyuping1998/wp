@@ -252,10 +252,14 @@
 	// never a tween per frame however many are on the grid.
 	let shine = $state(0);
 	onMount(() => {
-		const id = setInterval(() => {
-			shine = (Date.now() % 2600) / 2600;
-		}, 40);
-		return () => clearInterval(id);
+		// frame clock (was a 40 ms interval: the sweep stepped at 25 fps)
+		let raf = 0;
+		const tick = (now: number) => {
+			shine = (now % 2600) / 2600;
+			raf = requestAnimationFrame(tick);
+		};
+		raf = requestAnimationFrame(tick);
+		return () => cancelAnimationFrame(raf);
 	});
 </script>
 
@@ -360,6 +364,28 @@
 				/>
 			{/if}
 
+		</Container>
+	{/each}
+
+	<!--
+		Multipliers, drawn in their own pass AFTER every searchlight. Stake review
+		of Capo Nostra, 2026-10-14: "In some cases, the Vault Frame multiplier value
+		is not fully visible" — same build. Drawn inside each cell's own container,
+		a neighbour later in `active` (elite casting, arrival scale-up, flash)
+		could paint over the number; on top of all of them it is always clear.
+	-->
+	{#each active as cell (keyOf(cell))}
+		{@const weight = weightOf(cell)}
+		{@const tier = tierOf(weight)}
+		{@const tint = tintOf(weight)}
+		{@const pose = entryPose(cell)}
+		{@const span = SPAN}
+		<Container
+			x={cellX(cell)}
+			y={cellY(cell)}
+			scale={(pose ? pose.scale : 1) * cell.scale.current}
+			rotation={pose ? pose.rotation : 0}
+		>
 			<!-- The multiplier sits at 0.22 of the span below centre, not 0.34.
 			     The plates carry a cleared centre circle of radius ~0.31 x span
 			     (design/soften_frames.py), and 0.34 put the number just OUTSIDE

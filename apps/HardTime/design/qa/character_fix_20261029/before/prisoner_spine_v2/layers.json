@@ -1,0 +1,183 @@
+{
+  "version": 2,
+  "size": [
+    1024,
+    2048
+  ],
+  "figure_box": [
+    275,
+    172,
+    806,
+    1774
+  ],
+  "order": [
+    "thigh_r",
+    "thigh_l",
+    "shin_r",
+    "shin_l",
+    "shoe_r",
+    "shoe_l",
+    "pelvis",
+    "torso",
+    "upper_arm_r",
+    "upper_arm_l",
+    "forearm_under",
+    "forearm_over",
+    "towel",
+    "head",
+    "blink"
+  ],
+  "layers": [
+    {
+      "name": "thigh_r",
+      "texture": "thigh_r.png",
+      "crop": [
+        123,
+        1045,
+        424,
+        366
+      ]
+    },
+    {
+      "name": "thigh_l",
+      "texture": "thigh_l.png",
+      "crop": [
+        547,
+        1045,
+        340,
+        366
+      ]
+    },
+    {
+      "name": "shin_r",
+      "texture": "shin_r.png",
+      "crop": [
+        206,
+        1330,
+        307,
+        366
+      ]
+    },
+    {
+      "name": "shin_l",
+      "texture": "shin_l.png",
+      "crop": [
+        580,
+        1330,
+        208,
+        366
+      ]
+    },
+    {
+      "name": "shoe_r",
+      "texture": "shoe_r.png",
+      "crop": [
+        286,
+        1640,
+        218,
+        235
+      ]
+    },
+    {
+      "name": "shoe_l",
+      "texture": "shoe_l.png",
+      "crop": [
+        592,
+        1640,
+        217,
+        172
+      ]
+    },
+    {
+      "name": "pelvis",
+      "texture": "pelvis.png",
+      "crop": [
+        331,
+        895,
+        393,
+        221
+      ]
+    },
+    {
+      "name": "torso",
+      "texture": "torso.png",
+      "crop": [
+        337,
+        361,
+        385,
+        601
+      ]
+    },
+    {
+      "name": "upper_arm_r",
+      "texture": "upper_arm_r.png",
+      "crop": [
+        273,
+        438,
+        133,
+        312
+      ]
+    },
+    {
+      "name": "upper_arm_l",
+      "texture": "upper_arm_l.png",
+      "crop": [
+        671,
+        426,
+        107,
+        275
+      ]
+    },
+    {
+      "name": "forearm_under",
+      "texture": "forearm_under.png",
+      "crop": [
+        276,
+        550,
+        444,
+        203
+      ]
+    },
+    {
+      "name": "forearm_over",
+      "texture": "forearm_over.png",
+      "crop": [
+        385,
+        589,
+        394,
+        166
+      ]
+    },
+    {
+      "name": "towel",
+      "texture": "towel.png",
+      "crop": [
+        615,
+        376,
+        175,
+        469
+      ]
+    },
+    {
+      "name": "head",
+      "texture": "head.png",
+      "crop": [
+        455,
+        169,
+        169,
+        271
+      ]
+    },
+    {
+      "name": "blink",
+      "texture": "blink.png",
+      "crop": [
+        457,
+        246,
+        96,
+        39
+      ]
+    }
+  ],
+  "repairs": "design/_incoming/spine_v2"
+}

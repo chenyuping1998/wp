@@ -1,0 +1,24 @@
+{
+  "poses": 3400,
+  "flips": 0,
+  "minAreaRatio": 0.9017,
+  "maxAreaRatio": 1.0916,
+  "worst": {
+    "shrink": "head tri 159",
+    "grow": "head tri 144"
+  },
+  "minInkMarginPx": 132.92,
+  "armBendPx": {
+    "arm_l": 2.1,
+    "arm_r": 1.65
+  },
+  "layers": [
+    "arm_l",
+    "body",
+    "head",
+    "prop_cigar",
+    "dangle_smoke",
+    "arm_r"
+  ]
+}
+check_layered_cast ok

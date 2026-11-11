@@ -206,7 +206,8 @@ const suitMedallion = (
 		// the highlight itself travelling. One without the other reads as either a
 		// flat tint change or a decal sliding over a dead chip.
 		return rest({
-			bloomAlpha: 0.7 * lit,
+			// 0.35, not 0.7: the bloom tints the whole flat suit icon
+			bloomAlpha: 0.35 * lit,
 			bloomTint: tint,
 			overlays:
 				at < 0 || at > 1
@@ -237,280 +238,164 @@ const suitMedallion = (
 
 // ── the table ────────────────────────────────────────────────────────────────
 
+// ── Hard Time (2026-09-27) ───────────────────────────────────────────────────
+//
+// Until this date H1-H5, W, S and SW here were Capo Nostra's table verbatim —
+// a signet ring, a skyline, a briefcase, whiskey, a sedan, a fedora doff, a
+// vault wheel cranked round (which spun the cell gate ~100°) and a Tommy Gun.
+// Deadwood Express was rejected for "Poor animations" with exactly that kind of
+// inherited table, so every entry below is what THIS symbol's object does.
+const STEEL = 0xdfe6ea; // cold metal glint
+const LAMP = 0xffe2a0; // the searchlight's warm beam
+const CHALK = 0xf3ecd9; // tally marks
+const RUST = 0xd8864a; // warm light off old iron
+
+/** Rotation about a point `h` cell-heights above the centre (negative = below). */
+const hang = (theta: number, h: number) => ({
+	rotation: theta,
+	dx: -h * Math.sin(theta),
+	dy: h * (Math.cos(theta) - 1),
+});
+
+const light = (x: number, y: number, size: number, alpha: number, tint: number, behind = true): SymbolWinOverlay => ({
+	key: 'fxGlow', x, y, width: size, height: size, rotation: 0, alpha, tint, behind,
+});
+
+/** One glint travelling across the art over `window` ms (nothing outside it). */
+const glint = (t: number, window: number, tint = STEEL, y = -0.05): SymbolWinOverlay[] => {
+	const u = t / window;
+	if (u < 0 || u >= 1) return [];
+	return [{ key: 'fxStreak', x: -0.45 + u * 0.9, y, width: 0.24, height: 0.7, rotation: -0.5, alpha: 0.55 * hump(u, 1), tint }];
+};
+
 const BASE_WIN_MOTION: Record<string, SymbolWinMotion> = {
-	// H1 — the Don's signet ring: solid gold, oval crest face, band catching the
-	// key light (see static/assets/sprites/capoSymbols/h1.png).
-	//
-	// Gold does not gesture, it CATCHES LIGHT, so the ring is turned through one
-	// slow swing and a hard specular glint runs across the crest at the moment
-	// the face squares up. The band foreshortens on the turn — scale moves at
-	// twice the rotation's frequency, which is what separates "being rotated in
-	// the hand" from "leaning". The slowest continuous motion on the board
-	// carrying the shortest flash on it is the whole read.
+	// W — the prison cap. Tossed up and caught: it rises with a small tip, then
+	// lands flat with a squash. The only symbol whose gesture is a throw.
+	W: {
+		hitScale: 1.0,
+		frame: (t) => {
+			const u = Math.min(1, t / (HOLD_MS * 0.7));
+			const air = u < 0.55 ? Math.sin((u / 0.55) * Math.PI) : 0;
+			const land = u >= 0.55 ? strike((u - 0.55) / 0.45, 5) : 0;
+			return rest({
+				dy: -0.09 * air,
+				rotation: -0.1 * air,
+				scaleX: 1 + 0.07 * land,
+				scaleY: 1 - 0.07 * land,
+				overlays: [light(0, 0.35, 0.8, 0.35 * land, RUST), ...glint(t - 120, 620)],
+			});
+		},
+	},
+
+	// S — the cell gate. Rattled: a slam, then the bars shake side to side and
+	// settle. It used to rotate like a vault wheel; a gate does not turn.
+	S: {
+		hitScale: 1.05,
+		frame: (t) => {
+			const damp = Math.exp(-t / 420);
+			const slam = strike(t / 200, 3);
+			return rest({
+				dx: 0.035 * damp * Math.sin(t / 22),
+				scaleX: 1 - 0.05 * slam,
+				scaleY: 1 + 0.03 * slam,
+				bloomAlpha: 0.18 * damp,
+				bloomTint: RUST,
+				overlays: [light(0, 0, 1.25, 0.3 * (0.4 + 0.6 * damp), RUST)],
+			});
+		},
+	},
+
+	// SW — the searchlight. The lamp head sweeps side to side from its base and
+	// its beam sweeps with it: the mechanic, drawn as the object doing it.
+	SW: {
+		hitScale: 1.05,
+		frame: (t) => {
+			const theta = 0.16 * Math.sin(t / 170);
+			return rest({
+				...hang(theta, -0.4),
+				bloomAlpha: 0.3,
+				bloomTint: LAMP,
+				overlays: [
+					light(0.08, -0.12, 0.7, 0.55, LAMP, false),
+					{ key: 'fxStreak', x: 0.1 + 0.6 * Math.sin(theta), y: -0.45, width: 0.3, height: 1.1, rotation: theta, alpha: 0.4, tint: LAMP, behind: true },
+				],
+			});
+		},
+	},
+
+	// H1 — the key ring. Swings from its ring like a pendulum and jangles out:
+	// a damped swing with a quick secondary rattle on top.
 	H1: {
 		hitScale: 1.05,
 		frame: (t) => {
-			const u = cycle(t, HOLD_MS);
-			// One smooth roll out and back. No beat: nothing strikes a ring.
-			const turn = Math.sin(Math.PI * 2 * u);
-			// The face squares up on the way through, and that is when it flares.
-			const sweep = u < 0.08 || u > 0.44 ? -1 : (u - 0.08) / 0.36;
-			const flare = sweep < 0 ? 0 : hump(sweep, 1);
-			return rest({
-				rotation: 0.05 * turn,
-				// Foreshortening, at twice the turn's rate — widest square-on.
-				scaleX: 1 - 0.022 * Math.abs(turn),
-				dy: 0.012 * turn,
-				bloomAlpha: 0.55 * flare,
-				// The only symbol allowed bright gold (ART_BRIEF §2).
-				bloomTint: 0xdce8f0,
-				overlays:
-					sweep < 0
-						? []
-						: [
-								{
-									key: 'fxStreak',
-									// Across the crest face, which sits right of the band.
-									x: -0.34 + sweep * 0.82,
-									y: -0.06,
-									width: 0.3,
-									height: 0.62,
-									rotation: -0.38,
-									alpha: 0.9 * flare,
-									tint: 0xfff6d8,
-								},
-							],
-			});
+			const theta = 0.18 * Math.exp(-t / 650) * Math.sin(t / 120) + 0.02 * Math.exp(-t / 300) * Math.sin(t / 18);
+			return rest({ ...hang(theta, 0.42), overlays: glint(t - 80, 700) });
 		},
 	},
 
-	// H2 — the 1930s skyline: art-deco towers in silhouette with small warm
-	// window lights (capoSymbols/h2.png).
-	//
-	// A city does not sway. What a city does is STAND while the light changes
-	// around it, so this is the only monotonic motion on the board: a slow
-	// camera push toward the towers, the warm light on them coming up in three
-	// steps like blocks switching on, and a searchlight crossing behind the
-	// spires. Everything else here either oscillates or repeats; this one goes
-	// one way and stays, which is its whole temporal signature.
-	//
-	// The three steps are the whole SPRITE brightening, not individual windows:
-	// `bloomAlpha` draws an additive copy of the symbol's own art (SymbolArt's
-	// `overlayTint`/`overlayAlpha`), and there is no per-window geometry to
-	// address. Lighting the tiers separately would need art cut into tiers.
+	// H2 — the handcuffs. Click-click: two fast horizontal snaps as they close.
 	H2: {
-		hitScale: 1.05,
+		hitScale: 1.0,
 		frame: (t) => {
-			const u = Math.min(1, t / HOLD_MS);
-			// Smoothstep, so the push has no visible start or stop.
-			const push = u * u * (3 - 2 * u);
-			// Three tiers of windows, bottom to top. A staircase, not a fade.
-			const lit = (step(u, 0.16, 0.07) + step(u, 0.35, 0.07) + step(u, 0.56, 0.07)) / 3;
-			const beam = cycle(t, HOLD_MS * 0.62);
+			const snap = strike(cycle(t, 300), 12) * (t < 600 ? 1 : 0);
 			return rest({
-				scaleX: 1 + 0.04 * push,
-				scaleY: 1 + 0.04 * push,
-				dy: -0.012 * push,
-				bloomAlpha: 0.72 * lit,
-				bloomTint: 0xffc46b,
-				overlays: [
-					{
-						key: 'fxStreak',
-						x: -0.34 + beam * 0.68,
-						y: -0.05,
-						width: 0.22,
-						height: 1.35,
-						// Raked over as it crosses, like a beam swung from below.
-						rotation: -0.55 + beam * 1.1,
-						alpha: 0.55 * hump(beam, 1),
-						tint: 0xfff0c8,
-						behind: true,
-					},
-				],
+				scaleX: 1 - 0.1 * snap,
+				scaleY: 1 + 0.03 * snap,
+				bloomAlpha: 0.3 * snap,
+				bloomTint: STEEL,
+				overlays: [light(0, 0, 0.9, 0.3 * snap, STEEL)],
 			});
 		},
 	},
 
-	// H3 — the cash briefcase, shown open with the bundles inside
-	// (capoSymbols/h3.png).
-	//
-	// So the win is the case OPENING: the brass latch ticks first, then the lid
-	// swings up over a third of a second and the money light comes out of it,
-	// with three notes lifting clear on a stagger. Two events of very different
-	// speed in one gesture — a 30ms tick and a 330ms swing — which is a
-	// signature no other symbol here has.
+	// H3 — the contraband tin. It hops twice, the lid rattling as it lands.
 	H3: {
 		hitScale: 1.0,
 		frame: (t) => {
-			const u = cycle(t, HOLD_MS);
-			// The latch: a sharp, tiny jolt, over almost before it starts.
-			const tick = u < 0.05 ? 0 : Math.exp(-34 * (u - 0.05));
-			// The lid: slow, eased, and it STAYS open once it is.
-			const open = step(u, 0.14, 0.34);
-			const eased = open * open * (3 - 2 * open);
-			return rest({
-				// Taller and slightly narrower: the lid going up, not a squash.
-				scaleY: 1 + 0.055 * eased,
-				scaleX: 1 - 0.014 * eased,
-				dy: -0.018 * eased,
-				dx: 0.012 * tick,
-				rotation: -0.02 * tick,
-				overlays: [
-					{
-						key: 'fxGlow',
-						x: 0,
-						y: 0.02,
-						width: 0.5 + 0.5 * eased,
-						height: 0.42 + 0.3 * eased,
-						rotation: 0,
-						alpha: 0.4 * eased,
-						tint: 0xffe0a0,
-					},
-					...[0, 1, 2].map((i) => {
-						// Notes lifting out of the open case, one after another.
-						const lift = step(u, 0.22 + i * 0.11, 0.4);
-						return {
-							key: 'fxStar',
-							x: (i - 1) * 0.19,
-							y: 0.16 - 0.52 * lift,
-							width: 0.17 * (1 - 0.35 * lift),
-							height: 0.17 * (1 - 0.35 * lift),
-							rotation: (i - 1) * 0.5 * lift,
-							alpha: 0.85 * hump(lift, 1),
-							tint: 0xfff0c0,
-						};
-					}),
-				],
-			});
+			const u = cycle(t, HOLD_MS * 0.42);
+			const hop = hump(u, 0.55);
+			const rattle = u > 0.55 ? 0.03 * Math.exp(-(u - 0.55) * 12) * Math.sin(t / 15) : 0;
+			return rest({ dy: -0.07 * hop, rotation: rattle, overlays: glint(t - 200, 600, RUST) });
 		},
 	},
 
-	// H4 — whiskey and cigar: a cut tumbler of amber with a lit cigar across the
-	// front of it (capoSymbols/h4.png).
-	//
-	// This was written for a boombox and kept a strict speaker-thump beat, which
-	// is exactly what a glass of spirit does not do. It is now the only LIQUID
-	// motion on the board: a long low swing with a lateral drift a quarter-cycle
-	// behind it, so the two together read as whisky swinging round the inside of
-	// the glass rather than as the glass wobbling. The ember breathes on its own
-	// slower cycle and three curls of smoke leave it on a stagger — the only
-	// overlay here that travels off the top of the cell.
+	// H4 — the tin mug. Banged on the bars: three rhythmic knocks, each a sharp
+	// tilt and a ring of warm light.
 	H4: {
-		hitScale: 1.05,
+		hitScale: 1.0,
 		frame: (t) => {
-			const phase = (Math.PI * 2 * t) / (HOLD_MS * 0.62);
-			// Phase-modulated, not a plain sine, and that is the point rather than
-			// decoration: liquid swings fast to one side and comes back slowly, so
-			// the wave is skewed. A clean sine here scored 0.76 against the car's
-			// idle and 0.87 against the heart's rock — three symbols all running
-			// sin(t). The skew is a shape no other symbol on the board has.
-			const swing = Math.sin(phase + 0.9 * Math.sin(phase));
-			// The liquid lags the glass. That lag IS the slosh.
-			const lagPhase = phase - 0.95;
-			const lag = Math.sin(lagPhase + 0.9 * Math.sin(lagPhase));
-			const ember = 0.5 + 0.5 * Math.sin(t / 215);
+			const knock = strike(cycle(t, HOLD_MS / 3), 8);
 			return rest({
-				rotation: 0.055 * swing,
-				dx: 0.03 * lag,
-				dy: 0.008 * Math.sin(phase * 2),
-				// The spirit lit from within, not a flash: it never fully leaves.
-				bloomAlpha: 0.2 + 0.35 * ember,
-				bloomTint: 0xc98b3a,
-				overlays: [
-					{
-						// The cigar's lit end, bottom-left in the art.
-						key: 'fxGlow',
-						x: -0.3,
-						y: 0.25,
-						width: 0.24 + 0.05 * ember,
-						height: 0.24 + 0.05 * ember,
-						rotation: 0,
-						alpha: 0.3 + 0.35 * ember,
-						tint: 0xff7a2a,
-					},
-					...[0, 1, 2].map((i) => {
-						// Smoke: rises, spreads, thins, and is replaced.
-						const curl = cycle(t + (i * HOLD_MS) / 3, HOLD_MS);
-						return {
-							key: 'fxGlow',
-							x: -0.28 + 0.13 * Math.sin(curl * 5 + i),
-							y: 0.16 - 0.62 * curl,
-							width: 0.18 + 0.34 * curl,
-							height: 0.18 + 0.34 * curl,
-							rotation: 0,
-							alpha: 0.42 * hump(curl, 1),
-							tint: 0xb9a78f,
-						};
-					}),
-				],
+				rotation: -0.12 * knock,
+				dx: -0.03 * knock,
+				overlays: [light(-0.2, -0.1, 0.6, 0.45 * knock, RUST)],
 			});
 		},
 	},
 
-	// H5 — the black sedan: a tall 1930s saloon in side view, chrome waist trim,
-	// whitewall tyres (capoSymbols/h5.png).
-	//
-	// Two motions at once, which no other symbol has, and that concept survives
-	// the reskin because both the old symbol and this one are cars. What did not
-	// survive is the shape of it. A convertible is low and light, so it dipped
-	// its nose into the lunge and threw cyan speed lines; a heavy saloon on soft
-	// springs SQUATS on the rear and lifts its nose, and it builds to it rather
-	// than snapping. So the lunge is now a slow eased swell with a positive
-	// pitch, the idle is a low shudder instead of a buzz, and the streaks are
-	// warm chrome — Miami's cyan is not a colour this game has.
+	// H5 — the tally patch. Three chalk strokes scratched across it, the patch
+	// pressed a little flatter on each: counting the days.
 	H5: {
-		hitScale: 1.1,
+		hitScale: 1.0,
 		frame: (t) => {
-			const u = cycle(t, HOLD_MS * 1.1);
-			// Eased in and out over most of the cycle: weight taking up.
-			const pull = hump(u, 0.66);
-			// Chrome running along the waist line, early in the pull.
-			const gleam = u < 0.06 || u > 0.4 ? -1 : (u - 0.06) / 0.34;
+			const stroke = HOLD_MS / 3.4;
+			const i = Math.floor(t / stroke);
+			const u = (t % stroke) / stroke;
+			const press = hump(u, 0.5);
 			return rest({
-				dx: 0.0035 * Math.sin(t / 34) + 0.05 * pull,
-				dy: 0.006 * Math.sin(t / 26),
-				// Nose UP as the back squats, not down.
-				rotation: 0.026 * pull,
-				overlays: [
-					...(gleam < 0
-						? []
-						: [
-								{
-									key: 'fxStreak',
-									x: -0.46 + gleam * 0.92,
-									y: -0.02,
-									width: 0.26,
-									height: 0.34,
-									rotation: -0.12,
-									alpha: 0.85 * hump(gleam, 1),
-									tint: 0xfff6dc,
-								},
-							]),
-					...[-1, 1].map((side) => ({
-						key: 'fxStreak',
-						x: -0.3 - 0.24 * pull,
-						// Body line and wheel line rather than symmetric about centre.
-						y: side < 0 ? -0.06 : 0.2,
-						width: 0.55,
-						height: 0.1,
-						rotation: 0,
-						alpha: 0.5 * pull,
-						tint: 0xe8d9b4,
-						behind: true,
-					})),
-				],
+				scaleX: 1 - 0.06 * press,
+				scaleY: 1 - 0.06 * press,
+				dy: 0.02 * press,
+				overlays:
+					i < 3
+						? [{ key: 'fxStreak', x: -0.3 + 0.25 * i, y: -0.3 + 0.6 * u, width: 0.08, height: 0.55 * Math.min(1, u * 2), rotation: 0.35, alpha: 0.75 * (1 - u), tint: CHALK }]
+						: [],
 			});
 		},
 	},
 
-	// L1-L4 — struck-metal chips. Same idea as before; four sheen rhythms AND
-	// four axes of movement, so no two are alike either to the eye or to the
-	// checker. What changed is the grammar: these used to switch on like neon
-	// tubes, which is a light-EMITTING object's motion applied to an engraved
-	// metal disc. They now take a travelling highlight instead.
-
-	// Spade — struck once, cleanly. The glint crosses flat left to right and the
-	// chip LIFTS on the strike, then settles under a low held sheen.
+	// L1-L4 — the four suits. Unchanged in gesture (they were written for card
+	// suits, which these are); only their bloom was halved in suitMedallion.
 	L1: suitMedallion(
 		SHEEN.L1,
 		0,
@@ -572,109 +457,6 @@ const BASE_WIN_MOTION: Record<string, SymbolWinMotion> = {
 	// the payout is on the band, not on rays flung off the silhouette.
 	// 2026-09-07: this used to be Hot Miami's comic-burst rays, sized for a
 	// drawn explosion. A hat does not explode; it tips.
-	W: {
-		hitScale: 1.15,
-		frame: (t) => {
-			const u = cycle(t, HOLD_MS * 0.85);
-			// Fast tip, ringing decay — an underdamped settle, not a snap-to-rest.
-			const ring = strike(u, 3.2) * Math.cos(u * Math.PI * 3.4);
-			const catch_ = strike(u, 5);
-			return rest({
-				rotation: -0.22 * ring,
-				scaleY: 1 - 0.05 * catch_,
-				dy: -0.035 * catch_,
-				overlays: [
-					{
-						key: 'fxStreak',
-						x: 0,
-						y: 0.06,
-						width: 0.8,
-						height: 0.11,
-						rotation: -0.22 * ring,
-						alpha: 0.6 * catch_,
-						tint: 0xffd166,
-						behind: false,
-					},
-				],
-			});
-		},
-	},
-
-	// S — the vault door. The wheel is being cranked, not twinkling: it spins
-	// up fast and holds a steady turn, the whole door taking one heavy
-	// metallic clunk as the mechanism catches, and the amber crack of light
-	// already painted at the hinge (see fs.png) pulses as it strains against
-	// the frame. `spins: true` is kept — nothing else on the board turns,
-	// which is still what makes a scatter identifiable from the corner of the
-	// eye — but the shape reads as machinery now, not as a star.
-	// 2026-09-07: this used to be a green/cyan starburst pulse, matching
-	// nothing in the actual art (a dark riveted door with one amber sliver).
-	S: {
-		hitScale: 1.15,
-		spins: true,
-		frame: (t) => {
-			const u = cycle(t, HOLD_MS * 0.85);
-			const spinup = 1 - strike(u, 4);
-			const clunk = strike(u, 8);
-			const speed = t / 520;
-			return rest({
-				rotation: speed * (0.25 + 0.75 * spinup),
-				scaleX: 1 + 0.045 * clunk,
-				scaleY: 1 - 0.03 * clunk,
-				bloomAlpha: 0.22 + 0.16 * Math.sin(t / 190) * spinup,
-				bloomTint: 0xffb347,
-				overlays: [
-					{
-						key: 'fxStreak',
-						x: 0,
-						y: 0,
-						width: 0.85,
-						height: 0.07,
-						rotation: speed * (0.25 + 0.75 * spinup),
-						alpha: 0.5 * spinup,
-						tint: 0xe3d9c6,
-						behind: true,
-					},
-				],
-			});
-		},
-	},
-
-	// SW — the Tommy Gun. It fills its whole reel with Wilds, so it pushes
-	// OUTWARD ALONG THE COLUMN: a vertical stretch on each beat with stars
-	// thrown up and down the reel rather than orbiting the cell. The Collector
-	// this replaced pinched inward, which was right for a symbol that swept
-	// things off the board and is exactly wrong for one that fills a column.
-	SW: {
-		hitScale: 1.25,
-		frame: (t) => {
-			const u = cycle(t, HOLD_MS * 0.95);
-			const recoil = strike(u, 4);
-			return rest({
-				// Narrow and TALL, growing: the cell reaching up and down its reel.
-				scaleX: 1 - 0.05 * recoil,
-				scaleY: 1 + 0.12 * recoil,
-				overlays: [0, 1, 2].map((i) => {
-					// Thrown up and down the column, not around the cell. `i - 1`
-					// gives -1 / 0 / +1, so one goes up, one stays, one goes down.
-					const lane = i - 1;
-					const travel = 0.75 * u;
-					return {
-						key: 'fxStar',
-						x: 0,
-						y: lane * travel,
-						width: 0.26 * (1 - u),
-						height: 0.26 * (1 - u),
-						rotation: 0,
-						alpha: 0.85 * (1 - u),
-						// Cold searchlight signal; red is reserved for the alarm transition.
-						tint: 0x8fb4c8,
-						behind: true,
-					};
-				}),
-			});
-		},
-	},
 };
 
 /**
@@ -706,13 +488,12 @@ const BASE_WIN_MOTION: Record<string, SymbolWinMotion> = {
  * brighter, and clamping them would flatten the tops of the medallion glints,
  * which is a shape change.
  */
+// 2026-09-27: halved, as Deadwood's was. The old 15°/12px/15% floor turned
+// every symbol into a big wobble; the motions above are specific instead.
 export const VISIBLE_FLOOR = {
-	/** 15 degrees. Below this a lean on a 118px cell is a tremble. */
-	rotation: 0.26,
-	/** cell fractions: 0.10 is ~12px. */
-	offset: 0.1,
-	/** 15% of the symbol's own size. */
-	scale: 0.15,
+	rotation: 0.12,
+	offset: 0.05,
+	scale: 0.08,
 };
 
 /** The gate's own limits, restated so a boost stops short of them. */

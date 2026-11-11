@@ -44,7 +44,7 @@ export type LayoutUiProps = {
 	// the readout draws at whatever width it needs, as it always did.
 	amountBalance: Snippet<[{ stacked?: boolean; tiled?: boolean; maxWidth?: number }]>;
 	amountWin: Snippet<[{ stacked?: boolean; tiled?: boolean; maxWidth?: number }]>;
-	amountBet: Snippet<[{ stacked?: boolean; tiled?: boolean; maxWidth?: number }]>;
+	amountBet: Snippet<[{ stacked?: boolean; tiled?: boolean; maxWidth?: number; centerGroup?: boolean }]>;
 	buttonBuyBonus: Snippet<[Partial<ButtonProps>]>;
 	buttonBet: Snippet<[Partial<ButtonProps>]>;
 	buttonTurbo: Snippet<[Partial<ButtonProps>]>;

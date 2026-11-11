@@ -1,0 +1,17 @@
+{
+  "frames_checked": 48,
+  "fixed_attachment_rgba": "identical in every frame",
+  "rigid_anatomy": {
+    "head_y_le_435": "unit weight on head ink / pure rotation",
+    "arm_l_y_ge_600": "unit weight / pure rotation"
+  },
+  "minimum_inverse_map_jacobian": 0.676402747631073,
+  "attachments": [
+    "both shoulders",
+    "neck",
+    "grip/bat/fingers shared field",
+    "chain endpoints pinned",
+    "mask tail inherits head field",
+    "head and shoulder seam share one composite warp"
+  ]
+}

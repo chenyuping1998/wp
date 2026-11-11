@@ -1,0 +1,270 @@
+{
+    "reveal": {
+        "type": "reveal",
+        "board": [
+            [
+                {
+                    "name": "L1"
+                },
+                {
+                    "name": "L5"
+                },
+                {
+                    "name": "H2"
+                },
+                {
+                    "name": "S",
+                    "scatter": true
+                },
+                {
+                    "name": "H2"
+                },
+                {
+                    "name": "L4"
+                }
+            ],
+            [
+                {
+                    "name": "L3"
+                },
+                {
+                    "name": "L1"
+                },
+                {
+                    "name": "H1"
+                },
+                {
+                    "name": "H1"
+                },
+                {
+                    "name": "L5"
+                },
+                {
+                    "name": "S",
+                    "scatter": true
+                }
+            ],
+            [
+                {
+                    "name": "P",
+                    "prize": 5
+                },
+                {
+                    "name": "H2"
+                },
+                {
+                    "name": "S",
+                    "scatter": true
+                },
+                {
+                    "name": "L4"
+                },
+                {
+                    "name": "H3"
+                },
+                {
+                    "name": "H4"
+                }
+            ],
+            [
+                {
+                    "name": "H1"
+                },
+                {
+                    "name": "S",
+                    "scatter": true
+                },
+                {
+                    "name": "H4"
+                },
+                {
+                    "name": "H4"
+                },
+                {
+                    "name": "L2"
+                },
+                {
+                    "name": "L2"
+                }
+            ],
+            [
+                {
+                    "name": "L5"
+                },
+                {
+                    "name": "L4"
+                },
+                {
+                    "name": "L4"
+                },
+                {
+                    "name": "L5"
+                },
+                {
+                    "name": "L1"
+                },
+                {
+                    "name": "L1"
+                }
+            ]
+        ],
+        "paddingPositions": [
+            2,
+            23,
+            76,
+            86,
+            85
+        ],
+        "gameType": "basegame",
+        "anticipation": [
+            0,
+            0,
+            0,
+            1,
+            2
+        ]
+    },
+    "setTotalWin": {
+        "type": "setTotalWin",
+        "amount": 0
+    },
+    "freeSpinTrigger": {
+        "type": "freeSpinTrigger",
+        "totalFs": 10,
+        "positions": [
+            {
+                "reel": 0,
+                "row": 3
+            },
+            {
+                "reel": 2,
+                "row": 2
+            },
+            {
+                "reel": 3,
+                "row": 1
+            }
+        ]
+    },
+    "updateFreeSpin": {
+        "type": "updateFreeSpin",
+        "amount": 0,
+        "total": 10
+    },
+    "winInfo": {
+        "type": "winInfo",
+        "totalWin": 40,
+        "wins": [
+            {
+                "symbol": "L3",
+                "kind": 3,
+                "win": 40,
+                "positions": [
+                    {
+                        "reel": 0,
+                        "row": 4
+                    },
+                    {
+                        "reel": 1,
+                        "row": 3
+                    },
+                    {
+                        "reel": 1,
+                        "row": 4
+                    },
+                    {
+                        "reel": 2,
+                        "row": 3
+                    },
+                    {
+                        "reel": 2,
+                        "row": 4
+                    }
+                ],
+                "meta": {
+                    "ways": 4,
+                    "globalMult": 1,
+                    "winWithoutMult": 40,
+                    "symbolMult": 0
+                }
+            }
+        ]
+    },
+    "setWin": {
+        "type": "setWin",
+        "amount": 40,
+        "winLevel": 2
+    },
+    "collect": {
+        "type": "collect",
+        "collectors": [
+            {
+                "reel": 2,
+                "row": 3
+            }
+        ],
+        "sacks": [
+            {
+                "reel": 2,
+                "row": 0,
+                "value": 3
+            },
+            {
+                "reel": 2,
+                "row": 1,
+                "value": 3
+            },
+            {
+                "reel": 3,
+                "row": 0,
+                "value": 4
+            },
+            {
+                "reel": 3,
+                "row": 1,
+                "value": 3
+            },
+            {
+                "reel": 4,
+                "row": 0,
+                "value": 3
+            },
+            {
+                "reel": 4,
+                "row": 3,
+                "value": 1
+            }
+        ],
+        "perCollector": 1700,
+        "mult": 1,
+        "amount": 1700,
+        "gameType": "freegame"
+    },
+    "banditMeter": {
+        "type": "banditMeter",
+        "count": 5,
+        "added": 1,
+        "level": 1,
+        "removedSymbols": [
+            "L5"
+        ],
+        "mult": 1,
+        "nextAt": 8,
+        "levelUp": 0,
+        "spinsAdded": 0,
+        "totalFs": 10
+    },
+    "freeSpinEnd": {
+        "type": "freeSpinEnd",
+        "amount": 2660,
+        "winLevel": 5
+    },
+    "finalWin": {
+        "type": "finalWin",
+        "amount": 2660
+    },
+    "wincap": {
+        "type": "wincap",
+        "amount": 1000000
+    }
+}

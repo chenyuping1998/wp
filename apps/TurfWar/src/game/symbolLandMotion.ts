@@ -332,35 +332,21 @@ const BASE_LAND_MOTION: Record<string, SymbolLandMotion> = {
 		},
 	},
 
-	// S — scatter. It arrives still TURNING and slows to a stop, which is the
-	// only rotation of that size on the board and makes a scatter landing
-	// recognisable before the eye has read the art. The anticipation build hangs
-	// off scatters, so being able to spot one landing is worth a beat of its own.
+	// S — the boombox. It is SET DOWN hard and rocks once on its base, dust
+	// kicking out — no rotation beyond the rock. Until 2026-09-27 it arrived
+	// still turning (~110°), inherited from Hot Miami's starburst scatter.
 	S: {
-		spins: true,
 		frame: (t) => {
 			const u = p(t);
-			// Tapered to exactly zero at u=1, not merely small: `ReelSymbol` flips
-			// the symbol to 'static' the instant the landing completes, so a few
-			// degrees of residual lean would snap away in one frame.
-			const spin = Math.exp(-3.6 * u) * (1 - u);
+			const fall = (1 - u) * (1 - u);
+			const rock = Math.sin(u * Math.PI * 2) * (1 - u);
 			return rest({
-				rotation: 1.9 * spin,
-				scaleX: 1 + 0.1 * spin,
-				scaleY: 1 + 0.1 * spin,
-				overlays: [
-					{
-						key: 'fxGlow',
-						x: 0,
-						y: 0,
-						width: 1.1 + 0.5 * spin,
-						height: 1.1 + 0.5 * spin,
-						rotation: 0,
-						alpha: 0.45 * spin,
-						tint: 0xf5893d,
-						behind: true,
-					},
-				],
+				dy: -0.1 * fall,
+				rotation: 0.09 * rock,
+				scaleY: 1 - 0.06 * hump(u, 0.4),
+				bloomAlpha: 0.25 * hump(u, 0.6),
+				bloomTint: 0xf5893d,
+				overlays: dust(u, 0.6, 0.5),
 			});
 		},
 	},
@@ -423,10 +409,10 @@ const BASE_LAND_MOTION: Record<string, SymbolLandMotion> = {
  */
 export const LAND_FLOOR = {
 	/** ~11.5 degrees */
-	rotation: 0.2,
+	rotation: 0.08,
 	/** cell fractions: 0.085 is ~10px */
-	offset: 0.085,
-	scale: 0.14,
+	offset: 0.03,
+	scale: 0.08,
 };
 
 /**
@@ -490,8 +476,23 @@ const boostToFloor = (motion: SymbolLandMotion, windowMs: number): SymbolLandMot
 	};
 };
 
+// ART_BRIEF v2: paper slap .92 -> 1.06 -> 1, with each object's own
+// directional gesture retained at a small fraction of the old heavy bounce.
 export const SYMBOL_LAND_MOTION: Record<string, SymbolLandMotion> = Object.fromEntries(
-	Object.entries(BASE_LAND_MOTION).map(([name, motion]) => [name, boostToFloor(motion, LAND_MS)]),
+ Object.entries(BASE_LAND_MOTION).map(([name, motion]) => {
+  const subject = boostToFloor(motion, LAND_MS);
+  return [name, {frame: (t: number) => {
+   const f=subject.frame(t); const u=Math.max(0,Math.min(1,t/LAND_MS));
+   const slap=u<.3 ? .92+.14*Math.sin(u/.3*Math.PI/2) : 1+.06*Math.cos((u-.3)/.7*Math.PI/2);
+   if(name==='H4') return {...f,scaleX:slap,scaleY:slap,dx:-.06*Math.sin(u*Math.PI*2)*(1-u),dy:0,rotation:.18*Math.sin(u*Math.PI*2)*(1-u),bloomAlpha:0};
+   if(name==='L2') return {...f,scaleX:slap,scaleY:slap,dx:0,dy:.03*Math.sin(u*Math.PI*5)*(1-u),rotation:.18*Math.sin(u*Math.PI*5)*(1-u),bloomAlpha:0};
+   if(name==='H5') return {...f,scaleX:slap,scaleY:1+.09*Math.sin(u*Math.PI*3)*(1-u),dx:0,dy:-.12*Math.sin(u*Math.PI),rotation:.08*Math.sin(u*Math.PI),bloomAlpha:0};
+   if(name==='L4') return {...f,scaleX:slap,scaleY:slap,dx:0,dy:.10*Math.sin(u*Math.PI*4)*(1-u),rotation:.08*Math.sin(u*Math.PI*3)*(1-u),bloomAlpha:0};
+   if(name==='S') return {...f,scaleX:1+.14*Math.sin(u*Math.PI*4)*(1-u),scaleY:1-.15*Math.sin(u*Math.PI*4)*(1-u),dx:0,dy:.04*Math.sin(u*Math.PI*4)*(1-u),rotation:0,bloomAlpha:0};
+   if(name==='W') return {...f,scaleX:slap,scaleY:slap,dx:.1*Math.sin(u*Math.PI)*(1-u),dy:0,rotation:.16*Math.sin(u*Math.PI*2)*(1-u),bloomAlpha:0};
+   return {...f,scaleX:slap+(f.scaleX-1)*.65,scaleY:slap+(f.scaleY-1)*.65};
+  }}];
+ }),
 );
 
 export const getSymbolLandMotion = (name: string): SymbolLandMotion =>

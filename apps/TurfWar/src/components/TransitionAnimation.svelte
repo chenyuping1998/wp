@@ -1,7 +1,6 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
-	import { Container, Graphics, Sprite } from 'pixi-svelte';
-	import type { Graphics as PixiGraphics } from 'pixi.js';
+	import { Container, Sprite } from 'pixi-svelte';
 
 	import { getContext } from '../game/context';
 
@@ -75,7 +74,14 @@
 
 	let doorGap = $state(1); // 1 = wide open, 0 = shut
 	let dialSpin = $state(0);
+	// 2026-11-05: the art is a PADLOCK now (it was drawn as one even before),
+	// so it swings from its shackle and drops onto the hasp instead of spinning
+	// a quarter turn like a vault dial.
+	let lockSwing = $state(0);
+	let lockDrop = $state(0);
+	let lockOff = $state(0); // 0 hooked on, 1 fallen away
 	let sealAlpha = $state(0);
+	let bounce = $state(0);
 
 	const clamp01 = (t: number) => Math.min(1, Math.max(0, t));
 	const easeOutCubic = (t: number) => 1 - (1 - clamp01(t)) ** 3;
@@ -95,14 +101,15 @@
 		let last = 0;
 		const tick = (now: number) => {
 			if (!last) last = now;
-			elapsed += now - last;
+			elapsed += Math.min(100, Math.max(0, now - last));
 			last = now;
 			clock = elapsed;
 
 			if (elapsed < LOCK_AT) {
-				// Heavy doors do not ease in gently — they are already moving when
-				// they enter frame and slow only at the very end.
-				doorGap = 1 - easeOutCubic(elapsed / CLOSE_MS);
+				// 2026-10-01: it is a ROLLER SHUTTER — it falls from the top and
+				// accelerates (gravity) into the ground, instead of two halves
+				// sliding in from the sides like a vault door.
+				doorGap = 1 - easeInCubic(elapsed / CLOSE_MS);
 				dialSpin = 0;
 			} else if (elapsed < HOLD_AT) {
 				doorGap = 0;
@@ -112,16 +119,39 @@
 				dialSpin = LOCK_TURN;
 			} else {
 				const p = (elapsed - OPEN_AT) / OPEN_MS;
-				// The dial unwinds over the first 45% and the doors only start moving
-				// once it has: a door that opens while its lock is still turning reads
-				// as two unrelated animations.
+				// The lock comes off over the first 30% (see lockOff) and the
+				// shutter only starts rolling once it has: a shutter that lifts while
+				// its lock is still on reads as two unrelated animations.
 				dialSpin = LOCK_TURN * (1 - easeOutCubic(clamp01(p / 0.45)));
 				// Reaches 1 at p = 0.87, not at p = 1. The doors have to be GONE
 				// before the transition ends, not arriving off-screen on its last
 				// frame — otherwise the final beat still has steel in shot while the
 				// board underneath is what the player is meant to be looking at.
-				doorGap = easeInCubic(clamp01((p - 0.25) / 0.62));
+				// Rolled back up: smoothstep haul after the lock lets go.
+				const q = clamp01((p - 0.25) / 0.62);
+				doorGap = q * q * (3 - 2 * q);
 			}
+			if (elapsed < LOCK_AT) {
+				lockSwing = 0;
+				lockDrop = 1;
+				lockOff = 0;
+			} else if (elapsed < OPEN_AT) {
+				const t = (elapsed - LOCK_AT) / LOCK_MS;
+				lockDrop = 1 - easeOutCubic(clamp01(t * 1.6));
+				lockSwing = 0.2 * Math.sin(clamp01(t * 0.9) * Math.PI * 3) * Math.exp(-clamp01(t) * 2.6);
+			} else {
+				const p = (elapsed - OPEN_AT) / OPEN_MS;
+				lockDrop = 0;
+				lockSwing = -0.16 * Math.sin(clamp01(p / 0.3) * Math.PI * 2) * (1 - clamp01(p / 0.3));
+				// unhooked: it falls away (gravity) and fades before the roll starts
+				lockOff = easeInCubic(clamp01((p - 0.08) / 0.24));
+			}
+			// the slam: the bottom rail bounces off the ground once
+			const sinceSlam = elapsed - LOCK_AT;
+			bounce =
+				sinceSlam >= 0 && sinceSlam < 300
+					? Math.sin((sinceSlam / 300) * Math.PI * 2) * Math.exp(-sinceSlam / 110)
+					: 0;
 
 			// A seam shadow, drawn by us rather than baked into the art — see the
 			// note in ART_BRIEF §4.5 about why the halves must not carry one.
@@ -158,31 +188,22 @@
 	const doorScale = $derived(Math.max(sizes.width / 2 / DOOR_W, sizes.height / DOOR_H));
 	const doorW = $derived(DOOR_W * doorScale);
 	const doorH = $derived(DOOR_H * doorScale);
-	// Far enough out that the INNER edge clears the screen when fully open.
-	//
-	// The bound is width/2: each door is anchored by its inner edge, so that edge
-	// has to travel half the screen to leave. 0.55 satisfies it by 5% and looked
-	// fine frozen, but with the easing the doors were only just clearing on the
-	// final frame. 0.62 gives them room to be plainly gone before the end.
-	const travel = $derived(sizes.width * 0.62);
-	const dialSize = $derived(sizes.height * 0.4);
+	// 2026-11-05: no sideways travel any more — a roller shutter rolls back UP
+	// the way it came down (the Container's y), it does not part like doors.
+	// 0.32 (was 0.4): the padlock no longer crowds the sprayed logo above it
+	// and never more than 0.42 of the width, or on a phone held upright it
+	// filled two thirds of the screen and sat on the logo
+	const dialSize = $derived(Math.min(sizes.height * 0.32, sizes.width * 0.42));
 
-	/** The dark line where the two halves meet, plus its falloff onto each door. */
-	const drawSeam = (g: PixiGraphics) => {
-		g.clear();
-		if (sealAlpha <= 0.01) return;
-		const { height } = sizes;
-		for (const [halfWidth, alpha] of [
-			[height * 0.05, 0.3],
-			[height * 0.014, 0.62],
-		] as [number, number][]) {
-			g.rect(-halfWidth, -height, halfWidth * 2, height * 2);
-			g.fill({ color: 0x000000, alpha: alpha * sealAlpha });
-		}
-	};
+	// 2026-11-05: no seam shadow. A roller shutter is one sheet; the two
+	// halves are cut from ONE painting (design/shutter_20261105), so they meet
+	// without a line, and the dark band read as a pole down the middle.
 </script>
 
-<Container x={sizes.width * 0.5} y={sizes.height * 0.5}>
+<Container
+	x={sizes.width * 0.5}
+	y={sizes.height * 0.5 - doorGap * ((sizes.height + doorH) / 2) * 1.04 - bounce * sizes.height * 0.03}
+>
 	<!--
 		Anchored at the seam: left door by its right edge, right door by its left.
 		See the header note — this is what keeps the join at x = 0 and the overflow
@@ -191,32 +212,31 @@
 	<Sprite
 		key="capoVaultDoorL"
 		anchor={{ x: 1, y: 0.5 }}
-		x={-doorGap * travel}
 		width={doorW}
 		height={doorH}
 	/>
 	<Sprite
 		key="capoVaultDoorR"
 		anchor={{ x: 0, y: 0.5 }}
-		x={doorGap * travel}
 		width={doorW}
 		height={doorH}
 	/>
 
-	<Graphics draw={drawSeam} />
 
 	<!--
 		The dial rides the seam, so it splits with the doors as they part. Drawn
 		last so the seam shadow passes behind it rather than across its face.
 	-->
 	{#if sealAlpha > 0.01}
+		<!-- pivots at the top of the shackle (8% down the canvas) -->
 		<Sprite
 			key="capoVaultDial"
-			anchor={0.5}
-			rotation={dialSpin}
+			anchor={{ x: 0.5, y: 0.08 }}
+			y={-dialSize * 0.42 - lockDrop * dialSize * 0.16 + lockOff * sizes.height * 0.55}
+			rotation={lockSwing + lockOff * 0.5}
 			width={dialSize}
 			height={dialSize}
-			alpha={Math.min(1, sealAlpha * 1.6)}
+			alpha={Math.min(1, sealAlpha * 1.6) * (1 - lockOff)}
 		/>
 	{/if}
 </Container>

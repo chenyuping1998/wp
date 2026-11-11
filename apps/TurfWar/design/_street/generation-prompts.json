@@ -1,0 +1,28 @@
+{
+  "tool": "built-in imagegen",
+  "styleReferences": [
+    "design/style_frame/h1.png",
+    "design/style_frame/l1.png",
+    "design/style_frame/bg_base.png"
+  ],
+  "symbols": {
+    "h2": "Create a NEW Turf War slot-game symbol using the attached image ONLY as this game's approved style reference, do not copy its necklace subject. Flat die-cut vinyl sticker illustration, thick off-white #F7F5F0 outer border 3-4% canvas width, bold black #121212 inner outline 1.5-2%, interior lines half that weight. Flat colour fills, ONE hard-edged shadow per form, NO gradients, no lighting, no reflections, no texture, no lettering or numbers. Bold simple shapes readable at 70px. Single centered object, square 1024x1024, 8% empty margin, pure flat blue #0000FF background including all holes. A compact block of three low city buildings with a rooftop water tower, straight-on, simple square windows, a strip of chain-link fence across bottom third. Main cyan #2EC4C6, shadow #1C7E80, black and white only.",
+    "h3": "Create a NEW Turf War slot-game symbol using the attached image ONLY as this game's approved style reference, do not copy its necklace subject. Flat die-cut vinyl sticker illustration, thick off-white #F7F5F0 outer border 3-4% canvas width, bold black #121212 inner outline 1.5-2%, interior lines half that weight. Flat colour fills, ONE hard-edged shadow per form, NO gradients, no lighting, no reflections, no texture, no lettering or numbers. Bold simple shapes readable at 70px. Single centered object, square 1024x1024, 8% empty margin, pure flat blue #0000FF background including all holes. A fat roll of banknotes held by a rubber band, three quarter angle, spiral end facing viewer, a few bills fanning outward, simple geometric note patterns with NO letters or numbers. Main acid green #9BD437, shadow #5E8A1E, black and white only.",
+    "h4": "Create a NEW Turf War slot-game symbol using the attached image ONLY as this game's approved style reference, do not copy its necklace subject. Flat die-cut vinyl sticker illustration, thick off-white #F7F5F0 outer border 3-4% canvas width, bold black #121212 inner outline 1.5-2%, interior lines half that weight. Flat colour fills, ONE hard-edged shadow per form, NO gradients, no lighting, no reflections, no texture, no lettering or numbers. Bold simple shapes readable at 70px. Single centered object, square 1024x1024, 8% empty margin, pure flat blue #0000FF background including all holes. A big 40 ounce malt liquor bottle slightly tilted, wrapped in a paper bag over bottom half, bottle cap on, blank magenta label. Main graffiti magenta #E0338A, shadow #8E1C55, black and white only. No cigarettes.",
+    "h5": "Create a NEW Turf War slot-game symbol using the attached image ONLY as this game's approved style reference, do not copy its necklace subject. Flat die-cut vinyl sticker illustration, thick off-white #F7F5F0 outer border 3-4% canvas width, bold black #121212 inner outline 1.5-2%, interior lines half that weight. Flat colour fills, ONE hard-edged shadow per form, NO gradients, no lighting, no reflections, no texture, no lettering or numbers. Bold simple shapes readable at 70px. Single centered object, square 1024x1024, 8% empty margin, pure flat blue #0000FF background including all holes. A 1980s American lowrider sedan in SIDE VIEW, very low body, front wheel hopped up, blocky simple shapes. Black #121212, white #F7F5F0 and grey #55585D #9A9CA0, only rims and one stripe orange #F5893D.",
+    "fs": "Create a NEW Turf War slot-game symbol using the attached image ONLY as this game's approved style reference, do not copy its necklace subject. Flat die-cut vinyl sticker illustration, thick off-white #F7F5F0 outer border 3-4% canvas width, bold black #121212 inner outline 1.5-2%, interior lines half that weight. Flat colour fills, ONE hard-edged shadow per form, NO gradients, no lighting, no reflections, no texture, no lettering or numbers. Bold simple shapes readable at 70px. Single centered object, square 1024x1024, 8% empty margin, pure flat blue #0000FF background including all holes. A classic 1980s boombox front view, two big round speakers, handle on top, small cassette deck center, three FLAT sound-wave arcs from each side. Cyan #2EC4C6 body, magenta #E0338A speaker cones, black details. No lettering."
+  },
+  "lowPayRule": "Flat fat grey marker drawing; single 5% line; #9A9CA0 and #55585D; no fill or white border; two flat drip strokes; centered pure #0000FF including holes; no text, shading, glow, gradients or 3D; 1024 square with 8% margin.",
+  "lowSubjects": {
+    "l2": "simple cartoon skull outline, two round eye holes, three teeth",
+    "l3": "five-point star outline",
+    "l4": "zig-zag lightning bolt outline"
+  },
+  "h4Correction": "Preserve silhouette, blank label, paper bag, tilt and border. Replace all brown/orange/gold with #E0338A and hard shadow #8E1C55. Flat fills only.",
+  "scenes": {
+    "bg_feature": "abandoned warehouse boxing arena; bare bulbs, chain link fence, stacked pallets; open centre",
+    "bg_epic": "rooftop, water tower, railing, skyline, lowrider parked at edge; open centre",
+    "tile_background": "urban back alley entrance, brick buildings, fire escapes, chain link framing; open centre"
+  },
+  "sceneRule": "Own approved bg_base reference only; grey ink lines #55585D and #9A9CA0 on #D8D6D1; no fills, shading, words, texture, gradients or realistic lighting; center 55% open; mean brightness >65%."
+}

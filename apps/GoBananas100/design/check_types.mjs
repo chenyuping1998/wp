@@ -80,7 +80,7 @@ const actual = new Map();
 for (const m of out.matchAll(/^\d+ ERROR "([^"]*)"/gm)) {
 	// The machine format escapes backslashes; unescape so the keys above can be
 	// written the way the human format prints them.
-	const file = m[1].replace(/\\\\/g, '\\');
+	const file = m[1].replace(/\\\\/g, '\\').replace(/\//g, '\\');
 	actual.set(file, (actual.get(file) ?? 0) + 1);
 }
 

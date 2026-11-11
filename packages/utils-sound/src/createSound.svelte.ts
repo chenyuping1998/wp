@@ -9,7 +9,7 @@ import { createPlayLoop } from './createPlayLoop.svelte';
 import { createPlayOnce } from './createPlayOnce.svelte';
 import type { FadeOptions, RateOptions, StopOptions } from './types';
 
-function createSound<TSoundName extends string>() {
+function createSound<TSoundName extends string>(options: { allowHtmlAudioFallback?: boolean } = {}) {
 	type PlayMusic = ReturnType<typeof createPlayMusic<TSoundName>>['play'];
 	type PlayLoop = ReturnType<typeof createPlayLoop<TSoundName>>['play'];
 	type PlayOnce = ReturnType<typeof createPlayOnce<TSoundName>>['play'];
@@ -40,14 +40,20 @@ function createSound<TSoundName extends string>() {
 		};
 
 		// audioContextState and visibilityState
-		const onAudioContextChange = () => (audioContextState = Howler.ctx.state);
+		// Capture this instance: Howler may clear its context during unload.
+		const audioContext = Howler.ctx;
+		const onAudioContextChange = () => (audioContextState = audioContext.state);
 		const onVisibilityStateChange = () => (visibilityState = document.visibilityState);
 
-		Howler.ctx.addEventListener('statechange', onAudioContextChange);
+		if (audioContext || !options.allowHtmlAudioFallback) {
+			audioContext.addEventListener('statechange', onAudioContextChange);
+		}
 		document.addEventListener('visibilitychange', onVisibilityStateChange);
 
 		const destroy = () => {
-			Howler.ctx.removeEventListener('statechange', onAudioContextChange);
+			if (audioContext || !options.allowHtmlAudioFallback) {
+			audioContext.removeEventListener('statechange', onAudioContextChange);
+			}
 			document.removeEventListener('visibilitychange', onVisibilityStateChange);
 
 			if (players) {

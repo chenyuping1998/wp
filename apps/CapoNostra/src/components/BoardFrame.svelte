@@ -39,16 +39,20 @@
 	// one mode meant to read cold.
 	const isSuperspin = $derived(stateBet.activeBetModeKey === 'SUPERSPIN');
 	const ambienceColor = $derived(
-		isSuperspin ? 0x9fd0ff : context.stateGame.gameType === 'freegame' ? 0xC9A227 : null,
+		isSuperspin ? 0xc7c7c7 : context.stateGame.gameType === 'freegame' ? 0xd4d0c6 : null,
 	);
 
 	let pulse = $state(0);
 	onMount(() => {
-		const id = setInterval(() => {
-			pulse = 0.5 + 0.5 * Math.sin(Date.now() / 620);
-		}, 33);
+		// frame clock (was a 33 ms interval — the glow breathed at 30 steps a second)
+		let pulseRaf = 0;
+		const pulseTick = (now: number) => {
+			pulse = 0.5 + 0.5 * Math.sin(now / 620);
+			pulseRaf = requestAnimationFrame(pulseTick);
+		};
+		pulseRaf = requestAnimationFrame(pulseTick);
 		return () => {
-			clearInterval(id);
+			cancelAnimationFrame(pulseRaf);
 			cancelAnimationFrame(impactRaf);
 			cancelAnimationFrame(glowRaf);
 		};
@@ -99,7 +103,7 @@
 		// The feature glow can be lit while gameType is still 'basegame' — the
 		// trigger fires boardFrameGlowShow before the free game starts — so fall
 		// back to the feature magenta rather than bailing out on a null colour.
-		const colour = ambienceColor ?? 0xC9A227;
+		const colour = ambienceColor ?? 0xd4d0c6;
 		if (ambienceColor === null && featureGlow <= 0) return;
 		const layout = context.stateGameDerived.boardLayout();
 		const w = layout.width * layout.scale * 1.06;

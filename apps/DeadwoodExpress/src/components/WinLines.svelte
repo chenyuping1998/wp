@@ -31,15 +31,11 @@
 
 	const context = getContext();
 
-	const LINE_COLORS = [
-		0xff2288, 0x00eeff, 0xffee00, 0xff6600, 0x00ff88,
-		0xcc44ff, 0x44aaff, 0xffaa00, 0xff44aa, 0x22ffcc,
-		0xff4444, 0x88ff44, 0x4488ff, 0xff88ff, 0xaaff22,
-		0xff6688, 0x66ffee, 0xffcc44, 0xaa66ff, 0x44ff66,
-		0xff3366, 0x3399ff, 0xffff66, 0xff9944, 0x66ff99,
-		0xdd44ff, 0x44ddff, 0xff6633, 0x99ff44, 0xff44dd,
-		0x44ffbb, 0xffbb44, 0x7744ff, 0x44ff44, 0xff4477,
-	];
+	// Deadwood's own lights, not Hot Miami's 35 neon hues: ghost teal, lantern
+	// amber, brass, lilac, signal red, bone, cold blue. Seven is enough to tell
+	// simultaneous lines apart on a 14-line game; the order alternates warm and
+	// cold so neighbouring line ids never get neighbouring colours.
+	const LINE_COLORS = [0x5fd6c4, 0xf0a040, 0xb08ae0, 0xe9d6a6, 0xff6a5c, 0x7fb6e6, 0xd9b36c];
 
 	// deterministic per-line jitter: same line always moves the same way, but no
 	// two lines in a volley share an exact speed or start — identical timings
@@ -62,6 +58,8 @@
 		win?: number;
 		multiplier?: number;
 		plate?: Point;
+		/** index of the last reel this line actually paid on */
+		lastReel: number;
 	};
 
 	// volley timings — every winning line runs at once, staggered just enough
@@ -184,6 +182,12 @@
 							y: symbolCenterYFromPayline(last.row - 1) - SYMBOL_SIZE * 0.3,
 						};
 					})(),
+					lastReel: Math.max(
+						0,
+						...win.positions
+							.filter((p) => p.row >= 1 && p.row <= BOARD_DIMENSIONS.y)
+							.map((p) => p.reel),
+					),
 					// stagger drifts a little and each grenade rolls at its own pace
 					delay: index * timing.stagger * jitter(win.lineIndex, 0.35),
 					travelMs: timing.travel * jitter(win.lineIndex + 7, 0.08),
@@ -191,6 +195,32 @@
 				});
 			});
 			if (built.length === 0) return;
+
+			// Lines that end on the same cell would put their value plates exactly
+			// on top of one another, so three paying lines read as one. Stake
+			// review, 2026-10-04: "When multiple paylines cross each other, only one
+			// winning payline is visually displayed, even though multiple payline
+			// wins are included in the final payout." Plates sharing a cell are
+			// fanned out into a column, clamped inside the board, so every line's
+			// own value is on screen and they visibly add up to the total.
+			const groups = new Map<string, ActiveLine[]>();
+			for (const line of built) {
+				if (!line.plate || !line.win) continue;
+				const key = `${line.plate.x},${line.plate.y}`;
+				groups.set(key, [...(groups.get(key) ?? []), line]);
+			}
+			const pitch = PLATE.h + 8;
+			const minY = PLATE.h / 2 + 2;
+			const maxY = SYMBOL_SIZE * BOARD_DIMENSIONS.y - PLATE.h / 2 - 2;
+			for (const group of groups.values()) {
+				if (group.length < 2) continue;
+				const span = pitch * (group.length - 1);
+				const origin = group[0].plate!;
+				const first = Math.min(Math.max(origin.y - span / 2, minY), Math.max(minY, maxY - span));
+				group.forEach((line, i) => {
+					line.plate = { x: origin.x, y: first + pitch * i };
+				});
+			}
 
 			lines = built;
 			show = true;
@@ -254,22 +284,31 @@
 			if (p <= 0) continue;
 			const drawn = pathAt(line.points, p);
 			if (drawn.length < 2) continue;
+			// Full strength only across the reels that paid; the rest of the
+			// payline is a faint guide, so crossing lines can be told apart by
+			// where each one actually wins.
+			const paidEnd = Math.min(drawn.length, line.lastReel + 1);
+			const paid = drawn.slice(0, paidEnd);
+			const tail = drawn.slice(Math.max(0, paidEnd - 1));
 			// Pixi 8: build the path, THEN stroke it. `lineStyle` is the v7 call and
 			// only sets state — under v8 the path is never rendered, so these four
 			// trails drew nothing at all. That is why the win-line runner had never
 			// been seen animating: its particle sprites were on screen, the line it
 			// was supposed to be drawing behind them was not.
-			const stroke = (w: number, color: number, alpha: number) => {
-				g.moveTo(drawn[0].x, drawn[0].y);
-				for (let i = 1; i < drawn.length; i++) g.lineTo(drawn[i].x, drawn[i].y);
+			const strokePath = (path: Point[], w: number, color: number, alpha: number) => {
+				if (path.length < 2) return;
+				g.moveTo(path[0].x, path[0].y);
+				for (let i = 1; i < path.length; i++) g.lineTo(path[i].x, path[i].y);
 				g.stroke({ width: w * width, color, alpha });
 			};
+			const stroke = (w: number, color: number, alpha: number) => strokePath(paid, w, color, alpha);
 			// scorch underlay: reads as a burn mark where the line crosses the
 			// gold expanding-wild panel, and all but disappears over the dark board
 			stroke(11, 0x1a1206, 0.5);
 			stroke(7, line.color, 0.22);
 			stroke(3, line.color, 0.95);
 			stroke(1.2, 0xffffff, 0.5);
+			strokePath(tail, 2, line.color, 0.28);
 		}
 	};
 </script>

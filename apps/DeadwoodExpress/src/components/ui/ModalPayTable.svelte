@@ -7,6 +7,7 @@
 	import { popupGhost } from './popupGhost';
 	import { getSocialTerms } from '../../game/socialTerms';
 	import assets from '../../game/assets';
+	import { PREMIUM_LABELS } from '../../game/symbolSet';
 
 	type PayRow = { name: string; img: string; label: string; pays: { count: number; value: number }[] };
 
@@ -29,11 +30,8 @@
 	// them with chrome card royals, which frees the colour wheel for the five
 	// premiums. Leaving the old names here would have labelled an "A" as "Palm".
 	const SYMBOL_LABEL: Record<string, string> = {
-		H1: 'Ghost Locomotive',
-		H2: 'Conductor',
-		H3: 'Spectral Lantern',
-		H4: 'Pocket Watch',
-		H5: 'Railway Key',
+		// Premium names describe the installed art set — see game/symbolSet.ts.
+		...PREMIUM_LABELS,
 		L1: 'Ace',
 		L2: 'King',
 		L3: 'Queen',
@@ -198,8 +196,17 @@
 		-webkit-overflow-scrolling: touch;
 		overscroll-behavior: contain;
 		padding: 1.5rem 1.75rem;
-		color: #fff;
+		color: #e8e4d4;
 		text-align: center;
+		/* Same panel as the rules page: until 2026-09-26 this one had no surface of
+		   its own and no font, so it ran in the browser's default sans. */
+		font-family: var(--gb-body-font);
+		box-sizing: border-box;
+		background:
+			radial-gradient(ellipse at 50% 0%, rgba(141, 221, 195, 0.12), transparent 60%),
+			linear-gradient(180deg, #0f2620, #0b1d19);
+		border: 1px solid #af8c55;
+		box-shadow: inset 0 0 0 4px #0b1d19, inset 0 0 0 5px rgba(175, 140, 85, 0.45), 0 20px 60px rgba(0, 0, 0, 0.6);
 		animation: slideUp 0.4s cubic-bezier(0.22, 1, 0.36, 1) both;
 
 		/* custom scrollbar */
@@ -211,22 +218,23 @@
 			border-radius: 4px;
 		}
 		&::-webkit-scrollbar-thumb {
-			background: linear-gradient(180deg, #ffd75e 0%, #ffe98a 100%);
+			background: linear-gradient(180deg, #e2c07f 0%, #f0d9a4 100%);
 			border-radius: 4px;
 		}
 
 		h2 {
+			font-family: var(--hm-title-font);
 			margin: 0 0 0.25rem;
 			font-size: 1.75rem;
 			font-weight: 800;
 			letter-spacing: 0.1em;
-			background: linear-gradient(135deg, #ffe98a 0%, #ffd75e 50%, #ff8ede 100%);
+			background: linear-gradient(135deg, #f0d9a4 0%, #e2c07f 50%, #8dddc3 100%);
 			background-size: 200% auto;
 			-webkit-background-clip: text;
 			-webkit-text-fill-color: transparent;
 			background-clip: text;
 			animation: shimmer 4s linear infinite;
-			filter: drop-shadow(0 0 18px rgba(255, 215, 94, 0.4));
+			filter: drop-shadow(0 0 18px rgba(226, 192, 127, 0.4));
 		}
 	}
 
@@ -253,7 +261,7 @@
 		font-size: 1.05rem;
 		font-weight: 800;
 		letter-spacing: 0.14em;
-		color: #ffd75e;
+		color: #e2c07f;
 	}
 
 	.wp-lines {
@@ -276,8 +284,8 @@
 		transition: all 0.25s cubic-bezier(0.22, 1, 0.36, 1);
 
 		&:hover {
-			background: rgba(255, 215, 94, 0.1);
-			border-color: rgba(255, 215, 94, 0.24);
+			background: rgba(226, 192, 127, 0.1);
+			border-color: rgba(226, 192, 127, 0.24);
 		}
 	}
 
@@ -295,8 +303,8 @@
 		background: rgba(255, 255, 255, 0.07);
 
 		&.lit {
-			background: linear-gradient(160deg, #ffe98a, #ffc93c);
-			box-shadow: 0 0 6px rgba(255, 215, 94, 0.65);
+			background: linear-gradient(160deg, #f0d9a4, #c9a15e);
+			box-shadow: 0 0 6px rgba(226, 192, 127, 0.65);
 		}
 	}
 
@@ -304,7 +312,7 @@
 		font-size: 0.7rem;
 		font-weight: 700;
 		letter-spacing: 0.06em;
-		color: rgba(255, 215, 94, 0.85);
+		color: rgba(226, 192, 127, 0.85);
 	}
 
 	.wp-row {
@@ -322,10 +330,10 @@
 		animation: rowSlideIn 0.35s cubic-bezier(0.22, 1, 0.36, 1) both;
 
 		&:hover {
-			background: rgba(255, 215, 94, 0.1);
-			border-color: rgba(255, 215, 94, 0.22);
-			box-shadow: 0 0 20px rgba(255, 215, 94, 0.14),
-			            inset 0 0 20px rgba(255, 215, 94, 0.05);
+			background: rgba(226, 192, 127, 0.1);
+			border-color: rgba(226, 192, 127, 0.22);
+			box-shadow: 0 0 20px rgba(226, 192, 127, 0.14),
+			            inset 0 0 20px rgba(226, 192, 127, 0.05);
 			transform: translateX(4px);
 		}
 	}
@@ -361,7 +369,7 @@
 			position: absolute;
 			inset: -3px;
 			border-radius: 50%;
-			background: radial-gradient(circle, rgba(255, 215, 94, 0.3) 0%, transparent 70%);
+			background: radial-gradient(circle, rgba(226, 192, 127, 0.3) 0%, transparent 70%);
 			opacity: 0;
 			transition: opacity 0.3s ease;
 		}
@@ -370,7 +378,7 @@
 	.wp-row:hover .wp-symbol-glow {
 		img {
 			transform: scale(1.12);
-			filter: drop-shadow(0 0 8px rgba(255, 233, 138, 0.6));
+			filter: drop-shadow(0 0 8px rgba(240, 217, 164, 0.6));
 		}
 		&::after {
 			opacity: 1;
@@ -381,36 +389,48 @@
 		font-size: 0.95rem;
 		font-weight: 700;
 		letter-spacing: 0.03em;
-		color: rgba(255, 255, 255, 0.92);
+		color: #e8e4d4;
 	}
 
+	/* One fixed column per symbol: 5 / 4 / 3 always stacked in the same order,
+	   every chip the same width, counts and values on their own aligned tracks.
+	   Stake review, 2026-10-04 (suggestion): the chips used to wrap wherever the
+	   name column left room, so one symbol showed 1+2, the next 2+1, and the
+	   values never lined up from row to row. */
 	.wp-pays {
-		display: flex;
-		gap: 0.5rem;
-		flex-wrap: wrap;
-		justify-content: flex-end;
+		display: grid;
+		grid-template-columns: 6.6rem;
+		gap: 0.3rem;
+		justify-content: end;
 		font-size: 0.92rem;
+		font-variant-numeric: tabular-nums;
+	}
+
+	.wp-pays:has(.wp-special) {
+		grid-template-columns: minmax(0, 1fr);
 	}
 
 	.wp-pay-chip {
-		display: inline-flex;
+		display: grid;
+		grid-template-columns: 1.1em auto 1fr;
 		align-items: center;
-		gap: 0.2rem;
+		gap: 0.3rem;
 		padding: 0.2rem 0.55rem;
 		border-radius: 0.5rem;
-		background: rgba(255, 233, 138, 0.07);
-		border: 1px solid rgba(255, 233, 138, 0.12);
+		background: rgba(240, 217, 164, 0.07);
+		border: 1px solid rgba(240, 217, 164, 0.12);
 		transition: all 0.25s ease;
 
 		b {
-			color: #ffe98a;
+			color: #f0d9a4;
 			font-weight: 800;
 		}
 
 		em {
+			text-align: right;
 			font-style: normal;
 			font-weight: 600;
-			background: linear-gradient(135deg, #ffe98a, #d8a334);
+			background: linear-gradient(135deg, #f0d9a4, #c9a15e);
 			-webkit-background-clip: text;
 			-webkit-text-fill-color: transparent;
 			background-clip: text;
@@ -418,14 +438,14 @@
 	}
 
 	.wp-row:hover .wp-pay-chip {
-		background: rgba(255, 233, 138, 0.12);
-		border-color: rgba(255, 233, 138, 0.2);
-		box-shadow: 0 0 8px rgba(255, 233, 138, 0.12);
+		background: rgba(240, 217, 164, 0.12);
+		border-color: rgba(240, 217, 164, 0.2);
+		box-shadow: 0 0 8px rgba(240, 217, 164, 0.12);
 	}
 
 	.wp-special {
-		color: #ffd75e;
+		color: #e2c07f;
 		font-weight: 700;
-		text-shadow: 0 0 12px rgba(255, 122, 217, 0.4);
+		text-shadow: 0 0 12px rgba(141, 221, 195, 0.4);
 	}
 </style>

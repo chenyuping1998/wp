@@ -99,3 +99,22 @@ apps/JaguarSun/design/_bg/
 # 素材網站整頁存檔（含第三方網頁 token，授權資訊看 LICENSES.json / SOURCES.json）
 apps/*/design/source/neon_audio_v3/*.html
 apps/*/design/source/sampled_audio_v1/*.html
+
+# Design source files and archives — kept on disk, never pushed (2026-10-14).
+# Layered PSDs run 50–84MB each and the backup tarballs/delivery zips up to
+# 82MB; together ~1.4GB that would sit in history forever. Files under these
+# paths that were tracked before this rule stay tracked.
+*.psd
+apps/**/design/_incoming/
+apps/**/design/_legacy_assets/
+apps/**/*.zip
+apps/**/*.tgz
+
+# Turf War 10-23 rebuild: QA renders / previews / pre-rebuild backup stay local (regenerable)
+apps/TurfWar/design/rebuild_20261023/before/
+apps/TurfWar/design/rebuild_20261023/qa/
+apps/TurfWar/design/rebuild_20261023/qa_kit/
+apps/TurfWar/design/rebuild_20261023/__pycache__/
+apps/TurfWar/design/rebuild_20261023/kit/*.gif
+apps/TurfWar/design/rebuild_20261023/kit/*/spine/預覽.*
+apps/TurfWar/design/spine_motion_cast/qa/

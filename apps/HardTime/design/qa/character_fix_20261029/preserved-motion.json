@@ -1,0 +1,14 @@
+{
+  "prisoner": {
+    "bones": true,
+    "animations": true,
+    "ik": true,
+    "physics": true
+  },
+  "warden": {
+    "bones": true,
+    "animations": true,
+    "ik": true,
+    "physics": true
+  }
+}

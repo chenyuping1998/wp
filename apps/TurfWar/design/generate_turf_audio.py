@@ -8,7 +8,10 @@ OUT = ROOT/'static/assets/audio/turf'
 SR=44100
 rng=np.random.default_rng(3016)
 OUT.mkdir(parents=True,exist_ok=True)
-shutil.copytree(ROOT/'static/assets/audio/capo/sfx',OUT/'sfx',dirs_exist_ok=True)
+# 2026-10-10: no longer seeds turf/sfx from Capo's folder; the event and award
+# cues come from design/generate_game_sfx.py turf. This script now writes only
+# the music loops and the three Turf-only cues below.
+(OUT/'sfx').mkdir(parents=True,exist_ok=True)
 def time(n): return np.arange(round(n*SR))/SR
 def noise(n):
     x=rng.normal(0,1,round(n*SR))
@@ -47,10 +50,7 @@ save('sfx/sw_bat_swing.wav',s)
 t=time(.8);slam=noise(.8)*np.exp(-t*11)*.45+np.sin(2*np.pi*82*t)*np.exp(-t*8)*.4
 for at in [.09,.17,.26]:put(slam,snare(),at,.22)
 save('sfx/shutter_slam.wav',slam)
-save('sfx/frame_big_land.wav',kick()*.8)
 t=time(1.2);build=np.sin(2*np.pi*(42*t+18*t*t))*(t/1.2)*.28
 for at in [.15,.32,.49,.66,.83]:put(build,kick(),at,.25)
 put(build,slam,.9,.65);save('sfx/big_score_buildup.wav',build)
-save('sfx/reel_tension.wav',np.sin(2*np.pi*55*time(1.6))*(.25+.15*np.sin(2*np.pi*5*time(1.6))))
-save('sfx/bigwin_blast.wav',slam*.8)
 print('Turf War boom-bap and Foley exported')

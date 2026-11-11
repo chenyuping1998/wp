@@ -1,0 +1,94 @@
+body VOLATILITY
+LOOT BAGS
+
+Loot Bags land carrying 2× to 100×, covering 1, 4 or 9 positions. A Loot Bag multiplies any win whose payline crosses it — a bigger Loot Bag counts once per position crossed — and where several take part in one win, their values add together.
+
+THE BRUISER
+
+A Bruiser fills its entire reel with Wilds before any wins are counted. It lands on the three middle reels in normal play and on any reel in free spins, one at a time.
+
+THE BIG SCORE
+
+On any spin the whole grid can become one Loot Bag worth 5× to 50×, multiplying every winning payline once per position. It can turn up in normal play and in every feature — and it does not need a win to appear.
+
+14 PAYLINES  /  MAX WIN 20,000×
+
+TAP TO CONTINUE
+
+777
+SILVERSTARS STUDIO
+errors []
+after intro {
+  text: '',
+  game: {
+    gameType: 'basegame',
+    isTurbo: false,
+    betMode: 'BASE',
+    dimmedBy: 0,
+    anticipation: []
+  }
+}
+0 {
+  gameType: 'basegame',
+  isTurbo: false,
+  betMode: 'BASE',
+  dimmedBy: 0,
+  anticipation: [ 0, 0, 0, 1, 2 ]
+}
+1 {
+  gameType: 'basegame',
+  isTurbo: false,
+  betMode: 'BASE',
+  dimmedBy: 0,
+  anticipation: [ 0, 0, 0, 1, 2 ]
+}
+2 {
+  gameType: 'basegame',
+  isTurbo: false,
+  betMode: 'BASE',
+  dimmedBy: 0,
+  anticipation: [ 0, 0, 0, 1, 2 ]
+}
+3 {
+  gameType: 'basegame',
+  isTurbo: false,
+  betMode: 'BASE',
+  dimmedBy: 0,
+  anticipation: [ 0, 0, 0, 1, 2 ]
+}
+4 {
+  gameType: 'basegame',
+  isTurbo: false,
+  betMode: 'BASE',
+  dimmedBy: 1,
+  anticipation: [ 0, 0, 0, 1, 2 ]
+}
+5 {
+  gameType: 'basegame',
+  isTurbo: false,
+  betMode: 'BASE',
+  dimmedBy: 0,
+  anticipation: [ 0, 0, 0, 1, 2 ]
+}
+6 {
+  gameType: 'basegame',
+  isTurbo: false,
+  betMode: 'BASE',
+  dimmedBy: 0,
+  anticipation: [ 0, 0, 0, 1, 2 ]
+}
+7 {
+  gameType: 'basegame',
+  isTurbo: false,
+  betMode: 'BASE',
+  dimmedBy: 0,
+  anticipation: [ 0, 0, 0, 1, 2 ]
+}
+8 {
+  gameType: 'freegame',
+  isTurbo: false,
+  betMode: 'BASE',
+  dimmedBy: 0,
+  anticipation: [ 0, 0, 0, 1, 2 ]
+}
+returned true final errors []

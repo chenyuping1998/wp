@@ -1,0 +1,176 @@
+{
+  "requests": [
+    {
+      "url": "https://stub.local/bet/replay/turf-war/7/bonus_hits/0?lang=en",
+      "method": "GET",
+      "body": null,
+      "status": 200,
+      "payoutMultiplier": 2.9
+    }
+  ],
+  "errors": [],
+  "samples": 993,
+  "hits": [],
+  "states": [
+    {
+      "gameType": "basegame",
+      "isTurbo": false,
+      "betMode": "bonus_hits",
+      "dimmedBy": 0,
+      "anticipation": [],
+      "time": 636.4000000357628
+    },
+    {
+      "gameType": "freegame",
+      "isTurbo": false,
+      "betMode": "bonus_hits",
+      "dimmedBy": 0,
+      "anticipation": [
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "time": 244636.90000003576
+    },
+    {
+      "gameType": "basegame",
+      "isTurbo": false,
+      "betMode": "bonus_hits",
+      "dimmedBy": 0,
+      "anticipation": [
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "time": 281438.6999999881
+    }
+  ],
+  "game": {
+    "gameType": "basegame",
+    "isTurbo": false,
+    "betMode": "bonus_hits",
+    "dimmedBy": 0,
+    "anticipation": [
+      0,
+      0,
+      0,
+      0,
+      0
+    ]
+  },
+  "reels": [
+    {
+      "reel": 0,
+      "motion": "stopped",
+      "spinType": "normal",
+      "anticipating": false,
+      "symbolState": "static",
+      "names": [
+        "L1",
+        "H3",
+        "L4",
+        "L3",
+        "H1",
+        "L2"
+      ]
+    },
+    {
+      "reel": 1,
+      "motion": "stopped",
+      "spinType": "normal",
+      "anticipating": false,
+      "symbolState": "static",
+      "names": [
+        "H1",
+        "H3",
+        "H4",
+        "L2",
+        "L1",
+        "H2"
+      ]
+    },
+    {
+      "reel": 2,
+      "motion": "stopped",
+      "spinType": "normal",
+      "anticipating": false,
+      "symbolState": "static",
+      "names": [
+        "H3",
+        "H5",
+        "L4",
+        "L1",
+        "H4",
+        "L3"
+      ]
+    },
+    {
+      "reel": 3,
+      "motion": "stopped",
+      "spinType": "normal",
+      "anticipating": false,
+      "symbolState": "static",
+      "names": [
+        "L4",
+        "L2",
+        "H2",
+        "L3",
+        "L1",
+        "H3"
+      ]
+    },
+    {
+      "reel": 4,
+      "motion": "stopped",
+      "spinType": "normal",
+      "anticipating": false,
+      "symbolState": "static",
+      "names": [
+        "L3",
+        "H5",
+        "L1",
+        "H4",
+        "L2",
+        "H1"
+      ]
+    }
+  ],
+  "text": {
+    "social": true,
+    "pixiTexts": 15,
+    "hits": [],
+    "verdict": "PASS"
+  },
+  "center": {
+    "html": [],
+    "glyphs": "no window.__PIXI_APP__"
+  },
+  "visibleTexts": [
+    "18:53",
+    "",
+    "MODE",
+    "MUSCLE",
+    "AMOUNT",
+    "1.00 GC",
+    "ENTRY \u00d7",
+    "500x",
+    "TOTAL",
+    "500.00 GC",
+    "WIN \u00d7",
+    "2.9x",
+    "WIN",
+    "2.90 GC",
+    "\u21ba",
+    "REPLAY"
+  ],
+  "scroll": {
+    "w": 400,
+    "h": 225,
+    "sw": 400,
+    "sh": 225
+  }
+}

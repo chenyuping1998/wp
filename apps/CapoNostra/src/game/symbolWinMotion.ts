@@ -163,10 +163,10 @@ const SHEEN = {
 	// dark chips; the colours were re-grounded then, but the MOTION stayed a
 	// neon-tube switch-on flicker until 2026-09-07. A tube ignites; a metal chip
 	// catches a moving highlight. Same four inks, new grammar.
-	L1: 0xcfd6dc, // Spade  — silver
-	L2: 0xc9484f, // Heart  — wine
-	L3: 0xd8705f, // Diamond — warm copper-red
-	L4: 0xa9b2b9, // Club   — dimmer silver
+	L1: 0xd8d4cc, // Spade  — silver
+	L2: 0x6f6f6f, // Heart  — wine
+	L3: 0x8d8d8d, // Diamond — warm copper-red
+	L4: 0xb0b0b0, // Club   — dimmer silver
 } as const;
 
 /**
@@ -227,7 +227,7 @@ const suitMedallion = (
 								height: 1.02,
 								rotation: angle,
 								alpha: 0.8 * hump(at, 1),
-								tint: 0xfff4dc,
+								tint: 0xf9f4eb,
 							},
 						],
 			...move(t, lit),
@@ -263,7 +263,7 @@ const BASE_WIN_MOTION: Record<string, SymbolWinMotion> = {
 				dy: 0.012 * turn,
 				bloomAlpha: 0.55 * flare,
 				// The only symbol allowed bright gold (ART_BRIEF §2).
-				bloomTint: 0xe8d48b,
+				bloomTint: 0xf7f4ec,
 				overlays:
 					sweep < 0
 						? []
@@ -277,7 +277,7 @@ const BASE_WIN_MOTION: Record<string, SymbolWinMotion> = {
 									height: 0.62,
 									rotation: -0.38,
 									alpha: 0.9 * flare,
-									tint: 0xfff6d8,
+									tint: 0xf9f5ec,
 								},
 							],
 			});
@@ -312,7 +312,7 @@ const BASE_WIN_MOTION: Record<string, SymbolWinMotion> = {
 				scaleY: 1 + 0.04 * push,
 				dy: -0.012 * push,
 				bloomAlpha: 0.72 * lit,
-				bloomTint: 0xffc46b,
+				bloomTint: 0xcfcbc3,
 				overlays: [
 					{
 						key: 'fxStreak',
@@ -323,7 +323,7 @@ const BASE_WIN_MOTION: Record<string, SymbolWinMotion> = {
 						// Raked over as it crosses, like a beam swung from below.
 						rotation: -0.55 + beam * 1.1,
 						alpha: 0.55 * hump(beam, 1),
-						tint: 0xfff0c8,
+						tint: 0xf4f0e6,
 						behind: true,
 					},
 				],
@@ -364,7 +364,7 @@ const BASE_WIN_MOTION: Record<string, SymbolWinMotion> = {
 						height: 0.42 + 0.3 * eased,
 						rotation: 0,
 						alpha: 0.4 * eased,
-						tint: 0xffe0a0,
+						tint: 0xe6e2d9,
 					},
 					...[0, 1, 2].map((i) => {
 						// Notes lifting out of the open case, one after another.
@@ -377,7 +377,7 @@ const BASE_WIN_MOTION: Record<string, SymbolWinMotion> = {
 							height: 0.17 * (1 - 0.35 * lift),
 							rotation: (i - 1) * 0.5 * lift,
 							alpha: 0.85 * hump(lift, 1),
-							tint: 0xfff0c0,
+							tint: 0xf3efe6,
 						};
 					}),
 				],
@@ -415,7 +415,7 @@ const BASE_WIN_MOTION: Record<string, SymbolWinMotion> = {
 				dy: 0.008 * Math.sin(phase * 2),
 				// The spirit lit from within, not a flash: it never fully leaves.
 				bloomAlpha: 0.2 + 0.35 * ember,
-				bloomTint: 0xc98b3a,
+				bloomTint: 0x949494,
 				overlays: [
 					{
 						// The cigar's lit end, bottom-left in the art.
@@ -426,7 +426,7 @@ const BASE_WIN_MOTION: Record<string, SymbolWinMotion> = {
 						height: 0.24 + 0.05 * ember,
 						rotation: 0,
 						alpha: 0.3 + 0.35 * ember,
-						tint: 0xff7a2a,
+						tint: 0x999999,
 					},
 					...[0, 1, 2].map((i) => {
 						// Smoke: rises, spreads, thins, and is replaced.
@@ -439,7 +439,7 @@ const BASE_WIN_MOTION: Record<string, SymbolWinMotion> = {
 							height: 0.18 + 0.34 * curl,
 							rotation: 0,
 							alpha: 0.42 * hump(curl, 1),
-							tint: 0xb9a78f,
+							tint: 0xaaaaaa,
 						};
 					}),
 				],
@@ -483,7 +483,7 @@ const BASE_WIN_MOTION: Record<string, SymbolWinMotion> = {
 									height: 0.34,
 									rotation: -0.12,
 									alpha: 0.85 * hump(gleam, 1),
-									tint: 0xfff6dc,
+									tint: 0xfaf6ec,
 								},
 							]),
 					...[-1, 1].map((side) => ({
@@ -495,7 +495,7 @@ const BASE_WIN_MOTION: Record<string, SymbolWinMotion> = {
 						height: 0.1,
 						rotation: 0,
 						alpha: 0.5 * pull,
-						tint: 0xe8d9b4,
+						tint: 0xddd9d1,
 						behind: true,
 					})),
 				],
@@ -592,7 +592,7 @@ const BASE_WIN_MOTION: Record<string, SymbolWinMotion> = {
 						height: 0.11,
 						rotation: -0.22 * ring,
 						alpha: 0.6 * catch_,
-						tint: 0xffd166,
+						tint: 0xd6d2ca,
 						behind: false,
 					},
 				],
@@ -622,7 +622,7 @@ const BASE_WIN_MOTION: Record<string, SymbolWinMotion> = {
 				scaleX: 1 + 0.045 * clunk,
 				scaleY: 1 - 0.03 * clunk,
 				bloomAlpha: 0.22 + 0.16 * Math.sin(t / 190) * spinup,
-				bloomTint: 0xffb347,
+				bloomTint: 0xbdbdbd,
 				overlays: [
 					{
 						key: 'fxStreak',
@@ -632,7 +632,7 @@ const BASE_WIN_MOTION: Record<string, SymbolWinMotion> = {
 						height: 0.07,
 						rotation: speed * (0.25 + 0.75 * spinup),
 						alpha: 0.5 * spinup,
-						tint: 0xe3d9c6,
+						tint: 0xdddad1,
 						behind: true,
 					},
 				],
@@ -668,7 +668,7 @@ const BASE_WIN_MOTION: Record<string, SymbolWinMotion> = {
 						rotation: 0,
 						alpha: 0.85 * (1 - u),
 						// The signal red this mechanic owns outright (ART_BRIEF.md).
-						tint: 0xc1272d,
+						tint: 0x565656,
 						behind: true,
 					};
 				}),

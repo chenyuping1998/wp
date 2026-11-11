@@ -1,0 +1,473 @@
+{
+  "base": {
+    "books": 40000,
+    "multiBruiser": [
+      {
+        "id": 1862,
+        "payout": 2000000,
+        "reels": [
+          3,
+          4
+        ]
+      },
+      {
+        "id": 4022,
+        "payout": 2000000,
+        "reels": [
+          2,
+          3,
+          4
+        ]
+      },
+      {
+        "id": 5260,
+        "payout": 2000000,
+        "reels": [
+          2,
+          3
+        ]
+      },
+      {
+        "id": 5480,
+        "payout": 2000000,
+        "reels": [
+          3,
+          4
+        ]
+      },
+      {
+        "id": 5480,
+        "payout": 2000000,
+        "reels": [
+          0,
+          2
+        ]
+      },
+      {
+        "id": 5527,
+        "payout": 2000000,
+        "reels": [
+          0,
+          1,
+          4
+        ]
+      },
+      {
+        "id": 5743,
+        "payout": 2000000,
+        "reels": [
+          3,
+          4
+        ]
+      },
+      {
+        "id": 5743,
+        "payout": 2000000,
+        "reels": [
+          0,
+          1
+        ]
+      },
+      {
+        "id": 6302,
+        "payout": 2000000,
+        "reels": [
+          0,
+          4
+        ]
+      },
+      {
+        "id": 6974,
+        "payout": 2000000,
+        "reels": [
+          1,
+          3
+        ]
+      }
+    ],
+    "scatterRetriggers": {
+      "None": 1214
+    },
+    "types": {
+      "reveal": 82413,
+      "setTotalWin": 82413,
+      "finalWin": 40000,
+      "wildExpand": 27365,
+      "newFrames": 26994,
+      "winInfo": 38765,
+      "setWin": 38581,
+      "freeSpinTrigger": 4038,
+      "bonusTier": 4038,
+      "updateFreeSpin": 42413,
+      "updateFrames": 38375,
+      "freeSpinRetrigger": 1214,
+      "freeSpinEnd": 4038,
+      "bigScore": 1334,
+      "frameDoubling": 6441,
+      "stickyWilds": 3082,
+      "wincap": 184
+    },
+    "bagValues": {},
+    "bigScoreValues": [
+      5,
+      8,
+      12,
+      20,
+      30,
+      50
+    ]
+  },
+  "bonus": {
+    "books": 20000,
+    "multiBruiser": [
+      {
+        "id": 2289,
+        "payout": 2000000,
+        "reels": [
+          2,
+          3
+        ]
+      },
+      {
+        "id": 2289,
+        "payout": 2000000,
+        "reels": [
+          2,
+          4
+        ]
+      },
+      {
+        "id": 2289,
+        "payout": 2000000,
+        "reels": [
+          1,
+          3
+        ]
+      },
+      {
+        "id": 2439,
+        "payout": 2000000,
+        "reels": [
+          0,
+          1
+        ]
+      },
+      {
+        "id": 2439,
+        "payout": 2000000,
+        "reels": [
+          0,
+          3,
+          4
+        ]
+      },
+      {
+        "id": 3019,
+        "payout": 2000000,
+        "reels": [
+          2,
+          3
+        ]
+      },
+      {
+        "id": 4340,
+        "payout": 2000000,
+        "reels": [
+          0,
+          4
+        ]
+      },
+      {
+        "id": 4340,
+        "payout": 2000000,
+        "reels": [
+          0,
+          1,
+          3,
+          4
+        ]
+      },
+      {
+        "id": 4681,
+        "payout": 2000000,
+        "reels": [
+          1,
+          3
+        ]
+      },
+      {
+        "id": 4681,
+        "payout": 2000000,
+        "reels": [
+          2,
+          4
+        ]
+      }
+    ],
+    "scatterRetriggers": {
+      "None": 6167
+    },
+    "types": {
+      "reveal": 232709,
+      "setTotalWin": 232709,
+      "freeSpinTrigger": 20000,
+      "bonusTier": 20000,
+      "updateFreeSpin": 212709,
+      "newFrames": 88825,
+      "wildExpand": 65344,
+      "updateFrames": 192709,
+      "winInfo": 88384,
+      "setWin": 88364,
+      "freeSpinRetrigger": 6167,
+      "freeSpinEnd": 20000,
+      "finalWin": 20000,
+      "bigScore": 1445,
+      "wincap": 20
+    },
+    "bagValues": {},
+    "bigScoreValues": [
+      5,
+      8,
+      12,
+      20,
+      30,
+      50
+    ]
+  },
+  "bonus_epic": {
+    "books": 20000,
+    "multiBruiser": [
+      {
+        "id": 2289,
+        "payout": 2000000,
+        "reels": [
+          2,
+          3
+        ]
+      },
+      {
+        "id": 2289,
+        "payout": 2000000,
+        "reels": [
+          0,
+          4
+        ]
+      },
+      {
+        "id": 2439,
+        "payout": 2000000,
+        "reels": [
+          0,
+          4
+        ]
+      },
+      {
+        "id": 3019,
+        "payout": 2000000,
+        "reels": [
+          0,
+          2
+        ]
+      },
+      {
+        "id": 4340,
+        "payout": 2000000,
+        "reels": [
+          1,
+          4
+        ]
+      },
+      {
+        "id": 4681,
+        "payout": 2000000,
+        "reels": [
+          0,
+          2
+        ]
+      },
+      {
+        "id": 9792,
+        "payout": 2000000,
+        "reels": [
+          0,
+          1
+        ]
+      },
+      {
+        "id": 10756,
+        "payout": 2000000,
+        "reels": [
+          0,
+          1,
+          2
+        ]
+      },
+      {
+        "id": 10756,
+        "payout": 2000000,
+        "reels": [
+          0,
+          2
+        ]
+      },
+      {
+        "id": 11312,
+        "payout": 2000000,
+        "reels": [
+          1,
+          3
+        ]
+      }
+    ],
+    "scatterRetriggers": {
+      "None": 5954
+    },
+    "types": {
+      "reveal": 220877,
+      "wildExpand": 51562,
+      "winInfo": 129297,
+      "setWin": 122837,
+      "setTotalWin": 220877,
+      "freeSpinTrigger": 20000,
+      "bonusTier": 20000,
+      "updateFreeSpin": 200877,
+      "stickyWilds": 150425,
+      "newFrames": 95465,
+      "updateFrames": 180877,
+      "frameDoubling": 106995,
+      "wincap": 6460,
+      "freeSpinEnd": 20000,
+      "finalWin": 20000,
+      "freeSpinRetrigger": 5954,
+      "bigScore": 1383
+    },
+    "bagValues": {},
+    "bigScoreValues": [
+      5,
+      8,
+      12,
+      20,
+      30,
+      50
+    ]
+  },
+  "bonus_hits": {
+    "books": 20000,
+    "multiBruiser": [
+      {
+        "id": 2289,
+        "payout": 2000000,
+        "reels": [
+          0,
+          1,
+          3
+        ]
+      },
+      {
+        "id": 2439,
+        "payout": 2000000,
+        "reels": [
+          1,
+          3,
+          4
+        ]
+      },
+      {
+        "id": 2439,
+        "payout": 2000000,
+        "reels": [
+          1,
+          2
+        ]
+      },
+      {
+        "id": 2439,
+        "payout": 2000000,
+        "reels": [
+          0,
+          1
+        ]
+      },
+      {
+        "id": 3019,
+        "payout": 2000000,
+        "reels": [
+          1,
+          2
+        ]
+      },
+      {
+        "id": 3019,
+        "payout": 2000000,
+        "reels": [
+          0,
+          4
+        ]
+      },
+      {
+        "id": 3019,
+        "payout": 2000000,
+        "reels": [
+          2,
+          3,
+          4
+        ]
+      },
+      {
+        "id": 4340,
+        "payout": 2000000,
+        "reels": [
+          0,
+          3
+        ]
+      },
+      {
+        "id": 4340,
+        "payout": 2000000,
+        "reels": [
+          1,
+          4
+        ]
+      },
+      {
+        "id": 4681,
+        "payout": 2000000,
+        "reels": [
+          0,
+          1,
+          2
+        ]
+      }
+    ],
+    "scatterRetriggers": {
+      "None": 6088
+    },
+    "types": {
+      "reveal": 232457,
+      "setTotalWin": 232457,
+      "freeSpinTrigger": 20000,
+      "bonusTier": 20000,
+      "updateFreeSpin": 212457,
+      "newFrames": 107784,
+      "winInfo": 87713,
+      "setWin": 87673,
+      "wildExpand": 65253,
+      "updateFrames": 192457,
+      "freeSpinEnd": 20000,
+      "finalWin": 20000,
+      "frameDoubling": 69054,
+      "freeSpinRetrigger": 6088,
+      "bigScore": 1418,
+      "wincap": 40
+    },
+    "bagValues": {},
+    "bigScoreValues": [
+      5,
+      8,
+      12,
+      20,
+      30,
+      50
+    ]
+  }
+}

@@ -1,4 +1,4 @@
-"""Regenerate Storybook fixture books from the Hot Miami math output.
+"""Regenerate Storybook fixture books from the Turf War math output.
 
 The stories replay real book event streams through the renderer. If these
 fixtures come from a different game, the runner awaits a handler that does not
@@ -11,7 +11,7 @@ import subprocess
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[3]
-PUBLISH = ROOT.parent / "math-sdk/games/hot_miami/library/publish_files"
+PUBLISH = ROOT.parent / "math-sdk/games/turf_war/library/publish_files"
 OUT = Path(__file__).resolve().parent.parent / "src/stories/data"
 
 SAMPLE_COUNT = 12
@@ -34,7 +34,7 @@ def sample(books: list, want_win: bool) -> list:
 
 def write_books(name: str, books: list, header: str) -> None:
     body = json.dumps(books, indent=1)
-    (OUT / f"{name}_books.ts").write_text(f"// {header}\nexport default {body};\n")
+    (OUT / f"{name}_books.ts").write_text(f"// {header}\nimport type {{ BookEvent }} from '../../game/typesBookEvent';\nconst books: {{ id: number; payoutMultiplier: number; criteria?: string; baseGameWins?: number; freeGameWins?: number; events: BookEvent[] }}[] = {body};\nexport default books;\n")
 
 
 def write_events(name: str, books: list, header: str) -> None:
@@ -43,7 +43,7 @@ def write_events(name: str, books: list, header: str) -> None:
         for event in book["events"]:
             first.setdefault(event["type"], event)
     body = json.dumps(first, indent=1)
-    (OUT / f"{name}_events.ts").write_text(f"// {header}\nexport default {body};\n")
+    (OUT / f"{name}_events.ts").write_text(f"// {header}\nimport type {{ BookEvent }} from '../../game/typesBookEvent';\nexport default {body} satisfies Record<string, BookEvent>;\n")
 
 
 def main() -> None:

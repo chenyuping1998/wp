@@ -27,6 +27,9 @@ say() { print -P "%F{cyan}==> $1%f"; }
 checks() {
   say "7. sanity checks (the actual gate, not the zip)"
   local fail=0
+  $PY "$APP/design/check_math_bundle.py" "$ROOT/upload/$NAME/math" || fail=1
+  $PY "$APP/design/package_manifest.py" || fail=1
+  python3 "$ROOT/wp/.claude/skills/game-reskin/scripts/check_thumbnail.py" --upload "$ROOT/upload/$NAME" || fail=1
   # Old-game contamination. Greps the BUILT bundle, never src: a stale build is
   # how a correct source change still ships the old behaviour.
   for term in "Capo Nostra" "capo_nostra" "CapoNostra" "Hot Miami" "hot_miami" \
@@ -85,10 +88,13 @@ cd $APP && $PY design/sync_math_config.py $ROOT/math-sdk
 
 say "2. copy the math library into the upload package"
 mkdir -p $ROOT/upload/$NAME/math
+$PY "$APP/design/check_math_bundle.py" "$ROOT/math-sdk/games/$GAME/library/publish_files"
 rsync -a --delete $ROOT/math-sdk/games/$GAME/library/publish_files/ $ROOT/upload/$NAME/math/
+$PY "$APP/design/check_math_bundle.py" "$ROOT/upload/$NAME/math"
+cd "$APP" && WINS_PER_MODE=100000 node design/check_rules_match_wins.mjs "$ROOT/upload/$NAME/math"
 
 say "3. rebuild the playtest stub data (reads step 2's output)"
-$PY design/build_playtest_stub_data.py $ROOT/upload/$NAME/math $PLAYTEST/stub-data.js
+if [[ -n "$SKIP_STUB" ]]; then print "   SKIP_STUB set — stub data left as is (books unchanged)"; else $PY design/build_playtest_stub_data.py $ROOT/upload/$NAME/math $PLAYTEST/stub-data.js; fi
 
 say "4. frontend build + guards"
 cd $ROOT/wp && pnpm --filter hard-time build
@@ -112,7 +118,8 @@ else:
 PYEOF
 
 say "6. deploy the upload frontend"
-rsync -a --delete $APP/build/ $ROOT/upload/$NAME/frontend/
+$PY "$APP/design/stage_frontend.py"
+$PY "$APP/design/package_manifest.py" --write
 
 checks
 

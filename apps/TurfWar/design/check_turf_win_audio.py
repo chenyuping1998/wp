@@ -1,9 +1,10 @@
 #!/usr/bin/env python3
 """Acceptance gate for the award-audio ladder.
 
-2026-09-15: Turf War now ships Hard Time's win audio byte-for-byte (user request), so
-this is Hard Time's gate pointed at turf/sfx. The previous ART_BRIEF §9.1 gate asserted
-Turf War's own mono win set; its backup is in the session scratchpad."""
+Hard Time's ladder shape (nine stages, same lengths, light and bright), voiced
+for this game since 2026-10-10 by design/generate_game_sfx.py turf: pulse pluck,
+G-funk whistle, 808 and claps in C minor pentatonic. From 09-15 to 10-10 these were
+Hard Time's files byte-for-byte; the old set is in design/_legacy_assets/audio_before_20261010/."""
 
 from hashlib import sha256
 from pathlib import Path
@@ -56,6 +57,19 @@ for name, expected, metric in zip(NAMES, EXPECTED_SECONDS, metrics):
 assert all(b["seconds"] > a["seconds"] for a, b in zip(metrics, metrics[1:])), metrics
 assert len({metric["digest"] for metric in metrics}) == len(metrics)
 
+# 2026-10-10: no file this game plays may be a byte copy of a sibling game's.
+# The 09-15 ladder was copied here from Hard Time, and Turf War also carried
+# Capo's cues; a reviewer listing the files sees the same sounds three times.
+SIBLINGS = ("HardTime/static/assets/audio/hard_time/sfx", "CapoNostra/static/assets/audio/capo/sfx")
+own = {sha256(p.read_bytes()).hexdigest(): p.name for p in SFX.glob("*.wav")}
+for sibling in SIBLINGS:
+    folder = ROOT.parent / sibling
+    if not folder.is_dir():
+        continue
+    for other in folder.glob("*.wav"):
+        digest = sha256(other.read_bytes()).hexdigest()
+        assert digest not in own, f"{own[digest]} is a byte copy of {sibling}/{other.name}"
+
 coin = analyse(SFX / "coin_shimmer.wav")
 assert 1.5 <= coin["seconds"] <= 1.7 and coin["edge"] <= .01, coin
 
@@ -65,4 +79,4 @@ for name, metric in zip(NAMES, metrics):
         f"presence={metric['presence']:.1%} harsh={metric['harsh']:.2%} "
         f"peak={metric['peak_db']:.1f}dB rms={metric['rms_db']:.1f}dB"
     )
-print("OK: nine-stage light award ladder is distinct, progressively longer, and mix-safe")
+print("OK: nine-stage light award ladder is distinct, progressively longer, mix-safe, and this game's own")

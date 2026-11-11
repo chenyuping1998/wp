@@ -1,0 +1,35 @@
+{
+  "date": "2026-10-29",
+  "math_changed": false,
+  "published": false,
+  "upload_rebuilt": false,
+  "typecheck": {
+    "errors": 0,
+    "warnings": 1,
+    "scope": "runtime src; excludes design scripts and Storybook fixtures"
+  },
+  "books_integrity": 100000,
+  "winning_rounds_recomputed": 84013,
+  "line_wins_recomputed": 2284946,
+  "rtp": {
+    "base": 0.9605,
+    "bonus": 0.9606,
+    "bonus_hits": 0.9607,
+    "bonus_epic": 0.9609
+  },
+  "max_win": 12000,
+  "preload_removed_bytes": 1862988,
+  "preload_removed_unique_files": 9,
+  "visual_checks": [
+    "1280x720 base and symbol idle",
+    "390x844 base, RIOT intro, free spins, outro",
+    "1024x768 free-spin outro"
+  ],
+  "limitations": [
+    "Local stub, not platform RGS",
+    "No claimed FPS improvement without device profiling",
+    "Character artwork/rig unchanged; no new full character acceptance claimed"
+  ],
+  "preload_total_download_saved_bytes": 0,
+  "preload_note": "Moved from preload to regular loading; all registered assets still download. Legacy warden textures are used by desktop feature cut-in."
+}

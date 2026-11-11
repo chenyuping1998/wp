@@ -24,7 +24,7 @@ const { TIERS, MOTION_SCALE, buildWeightIndex, composeBoneMatrices, skinVertices
 );
 
 const rig = JSON.parse(
-  readFileSync(join(HERE, "../static/assets/meshRigs/cast_guy/guy.rig.json"), "utf8"),
+  readFileSync(join(HERE, "cast_rigs/guy.rig.json"), "utf8"),
 );
 
 /** The tables this game shipped before 2026-09-17 — Capo Nostra's 2026-09-10

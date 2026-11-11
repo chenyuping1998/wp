@@ -19,8 +19,8 @@
 	import { stateGame } from '../game/stateGame.svelte';
 	import { tierByBonusTier } from '../game/featureTiers';
 	import FeatureSplashPanel from './FeatureSplashPanel.svelte';
-	import { CAST_NATIVE } from './CastFigure.svelte';
-	import CastFigureMesh from './CastFigureMesh.svelte';
+	import { CAST_NATIVE } from '../game/castLayout';
+	import CastFigureLayered from './CastFigureLayered.svelte';
 	import { MainContainer } from 'components-layout';
 	import PressToContinue from './PressToContinue.svelte';
 	import FreeSpinAnimation, { SIGN_DROP_MS } from './FreeSpinAnimation.svelte';
@@ -153,6 +153,9 @@
 		};
 	});
 
+	// how long a retrigger's +N plaque stays up before the feature resumes
+	const RETRIGGER_HOLD_MS = 2000;
+
 	context.eventEmitter.subscribeOnMount({
 		freeSpinIntroShow: () => {
 			show = true;
@@ -169,9 +172,24 @@
 			// fires first and cannot tell them apart.
 			stateGame.featureSplashShow = isEntry && tierByBonusTier(stateGame.bonusTier) !== null;
 			freeSpinsFromEvent = emitterEvent.extraSpins ?? emitterEvent.totalFreeSpins;
+			// Arm the resolver BEFORE the slam starts (the oncomplete race: an
+			// animation that finishes between the two statements finds the old,
+			// no-op callback and the feature waits forever).
+			let resolveThis: () => void = () => {};
+			const done = waitForResolve((resolve) => {
+				oncomplete = resolve;
+				resolveThis = resolve;
+			});
 			// retriggers reuse this event, so the slam replays for the +N as well
 			startNumberAnim();
-			await waitForResolve((resolve) => (oncomplete = resolve));
+			// A retrigger plaque is a beat inside the feature, not a stop: it holds
+			// long enough to read the +N and then the feature carries on by itself
+			// (it used to wait for a tap — 28s+ observed, 2026-10-12). A tap still
+			// skips it. The entry card keeps waiting for the player. The timer
+			// resolves THIS showing only, never a later one.
+			const autoContinue = isEntry ? undefined : setTimeout(() => resolveThis(), RETRIGGER_HOLD_MS);
+			await done;
+			clearTimeout(autoContinue);
 		},
 	});
 </script>
@@ -195,28 +213,22 @@
 		-->
 		<MainContainer>
 			<!--
-				The BOSS, from the mesh rig — not CastFigureSpine.
-
-				This card drew `who="girl"`: Hot Miami's woman, in a pink-and-cyan
-				dress, holding a neon toy ray gun. It is shown every time a player
-				enters the free game, which is the largest moment the game has, and
-				it had survived every pass because the splash is only reachable on a
-				feature trigger.
-				
-				Switching the same component to "guy" would not have helped — that
-				spine is Miami's man in a Hawaiian shirt with a baseball bat. Both
-				spine figures belong to the other game. The only Capo Nostra
-				character that exists is the mesh rig (meshRigs/cast_guy), which is
-				what stands beside the board, so the splash uses it too and the
-				player meets the same man in both places.
+				THE HOSTESS — the feature's own figure (2026-09-28: every game stands
+				one figure in MG and a different one in FG). This card is where the
+				player meets her; she is who stands beside the board for the rest of the
+				feature, graded by tier. It used to show the Don, because he was the only
+				Capo character; before that, Hot Miami's woman with a toy ray gun.
 			-->
-			<CastFigureMesh
-				who="guy"
+			<CastFigureLayered
+				figure="hostess"
+				flip
+				clampScreen={false}
+				onTop
+				box="main"
 				x={castX}
 				topY={castTopY}
 				height={castHeight}
 				groundY={layout.height}
-				flip
 			/>
 
 			<Container x={layout.width * 0.5}>
@@ -285,9 +297,8 @@
 					fontSize: Math.min(sizes.width * 0.105, (sizes.width * 1.4) / title.length),
 					fontWeight: TITLE_FONT_WEIGHT,
 					letterSpacing: 5,
-					fill: [0xE8D48B, 0xC9A227, 0x8A6D1F],
-					stroke: 0x14100D,
-					strokeThickness: 6,
+					fill: [0xf7f4ec, 0xd4d0c6, 0x8c8c8c],
+					stroke: { color: 0x121212, width: 6 },
 				}}
 			/>
 			<!-- glow bed sits inside the scaled container so it swells with the slam -->
@@ -300,7 +311,7 @@
 				<Sprite
 					key="fxGlow"
 					anchor={0.5}
-					tint={0xC9A227}
+					tint={0xd4d0c6}
 					blendMode="add"
 					width={sizes.width * 0.6}
 					height={sizes.width * 0.6}
@@ -325,14 +336,13 @@
 					fontSize: Math.min(sizes.width * 0.05, (sizes.width * 1.1) / subtitle.length),
 					fontWeight: TITLE_FONT_WEIGHT,
 					letterSpacing: 4,
-					fill: 0xC9A227,
-					stroke: 0x14100D,
-					strokeThickness: 3,
+					fill: 0xd4d0c6,
+					stroke: { color: 0x121212, width: 3 },
 				}}
 			/>
 		{/snippet}
 		</FreeSpinAnimation>
 	{/if}
 
-	<PressToContinue onpress={() => oncomplete()} />
+	<PressToContinue showLabel={isEntry} onpress={() => oncomplete()} />
 </FadeContainer>

@@ -68,6 +68,11 @@
 		win?: number;
 		multiplier?: number;
 		plate?: Point;
+		/** when its runner landed (performance.now) */
+		doneAt?: number;
+		/** its turn among the lines that end on the same cell, and how many share it */
+		turn?: number;
+		turns?: number;
 	};
 
 	// volley timings — every winning line runs at once, staggered just enough
@@ -76,10 +81,33 @@
 	const FAST = { entry: 30, travel: 210, settle: 60, stagger: 12 };
 	const HOLD_AFTER_MS = 220;
 
-	// The value plate. Sized against the 118px cell: wide enough for a five-digit
-	// currency string at 26px, short enough to leave the symbol underneath
-	// readable, since the point is to label that symbol rather than cover it.
-	const PLATE = { w: 104, h: 40, r: 10 };
+	// The value (2026-11-06, Stone: 「連線跳小數字在盤面上有點雜亂看不清楚尤其是很
+	// 多條線的時候 參考催眠猴淡出」). Was a white-rimmed sticker plate per line,
+	// fanned into a column per reel, shown all at once for ~0.3 s: with many lines
+	// the board flashed a stack of plates nobody could read. Now as Hypno Monkey
+	// says a win: a plain number on the line's last cell over a soft shadow,
+	// fading in as the runner lands, holding, fading out. Lines that end on the
+	// same cell take turns there instead of stacking, so every line's own value is
+	// still said (Deadwood review 2026-10-04) and only one number is ever in a cell.
+	const VALUE = { size: Math.round(SYMBOL_SIZE * 0.3), maxW: SYMBOL_SIZE * 0.96 };
+	const FADE_IN = 120;
+	const FADE_OUT = 180;
+	// ONE number on the board at a time (2026-11-07, Stone: 「這些數字太亂了」 —
+	// four cells each showing their own value at once, three of them down the
+	// wild reel). The lines take turns board-wide, biggest win first; a turn is
+	// at most TURN and the volley's values fit in MAX_TOTAL, so with many lines
+	// only the biggest are said here and the idle replay (utils.ts) walks every
+	// line's own value one by one afterwards.
+	const TURN = { normal: 650, fast: 380 };
+	const MIN_TURN = { normal: 480, fast: 260 };
+	const MAX_TOTAL = { normal: 2900, fast: 1300 };
+	// how long the last values stay up once every runner has landed: the volley's
+	// own 220 ms hold ended before a number could be read
+	const VALUE_HOLD = { normal: 650, fast: 320 };
+	const smooth = (t: number) => {
+		const c = Math.min(1, Math.max(0, t));
+		return c * c * (3 - 2 * c);
+	};
 
 	let lines = $state<ActiveLine[]>([]);
 	let show = $state(false);
@@ -90,7 +118,11 @@
 	let timing = $state(NORMAL);
 	// tick forces the trail Graphics to redraw while the runners move
 	let tick = $state(0);
+	let now = $state(0);
 	let tickRaf = 0;
+	// when the values start to go, and how long a turn on a shared cell lasts
+	let fadeOutAt = $state(Infinity);
+	let turnMs = $state(TURN.normal);
 	// crossing progress per line, 0..1, mirrors each grenade's travel
 	let crossed = $state<Record<number, number>>({});
 
@@ -145,8 +177,9 @@
 
 	const startTicker = () => {
 		cancelAnimationFrame(tickRaf);
-		const step = () => {
+		const step = (t: number) => {
 			tick++;
+			now = t;
 			if (show) tickRaf = requestAnimationFrame(step);
 		};
 		tickRaf = requestAnimationFrame(step);
@@ -198,6 +231,28 @@
 			});
 			if (built.length === 0) return;
 
+			// Lines that end on the same cell would put their values exactly on top
+			// of one another, so three paying lines read as one. Stake review of
+			// Deadwood Express, 2026-10-04: "When multiple paylines cross each other,
+			// only one winning payline is visually displayed, even though multiple
+			// payline wins are included in the final payout." They take turns on
+			// that cell, in line order, each shown alone.
+			// Since 2026-11-07 every line takes its turn board-wide, not per cell.
+			const isFast = timing === FAST;
+			const valued = built.filter((line) => line.plate && line.win).sort((a, b) => b.win! - a.win!);
+			const total = isFast ? MAX_TOTAL.fast : MAX_TOTAL.normal;
+			turnMs = Math.max(
+				isFast ? MIN_TURN.fast : MIN_TURN.normal,
+				Math.min(isFast ? TURN.fast : TURN.normal, total / Math.max(1, valued.length)),
+			);
+			const said = valued.slice(0, Math.max(1, Math.floor(total / turnMs)));
+			said.forEach((line, i) => {
+				line.turn = i;
+				line.turns = said.length;
+			});
+			const extraMs = said.length > 0 ? (said.length - 1) * turnMs + (isFast ? VALUE_HOLD.fast : VALUE_HOLD.normal) : 0;
+			fadeOutAt = Infinity;
+
 			lines = built;
 			show = true;
 			context.eventEmitter.broadcast({ type: 'boardShow' });
@@ -206,8 +261,12 @@
 			const volleyMs = Math.max(
 				...built.map((line) => line.delay + timing.entry + line.travelMs + timing.settle),
 			);
-			await waitForTimeout(volleyMs + HOLD_AFTER_MS);
+			await waitForTimeout(volleyMs + HOLD_AFTER_MS + extraMs);
 			// cancelled while the volley ran — do not touch the board
+			if (generation !== showGeneration) return;
+			// the last values fade out rather than vanish with the lines
+			fadeOutAt = performance.now();
+			await waitForTimeout(FADE_OUT);
 			if (generation !== showGeneration) return;
 
 			// safety net: anything the runners missed (padding rows are skipped by
@@ -295,42 +354,52 @@
 					settleMs={timing.settle}
 					onreel={(reelIndex) => onGrenadeReel(line, reelIndex)}
 					oncomplete={() => {
+						line.doneAt = performance.now();
 						line.done = true;
 						crossed[line.lineIndex] = 1;
 					}}
 				/>
 			{/each}
 			<!--
-				What the line actually paid, said on the board.
-
-				Only after the runner has crossed (`done`), so the number arrives as
-				the payoff of the crossing rather than sitting there through it. The
-				plate is drawn over the last winning cell, tinted with the line's own
-				colour so a board with four lines on it can still be read line by
-				line, and it carries the Frame multiplier when one applied — that is
-				the one number a player cannot derive from the pay table.
+				What the line actually paid, said on the board: on its last winning
+				cell, once its runner has crossed, with the Frame multiplier when one
+				applied (the one number a player cannot derive from the pay table).
+				One number on the board at a time, biggest first (see TURN above),
+				once every runner has landed; each fades out before the next fades in.
 			-->
-			{#each lines.filter((line) => line.done && line.win && line.plate) as line (`v${line.lineIndex}`)}
-				<Container x={line.plate!.x} y={line.plate!.y} zIndex={20}>
-					<Graphics
-						draw={(g) => {
-							g.clear();
-							g.roundRect(-PLATE.w / 2, -PLATE.h / 2, PLATE.w, PLATE.h, PLATE.r);
-							g.fill({ color: 0x17191c, alpha: 0.88 });
-							g.roundRect(-PLATE.w / 2, -PLATE.h / 2, PLATE.w, PLATE.h, PLATE.r);
-							g.stroke({ width: 2, color: line.color, alpha: 0.95 });
-						}}
-					/>
-					<GoldText
-						text={bookEventAmountToCurrencyString(line.win!)}
-						fontSize={26}
-						maxWidth={PLATE.w - 12}
-						y={(line.multiplier ?? 1) > 1 ? -9 : 0}
-					/>
-					{#if (line.multiplier ?? 1) > 1}
-						<GoldText text={`x${line.multiplier}`} fontSize={20} maxWidth={PLATE.w - 20} y={13} />
-					{/if}
-				</Container>
+			{#each lines.every((line) => line.done) ? lines.filter((line) => line.win && line.plate && line.turn !== undefined) : [] as line (`v${line.lineIndex}`)}
+				{@const allDone = Math.max(...lines.map((other) => other.doneAt ?? 0))}
+				{@const from = allDone + (line.turn ?? 0) * turnMs}
+				{@const last = (line.turn ?? 0) >= (line.turns ?? 1) - 1}
+				{@const until = last ? fadeOutAt : from + turnMs - FADE_OUT}
+				{@const alpha = smooth((now - from) / FADE_IN) * (1 - smooth((now - until) / FADE_OUT))}
+				{#if alpha > 0.01}
+					<Container x={line.plate!.x} y={line.plate!.y} alpha={alpha} zIndex={20}>
+						<Graphics
+							draw={(g) => {
+								g.clear();
+								// a soft ink shadow, no rim: lifts the digits off the symbol art
+								const h = (line.multiplier ?? 1) > 1 ? VALUE.size * 1.9 : VALUE.size * 1.25;
+								g.roundRect(-VALUE.maxW / 2, -h / 2, VALUE.maxW, h, h / 2);
+								g.fill({ color: 0x0b0c0e, alpha: 0.5 });
+							}}
+						/>
+						<GoldText
+							text={bookEventAmountToCurrencyString(line.win!)}
+							fontSize={VALUE.size}
+							maxWidth={VALUE.maxW - 10}
+							y={(line.multiplier ?? 1) > 1 ? -VALUE.size * 0.38 : 0}
+						/>
+						{#if (line.multiplier ?? 1) > 1}
+							<GoldText
+								text={`x${line.multiplier}`}
+								fontSize={Math.round(VALUE.size * 0.72)}
+								maxWidth={VALUE.maxW - 20}
+								y={VALUE.size * 0.5}
+							/>
+						{/if}
+					</Container>
+				{/if}
 			{/each}
 		</Container>
 	</BoardContainer>

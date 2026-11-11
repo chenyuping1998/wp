@@ -29,6 +29,7 @@
   var DATA = window.__STUB_DATA__;
   var MUL = 1000000;
   var balance = 1000 * MUL;          // 1,000.00 to play with
+  try { var qb = new URLSearchParams(location.search).get('bal'); if (qb !== null) balance = Math.round(Number(qb) * MUL); } catch (e) {}
   // Honour ?currency= from the page URL. The RGS is authoritative about this in
   // real play, so a stub that always says USD makes one whole compliance surface
   // untestable: social currencies (XGC/XSC/XEC) must render as GC/SC with no "$"
@@ -68,6 +69,26 @@
     }));
   }
 
+  // ?resume=BASE&ramt=5 → authenticate answers with an active round of that
+  // mode at that stake (a winning book, so the round is still open).
+  function resumeRound() {
+    var q = new URLSearchParams(location.search);
+    var mode = q.get('resume');
+    if (!mode) return null;
+    var stake = Math.round(Number(q.get('ramt') || 5) * MUL);
+    var m = DATA[mode] || DATA.BASE;
+    var book = null;
+    for (var i = 0; i < m.pool.length && !book; i++) {
+      var b = m.books[String(m.pool[i])];
+      if (b && Number(b.payoutMultiplier) > 0) book = b;
+    }
+    var mult = Number(book.payoutMultiplier) / 100;
+    current = { payout: Math.round(stake * mult), mode: mode };
+    return { roundID: 99, amount: stake, payout: Math.round(stake * mult),
+             payoutMultiplier: mult, active: true, mode: mode, event: null,
+             state: book.events };
+  }
+
   var routes = {
     '/wallet/authenticate': function () {
       return json({
@@ -75,7 +96,7 @@
         balance: { amount: balance, currency: currency },
         // No round to resume. Set `active: true` with a state array here to
         // exercise the resume path.
-        round: null,
+        round: resumeRound(),
         config: {
           minBet: Math.round(0.1 * MUL),
           maxBet: Math.round(100 * MUL),

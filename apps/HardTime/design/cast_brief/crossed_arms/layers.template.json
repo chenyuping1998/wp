@@ -1,0 +1,86 @@
+{
+ "version": 1,
+ "archetype": "miami_green_guy",
+ "size": [
+  1024,
+  2048
+ ],
+ "feet_y": 1773,
+ "top_y": 172,
+ "sides": "anatomical",
+ "mirrored": false,
+ "order": [
+  "body",
+  "arm_r",
+  "arm_l",
+  "head",
+  "dangle_towel"
+ ],
+ "joints": {
+  "neck": [
+   537,
+   427
+  ],
+  "chest": [
+   537,
+   535
+  ],
+  "waist": [
+   537,
+   899
+  ],
+  "hips": [
+   537,
+   1053
+  ],
+  "head_top": [
+   537,
+   172
+  ],
+  "shoulder_r": [
+   364,
+   486
+  ],
+  "elbow_r": [
+   318,
+   770
+  ],
+  "wrist_r": [
+   640,
+   705
+  ],
+  "shoulder_l": [
+   717,
+   486
+  ],
+  "elbow_l": [
+   765,
+   770
+  ],
+  "wrist_l": [
+   430,
+   690
+  ]
+ },
+ "anchors": {
+  "dangle_towel": [
+   700,
+   470
+  ]
+ },
+ "arms": {
+  "r": "crossed",
+  "l": "crossed"
+ },
+ "variants": [
+  "base"
+ ],
+ "style": {
+  "kind": "render",
+  "source": "../../../ART_AUDIO_BRIEF.md",
+  "frames": [
+   "style_frame/full.png"
+  ]
+ },
+ "note": "Hard Time 2026-09-27: joints re-measured on the current prisoner rig (shoulders/neck/hips unchanged) so the new pose keeps his proportions; the archetype's own table was scaled from a big-headed half-body and put elbow_r at x=31."
+}

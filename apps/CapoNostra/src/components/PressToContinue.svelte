@@ -11,6 +11,8 @@
 	type Props = {
 		onpress: () => void;
 		position?: 'bottom' | 'betweenBoardAndBottom';
+		/** false keeps the tap/space handlers but draws no label */
+		showLabel?: boolean;
 	};
 
 	const props: Props = $props();
@@ -18,18 +20,26 @@
 
 	const label = gameText('pressToContinue');
 
-	// soft breathing pulse so the prompt reads as interactive
+	// Soft breathing pulse so the prompt reads as interactive. On the frame clock:
+	// it was a 50 ms interval — 20 steps a second — and visibly stepped.
 	let pulse = $state(1);
 	onMount(() => {
-		const id = setInterval(() => {
-			pulse = 0.55 + 0.45 * (0.5 + 0.5 * Math.sin(Date.now() / 480));
-		}, 50);
-		return () => clearInterval(id);
+		let raf = 0;
+		const tick = (now: number) => {
+			pulse = 0.55 + 0.45 * (0.5 + 0.5 * Math.sin(now / 480));
+			raf = requestAnimationFrame(tick);
+		};
+		raf = requestAnimationFrame(tick);
+		return () => cancelAnimationFrame(raf);
 	});
+
+	// Clear of the screen's foot. Anchored at the very bottom the free-game
+	// intro's prompt sat flush on the edge with its lower half cut off.
+	const BOTTOM_MARGIN = 22;
 
 	const yPosition = $derived.by(() => {
 		if (props.position !== 'betweenBoardAndBottom') {
-			return context.stateLayoutDerived.mainLayout().height;
+			return context.stateLayoutDerived.mainLayout().height - BOTTOM_MARGIN;
 		}
 		const board = context.stateGameDerived.boardLayout();
 		const main = context.stateLayoutDerived.mainLayout();
@@ -37,6 +47,7 @@
 	});
 </script>
 
+{#if props.showLabel !== false}
 <MainContainer alignVertical="bottom">
 	<Text
 		text={label}
@@ -52,15 +63,13 @@
 			// Was cream 0xf5e3c3 on a dark BROWN stroke 0x2c1c08 — GoBananas' brass
 			// again, found by reading the live scene graph rather than by grep,
 			// because neither value is in the jungle-colour list anyone searched.
-			fill: 0xffe6f7,
-			stroke: 0x1a1206,
-			strokeThickness: 4,
-			dropShadow: true,
-			dropShadowColor: 0x000000,
-			dropShadowBlur: 8,
-			dropShadowDistance: 2,
+			// the Deco gold-cream of the plaques; 0xffe6f7 was Hot Miami's pink
+			fill: 0xe7e3da,
+			stroke: { color: 0x131313, width: 4 },
+			dropShadow: { color: 0x000000, blur: 8, distance: 2, angle: Math.PI / 6, alpha: 1 },
 		}}
 	/>
 </MainContainer>
+{/if}
 <OnHotkey hotkey="Space" onpress={() => props.onpress()} />
 <OnPressFullScreen onpress={() => props.onpress()} />

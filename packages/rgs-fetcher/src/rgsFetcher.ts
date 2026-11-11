@@ -59,7 +59,7 @@ export const rgsFetcher = {
 	},
 	get: async function get<
 		T extends keyof paths,
-		TResponse = paths[T]['get']['responses'][200]['content']['application/json'],
+		TResponse = paths[T] extends { get: { responses: { 200: { content: { 'application/json': infer R } } } } } ? R : never,
 	>(options: { url: T; rgsUrl: string }): Promise<TResponse> {
 		const response = await fetcher({
 			method: 'GET',

@@ -7,6 +7,7 @@ export type RawSymbol = {
 	multiplier?: number;
 	scatter?: boolean;
 	wild?: boolean;
+	expandwild?: boolean;
 	// superspin: cash value carried by P symbols (in cents, as sent by math)
 	prize?: number;
 };

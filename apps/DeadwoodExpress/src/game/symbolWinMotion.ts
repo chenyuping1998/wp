@@ -136,301 +136,237 @@ const rest = (over: Partial<SymbolWinFrame> = {}): SymbolWinFrame => ({
 	...over,
 });
 
-// The four royals are neon tubes, so they ignite rather than move. Each gets its
-// own colour (matched to its own art) AND its own rhythm — four letters all
-// flickering the same way would be the original bug at a smaller scale.
-const NEON = {
-	L1: 0xff3b8b, // A — pink
-	L2: 0x66f6ff, // K — cyan
-	L3: 0xffd166, // Q — yellow
-	L4: 0xb08cff, // J — violet
-} as const;
+// ── Deadwood Express (2026-09-26) ────────────────────────────────────────────
+//
+// Everything above this line is shared machinery. The table below replaced the
+// one inherited from Hot Miami after Deadwood's second review ("Poor
+// animations"): that table was written for a Hawaiian-shirt guy, a flamingo, a
+// boombox, a convertible and four neon-tube royals, and on this board it lit
+// stone letters neon pink and made a lantern peck like a bird. Every motion here
+// is what THIS symbol's object would do, in this game's colours:
+const TEAL = 0x5fd6c4; // ghost light — the game's signature colour
+const AMBER = 0xf0a040; // lantern flame
+const SIGNAL = 0xff4a3c; // signal lens
+const LILAC = 0xb08ae0; // the veiled passenger
+const BRASS = 0xf0d9a4; // warm metal glint
 
-/**
- * A neon royal: `ignite(t)` is the tube's own switch-on pattern in 0..1, and
- * `move(t, glow)` is how the letter physically reacts to being lit.
- *
- * `move` exists because of a measurement, not a hunch. The first version gave
- * all four royals the same faint breathe and differed them only by flicker
- * timing and colour — and `design/check_symbol_motion.mjs` scored the four
- * royals at 0.28-0.61 apart while every other pair on the board was 0.94 or
- * more. Numerically they were still the original bug, at a smaller scale, and
- * colour was doing all the work.
- *
- * So each royal now moves on a DIFFERENT AXIS: A rises, K twitches sideways on
- * its bad contact, Q leans as it warms, J buzzes in scale. Same idea, four
- * distinguishable motions, and the check now passes on motion alone rather than
- * on tint.
- */
-const neonRoyal = (
-	tint: number,
-	ignite: (t: number) => number,
-	move: (t: number, glow: number) => Partial<SymbolWinFrame>,
-): SymbolWinMotion => ({
-	hitScale: 0.9,
-	frame: (t) => {
-		const glow = ignite(t);
-		return rest({
-			bloomAlpha: 0.75 * glow,
-			bloomTint: tint,
-			...move(t, glow),
-		});
-	},
+/** Rotation about a point `h` cell-heights above the centre (a hanging ring). */
+const hang = (theta: number, h: number) => ({
+	rotation: theta,
+	dx: -h * Math.sin(theta),
+	dy: h * (Math.cos(theta) - 1),
 });
+
+/** A soft light sprite, the only overlay primitive this table uses. */
+const light = (
+	x: number,
+	y: number,
+	size: number,
+	alpha: number,
+	tint: number,
+	behind = true,
+): SymbolWinOverlay => ({ key: 'fxGlow', x, y, width: size, height: size, rotation: 0, alpha, tint, behind });
+
+/** A brass glint travelling across the art once, over `window` ms. */
+const glint = (t: number, window: number, y = -0.05): SymbolWinOverlay[] => {
+	const u = t / window;
+	if (u >= 1) return [];
+	return [
+		{
+			key: 'fxStreak',
+			x: -0.45 + u * 0.9,
+			y,
+			width: 0.26,
+			height: 0.7,
+			rotation: -0.5,
+			alpha: 0.55 * hump(u, 1),
+			tint: BRASS,
+		},
+	];
+};
 
 // ── the table ────────────────────────────────────────────────────────────────
 
 const BASE_WIN_MOTION: Record<string, SymbolWinMotion> = {
-	// H1 — the guy in the Hawaiian shirt. A confident lean, and a hard specular
-	// glint sweeping across the sunglasses, which is the readable detail on him.
+	// W — the locomotive. Two chugs: squash down, rebound up, on a beat, with a
+	// puff of steam leaving the chimney on each and the headlamp flaring teal.
+	W: {
+		hitScale: 1.0,
+		frame: (t) => {
+			const beat = HOLD_MS * 0.46;
+			const u = cycle(t, beat);
+			const chug = strike(u, 6);
+			const puffs = [0, 1].map((i) => {
+				const age = (t - i * beat) / (beat * 1.6);
+				if (age < 0 || age > 1) return null;
+				return light(0.02 * i, -0.42 - 0.35 * age, 0.25 + 0.45 * age, 0.5 * (1 - age), 0xdff5ef, false);
+			});
+			return rest({
+				scaleX: 1 + 0.05 * chug,
+				scaleY: 1 - 0.07 * chug,
+				dy: 0.03 * chug,
+				bloomAlpha: 0.35 * chug,
+				bloomTint: TEAL,
+				overlays: [light(0, -0.02, 0.5 + 0.2 * chug, 0.55 * chug, TEAL), ...puffs.filter((p) => p !== null)],
+			});
+		},
+	},
+
+	// S — the ticket. Paper caught in a draught: a damped flutter that rocks and
+	// drifts, with one glint across it. The only symbol that moves like paper.
+	S: {
+		hitScale: 1.05,
+		frame: (t) => {
+			const damp = Math.exp(-t / 650);
+			return rest({
+				rotation: 0.16 * damp * Math.sin(t / 70),
+				dx: 0.04 * damp * Math.sin(t / 110 + 1),
+				scaleY: 1 - 0.05 * damp * Math.abs(Math.sin(t / 70)),
+				bloomAlpha: 0.25 * hump(Math.min(1, t / 500), 1),
+				bloomTint: TEAL,
+				overlays: [light(0, 0, 1.3, 0.3 * (0.6 + 0.4 * damp), TEAL), ...glint(t, 600, 0)],
+			});
+		},
+	},
+
+	// H1 — the conductor. One slow, deliberate nod — a doffed cap — and his scarf
+	// flares ghost-teal as he comes back up. Restrained on purpose: he is the top
+	// symbol, and his gesture is the calm one.
 	H1: {
 		hitScale: 1.05,
 		frame: (t) => {
-			const sweep = cycle(t, HOLD_MS * 1.08);
-			const glinting = sweep < 0.34;
-			// A double-take: two quick nods on each cycle, then still. H2 is the
-			// other portrait symbol and sits next to this one on the paytable, so
-			// they are the pair most at risk of reading as one animation — the
-			// checker scored them the closest on the board. The fix is a different
-			// TEMPORAL signature, not just a different amplitude: this one is a
-			// discrete repeating beat, H2 is a continuous sway.
-			const nod = strike(sweep, 9) * Math.sin(sweep * 44);
+			const u = Math.min(1, t / (HOLD_MS * 0.8));
+			const nod = hump(u, 0.55);
+			const flare = hump(Math.max(0, u - 0.35) / 0.65, 1);
 			return rest({
-				rotation: 0.055 * nod,
-				dy: 0.045 * nod,
-				overlays: glinting
-					? [
-							{
-								key: 'fxStreak',
-								x: -0.42 + (sweep / 0.34) * 0.84,
-								y: -0.14,
-								width: 0.34,
-								height: 0.5,
-								rotation: -0.42,
-								alpha: 0.85 * hump(sweep / 0.34, 1),
-								tint: 0xffffff,
-							},
-						]
-					: [],
+				rotation: -0.1 * nod,
+				dy: 0.06 * nod,
+				// 0.2, not 0.4: the bloom tints the whole bust, and at 0.4 he went
+				// green from cap to coat rather than his scarf catching the light.
+				bloomAlpha: 0.2 * flare,
+				bloomTint: TEAL,
+				overlays: [light(0.05, 0.25, 0.9, 0.45 * flare, TEAL)],
 			});
 		},
 	},
 
-	// H2 — the blonde. Deliberately slower and wider than H1: they are the two
-	// portrait symbols and sit next to each other on the paytable, so if either
-	// pair is going to read as "the same animation twice" it is this one.
+	// H2 — the veiled passenger. An apparition: she lifts and hangs in the air,
+	// breathing lilac light. Continuous and slow where H1 is one discrete beat —
+	// they are the two portraits, and must not read as one animation twice.
 	H2: {
 		hitScale: 1.05,
 		frame: (t) => {
-			const spark = cycle(t, HOLD_MS);
+			const rise = 1 - Math.exp(-t / 260);
+			const breathe = 0.5 + 0.5 * Math.sin(t / 150);
 			return rest({
-				rotation: 0.07 * Math.sin(t / 340),
-				dx: 0.014 * Math.sin(t / 340 + 0.6),
-				overlays: [
-					{
-						key: 'fxStar',
-						x: 0.2,
-						y: -0.06,
-						width: 0.3 * hump(spark, 0.45),
-						height: 0.3 * hump(spark, 0.45),
-						rotation: spark * 2,
-						alpha: 0.95 * hump(spark, 0.45),
-						tint: 0xfff2c4,
-					},
-				],
+				dy: -0.07 * rise + 0.012 * Math.sin(t / 150),
+				scaleX: 1 + 0.03 * breathe,
+				scaleY: 1 + 0.03 * breathe,
+				bloomAlpha: 0.2 + 0.25 * breathe * rise,
+				bloomTint: LILAC,
+				overlays: [light(0, 0.1, 1.1, 0.3 * rise, LILAC)],
 			});
 		},
 	},
 
-	// H3 — flamingo. A bird pecks: a fast dip forward, then a slow rise. The
-	// asymmetry is the whole read; a symmetric bob would be a wobble again.
+	// H3 — the lantern. It swings from its top ring like a pendulum, damping out,
+	// and the flame gutters: an irregular amber flicker behind the glass.
 	H3: {
 		hitScale: 1.0,
 		frame: (t) => {
-			const u = cycle(t, HOLD_MS);
-			const dip = hump(u, 0.26);
+			const theta = 0.2 * Math.exp(-t / 700) * Math.sin(t / 105);
+			const flicker = 0.55 + 0.25 * Math.sin(t / 37) + 0.2 * Math.sin(t / 61 + 2);
 			return rest({
-				scaleX: 1 + 0.04 * dip,
-				scaleY: 1 - 0.05 * dip,
-				rotation: -0.11 * dip,
-				dy: 0.05 * dip,
+				...hang(theta, 0.45),
+				bloomAlpha: 0.45 * flicker,
+				bloomTint: AMBER,
+				overlays: [light(-0.02, 0.08, 0.75, 0.6 * flicker, AMBER)],
 			});
 		},
 	},
 
-	// H4 — boombox. The only symbol on a strict beat: sharp attack, decay,
-	// repeat, with the speakers pushing outward and a warm glow behind on each
-	// hit. Periodic where everything else is either continuous or one-shot.
+	// H4 — the pocket watch. Tick... tock: the watch snaps a notch on each tick
+	// and holds, alternating direction — a discrete stepping motion nothing else
+	// on the board has — with the teal dial lighting on the beat.
 	H4: {
-		hitScale: 1.1,
+		hitScale: 1.0,
 		frame: (t) => {
-			const thump = strike(cycle(t, HOLD_MS * 0.48), 5);
+			const tick = HOLD_MS / 6;
+			const n = Math.floor(t / tick);
+			const snap = strike((t % tick) / tick, 10);
+			const side = n % 2 === 0 ? 1 : -1;
 			return rest({
-				scaleX: 1 + 0.075 * thump,
-				scaleY: 1 - 0.05 * thump,
-				dy: -0.012 * thump,
-				overlays: [
-					{
-						key: 'fxGlow',
-						x: 0,
-						y: 0,
-						width: 1.25,
-						height: 1.25,
-						rotation: 0,
-						alpha: 0.4 * thump,
-						tint: 0xffa64d,
-						behind: true,
-					},
-				],
+				rotation: side * 0.09 * (1 - 0.4 * snap),
+				scaleX: 1 + 0.05 * snap,
+				scaleY: 1 + 0.05 * snap,
+				bloomAlpha: 0.35 * snap,
+				bloomTint: TEAL,
+				overlays: [light(-0.05, 0.02, 0.8, 0.35 * snap, TEAL)],
 			});
 		},
 	},
 
-	// H5 — the convertible. Two motions at once, which no other symbol has: a
-	// constant high-frequency idle vibration, and a slow lunge forward with
-	// speed lines. The vibration is what makes it read as an engine rather than
-	// as a shaking picture.
+	// H5 — the signal lamp. The red lens flashes hard, twice, and the housing
+	// jolts on each flash. On/off, never a fade: it is a signal.
 	H5: {
-		hitScale: 1.1,
+		hitScale: 1.0,
 		frame: (t) => {
-			const lunge = strike(cycle(t, HOLD_MS * 1.15), 6);
+			const on = (t > 40 && t < 220) || (t > 420 && t < 600) ? 1 : 0.12;
+			const jolt = strike(cycle(t, 380), 12) * (t < 760 ? 1 : 0);
 			return rest({
-				dx: 0.004 * Math.sin(t / 29) + 0.055 * lunge,
-				dy: 0.008 * Math.sin(t / 38),
-				rotation: -0.025 * lunge,
-				overlays: [-1, 1].map((side) => ({
-					key: 'fxStreak',
-					x: -0.3 - 0.25 * lunge,
-					y: side * 0.14,
-					width: 0.55,
-					height: 0.12,
-					rotation: 0,
-					alpha: 0.55 * lunge,
-					tint: 0x8ef7ff,
-					behind: true,
-				})),
-			});
-		},
-	},
-
-	// L1-L4 — neon tubes. Same idea; four switch-on rhythms AND four axes of
-	// movement, so no two are alike either to the eye or to the checker.
-
-	// A: two hard blinks, then steady — and the letter RISES as it lights.
-	L1: neonRoyal(
-		NEON.L1,
-		(t) => (t < 60 ? 1 : t < 110 ? 0.15 : t < 165 ? 1 : 0.55 + 0.45 * Math.sin(t / 300)),
-		(t, glow) => ({ dy: -0.055 * glow + 0.012 * Math.sin(t / 320) }),
-	),
-	// K: a loose contact. It twitches SIDEWAYS on the blink and settles.
-	L2: neonRoyal(
-		NEON.L2,
-		(t) => (t < 130 ? 0.9 : t < 175 ? 0.1 : 0.6 + 0.4 * Math.sin(t / 240 + 1.1)),
-		(t, glow) => ({ dx: 0.05 * (1 - glow) * Math.sin(t / 45) + 0.01 * Math.sin(t / 380) }),
-	),
-	// Q: no blink at all — a slow warm swell, and it LEANS as it warms up.
-	L3: neonRoyal(
-		NEON.L3,
-		(t) => Math.min(1, t / 380) * (0.6 + 0.4 * Math.sin(t / 420)),
-		(t, glow) => ({ rotation: 0.1 * glow * Math.sin(t / 520) }),
-	),
-	// J: the cheapest tube on the sign — a fast stutter that BUZZES in scale.
-	L4: neonRoyal(
-		NEON.L4,
-		(t) => (t < 300 ? (Math.sin(t / 25) > 0 ? 1 : 0.2) : 0.6 + 0.4 * Math.sin(t / 260)),
-		(t, glow) => ({ scaleX: 1 + 0.06 * glow, scaleY: 1 - 0.045 * glow }),
-	),
-
-	// W — the comic burst. Hits hardest and kicks, with rays thrown off the
-	// impact. It is a drawn explosion, so it should behave like one.
-	W: {
-		hitScale: 1.35,
-		frame: (t) => {
-			const settle = Math.exp(-t / 260);
-			// Re-punches on a beat rather than breathing. The breathe it used to
-			// have was `sin(t/240)`, and S's was `sin(t/260)` — near-identical
-			// functions, which is why the checker scored W and S as the closest
-			// pair on the board despite one of them spinning. Two symbols can look
-			// different and still share their underlying motion; the fix is to stop
-			// sharing it.
-			const punch = strike(cycle(t, HOLD_MS * 0.62), 7);
-			return rest({
-				scaleX: 1 + 0.05 * settle + 0.07 * punch,
-				scaleY: 1 + 0.05 * settle - 0.045 * punch,
-				rotation: 0.1 * settle * Math.sin(t / 60),
-				overlays: [0, 1, 2, 3].map((i) => ({
-					key: 'fxStreak',
-					x: 0,
-					y: 0,
-					width: 0.5 + 0.7 * (1 - settle),
-					height: 0.09,
-					rotation: (i / 4) * Math.PI * 2 + t / 1400,
-					alpha: 0.7 * settle,
-					tint: 0xffd166,
-					behind: true,
-				})),
-			});
-		},
-	},
-
-	// S — scatter. The only symbol that rotates continuously. It is a starburst,
-	// so the shape does the work; nothing else on the board turns, which makes a
-	// scatter win identifiable from the corner of the eye.
-	S: {
-		hitScale: 1.3,
-		spins: true,
-		frame: (t) => {
-			const breath = Math.sin(t / 260);
-			return rest({
-				rotation: t / 900,
-				scaleX: 1 + 0.045 * breath,
-				scaleY: 1 + 0.045 * breath,
+				dx: 0.05 * jolt,
+				rotation: 0.05 * jolt,
+				// The bloom is an additive copy of the WHOLE sprite, so at 0.55 it
+				// turned the iron housing pink; the lens is lit by a light laid over
+				// it instead, and the bloom only warms the edges.
+				bloomAlpha: 0.1 * on,
+				bloomTint: SIGNAL,
 				overlays: [
-					{
-						key: 'fxGlow',
-						x: 0,
-						y: 0,
-						width: 1.35 + 0.1 * breath,
-						height: 1.35 + 0.1 * breath,
-						rotation: 0,
-						alpha: 0.32 + 0.12 * breath,
-						tint: 0x4dffa6,
-						behind: true,
-					},
+					light(0.06, 0.0, 1.0, 0.45 * on, SIGNAL),
+					light(0.06, 0.0, 0.5, 0.7 * on, 0xffc2b8, false),
 				],
 			});
 		},
 	},
 
-	// C — the Collector. It sweeps frames off the board, so it pulls INWARD:
-	// a pinch on each beat with stars converging into it. Every other symbol on
-	// this board expands when it wins; this one is the only one that contracts,
-	// and that is the mechanic drawn as motion.
-	C: {
-		hitScale: 1.25,
+	// L1-L4 — carved stone letters with bronze edges (v1 art). Heavy objects: they
+	// thud and rock rather than wobble, each on its own axis, and a brass glint
+	// runs across the bevel. No colour of their own — they are the quiet symbols.
+
+	// A: lifted and dropped — one heavy thud, a small bounce.
+	L1: {
+		hitScale: 0.9,
 		frame: (t) => {
-			const u = cycle(t, HOLD_MS * 0.95);
-			const suck = strike(u, 4);
-			return rest({
-				scaleX: 1 - 0.07 * suck,
-				scaleY: 1 + 0.055 * suck,
-				overlays: [0, 1, 2].map((i) => {
-					const angle = (i / 3) * Math.PI * 2 + t / 900;
-					const radius = 0.62 * u;
-					return {
-						key: 'fxStar',
-						x: Math.cos(angle) * radius,
-						y: Math.sin(angle) * radius,
-						width: 0.26 * (1 - u),
-						height: 0.26 * (1 - u),
-						rotation: angle,
-						alpha: 0.85 * (1 - u),
-						tint: 0xff8cf0,
-						behind: true,
-					};
-				}),
-			});
+			const u = Math.min(1, t / 520);
+			const lift = u < 0.45 ? Math.sin((u / 0.45) * (Math.PI / 2)) : Math.exp(-(u - 0.45) * 9) * Math.cos((u - 0.45) * 30);
+			return rest({ dy: -0.07 * lift, overlays: glint(t, 700) });
 		},
+	},
+	// K: rocks on its base, left then right, settling.
+	L2: {
+		hitScale: 0.9,
+		frame: (t) => ({ ...rest({ overlays: glint(t - 120, 700) }), ...hang(0.12 * Math.exp(-t / 520) * Math.sin(t / 95), -0.42) }),
+	},
+	// Q: a double pulse in scale, like a heartbeat.
+	L3: {
+		hitScale: 0.9,
+		frame: (t) => {
+			const u = cycle(t, HOLD_MS * 0.9);
+			const beat = hump(u, 0.16) + 0.7 * hump(Math.max(0, u - 0.22), 0.16);
+			return rest({ scaleX: 1 + 0.1 * beat, scaleY: 1 + 0.1 * beat, overlays: glint(t - 60, 700) });
+		},
+	},
+	// J: swings sideways from its top like a hung sign — a slow sway.
+	L4: {
+		hitScale: 0.9,
+		frame: (t) => ({ ...rest({ overlays: glint(t - 180, 700) }), ...hang(0.14 * Math.sin(t / 200) * (1 - Math.exp(-t / 150)), 0.42) }),
+	},
+
+	// C — unused in Deadwood (no Collector), kept because SYMBOL_INFO_MAP still
+	// lists it and the checker requires every board symbol to have a motion.
+	C: {
+		hitScale: 1,
+		frame: (t) => rest({ scaleX: 1 + 0.08 * hump(cycle(t, 480), 0.5), scaleY: 1 - 0.08 * hump(cycle(t, 480), 0.5) }),
 	},
 };
 
@@ -463,10 +399,14 @@ const BASE_WIN_MOTION: Record<string, SymbolWinMotion> = {
  * brighter, and clamping them would flatten the tops of the neon flickers, which
  * is a shape change.
  */
+// Deadwood, 2026-09-26 halved this to 7°/7px/8% so the new themed motions
+// would read as "heavy"; the third review (2026-09-30) then doubled the
+// "Poor animations" tag (1 -> 2 reviewers). Back to the Hot Miami floor —
+// the motions stay themed, they just have to be big enough to see.
 export const VISIBLE_FLOOR = {
-	/** 15 degrees. Below this a lean on a 118px cell is a tremble. */
+	/** 15 degrees. Below this a lean on a cell is a tremble. */
 	rotation: 0.26,
-	/** cell fractions: 0.10 is ~12px. */
+	/** cell fractions: 0.10 is ~15px at the 1.22 board. */
 	offset: 0.1,
 	/** 15% of the symbol's own size. */
 	scale: 0.15,

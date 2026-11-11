@@ -68,7 +68,7 @@
 			anchor={0.5}
 			y={-6}
 			tint={0xe8dcb8}
-			blendMode="add"
+			blendMode="normal"
 			width={130 * easeOut(Math.min(1, t * 2.5))}
 			height={34 * easeOut(Math.min(1, t * 2.5))}
 			alpha={(1 - t) ** 1.5 * 0.7}

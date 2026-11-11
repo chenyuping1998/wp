@@ -85,7 +85,7 @@
 			anchor={{ x: 0.5, y: 0.5 }}
 			y={props.topY - props.groundY + props.height * 0.42}
 			tint={props.grade.pool}
-			blendMode="add"
+			blendMode="normal"
 			width={width * 1.9}
 			height={props.height * 0.7}
 			alpha={props.grade.poolAlpha}

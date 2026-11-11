@@ -1,0 +1,104 @@
+{
+  "version": 1,
+  "archetype": "miami_main_girl",
+  "size": [
+    1024,
+    2048
+  ],
+  "feet_y": 1822,
+  "top_y": 260,
+  "sides": "anatomical",
+  "mirrored": false,
+  "order": [
+    "arm_l",
+    "head",
+    "body",
+    "arm_r",
+    "dangle_ponytail",
+    "prop_bat",
+    "fingers_l",
+    "dangle_earring_l",
+    "dangle_earring_r"
+  ],
+  "joints": {
+    "neck": [
+      490,
+      492
+    ],
+    "chest": [
+      546,
+      626
+    ],
+    "waist": [
+      552,
+      799
+    ],
+    "hips": [
+      552,
+      973
+    ],
+    "head_top": [
+      473,
+      260
+    ],
+    "shoulder_r": [
+      372,
+      523
+    ],
+    "elbow_r": [
+      335,
+      782
+    ],
+    "wrist_r": [
+      301,
+      1035
+    ],
+    "shoulder_l": [
+      630,
+      518
+    ],
+    "elbow_l": [
+      742,
+      686
+    ],
+    "wrist_l": [
+      675,
+      492
+    ]
+  },
+  "anchors": {
+    "prop_bat": [
+      677,
+      488
+    ],
+    "dangle_ponytail": [
+      516,
+      269
+    ],
+    "dangle_earring_l": [
+      519,
+      384
+    ],
+    "dangle_earring_r": [
+      427,
+      422
+    ]
+  },
+  "arms": {
+    "r": "hanging",
+    "l": "raised_prop"
+  },
+  "variants": [
+    "capo",
+    "don"
+  ],
+  "style": {
+    "kind": "noir",
+    "source": "../../../ART_BRIEF.md",
+    "frames": [
+      "style_frame/don_head.png",
+      "style_frame/h1.png"
+    ]
+  },
+  "delivery_status": "art gates passed; runtime rig and motion validation pending"
+}

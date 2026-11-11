@@ -1,0 +1,82 @@
+{
+  "canvas": [
+    1024,
+    2048
+  ],
+  "order": [
+    "arm_l",
+    "head",
+    "body",
+    "arm_r",
+    "dangle_ponytail",
+    "prop_bat",
+    "fingers_l",
+    "dangle_earring_l",
+    "dangle_earring_r"
+  ],
+  "spec": "delivery spec",
+  "composite": "pixel-exact",
+  "psd": "not checked (pip install psd-tools)",
+  "body_holes": 0,
+  "arms": {
+    "arm_l": {
+      "shoulder_overlap_px": 42,
+      "kind": "raised_prop"
+    },
+    "arm_r": {
+      "shoulder_overlap_px": 43,
+      "kind": "hanging",
+      "forearm_clearance_px": 56.3
+    }
+  },
+  "neck_overlap_px": 30,
+  "figure_box": [
+    168,
+    197,
+    870,
+    1822
+  ],
+  "margin_px": 154,
+  "edges": {
+    "arm_l": {
+      "contour_soft": 1.0,
+      "colours": 619
+    },
+    "head": {
+      "contour_soft": 1.0,
+      "colours": 1037
+    },
+    "body": {
+      "contour_soft": 1.0,
+      "colours": 1943
+    },
+    "arm_r": {
+      "contour_soft": 1.0,
+      "colours": 698
+    },
+    "dangle_ponytail": {
+      "contour_soft": 1.0,
+      "colours": 736
+    },
+    "prop_bat": {
+      "contour_soft": 1.0,
+      "colours": 909
+    },
+    "fingers_l": {
+      "contour_soft": 1.0,
+      "colours": 326
+    },
+    "dangle_earring_l": {
+      "contour_soft": 1.0,
+      "colours": 237
+    },
+    "dangle_earring_r": {
+      "contour_soft": 1.0,
+      "colours": 241
+    }
+  },
+  "variants": [
+    "cast_parts/fg/capo",
+    "cast_parts/fg/don"
+  ]
+}

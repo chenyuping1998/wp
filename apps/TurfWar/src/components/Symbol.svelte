@@ -99,7 +99,7 @@
 		text={bookEventAmountToCurrencyString(props.rawSymbol.prize)}
 		fontSize={28}
 		maxWidth={SYMBOL_SIZE * 0.86}
-		fill={isBigPrize(props.rawSymbol.prize) ? BIG_PRIZE_FILL : undefined}
+		fill={isBigPrize(props.rawSymbol.prize) ? BIG_PRIZE_FILL[1] : undefined}
 		stroke={isBigPrize(props.rawSymbol.prize) ? BIG_PRIZE_STROKE : undefined}
 	/>
 {/if}

@@ -16,6 +16,8 @@
 		tiled?: boolean;
 		// the cell this readout must stay inside — see UiLabel
 		maxWidth?: number;
+		// centre caption + value + chevron as one group — see UiLabel
+		centerGroup?: boolean;
 	};
 
 	const props: Props = $props();
@@ -79,5 +81,6 @@
 		accent={uiTheme.betAccent}
 		maxWidth={props.maxWidth}
 		{pop}
+		centerGroup={props.centerGroup}
 	/>
 </Container>

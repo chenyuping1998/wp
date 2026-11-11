@@ -115,6 +115,25 @@ def measure(path: str, ground) -> dict:
     }
 
 
+def display_ratios() -> dict:
+    """每個符號實際畫在盤面上的倍率（src/game/constants.ts 的 sizeRatios）。
+
+    2026-10-12：花色 PNG 的墨水只佔畫布中間三分之一，constants.ts 用 2.0 倍去畫。
+    只量 PNG 本身會把低賠付的份量少算四倍（面積隨倍率平方），所以這裡把佔格與亮部
+    乘上倍率²、輪廓乘上倍率，量的才是玩家在盤面上看到的大小。
+    """
+    import re
+    src = open(os.path.join(HERE, "..", "src", "game", "constants.ts"), encoding="utf-8").read()
+    high = float(re.search(r"const HIGH_SYMBOL_SIZE = ([\d.]+)", src).group(1))
+    ratios = {f"h{i}": high for i in range(1, 6)}
+    for i in range(1, 5):
+        m = re.search(rf"L{i}: spriteSymbol\('hmL{i}', \{{ width: ([\d.]+)", src)
+        if not m:
+            raise SystemExit(f"constants.ts 找不到 L{i} 的 sizeRatios")
+        ratios[f"l{i}"] = float(m.group(1))
+    return ratios
+
+
 def main() -> None:
     ground = DEFAULT_GROUND
     if "--ground" in sys.argv:
@@ -122,6 +141,10 @@ def main() -> None:
         ground = tuple(int(hexcode[i:i + 2], 16) for i in (0, 2, 4))
 
     rows = {name: measure(resolve(name), ground) for name in PAY}
+    for name, ratio in display_ratios().items():
+        rows[name]["coverage"] *= ratio ** 2
+        rows[name]["bright"] *= ratio ** 2
+        rows[name]["extent"] *= ratio
     highs = [rows[n] for n in rows if n.startswith("h")]
     lows = [rows[n] for n in rows if n.startswith("l")]
     avg = lambda group, key: float(np.mean([g[key] for g in group]))

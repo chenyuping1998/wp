@@ -44,9 +44,8 @@
 			const begin = FIRST_COLUMN_AT + column * COLUMN_DELAY;
 			const alpha = 0.9 * (1 - Math.min(1, Math.max(0, (t - begin) / COLUMN_FADE)));
 			if (alpha <= 0.01) continue;
-			g.beginFill(0x0a1508, alpha);
-			g.drawRect(left + column * SYMBOL_SIZE, top, SYMBOL_SIZE, board.height);
-			g.endFill();
+			g.rect(left + column * SYMBOL_SIZE, top, SYMBOL_SIZE, board.height);
+			g.fill({ color: 0x0a1508, alpha: alpha });
 		}
 	};
 </script>

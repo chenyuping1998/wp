@@ -37,6 +37,11 @@
 	const context = getContext();
 
 	const box = $derived(context.stateLayoutDerived.mainLayoutStandard());
+	// uiTheme.smallViewportReadouts: on a canvas 600 wide or less the readouts
+	// grow to 0.85 and the replay summary wraps to three columns. Default off.
+	const smallReadouts = $derived(
+		uiTheme.smallViewportReadouts && context.stateLayoutDerived.canvasSizes().width <= 600,
+	);
 
 	// The frame is inset from the canvas on all four sides — without the bottom
 	// inset its lower edge sat exactly on the canvas floor and the rounded corners
@@ -50,7 +55,10 @@
 	// thing laid on the screen rather than a thing built into its edge, and the
 	// oversized spin button has somewhere to hang.
 	const barTop = $derived(box.height - uiTheme.barHeight);
-	const frameH = $derived(uiTheme.barHeight - uiTheme.barFrameBottom);
+	const frameH = $derived(
+		uiTheme.barHeight -
+			(smallReadouts ? Math.min(uiTheme.barFrameBottom, 12) : uiTheme.barFrameBottom),
+	);
 	const barMid = $derived(barTop + frameH * 0.5);
 
 	// The strip is one framed panel, so the readouts inside it drop their own
@@ -64,12 +72,13 @@
 	// touching the Win rule.
 	// A theme key now (uiTheme.readoutScale, default 0.68 — this value), for a
 	// game whose face is condensed (Bangers) and reads small at 0.68.
-	const READOUT_SCALE = $derived(uiTheme.readoutScale);
+	// smallViewportReadouts overrides it with 0.85 on a small canvas.
+	const READOUT_SCALE = $derived(smallReadouts ? 0.85 : uiTheme.readoutScale);
 	// UiLabel stacks label at y=0 and value at y=UI_BASE_FONT_SIZE, so the block is
 	// two lines tall; lift it by half of that to sit centred on the bar.
 	// uiTheme.readoutOffsetY (default 0) nudges the block for a game whose value
 	// face is taller than the label's and sits on the frame's lower edge.
-	const readoutTop = $derived(barMid - UI_BASE_FONT_SIZE * READOUT_SCALE + uiTheme.readoutOffsetY);
+	const readoutTop = $derived(barMid - UI_BASE_FONT_SIZE * READOUT_SCALE + uiTheme.readoutOffsetY + (uiTheme.barReadoutOffsetY ?? 0));
 
 	// Frame inset from the canvas edges.
 	const FRAME_X = 24;
@@ -80,7 +89,10 @@
 	// the elements are very different sizes (spin 134 across, steppers 42), so
 	// equal centre spacing would leave the gaps looking wrong. Every offset below
 	// is half of one element plus a uniform 40 of air plus half of the next.
-	const TURBO_X = $derived(innerRight - 33);
+	// uiTheme.barTurboInset, default 33 (this value): turbo centre in from
+	// innerRight. A sprite bar whose lit rail sits further in than the 14 above
+	// needs more, or the right-most button rides over the rail (Turf 10-18).
+	const TURBO_X = $derived(innerRight - (uiTheme.barTurboInset ?? 33));
 	const AUTO_X = $derived(TURBO_X - 106);
 	const SPIN_X = $derived(AUTO_X - 140);
 	const STEP_X = $derived(SPIN_X - 128);
@@ -109,10 +121,14 @@
 	// (33 + 150) / 2. At the old 84 the button sat visibly left of centre.
 	const MENU_X = 92;
 	const DIV_1 = 150;
-	const BALANCE_X = 286;
-	const DIV_2 = 424;
-	const WIN_X = 540;
-	const DIV_3 = 656;
+	// uiTheme.flankWideCells (capo-turf-hardtime's flank): Balance and Win each
+	// take 360 instead of 274/232, the − BET + group fills DIV_3 → the spin pod,
+	// and there is no barMessage span. Off: main's flank, unchanged.
+	const wide = $derived(uiTheme.stepperLayout === 'flank' && uiTheme.flankWideCells);
+	const BALANCE_X = $derived(wide ? 330 : 286);
+	const DIV_2 = $derived(wide ? 510 : 424);
+	const WIN_X = $derived(wide ? 690 : 540);
+	const DIV_3 = $derived(wide ? 870 : 656);
 	const dividerBeforeBet = $derived(BET_X - 118);
 
 	// uiTheme.stepperLayout 'flank': −  BET  + in one row. The − sits 40 of air
@@ -120,13 +136,27 @@
 	// and the readout centres between them; the empty Win→Bet cell (and its
 	// closing rule and breather tick) is what the pair takes up.
 	const flank = $derived(uiTheme.stepperLayout === 'flank');
-	const STEP_R = $derived((UI_BASE_SIZE * STEP_SCALE) / 2);
+	const STEP_R = $derived(
+		wide
+			? (UI_BASE_SIZE * (uiTheme.railButtonScale ?? 1) * uiTheme.stepButtonScale) / 2
+			: (UI_BASE_SIZE * STEP_SCALE) / 2,
+	);
+	// ButtonBet draws UI_BASE_SIZE * 1.12 across before spinScale
+	const SPIN_R = $derived((UI_BASE_SIZE * 1.12 * uiTheme.spinScale) / 2);
 	// the pair closes in on the readout when the span allows: at the full width
 	// the − sat far from the amount it changes and read as a separate control
 	const FLANK_SPREAD = 210;
-	const PLUS_X = $derived(STEP_X);
-	const MINUS_X = $derived(Math.max(DIV_3 + 40 + STEP_R, PLUS_X - FLANK_SPREAD * 2));
-	const betReadoutX = $derived(flank ? (MINUS_X + PLUS_X) * 0.5 : BET_X);
+	// wide: each stepper 40 of air in from its neighbour (DIV_3 / the spin rim),
+	// the readout centred between them
+	const flankMin = $derived(DIV_3 + 40 + STEP_R);
+	const flankMax = $derived(SPIN_X - SPIN_R - 44 - STEP_R);
+	const flankMid = $derived((flankMin + flankMax) * 0.5);
+	const PLUS_X = $derived(wide ? Math.min(flankMax, flankMid + FLANK_SPREAD) : STEP_X);
+	const MINUS_X = $derived(
+		wide
+			? Math.max(flankMin, flankMid - FLANK_SPREAD)
+			: Math.max(DIV_3 + 40 + STEP_R, PLUS_X - FLANK_SPREAD * 2),
+	);
 
 	// How wide a readout may draw, in ITS OWN units — the cell it sits in, less a
 	// little air, divided by the scale the container applies.
@@ -147,7 +177,20 @@
 	// The Bet cell is bounded by its own rule on the left and the stepper on the
 	// right, and it also has to leave room for the chevron the affordance draws.
 	const betMaxWidth = $derived(
-		flank ? cellWidth(MINUS_X + STEP_R, PLUS_X - STEP_R) : cellWidth(dividerBeforeBet, STEP_X - 24),
+		flank
+			? wide && stateReplay.enabled
+				? cellWidth(REPLAY_END, SPIN_X - SPIN_R - 40)
+				: cellWidth(MINUS_X + STEP_R, PLUS_X - STEP_R)
+			: cellWidth(dividerBeforeBet, STEP_X - 24),
+	);
+	// where the bet readout is drawn (wide flank in replay: centred in what the
+	// replay control leaves)
+	const betReadoutX = $derived(
+		flank
+			? wide && stateReplay.enabled
+				? (REPLAY_END + SPIN_X - SPIN_R - 40) * 0.5
+				: (MINUS_X + PLUS_X) * 0.5
+			: BET_X,
 	);
 	// centre of the empty Win→Bet span, for the breather tick
 	const GAP_CENTER = $derived((DIV_3 + BET_X - 118) * 0.5);
@@ -173,9 +216,14 @@
 	// icon + caption centred as one unit on the cell, rather than the icon alone —
 	// otherwise the pair sits visibly right of the space it occupies.
 	const REPLAY_CAPTION_WIDTH = 120;
+	// wide flank has no empty cell: replay takes the stepper's place at the left
+	// of the bet group and the readout moves over
 	const REPLAY_X = $derived(
-		GAP_CENTER - (REPLAY_RADIUS * 2 + 12 + REPLAY_CAPTION_WIDTH) * 0.5 + REPLAY_RADIUS,
+		wide
+			? DIV_3 + 40 + REPLAY_RADIUS
+			: GAP_CENTER - (REPLAY_RADIUS * 2 + 12 + REPLAY_CAPTION_WIDTH) * 0.5 + REPLAY_RADIUS,
 	);
+	const REPLAY_END = $derived(REPLAY_X + REPLAY_RADIUS + 12 + REPLAY_CAPTION_WIDTH + 24);
 
 	// Replay with a summary (stateReplay.summary, written by the game): the strip
 	// carries every row of the replay start card, so nothing the card said is
@@ -190,8 +238,25 @@
 		TURBO_X - SUMMARY_TURBO_R - 40 - REPLAY_CAPTION_WIDTH - 12 - REPLAY_RADIUS,
 	);
 	const SUMMARY_END = $derived(SUMMARY_REPLAY_X - REPLAY_RADIUS - 34);
-	const summaryCellW = $derived((SUMMARY_END - DIV_1) / Math.max(1, replaySummary.length));
-	const summaryX = $derived((i: number) => DIV_1 + summaryCellW * (i + 0.5));
+	const summaryCols = $derived(smallReadouts ? 3 : Math.max(1, replaySummary.length));
+	const summaryCellW = $derived((SUMMARY_END - DIV_1) / summaryCols);
+	const summaryX = $derived((i: number) => DIV_1 + summaryCellW * ((i % summaryCols) + 0.5));
+	const summaryY = (i: number) =>
+		smallReadouts ? barTop + 4 + Math.floor(i / summaryCols) * 78 : readoutTop;
+	const SHORT_SUMMARY_LABELS: Record<string, string> = {
+		Mode: 'MODE',
+		'Base Bet': 'BET',
+		'Base Play': 'AMOUNT',
+		'Cost Multiplier': 'ENTRY ×',
+		'Feature Multiplier': 'ENTRY ×',
+		'Total Bet Cost': 'TOTAL',
+		'Total Play Amount': 'TOTAL',
+		'Payout Multiplier': 'WIN ×',
+		'Final Multiplier': 'WIN ×',
+		'Total Win': 'WIN',
+	};
+	const shortSummaryLabel = (label: string) =>
+		smallReadouts ? (SHORT_SUMMARY_LABELS[label] ?? label) : label;
 	const summaryMaxW = $derived(cellWidth(0, summaryCellW));
 	// one caption size for the whole row: the scale the longest caption needs
 	let summaryLabelWidths = $state<number[]>([]);
@@ -200,7 +265,7 @@
 	);
 	const ruleXs = $derived(
 		hasReplaySummary
-			? replaySummary.map((_, i) => DIV_1 + summaryCellW * i).concat(SUMMARY_END)
+			? Array.from({ length: summaryCols }, (_, i) => DIV_1 + summaryCellW * i).concat(SUMMARY_END)
 			: flank
 				? [DIV_1, DIV_2, DIV_3]
 				: [DIV_1, DIV_2, DIV_3, dividerBeforeBet],
@@ -413,11 +478,11 @@
 
 	{#if hasReplaySummary}
 		{#each replaySummary as row, i (row.label)}
-			<Container x={summaryX(i)} y={readoutTop} scale={READOUT_SCALE}>
+			<Container x={summaryX(i)} y={summaryY(i)} scale={READOUT_SCALE}>
 				<UiLabel
 					tiled={false}
 					stacked
-					label={row.label.toUpperCase()}
+					label={shortSummaryLabel(row.label).toUpperCase()}
 					value={row.value}
 					maxWidth={summaryMaxW}
 					labelScale={summaryLabelScale}
@@ -456,7 +521,7 @@
 
 	<!-- ── right: bet, stepper, spin, autospin, turbo ─────────────────────── -->
 	<Container x={betReadoutX} y={readoutTop} scale={READOUT_SCALE}>
-		{@render props.amountBet({ stacked: true, tiled: false, maxWidth: betMaxWidth })}
+		{@render props.amountBet({ stacked: true, tiled: false, maxWidth: betMaxWidth, centerGroup: flank })}
 	</Container>
 
 	{#if stateReplay.enabled}
@@ -499,7 +564,7 @@
 			{@render props.buttonTurbo({ anchor: 0.5 })}
 		</Container>
 	{:else}
-		{#if flank && uiTheme.barMessage && messageWidth > 60}
+		{#if flank && !wide && uiTheme.barMessage && messageWidth > 60}
 			<Container x={messageX} y={barMid}>
 				<Graphics
 					isMask
@@ -565,10 +630,10 @@
 			puts a full-screen scrim over everything, so the plate underneath is
 			already unclickable and there is nothing to lose by not drawing it.
 		-->
-		{#if !uiTheme.buyBonusOnRail && !stateUi.menuOpen}
+		{#if !uiTheme.buyBonusOnRail && !stateUi.menuOpen && !(uiTheme.buyBonusHideInFreeSpins && stateUi.freeSpinCounterShow)}
 			<Container
 				x={uiTheme.railWidth * 0.5}
-				y={box.height * 0.46}
+				y={box.height * uiTheme.buyBonusYFraction}
 				scale={uiTheme.buyBonusRailScale}
 			>
 				{@render props.buttonBuyBonus({ anchor: 0.5 })}

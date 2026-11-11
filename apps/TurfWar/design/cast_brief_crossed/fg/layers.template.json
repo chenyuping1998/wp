@@ -1,0 +1,86 @@
+{
+ "version": 1,
+ "archetype": "miami_green_guy",
+ "size": [
+  1024,
+  2048
+ ],
+ "feet_y": 1673,
+ "top_y": 178,
+ "sides": "anatomical",
+ "mirrored": false,
+ "order": [
+  "body",
+  "arm_r",
+  "arm_l",
+  "head",
+  "dangle_beard"
+ ],
+ "joints": {
+  "neck": [
+   442,
+   422
+  ],
+  "chest": [
+   474,
+   606
+  ],
+  "waist": [
+   493,
+   889
+  ],
+  "hips": [
+   512,
+   896
+  ],
+  "head_top": [
+   444,
+   178
+  ],
+  "shoulder_r": [
+   149,
+   421
+  ],
+  "elbow_r": [
+   36,
+   726
+  ],
+  "wrist_r": [
+   436,
+   741
+  ],
+  "shoulder_l": [
+   690,
+   494
+  ],
+  "elbow_l": [
+   838,
+   806
+  ],
+  "wrist_l": [
+   638,
+   751
+  ]
+ },
+ "anchors": {
+  "dangle_beard": [
+   445,
+   352
+  ]
+ },
+ "arms": {
+  "r": "crossed",
+  "l": "crossed"
+ },
+ "variants": [
+  "base"
+ ],
+ "style": {
+  "kind": "street",
+  "source": "../../../ART_BRIEF.md",
+  "frames": [
+   "style_frame/cast_head.png",
+   "style_frame/h1.png"
+  ]
+ }
+}

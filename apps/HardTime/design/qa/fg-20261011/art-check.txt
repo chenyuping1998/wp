@@ -1,0 +1,1 @@
+FAIL: arm_l: forearm/hand comes within 45.0 px of the body around x=718 y=778 (need >= 48) -- a hanging hand must not touch the body

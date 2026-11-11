@@ -1,0 +1,238 @@
+{
+  "version": 2,
+  "size": [
+    1024,
+    2048
+  ],
+  "figure_box": [
+    180,
+    71,
+    836,
+    1875
+  ],
+  "order": [
+    "thigh_r",
+    "thigh_l",
+    "shin_r",
+    "shin_l",
+    "shoe_r",
+    "shoe_l",
+    "upper_arm_r",
+    "baton",
+    "torso",
+    "pelvis",
+    "keys",
+    "whistle",
+    "upper_arm_l",
+    "forearm_l",
+    "hand_l",
+    "radio_cord",
+    "forearm_r",
+    "fingers_r",
+    "head",
+    "blink"
+  ],
+  "layers": [
+    {
+      "name": "thigh_r",
+      "texture": "thigh_r.png",
+      "crop": [
+        305,
+        910,
+        186,
+        541
+      ]
+    },
+    {
+      "name": "thigh_l",
+      "texture": "thigh_l.png",
+      "crop": [
+        491,
+        910,
+        225,
+        541
+      ]
+    },
+    {
+      "name": "shin_r",
+      "texture": "shin_r.png",
+      "crop": [
+        277,
+        1370,
+        181,
+        396
+      ]
+    },
+    {
+      "name": "shin_l",
+      "texture": "shin_l.png",
+      "crop": [
+        548,
+        1370,
+        194,
+        396
+      ]
+    },
+    {
+      "name": "shoe_r",
+      "texture": "shoe_r.png",
+      "crop": [
+        256,
+        1710,
+        188,
+        135
+      ]
+    },
+    {
+      "name": "shoe_l",
+      "texture": "shoe_l.png",
+      "crop": [
+        594,
+        1710,
+        186,
+        167
+      ]
+    },
+    {
+      "name": "upper_arm_r",
+      "texture": "upper_arm_r.png",
+      "crop": [
+        230,
+        348,
+        177,
+        336
+      ]
+    },
+    {
+      "name": "baton",
+      "texture": "baton.png",
+      "crop": [
+        206,
+        246,
+        232,
+        207
+      ]
+    },
+    {
+      "name": "torso",
+      "texture": "torso.png",
+      "crop": [
+        230,
+        291,
+        453,
+        498
+      ]
+    },
+    {
+      "name": "pelvis",
+      "texture": "pelvis.png",
+      "crop": [
+        307,
+        735,
+        369,
+        256
+      ]
+    },
+    {
+      "name": "keys",
+      "texture": "keys.png",
+      "crop": [
+        337,
+        798,
+        69,
+        139
+      ]
+    },
+    {
+      "name": "whistle",
+      "texture": "whistle.png",
+      "crop": [
+        465,
+        528,
+        47,
+        137
+      ]
+    },
+    {
+      "name": "upper_arm_l",
+      "texture": "upper_arm_l.png",
+      "crop": [
+        617,
+        374,
+        210,
+        439
+      ]
+    },
+    {
+      "name": "forearm_l",
+      "texture": "forearm_l.png",
+      "crop": [
+        701,
+        732,
+        138,
+        208
+      ]
+    },
+    {
+      "name": "hand_l",
+      "texture": "hand_l.png",
+      "crop": [
+        735,
+        919,
+        95,
+        163
+      ]
+    },
+    {
+      "name": "radio_cord",
+      "texture": "radio_cord.png",
+      "crop": [
+        581,
+        356,
+        91,
+        393
+      ]
+    },
+    {
+      "name": "forearm_r",
+      "texture": "forearm_r.png",
+      "crop": [
+        180,
+        346,
+        199,
+        336
+      ]
+    },
+    {
+      "name": "fingers_r",
+      "texture": "fingers_r.png",
+      "crop": [
+        285,
+        344,
+        89,
+        100
+      ]
+    },
+    {
+      "name": "head",
+      "texture": "head.png",
+      "crop": [
+        385,
+        68,
+        212,
+        341
+      ]
+    },
+    {
+      "name": "blink",
+      "texture": "blink.png",
+      "crop": [
+        408,
+        196,
+        77,
+        38
+      ]
+    }
+  ],
+  "repairs": "design/_incoming/spine_v2"
+}

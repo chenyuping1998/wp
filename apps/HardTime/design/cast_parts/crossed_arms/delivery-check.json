@@ -1,0 +1,33 @@
+{
+  "canvas": [
+    1024,
+    2048
+  ],
+  "order": [
+    "head",
+    "body"
+  ],
+  "spec": "delivery spec",
+  "composite": "pixel-exact",
+  "body_holes": 0,
+  "arms": {},
+  "neck_overlap_px": 87,
+  "figure_box": [
+    275,
+    172,
+    806,
+    1774
+  ],
+  "margin_px": 172,
+  "edges": {
+    "head": {
+      "contour_soft": 1.0,
+      "colours": 20901
+    },
+    "body": {
+      "contour_soft": 1.0,
+      "colours": 53998
+    }
+  },
+  "variants": []
+}

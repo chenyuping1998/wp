@@ -19,6 +19,24 @@ description: >-
 
 # Reskinning a Stake Engine slot
 
+## 角色美術與動作：零可見缺陷交付門檻（Stone，2026-10-25）
+
+只要交付角色美術、rig、動作或含角色的遊戲，就適用以下硬性驗收。**殘影、毛邊／白邊、碎片、肢體分離、接縫露底、破口或錯誤輪廓任一仍可見，即為未完成；修好前不得回報完成、交件或打包。**
+
+- 逐層在亮底、暗底與原生解析度檢查。分層肢體必須是完整連續的部件，補齊被遮住的解剖與關節重疊；軀幹不得夾手臂殘影、拳套不得夾臉／胸口或袖口外的毛、服裝不得夾腿部碎片。網格角色也須檢查輪廓拉裂與貼圖殘影。
+- Stone 補充（2026-10-26，相撲猴前臂修正）：粗壯角色仍須有連續、自然收窄的上下臂輪廓；前臂與肘部不得出現非設計需要的腫塊、圓球堆疊或香腸式分節。先辨別來源畫稿與動作變形，連同上臂末端及袖口銜接一起檢查；修來源後用原動作幅度驗證彎肘、伸展與轉場，不能只修靜態或靠縮小動作掩蓋。
+- Stone 補充（2026-10-30，相撲猴腿「有東西被切掉」「腳還是亂切一通」）：**修關節形狀（例如膝蓋兩顆球）不得用直線、多邊形或弦切削掉輪廓。**被削的肢體會變直筒，留下直角、階梯與缺口，小腿肚、大腿下緣等肌肉一起消失（補畫 v5 的 MG／FG 大小腿就是這樣）。要修就重畫連續、自然收窄的有機輪廓：關節處收進相鄰部件下，離開關節後平滑接回原稿的肌肉線條。每次改輪廓後：(1) 每層 alpha 和修前原稿相減，逐塊看被移除的區域是不是該移除；(2) 合成圖與每個動作的最大彎曲格上不得有直線邊、尖角或缺口。**一隻角色被點出某部位有問題，同一部位在所有角色（MG 與 FG）都要一起查、一起修**，不能只修被點名的那隻。
+- 逐一檢查**所有交付動作**（spine-motion 預設六動作也須全看），包含起終格、過渡／中間格、最大彎曲與伸展。重點看肩、肘、頸、髖、膝、腕；靜態疊圖、檢查器 PASS 或流暢度 100 都不能代替實際渲染。檢查器不支援此 rig 格式時不得當作通過。
+- 先修造成缺陷的來源拆層、遮擋區補繪、權重或 rig。不得靠縮小動作／角色、加遮擋或挑好看的靜態格掩蓋；修正後重看受影響動作。合理動作預算仍須通過完整表演驗收。
+- 已整合遊戲須在桌機與直式手機實際試玩，包含 MG／FG、角色反應、轉場與 feature cut-in，檢查破口、殘影、裁切與接縫；保留實際截圖、動作預覽及新舊對照。
+- 交件前核對來源層、實際合成 full、Spine images、runtime 裁圖與座標、烘焙動作、預覽及 upload 包皆為同一最終版本。母圖若與合成有差異須如實留對照，不得冒稱零差異；不得拿舊預覽證明新版正常。
+
+## 角色工具路由（現行預設優先於下文舊流程）
+
+- 新的角色動作、Spine 動畫、圖層套動作，預設使用 `spine-character`／`spine-motion-kit`。先讀 `/Users/stone/tools/spine-generator/skills/spine-character/SKILL.md`；有圖層用 `spine-motion character`，已有 Spine4.3 骨架則用 `init`／`generate`。
+- 需求單、姿勢、畫風或交件已由使用者決定時直接沿用，不重走原型選擇或重新索取同一確認。`character` 的自動骨架僅適用其支援的拳擊架式；不得硬套不相容姿勢或自行換姿勢。
+- 下文 `archetype/`、#7、自製動作表與單圖網格路線僅用於維護採用該架構的既有遊戲，或使用者明確選用的路線。不要無故重寫可用 rig，也不要讓這些歷史流程蓋過新工具的預設。
+
 A reskin is not a copy with new colours. It is a new game that happens to start
 from a proven engine, and every phase below exists because skipping it produced
 a real, found bug when Capo Nostra shipped out of Hot Miami — a symbol whose
@@ -33,9 +51,16 @@ re-derived:
 - **`stake-engine-slot`** — the build commands, the static guards, the Svelte 5
   traps, and the certification/pre-submission checklist. Load it for anything
   about *how this codebase builds and gets reviewed*, independent of reskinning.
-- **`mesh-cast-rig`** — animating a character from one flat illustration with a
-  skinned mesh. The "must have a moving character" requirement below is built
-  with this, not with cut-out Spine parts.
+- **`spine-character`** — default new cast motion workflow: the official
+  spine-motion-kit CLI, painted full-canvas layers, Spine4.3, reports and previews.
+  Read its capability limits and integration/version checks before building.
+- **`hacksaw-character-motion`** (user scope) — art briefs, anatomical layer
+  acceptance, existing archetype/mesh rigs and reference-motion research. Its
+  historical archetype route is conditional on retaining/selecting that rig;
+  research-only motion packs never ship.
+- **`mesh-cast-rig`** — the older one-flat-illustration skinned mesh. Still
+  what Capo Nostra / Turf War run today; use it only when a game keeps a
+  single-image figure.
 
 This skill is the sequencing and the reskin-specific gotchas on top of both.
 
@@ -91,6 +116,12 @@ here means redoing everything downstream of the guess:
      64 px with `buy-icons/render.mjs`) — README §「買入按鈕圖示」 has the rules
      that came out of the user rejecting a coffin that "did not look like a
      coffin".
+5. **Art style.** Not the source game's style by default, and not "whatever
+   the image model draws" — that default (glossy semi-real metal, even
+   micro-detail, soft glow) is what five of this repo's games already look
+   like. Ask with a scored shortlist and a recommendation, as soon as theme
+   and name are settled; the full procedure is step 3 below. It can be asked
+   in the same AskUserQuestion round as the name if both are open.
 
 ### The user's vocabulary — pin these before acting on a tuning request
 
@@ -139,6 +170,17 @@ the whole pipeline, so starting it late just makes it the critical path later.
 
 - Write the new game's mechanic changes into `game_config.py` and
   `game_executables.py`/`game_events.py` as needed.
+- **House RTP band (Stone, 2026-10-11): every mode of every game sits
+  between 96.00% and 96.10%**, and **inside one game the modes differ:
+  base spin lowest, every buy-bonus mode a little higher, the pricier buy
+  higher again** (Stone, 2026-10-15) — e.g. Capo base 96.04 / bonus 96.05 /
+  bonus_hits 96.06 / bonus_epic 96.08. One figure on every mode is wrong.
+  Leave room under 96.10 for the buys, so don't put base at the top of the
+  band. Different games may reuse figures. The source game's RTP does not
+  carry over — Capo Nostra was 94.58%, Turf War 93.58%; both now sit in the
+  96.0x band. To move a game that is already built
+  without re-simulating, use `scripts/reweight_lut.py`
+  (`references/math-retarget.md`, "Moving RTP without re-simulating").
 - Set per-mode RTP targets and retarget `game_optimization.py`'s slices to
   match — see `references/math-retarget.md` for the exact discipline
   (verify the assertion locally BEFORE launching the real, multi-minute run;
@@ -167,6 +209,67 @@ the whole pipeline, so starting it late just makes it the critical path later.
 
 ### 3. Art brief
 
+**Choose the art style with the user first — before a single prompt exists.**
+Read `references/art-direction.md` and run its procedure; the short version:
+
+1. **Find the theme's native medium** — what that world would have printed,
+   painted or carved itself (1930s mob → pulp covers and noir halftone;
+   Western → woodcut wanted posters; finance → banknote engraving). A real
+   medium has physical rules a model can follow, which is the main defence
+   against the default render look. Then check
+   `references/hacksaw-style-atlas.md` for what Hacksaw's 183 slots chose for
+   that theme and which lanes are still empty
+   (`scripts/hacksaw_styles.py list --theme <word>`). For what a style looks
+   like beyond the reels (intro splash, FG panels, fonts, measured palette
+   per family), `references/hacksaw-style-transcripts.md` has the
+   whole-game transcription of 140 titles: `hacksaw_styles.py shots --key
+   <key> --kind splash|base_late` shows them from local screenshots and
+   `norms --key <key>` gives the family's numbers. For crime, prison,
+   horror, western, war, punk and satire themes also check
+   `references/nolimit-city-styles.md` (Nolimit City's 143 slots,
+   `scripts/nolimit_styles.py list --theme <word>`) and its board rules: a
+   frame that is an object from the world, a colour card behind each high,
+   low pays in the world's own material, one alarm colour, ugly specific
+   faces. Its main finding: their art measures like a render on
+   `check_style.py` and still has an identity, because the identity comes
+   from those decisions, not from low colour counts. Then run the lobby test
+   against Pragmatic Play, `references/pragmatic-play-styles.md`
+   (`scripts/pp_styles.py list --theme <word>`): its 653 slots are all
+   rendered (semi-real 38%, mascot cartoon 35%, glossy objects 20%), so any
+   2D medium separates from PP, and a rendered myth, animal or candy theme
+   lands in the most crowded square of the market.
+2. **Shortlist three styles plus one contrast** from the catalogue (American
+   comic, noir black-and-white plus one reserved accent, woodcut, engraving,
+   screenprint/risograph, flat vector, cel, ink wash, constructivist, Art
+   Nouveau, gouache, TV-cartoon mascot, rubber-hose 1930s, manga ink, street
+   sticker-bomb, grotesque caricature, grime plus one alarm colour,
+   found-object collage — and the semi-real 3D default, listed with its honest cost
+   rather than silently fallen back to). **Score each** on theme fit,
+   readability at a 70 px portrait cell, cast-rig compatibility, lobby
+   distinctiveness at 200 px, generation control/post-process cost, and
+   review risk. This scoring IS the professional opinion — give it, don't
+   just list names.
+3. **Ask** — AskUserQuestion, 畫風 (recommended one first, labelled
+   「（推薦）」, each option's `preview` the scored card in 繁中, naming two or
+   three Hacksaw or Nolimit titles that use the style) and 色彩策略, optionally
+   質感. Send one `hacksaw_styles.py sheet --key <key> --kind screen` (or
+   `nolimit_styles.py sheet --key <key> --kind screen`) contact sheet
+   per option with it, so the user picks from pictures. Titles and sheets are
+   for looking only: never in a prompt, never attached to a generation. If
+   the user defers, take the recommendation and say so.
+4. **Style test** — H1, one low-pay, the Wild, a background crop (and the
+   cast head if in scope), composited on the real board and at 200 px, plus
+   `scripts/check_style.py --sheet`. The approved result is the **style
+   frame**; its measured numbers go into the brief's §0 and gate every later
+   delivery.
+5. **Propagate §0** — into the cast brief via `archetype/brief.py --style
+   <app>/ART_BRIEF.md --style-kind <key> --style-frame <frame>` (without
+   `--style` the figure comes back in the default look beside stylised
+   symbols, and the generated README says it isn't ready to hand over), the
+   icon drawer's line weight, frame/plate art, win-FX colours, fonts,
+   transitions and the thumbnail. Keep §0's heading as `## 0…` — that is what
+   `--style` extracts.
+
 Write the art requirements doc BEFORE the frontend build reaches anything
 that depends on final art, so the user can start generating while frontend
 work proceeds on placeholder/inherited art. See
@@ -177,16 +280,71 @@ specific failure).
 
 Two requirements that are easy to state and easy to drop by the last art pass:
 
-- **One clear identity per role, matching the new theme's own logic** — Capo
-  Nostra went from Hot Miami's two-figure cast (a man and a woman marking base
-  vs. feature) to one suited boss throughout, because the theme's logic didn't
-  support a second figure the way Miami's did. Don't carry over the source
-  game's cast COUNT or COMPOSITION by default; derive it from the new theme.
-- **A moving character is not optional** — see `mesh-cast-rig`. Decide early
-  whether the new art will be drawn with the daylight-under-the-arms margin a
-  mesh rig needs (see that skill's own notes on why a tight-armed pose drags
-  hands into the torso at scale), and say so in the art brief if the pose
-  needs adjusting for it.
+- **Two characters, always: one for MG (the base game), one for FG (free
+  spins).** This is the user's standing rule (2026-09-28) for every game from
+  now on, and it replaces the old "derive the cast count from the theme" advice
+  that took Capo Nostra down to one boss in every mode. Capo is being brought
+  back to two for that reason.
+  - **Two different people**, not one person relit. Capo's `guy_feature.png`
+    and `guy_don.png` are the Don with warmer or gold rim light. That is a
+    lighting variant of the MG figure, and it does not count as the FG
+    character. Lighting variants per FG tier can still sit on top of the FG
+    figure.
+  - **The swap is the mode change.** MG figure in the base game, FG figure
+    from the FG intro until the FG outro closes, then back. Swap under the
+    transition, never mid-spin and never on a win, and do not show both at
+    once on the board.
+  - **The pair reads as a pair**: same §0 style, light direction and scale
+    (feet on the same line, heads within about 5% of each other), and a
+    contrast the player sees at a glance, such as build, gender, age or one
+    colour (Hot Miami: a man in MG, a woman in FG). Their roles come from the
+    new theme, never copied from the source game.
+  - **Neither is a pay-symbol portrait** (standing the H1 art beside a board
+    that shows H1 reads as a bug; see Capo's `Cast.svelte` note). The store
+    tile still shows one character (`review-findings.md`).
+  - **Both follow the selected supported rig workflow**, one brief each, and each
+    may take a different archetype. Each figure is rigged and gated on its
+    own; they can share the game's motion table only if both pass its gates.
+- **Step 0: decide the motions first, then the pose to generate (Stone,
+  2026-10-27: 「以後開始製程就要考慮到動作才方便生圖的姿勢」).** For every new
+  figure, before writing the brief or generating anything (never generate
+  first and think about motion afterwards):
+  1. List the motions this figure must perform, MG and FG separately: the
+     spine-motion default six (idle, idle_weave, punch, hit, jump, celebrate)
+     plus this game's reactions, feature cut-ins, intro cards and any other
+     beat that shows the character.
+  2. Using the motion → pose table in "第 0 步" of
+     `~/tools/spine-generator/docs/生圖交付規格.md`, write each motion's pose
+     requirement at the top of the brief. For example: a punch needs a drawn
+     fist, never an open palm; celebrate needs long enough arms, with the
+     area under the shoulder, the armpit and the chest painted complete; leave
+     a gap between the limbs and the body; elbows and knees slightly bent; the
+     rear hand tucked by the cheek, elbow not flared; paint one complete
+     full-body figure first and split it, never assemble a parts atlas.
+  3. Confirm the spine-motion template can do it (today: one right-facing,
+     side-on boxing guard only). Front-facing, quadruped, long skirt/cape or
+     turning motions: tell Stone a new template is needed first. Do not force
+     the template or swap the pose on your own.
+  4. Put the split rules in the brief: paint what is hidden; both sides of a
+     joint overlap, with no outline on the overlapping part, and the extra
+     paint stays inside the neighbouring part's silhouette; never cut a joint
+     flat.
+- **A moving character is not optional — and the user chooses its pose.**
+  For an existing/explicitly selected archetype rig only, run
+  `hacksaw-character-motion` once per figure: show
+  `gallery/overview.gif`, ask which archetype (AskUserQuestion, two questions:
+  hanging arms / carrying a prop / arms crossed, then which one), then
+  `python archetype/brief.py -c N --game <Name> --out design/cast_brief/
+  --feet-y .. --top-y .. --style ART_BRIEF.md --style-kind <key>
+  [--style-frame <frame>]` and hand the user that brief alongside the main art
+  brief. It is a LAYERED brief (body / head / each arm shoulder-to-fingertip /
+  fingers over a prop / prop / dangles, every layer a full-canvas PNG), because
+  a single image with the arms against the body is what made three games'
+  arms read 「像沒骨頭」 (2026-09-23/24): a pinned hand plus an arm that moves
+  can only bow. Hands must be free (no pockets, not on the thigh, not on a
+  planted prop) and a hanging forearm >= 48 px off the body at 1024 wide.
+  Only STRUCTURE comes from the archetype — never trace, sample or attach
+  reference art.
 - **The Buy Bonus CTA button in the bet bar is its own asset, separate from
   the Buy Bonus modal's card frames** — brief both in the same pass, not just
   the modal (Capo Nostra's brief covered the cards from day one and the
@@ -210,7 +368,8 @@ are easiest to leave in by accident. Match the NEW theme in:
   drawn-lettering vs runtime-text as one pass: everything the art shows as
   lettering (plaques, tier titles, banners, logo) sets the runtime font
   family; numbers do not follow it if it costs legibility. See
-  `references/art-brief-template.md`'s lettering-audit section.
+  `references/art-brief-template.md`'s lettering-audit section; the chosen
+  style's catalogue entry in `references/art-direction.md` suggests a pairing.
 - **Colour.** The shared UI packages default to whatever palette the LAST game
   that touched them shipped with (`components-ui-pixi` in particular carries
   a previous game's hardcoded hex values in several components — bet bar,
@@ -225,13 +384,137 @@ are easiest to leave in by accident. Match the NEW theme in:
   Redraw them with the source game's icon drawer instead of recolouring, and
   check the source for a later redraw before copying any asset set. Full rules
   and the script are in `references/art-brief-template.md` §6.
-- **Character.** Built via `mesh-cast-rig`. It has to actually move — see
-  that skill for the motion-table discipline (appendages carry the motion,
+- **Character.** Default: `spine-character` with the spine-motion-kit CLI.
+  For a retained/explicit archetype rig, use `hacksaw-character-motion`'s `archetype/layered/`
+  (check_layered_art → build_layered_rig → layeredFigure.ts → the game's
+  motion table from `archetype/motion_table.py` → check_layered_cast), or via
+  `mesh-cast-rig` for a single-image figure. It has to actually move — see
+  those skills for the motion-table discipline (appendages carry the motion,
   the body barely moves; a body that sways as far as its limbs reads as a
   person swaying, which reads worse than standing still) — and it has to be
   sized against the ACTUAL side-band width at every breakpoint, including
   portrait, where a board that fills nearly the whole width leaves no band at
   all: below some threshold, don't shrink the figure, don't draw it.
+  **It must read off its background.** A limited-palette style prints the cast
+  and the backdrop in the same inks, so the figure dissolves (Go Banandit,
+  2026-10-01: red/paper stripes on the red sun, green trousers on the green
+  yard — user: 人物跟背景顏色有點重疊). Check the figure against BOTH the MG
+  and FG backgrounds in the game, and separate it — Go Banandit wraps the
+  spine in two `OutlineFilter`s (pixi-filters; ink 2.5px inside, paper 4px
+  outside — a screenprint keyline). Darkening or blurring the plate behind
+  the figure is the alternative when a keyline is off-style.
+- **The background lives — EVERY new game (user rule, 2026-10-20).** A still
+  plate with a slow pan is not enough: both the MG and the FG backdrop need
+  things in them that move on their own, the way Pickle Panic and Static
+  Shift do. Copy those two, they are the reference:
+  - Pickle Panic `src/components/BackgroundFx.svelte` + `design/build_bg_fx.py`
+    (worktree `wp-banandit/apps/PicklePanic/`). MG: bubbles rise inside the
+    two fermentation tanks (clipped by a tank mask cut from the plate), sky
+    stars pop a hard four-point glint now and then. FG: the brine gush flows
+    (a displacement filter over the gush's own cut-out, with a scrolling
+    streak map and a breathing strength so it surges), drops swell on the pipe
+    lip, fall, splash and ring the puddle. Each layer can be switched with
+    `?bgfx=flow,drip,bubbles,stars|all|none`, so they can be judged one at a time.
+  - Static Shift `src/components/StudioLife.svelte`: a pigeon walks the floor
+    on a 16.2 s loop (walks in, stands, steps up, walks back, turning to
+    face its way), and the studio sign is the mode light (STATIC / 89.4 FM,
+    flickers on a 6 s cycle in MG; ON AIR / AFTER HOURS in FG).
+
+  How to do it:
+  - **Pick from the plate's own world.** Liquid flows and drips, tanks
+    bubble, sky glints, a sign flickers, a small animal crosses. Pick
+    2–3 things per mode, and make MG and FG different from each other.
+  - **Cut the moving pieces from the approved plates** (masks, cut-outs,
+    measured positions into a `bg_fx_meta.json`), so nothing new has to be
+    painted and the motion sits in the plate's exact pixels. All coordinates
+    are in plate pixels; Background.svelte hands in the plate's on-screen
+    position and scale, so the effects stay pinned when the plate crops.
+  - **House style holds:** flat inks, hard edges, ink outline like the
+    plate, no glow, no blur, no floating motes or light shafts unless the
+    style already has them.
+  - **Keep it where it can be seen.** Nothing may sit behind the board at
+    16:9 (Pickle's rotating-beacon trial was dropped because both lamps were
+    covered), and nothing busy behind the cast (see "It must read off its
+    background" above). Hide an element when the layout leaves it no room
+    (StudioLife draws only above 1.3 aspect).
+  - **Mostly ambient, with a few events:** steady loops (bubbles, flow) plus
+    occasional ones on their own random timers (drips 1–3 s apart, glints a
+    few seconds apart), so the scene does not loop visibly.
+  - **One rAF clock with dt capped at 100 ms**, never setInterval (the
+    review checker flags interval animation, and a tab coming back must not
+    flood the scene with backlog drops). Destroy the particles you spawn.
+  - Verify in the browser at 16:9, 16:10, 4:3 and portrait, in both modes,
+    and check that each moving part is actually visible and on its mark.
+- **The symbols live too — EVERY new game (user rule, 2026-10-27).** Turf War
+  was scored 5.3 with: "The game could benefit from individual symbol
+  animations, as it currently feels too static." It already had a background
+  that moved, per-symbol land and win motions and a 1% idle breath; none of
+  that counts, because a settled board is what the player looks at most and
+  every symbol on it sat still. New games now need BOTH a living background
+  (above) AND every symbol animating on its own on a settled board.
+  Reference implementation: Turf War `src/game/symbolIdleMotion.ts` (one spec
+  per symbol), applied in `SymbolSprite.svelte`'s resting branch, overlays in
+  `SymbolArt.svelte` (mode `idle`), gate `design/check_symbol_idle.mjs` in the
+  build.
+  - **Two layers per symbol:** an AMBIENT loop that is always on and in the
+    object's own physics (chain swings from its top, lowrider engine idles,
+    bottle fizzes), plus an ACT — its signature move every 4–8 s for 0.5–1.6 s
+    (boombox thumps with speaker rings, lowrider hydraulic hop, cash rolls hop
+    and squash, star turns one point, skull chatters, lightning flickers,
+    brass knuckles jab with a sparkle, building's windows light up).
+  - **Visible, not a breath:** each act ≥ 4% scale, ≥ 3° rotation, ≥ 3% cell
+    offset, or a flicker/overlay you can see at reel size. Stay inside the
+    cell (scale ≤ 1.12, offset ≤ 0.10). Rotations about the object's real
+    pivot (hanging point, wheels, base), not its centre.
+  - **Every symbol different** (the "all twelve move the same" rejection
+    again otherwise) and **staggered**: act phase from the cell's idle phase,
+    each symbol its own cycle, so only a few cells act at once — never a block
+    pulse. Every period must divide the shared clock's wrap.
+  - Overlays in the house style: ink sparkles, ink-outlined rings and bubbles,
+    an additive warm copy of the art for lights — no blur, no glow cloud.
+    Dimmed (stepped-back) and teased symbols stay still; spinning/landing
+    symbols are owned by blur/land motion.
+  - Verify with real frames: the browser pane throttles when hidden, so record
+    with headless Chrome (puppeteer-core, deviceScaleFactor 2) over several
+    spins, and look at each symbol's act sequence, specials included.
+- **Presentation norms: check against the transcription, not memory.**
+  `references/hacksaw-style-transcripts.md` gives the shipped numbers for
+  every beat outside the reels, read out of 140 Hacksaw games' own files:
+  loading bar (about 400×25 under the logo, accent on black), intro splash
+  (three panels: mechanic / bonus / max win, logo and volatility pips above,
+  one CLICK TO CONTINUE, frame drawn as an object from the world, one display
+  face), FG panels (diegetic, painted TOTAL WIN and +N, bitmap digits), scene
+  dim to 0.4 over about 0.5 s, reel timing (start stagger 0.025 s, stop
+  stagger 0.2 s normal and 0.1 s turbo), the win ladder (10×:1.5 s ·
+  20×:1.8 · 50×:3.6 · 100×:3.6 · 250×:7.0), symbol land/win/remove
+  0.5/1.0/0.43 s, about 106 sound cues with four music stems per mode, and the
+  atlas and skeleton inventory. Its §8 compares CapoNostra's constants with
+  those norms; raise a difference with the user before retiming a shipped
+  game. `hacksaw_styles.py game <title>` prints any one title, and
+  `norms --key <key>` the norms for the chosen style's family. For the
+  session flow players arrive with from Pragmatic Play (one self-playing
+  intro slide with a volatility badge, a theme-object wipe into FG, the fixed
+  CONGRATULATIONS / YOU HAVE WON plate in the world's material, FG scene
+  recoloured, base turn about 2.7 s press to idle, FG spin-to-spin about
+  3.1 s, 100x buy and 1.25x ante), see `references/pragmatic-play-styles.md`
+  Part 2 and `pp_styles.py norms` / `game <title>` / `shots --phase <p>`.
+  For a frameless comic board floating in a lived-in room (Break Studios'
+  Stream Time on Stake: one shared 2 s idle clock, a seated cast who only
+  nods, a rat on a 16 s loop hiding under the HUD, a neon sign that is the
+  mode light, all reels starting together and stopping 0.09 s apart, a
+  scene-only screen shake on heavy landings), see
+  `references/stream-time-transcript.md`; its evidence and the
+  video-measuring tools (no ffmpeg needed) are in
+  `/Users/stone/stake-engine/research/stream-time/`.
+  For a cast that moves like film (Xposed Studios' Iron Jaw on Stake, rated
+  3 stars: two boxers flanking the board on one shared 2.00 s idle clock in
+  opposite phase, Spine 4.2 with 45-59 bones, 15-19 weighted meshes, leg IK
+  pinning the feet and 10-18 physics chains, only 9-13 bones keyed in idle, a 0.8-0.9 s punch fired by that fighter's
+  own wild reel with a 0.2 s hold and a 0.2 s crossfade back into the
+  running idle phase; reels lift 0.25 s, stop 0.23 s apart with an ease-out
+  and a 0.1-cell rebound, 1.55 s lift to last stop), see
+  `references/iron-jaw-transcript.md`; evidence and the point-tracking tools
+  are in `/Users/stone/stake-engine/research/drive-3star/`.
 - **Transitions and set-pieces.** Don't reuse the source game's transition
   motif just because the code is already wired — pick one that fits the new
   theme's own imagery (Capo Nostra replaced "a car drives past" with vault
@@ -239,6 +522,27 @@ are easiest to leave in by accident. Match the NEW theme in:
   backdrop IS a vault room; the beat needed a mechanically equivalent
   replacement, not a re-skinned car). Re-derive the beat from the new theme,
   don't just recolour the old one's asset.
+  **A transition that cues a cast action must wait for it.** If the scene
+  swap (which also swaps MG↔FG cast) fires before the cue's clip ends, the
+  figure is cut off mid-move going in AND coming out (Go Banandit: a 1.2s
+  throw, swap at 0.71s). Start the cover on the action's release point,
+  fire the swap only after clip length + mix, and run the transition on a
+  delta-capped clock (≤100ms/frame, like pixi's ticker) — on wall time, a
+  one-second hitch lets the shutter come out already shut while the spine
+  sat still.
+- **The free-game intro is the biggest set-piece in the game — build it.** A
+  scrim with the spin count typed on it is exactly what review calls "missing
+  in key moments" (Deadwood, 2026-09-26). Deal real art (the tier's card or
+  plate), slam the count onto it with a burst and a sound, stand the FG
+  character in front of the scrim, and start the timeline as the transition's
+  black lifts, not under it. Details and timings:
+  `references/review-findings.md`, "Deadwood Express, second review".
+- **Plaques are painted, never generated vector with baked words.** Big-win
+  tiers, the outro/retrigger plaque and the spin counter should share one
+  painted plate from the art set (Deadwood reused its Buy Bonus plate) with the
+  words set at runtime in the theme's fonts. A generated SVG plate is a
+  gradient fill by construction, and text inside an SVG image can never use a
+  web font — it renders in Georgia/Times on every machine.
 - **A visible random draw (wheel, dial, pick) must not look computed.**
   Deadwood Express's multiplier wheel first printed its values in ascending
   order and always stopped dead centre on the result — both read as fake.
@@ -249,6 +553,83 @@ are easiest to leave in by accident. Match the NEW theme in:
   edge next to a much bigger neighbour for a near miss. All of it is
   presentation: the book still decides the value, so math, books and RTP are
   untouched. See `apps/DeadwoodExpress/src/game/wheelState.svelte.ts`.
+- **Hover never greys a control out — EVERY game (user rule, 2026-10-01).**
+  The shared `hoverHighlight` lays a translucent WHITE box over the control
+  (16% on round buttons, 12% on the Bet readout, the Buy Bonus default too);
+  over painted plates that reads as 反灰 / disabled. Every game sets, in its
+  `uiTheme.ts`:
+  ```ts
+  hoverHighlight: true,
+  hoverPlateLight: 0x9c5a22,            // a WARM palette colour from ART_BRIEF §0
+  buyBonusHoverSprite: 'buyBonusGlyph', // + sprites.buyBonusGlyph = the plate key
+  buyBonusHoverSpriteTint: 0x9c5a22,    // warm, never grey — grey added is still 反灰
+  ```
+  Round buttons then redraw their own plate additive in that tint (the metal
+  catches the light, like Deadwood's brass Buy Bonus), and the Bet readout gets
+  a lit underline instead of a box. `hoverPlateLight` needs a `sprites.button`
+  plate; a game on flat drawn buttons gets a plate first. `buyBonusHoverSprite`
+  must be a SLOT name, not a raw asset key (a raw key draws the fallback box).
+  Pick the tint from the game's own palette (Deadwood brass 0x74603a, Turf War
+  sodium 0x9c5a22) and **verify with a real mouse hover screenshot per control**
+  (headless Chrome `page.mouse.move` works; the Browser pane pauses rAF when
+  hidden). Also apply it to existing games when you touch them.
+  Applied 2026-10-01 to Turf War (0x9c5a22), Capo Nostra (0x74603a), Hard Time
+  (0x9a7c4a — its GOLD_DARK was too faint over steel), Deadwood (0xb08d4a, flat
+  discs get a lit rim) and Go Banandit (0xd24a2c). ⚠ A checkout whose shared
+  theme has no `buttonCornerRadius` (wp-banandit) draws NOTHING for any hover
+  roundRect (NaN radius) — its flat-disc branch uses `g.circle`; check the
+  screenshot actually changed, not just that the build passed.
+- **Buy Bonus hover must actually LIGHT — the "hover layer = the plate
+  itself" trap (Sushi Monkey, 2026-10-06).** `buyBonusHoverSprite` draws the
+  `buyBonusGlyph` slot over the plate while hovered, and it takes precedence
+  over `hoverHighlight` / `hoverPlateLight`. A reskin that swaps in new plate
+  art by repointing every Buy Bonus asset key at the one new PNG
+  (`gbUiBuyBonus`, `…Stone`, `…StoneLit` all → `buybonus_plate.png`) leaves
+  the hover layer as the SAME picture drawn over itself: with a normal blend
+  and a paper tint nothing changes, and the button looks dead under the
+  cursor. The template's lit layer was its own art (Go Boomana's slab
+  cracking open), so it must be rebuilt for every new plate:
+  - make a real lit variant — derived from the new plate is fine (Sushi
+    Monkey's `design/build_buybonus_hover.py`: paper warmed toward lantern
+    light plus a hard accent rim round the silhouette, no soft glow) — and
+    point the `…Lit` key at it;
+  - set `buyBonusHoverSpriteTint: 0xffffff` when the lit art carries its own
+    colour (a paper tint multiplies it back toward the resting plate);
+  - grep `assets.ts` for two keys with the same `src` — any hover/lit/on key
+    sharing a file with its resting key is this bug (same for
+    `button_print_on`-style button states);
+  - verify: rest vs hover screenshot of the Buy Bonus must differ visibly at
+    game size, on the DEFAULT skin (check `DEFAULT_SKIN` in `uiTheme.ts` —
+    the skin that ships is the one whose `sprites` map applies).
+- **New panel art = re-measure its text area; lettering lives inside the
+  paper (Sushi Monkey, 2026-10-06).** FG intro/outro boards, win plaques and
+  modal frames place their text from a TEXT_AREA ratio that was measured on
+  the SOURCE game's art (Go Banandit's sign: 920×720 canvas, plank
+  100..820 × 130..670, nudged 6% down). Swapping in a new board with a
+  different canvas and opening, without re-measuring, put "TOTAL WIN" up on
+  the new board's top beam. Whenever a panel image changes:
+  - measure the writable paper on the new art in its own source pixels,
+    inset past pins, clips, cloth and the rim (composite base + decor and
+    overlay a 100 px grid), and derive both the area's size AND its centre
+    offset from that rectangle — per board, the intro and the total differ;
+  - size drawn lettering by its INK box, not its canvas (a 1600×500 title
+    PNG whose ink is 1109×289 is 30% smaller than its canvas), and give each
+    element a slot that is a fraction of the area's HEIGHT as well as its
+    width — a width-only size (`sizes.width*.9`) grows past the paper as
+    soon as the area gets wider than it is tall;
+  - verify: screenshot the panel at desktop and portrait; every glyph and
+    number must sit on the paper with clear margin, nothing on the frame.
+- **Drawn digit sets: every glyph the same canvas, punctuation on the
+  baseline (Sushi Monkey, 2026-10-06).** An ink-number component draws each
+  glyph PNG at height = fontSize, so a glyph delivered on a 512×512 canvas
+  when the rest are W×256 renders at HALF size ("9 / 10" with a tiny 9).
+  Nine of 64 glyphs arrived that way. And a '.'/',' drawn mid-height reads
+  "$21·50". Before wiring a digit delivery: check every PNG's size against
+  the glyph table (Sushi's `design/check_assets.mjs` now fails the build on
+  it; `design/normalize_v8_digits.py` fixes size and puts '.' on, ',' just
+  under, the baseline of '0'), look at a contact sheet of all glyphs per
+  set at one height, and rebuild any font generated FROM those PNGs
+  (`build_receipt_font.py` → SushiReceipt.ttf) after fixing them.
 - **"Is it centred?" is a measurement, not a look.** A label can be centred in
   its own box and the plate art still look off, because a crest or wing on one
   edge moves the plate's writable area off the texture centre. Measure the
@@ -280,7 +661,69 @@ Once the user starts generating art:
    opacity, recolouring a set, building a sheet), that's `asset-pipeline`
    work — measure before/after (opacity %, contrast ratio, coverage), don't
    eyeball it.
-4. Iterate against concrete, stated feedback each round. If a round's
+4. **Every round, check the delivery against the style frame, not against
+   memory.** Run `scripts/check_style.py` with §0's palette, accent caps and
+   gates on the whole symbol set (royals included — rendered highs next to
+   flat low-pay glyphs is two styles on one reel), then go down the
+   AI-tells table in `references/art-direction.md` at 180 px and 70 px:
+   baked sheen/glow, detail at one even density, airbrushed gradients, fake
+   halftone/hatching, generated lettering, nonsense ornament, broken counts,
+   mismatched light. Reject and regenerate what fails; post-processing can
+   hold a palette but cannot turn a render into the chosen style
+   (quantising a render gives a posterised render).
+6. **A character drawn into a feature beat must move — never a static
+   picture of the cast** (Stone, 2026-10-16: 「我要 FG 砍圖騰的時候角色也有動態」,
+   then 「這種以後也要做」). Pickle Panic's FG chop overlay showed the chef as one
+   punch illustration that only slid and tilted as a whole, and the user saw a
+   still picture at the game's biggest beat. Applies to every cut-in, intro or
+   outro card, upgrade/level-up overlay, win plaque or buy card that shows a
+   character. Find them with
+   `grep -rnE 'key="[^"]*(CutIn|Cutin|Cast|Chef|Boss|Hero|Mascot)' apps/<Game>/src`
+   plus any `<Sprite>` of a character PNG inside an overlay component.
+   - **Split the illustration into layers** — body, the acting limb (pivot at
+     its joint), and any effect drawn into the picture (shards, sparks, speed
+     lines) — on the same canvas so they stack with one anchor. Worked example:
+     `apps/PicklePanic/design/build_cutin_layers.py` (wp-banandit): one seam line
+     for the limb, effects picked by colour, stray islands handed to the effect
+     layer, and the body's underlay kept to the joint only (the cast-ghost rule
+     — below the joint it shows as a dark strip the moment the limb moves).
+   - **Animate on the beat's own clock**, not a free-running tween: anticipation
+     (limb pulls back ~0.14 rad and shrinks ~10%, body leans back), a fast action
+     (~110 ms; limb drives forward and grows ~16%, body lunges and squashes),
+     the effect layer appears only on the hit frame, then a damped ring-out
+     (`amp·e^(-t/160)·sin(t/55)` — sin, so nothing jumps on the hit). Repeat per
+     step when the beat repeats (a multi-level upgrade punches once per level).
+     Shrink any whole-card swing the overlay already had (0.3 → 0.08 rad) so the
+     layers carry the motion. `BanditMeter.svelte`'s `chef` block is the reference.
+   - **Verify twice**: render the layers offline with the same formulas into a
+     contact sheet/GIF (seams, holes, stray bits show at the anticipation and
+     follow-through frames), then record the real beat in the game (an
+     `app.ticker.add` callback that extracts frames while the beat's headline is
+     visible — timers and rAF are throttled in a hidden pane; pixi v8 has no
+     `worldAlpha`, filter on `visible`). A buy that opens with the beat (Pickle's
+     Extra Dill starts the meter at 4) reaches it fastest.
+7. **A number never sits on top of artwork — it sits on clear paper/plate**
+   (Stone, 2026-10-29: 「10000數字這樣會看不清楚，很多款都這樣」). Sumo Monkey's
+   intro MAX WIN card drew `10,000×` across the trophy, so the ink digits sank
+   into the trophy's ink hatching. Cause, and why it recurs in reskins: the
+   sibling's art (Sushi's receipt) had a **blank area painted for the figure**,
+   and the reskin replaced the picture but kept the figure's x/y. Applies to
+   every drawn or text figure — intro/loading feature cards (MAX WIN, spins,
+   multipliers), buy cards, paytable tiles, win plaques, meters, prize badges.
+   - **Whenever you swap a picture, re-check every number positioned relative
+     to it.** Find them with
+     `grep -rnE 'InkNumber|max_win|toLocaleString\(|figure:' apps/<Game>/src/components`
+     and, for each, ask what pixels are behind it in the *new* art.
+   - **Fix by moving the figure to clear ground**, computed from the art's
+     measured alpha bbox (e.g. under the trophy: `artY + artH·(bboxBottom/imgH − 0.5) + size·0.8`),
+     in every layout (landscape cards and portrait stacked cards). Do not fix
+     it with a heavier stroke, glow or a pale panel behind the digits — a thick
+     ink stroke on bold digits clogs the counters into a blob, and a panel
+     hides the art.
+   - **Verify with a screenshot at 1440×900, 390×844 and 320×568**: the whole
+     figure must be on plain ground with a visible margin from the art, and
+     readable at the smallest size.
+8. Iterate against concrete, stated feedback each round. If a round's
    feedback implies a broader rule ("too colourful/messy" led to a whole
    palette-consistency pass, not just the one screen mentioned), write that
    rule down in the art brief so the next round of generated art doesn't
@@ -295,6 +738,17 @@ Two passes, and they check different things:
   no silent asset failures, transitions land clean. Play through every
   feature tier at least once, including retrigger and the top tier's guarantee
   mechanic if it has one.
+  Hover every bar control and Buy Bonus with a real mouse and screenshot it:
+  nothing may grey out, and every one must visibly change — a Buy Bonus that
+  looks identical at rest and hovered is the hover-layer-is-the-plate trap
+  (step 4, "Buy Bonus hover must actually LIGHT").
+  Watch the MG and FG backgrounds for a few seconds each: something in each
+  must move on its own, not just pan (step 4, "The background lives").
+  Watch a settled board for 10 s: every symbol must perform its own idle act
+  (step 4, "The symbols live too"); `check_symbol_idle.mjs` must be in the build.
+  Read every figure on the intro/loading cards, buy cards and paytable at
+  1440×900 and 390×844: none may sit on top of artwork (step 5, item 7 —
+  `10,000×` on the trophy).
 - **`stake-compliance`**: the certification-shaped checks — restricted words
   (re-run this even if it was checked at naming time; copy drifts), the
   server-contract checklist, replay mode, RTP disclosure matching the actual
@@ -311,6 +765,66 @@ The same file also covers portrait controls that run off the screen edge
 (§5b) and Deadwood Express's 5/10 "poor UI": controls that stay lit after a
 touch tap, and a spin halo that flares on press. Test those on a touch
 pointer, not just a mouse.
+
+**Run the runtime text audit and read every symbol value** (Sushi Monkey,
+2026-10-20 — two review rounds in one day, every static guard green). In the
+running game paste `.claude/skills/stake-engine-slot/scripts/social_text_audit.js`
+and `__textAudit.scan()` on every screen at `?social=true&currency=GC` (restricted
+words, including ones pixi draws from `<script>` literals) and in any mode for K/M
+amounts — open the bet menu with the stub ladder swapped to reach 750,000. Then
+force a book with the value-carrying symbol (plate/sack/coin) and read each value
+tier from a native-resolution canvas grab: Sushi's copper digits on a copper
+badge showed nothing at all. While building: whenever you pick a digit set for a
+badge, check its glyph colour against the badge fill, and the info/pay table
+must list every value the maths prize table can produce and show the symbol as
+it lands. Details: stake-engine-slot `engine-self-check.md` house notes and
+`review-log.md` → "Sushi Monkey 2026-10-20".
+
+**Measure label centring and cast ghosts** (Stone, 2026-10-16: 「這種以後也要檢查」).
+Pickle Panic went to the platform with an '∞' sitting low on its round badge,
+four more labels 2-4px off-centre and an FG chef who left a smeared second arm
+beside her body whenever she threw. None showed in a 1x screenshot. Run the
+two house checks described at the end of stake-engine-slot's
+`engine-self-check.md`:
+
+    # in the running game (Browser pane javascript_tool): paste
+    # .claude/skills/stake-engine-slot/scripts/ui_center_audit.js, then
+    __centerAudit.glyphs(); __centerAudit.html()   # per open modal
+    __centerAudit.plate(x0, x1, y0, y1)            # per bar / portrait plate
+
+    python3 .claude/skills/game-reskin/scripts/check_cast_underlay.py \
+      apps/<Game>/design/source/mg apps/<Game>/design/source/fg --out /tmp/underlay
+
+The underlay check reads the #7 own-rig cut (`layers.json` + `rig.json`). If it
+FAILs, trim the trunk outside the body line and keep a disc round each shoulder
+pivot — `apps/PicklePanic/design/trim_trunk_smear.py fg|mg` is the worked
+example, with both ways of finding the body's edge: a hand-measured body line
+for arms that hang BESIDE a thin body (the cut copied the arm's own pixels into
+the trunk, so colour cannot tell them apart), and, for arms lying ON a round
+body, the trunk pixels that still match the original drawing closed into a
+silhouette. It patches the atlas rectangle in place, so no repack. After the
+trim a cast whose arms overlap its body may still WARN — that is real body
+under the arm; look at the motion and move on. Then render the
+arm-swing motions frame by frame in the game (stake-engine-slot
+`verification.md`, "Measuring instead of eyeballing") — the script measures the
+cause; only the motion shows whether it reads.
+
+**Then run the presentation-tag checker** — Deadwood's second rejection was on
+exactly these three tags, and every cause it had is mechanical:
+
+    python3 .claude/skills/game-reskin/scripts/check_review_tags.py apps/<Game> \
+      --palette <source game's signature hexes, e.g. ff8ede,2b0a2e,ffe6f7>
+
+It reports, per tag: system fonts first in any CSS/pixi/canvas font stack,
+words baked into loaded SVGs, gradient-built vector plates, emoji in strings,
+array fills (pixi 8 draws only the first stop), source-palette hex/rgba
+leftovers, count-ups formatted per frame (the "$48.3293" bug), animations on
+`setInterval`, an FG intro with no art or no motion, the compact strip's tiny
+stacked stepper and its empty cell, Buy Bonus lit during free spins, and an
+opaque pop-up wrap. It skips components nothing imports. FAILs block; WARNs
+need a decision. Then play one full feature and look at every key moment —
+trigger, intro, wheel/feature beat, big win, retrigger, outro, the transition
+back — because the script cannot tell whether a moment feels flat.
 
 On top of all of that, run the reskin-specific one neither `game-qa` nor
 `stake-compliance` is built to catch: **is anything still the old game's?** See `references/dead-asset-audit.md` for
@@ -384,19 +898,41 @@ as its own key-art layer with broad, readable value masses. A dark game may use
 overcast daylight, practical lights, pale architecture, or another theme-valid
 source of exposure; it does not need to reproduce the game's time of day.
 
-Before packaging, measure the final 1024×1024 BG after reducing it to 200×200
-using `scripts/check_thumbnail.py <BG> [FG]`. Unless the platform or user gives
-a different target, require all three background gates on an 8-bit Rec.709
-luminance scale:
+Before packaging, measure the final BG — thumbnail AND cover — reduced to
+200 px high, using `scripts/check_thumbnail.py --upload upload/<Game>` (or
+`<BG> [FG]` for one pair). Unless the platform or user gives a different
+target, on an 8-bit Rec.709 luminance scale:
 
-- mean luminance at least 80;
-- 10th-percentile luminance at least 35;
-- pixels below luminance 32 no more than 30%.
+- FAIL: mean luminance under 80, or more than 30% of pixels below 32;
+- WARN: mean under 100 (house margin — the platform's threshold is unpublished;
+  everything that went through unchanged so far measured 83–224);
+- WARN: 10th percentile under 35 — acceptable for deliberate black shapes
+  (Capo's Deco skyline: p10 18 at mean 165), but look at it.
+
+**Neither the thumbnail nor the cover may be dark.** The platform does not
+reject a dark upload — it rewrites it: Turf War's first cover (mean 18) came
+back with "Your background image was too dark, so we automatically lightened it
+by 35%", i.e. a washed-out banner nobody chose (2026-10-11).
 
 Also inspect the BG+FG composite at 200×200. The subject, theme cue, and any
 platform title safe area must remain distinct without relying on zoom. A numeric pass does not
 replace this visual check; it prevents obviously underexposed tiles from
 reaching it. Record the measurements in the art status or handoff.
+
+
+### 7b. Cover art
+
+Separate from the thumbnail: the wide banner on the game's Stake Engine page.
+Every game ships one — 1920×1080 as BG + FG layers (like the thumbnail),
+top-right and bottom-left kept clear for the page's overlays. See `references/packaging.md` §6b.
+
+The thumbnail's brightness rules apply to the cover too, and the cover is where
+they were missed: built from a night in-game plate and then "knocked back toward
+night" so the cast would pop, Turf War's cover BG measured mean 18 and the
+platform auto-lightened it. Separate a dark figure by moving the backdrop
+TOWARD light behind it (gamma lift + a pale haze strongest behind the cast),
+never toward black; gate the BG in the cover script itself (Turf/Hard Time
+`design/build_cover_art.py` → `check_brightness`, mean ≥ 100).
 
 ### 8. Package
 
@@ -484,7 +1020,7 @@ Every tier can also be entered directly via Buy Bonus at 100×, 500×, or 1000×
 
 RTP & Max Win
 
-RTP ranges from 93.58% (base) to 93.78% (Kingpin buy mode), with a spread of 0.20% across all four modes. Max Win is capped at 20,000× total bet in every mode.
+RTP ranges from 96.01% (base) to 96.05% (Kingpin buy mode), with a spread of 0.04% across all four modes. Max Win is capped at 20,000× total bet in every mode.
 ```
 
 ## Cross-cutting principles
@@ -542,6 +1078,19 @@ correct source change still ships the old behaviour. And when the port also
 needs ASSETS (audio files, art), check the sibling's asset directory too: Turf
 War's code was ported while `win_tier_*.wav` existed only under Capo Nostra, so
 the reskin would have shipped code referring to sounds it did not have.
+
+**The image model's default is not a style.** A prompt that names a theme and
+objects but no medium gets the same glossy semi-real render every time — it is
+why Capo Nostra, Turf War, Hard Time, Deadwood Express and Soul Seal's symbol
+sets are interchangeable side by side. Every prompt carries §0's technique
+block (how ink goes down, how shading is made, how many inks), and the style
+is chosen with the user, not inherited from the source game or from the model.
+
+**Read a review tag's tooltip literally — it lists the causes.** "Low quality
+assets" was defined as generic/AI art, *standard fonts, emoji icons, gradient
+fills*; three of those four are greppable, and all three were present in a game
+whose reviewers only ever wrote the tag. Audit against each noun in the
+definition before concluding the problem is taste or the AI art.
 
 **Nothing is inherited by default — everything is inherited unless replaced.**
 The scaffold step copies the OLD game byte-for-byte. Every subsequent phase's

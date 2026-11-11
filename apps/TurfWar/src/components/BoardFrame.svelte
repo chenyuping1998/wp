@@ -44,11 +44,15 @@
 
 	let pulse = $state(0);
 	onMount(() => {
-		const id = setInterval(() => {
-			pulse = 0.5 + 0.5 * Math.sin(Date.now() / 620);
-		}, 33);
+		// frame clock (was a 33 ms interval — the glow breathed at 30 steps a second)
+		let pulseRaf = 0;
+		const pulseTick = (now: number) => {
+			pulse = 0.5 + 0.5 * Math.sin(now / 620);
+			pulseRaf = requestAnimationFrame(pulseTick);
+		};
+		pulseRaf = requestAnimationFrame(pulseTick);
 		return () => {
-			clearInterval(id);
+			cancelAnimationFrame(pulseRaf);
 			cancelAnimationFrame(impactRaf);
 			cancelAnimationFrame(glowRaf);
 		};
@@ -166,7 +170,7 @@
 	});
 </script>
 
-<Graphics zIndex={-2} draw={drawAmbience} />
+<!-- Flat sticker housing: no ambient light halo on the line-art scene. -->
 
 
 <Sprite
@@ -196,7 +200,7 @@
 		y={context.stateGameDerived.boardLayout().y + impact.y}
 		width={context.stateGameDerived.boardLayout().width * context.stateGameDerived.boardLayout().scale * FRAME_SCALE}
 		height={context.stateGameDerived.boardLayout().height * context.stateGameDerived.boardLayout().scale * FRAME_SCALE}
-		blendMode="add"
+		blendMode="normal"
 		alpha={impact.flash}
 	/>
 {/if}

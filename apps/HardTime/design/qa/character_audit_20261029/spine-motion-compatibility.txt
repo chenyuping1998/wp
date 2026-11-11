@@ -1,0 +1,1 @@
+錯誤：static/assets/spines/htCast/prisoner.json: 偵測到 4.2 以前的約束格式（ik, physics）。Spine 4.3 runtime 只讀 "constraints"，舊格式的 IK / Physics 會被忽略。請用 Spine 4.3 編輯器重新匯出 JSON。

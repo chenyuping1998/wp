@@ -127,7 +127,7 @@
   <MainContainer standard>
     {#if USE_MESH_CAST}
       {#key who}
-        <CastFigureMesh {who} {x} {topY} {height} {groundY} flip={who === "guy"} />
+        <CastFigureMesh {who} {x} {topY} {height} {groundY} flip={who === "guy"} innerEdge={boardInkRight} />
       {/key}
     {:else}
       <CastFigure

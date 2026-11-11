@@ -26,6 +26,12 @@
 	// Replay summary (stateReplay.summary): every row of the replay start card,
 	// kept on screen as a 3 × 2 panel under the replay button. See the same
 	// branch in LayoutBottomBar (Deadwood review, 2026-10-04).
+	// Two keys name the same thing: portraitStepButtonScale (the GB family and
+	// most games) and portraitStepScale (Capo / Deadwood / Hard Time / Turf War,
+	// merged from capo-turf-hardtime). Both default 0.5; whichever a game moved wins.
+	const portraitStepScale = $derived(
+		uiTheme.portraitStepScale !== 0.5 ? uiTheme.portraitStepScale : uiTheme.portraitStepButtonScale,
+	);
 	const replaySummary = $derived(stateReplay.enabled ? stateReplay.summary : []);
 	const hasReplaySummary = $derived(replaySummary.length > 0);
 	const SUMMARY_COLS = 3;
@@ -102,11 +108,12 @@
 		<Container
 			x={context.stateLayoutDerived.mainLayoutStandard().width * 0.5 - uiTheme.portraitSideButtonX}
 			y={context.stateLayoutDerived.mainLayoutStandard().height - 400}
+			scale={uiTheme.portraitMenuScale}
 		>
 			{@render props.buttonMenu({ anchor: 0.5 })}
 		</Container>
 
-		{#if !stateReplay.enabled}
+		{#if !stateReplay.enabled && !(uiTheme.buyBonusHideInFreeSpins && stateUi.freeSpinCounterShow)}
 			<Container
 				x={context.stateLayoutDerived.mainLayoutStandard().width * 0.5 + uiTheme.portraitSideButtonX}
 				y={context.stateLayoutDerived.mainLayoutStandard().height - 400}
@@ -152,23 +159,23 @@
 			</Container>
 
 			<Container
-				x={context.stateLayoutDerived.mainLayoutStandard().width * 0.5 - 170}
+				x={context.stateLayoutDerived.mainLayoutStandard().width * 0.5 - uiTheme.portraitStepX}
 				y={context.stateLayoutDerived.mainLayoutStandard().height - 400}
-				scale={uiTheme.portraitStepButtonScale}
+				scale={portraitStepScale}
 			>
 				{@render props.buttonDecrease({ anchor: 0.5 })}
 			</Container>
 
 			<Container
-				x={context.stateLayoutDerived.mainLayoutStandard().width * 0.5 + 170}
+				x={context.stateLayoutDerived.mainLayoutStandard().width * 0.5 + uiTheme.portraitStepX}
 				y={context.stateLayoutDerived.mainLayoutStandard().height - 400}
-				scale={uiTheme.portraitStepButtonScale}
+				scale={portraitStepScale}
 			>
 				{@render props.buttonIncrease({ anchor: 0.5 })}
 			</Container>
 
 			<Container
-				x={context.stateLayoutDerived.mainLayoutStandard().width * 0.5 - 285}
+				x={context.stateLayoutDerived.mainLayoutStandard().width * 0.5 - uiTheme.portraitSideClusterX}
 				y={context.stateLayoutDerived.mainLayoutStandard().height - 400}
 				scale={0.7}
 			>
@@ -177,7 +184,7 @@
 		{/if}
 
 		<Container
-			x={context.stateLayoutDerived.mainLayoutStandard().width * 0.5 + 285}
+			x={context.stateLayoutDerived.mainLayoutStandard().width * 0.5 + uiTheme.portraitSideClusterX}
 			y={context.stateLayoutDerived.mainLayoutStandard().height - 400}
 			scale={0.7}
 		>
@@ -246,7 +253,7 @@
 <MainContainer standard alignVertical="bottom">
 	{#if hasReplaySummary}
 		<!-- the summary panel owns the foot of the screen; the counter moves up -->
-		{#if stateUi.freeSpinCounterShow}
+		{#if stateUi.freeSpinCounterShow && !uiTheme.externalFreeSpinCounter}
 			<Container
 				x={context.stateLayoutDerived.mainLayoutStandard().width * 0.5}
 				y={context.stateLayoutDerived.mainLayoutStandard().height - 560}
@@ -254,7 +261,7 @@
 				<LabelFreeSpinCounter stacked />
 			</Container>
 		{/if}
-	{:else if stateUi.freeSpinCounterShow}
+	{:else if stateUi.freeSpinCounterShow && !uiTheme.externalFreeSpinCounter}
 		<Container
 			x={context.stateLayoutDerived.mainLayoutStandard().width * 0.5}
 			y={context.stateLayoutDerived.mainLayoutStandard().height - 130}

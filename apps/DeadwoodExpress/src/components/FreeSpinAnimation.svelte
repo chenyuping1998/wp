@@ -16,9 +16,10 @@
 
 	import { getContext } from '../game/context';
 	import { SYMBOL_SIZE, BOARD_DIMENSIONS } from '../game/constants';
+	import { PLATE_BODY, PLATE_INSET, PLATE_KEY } from '../game/plate';
 
-	// Jungle-military plank sign (hmFsSign, 920×720) that drops in from the top
-	// and settles with a swing. Children render at the sign's text area center.
+	// The painted brass nameplate (see game/plate.ts) drops in from the top and
+	// settles with a swing. Children render centred on its dark inset.
 	type Props = {
 		children: Snippet<[{ sizes: Sizes }]>;
 		/**
@@ -39,17 +40,20 @@
 	const props: Props = $props();
 
 	const context = getContext();
-	const SIGN_RATIO = 920 / 720;
-	const SIGN_WIDTH = SYMBOL_SIZE * BOARD_DIMENSIONS.x * 0.98;
-	const SIGN_SIZES = { width: SIGN_WIDTH, height: SIGN_WIDTH / SIGN_RATIO };
-	// inner plank area (in sign source pixels 100..820 × 130..670) mapped to sprite space
+	// Square canvas; the riveted body is about half its height, so the side is
+	// sized for the body to span the board the way the old plank did.
+	const SIGN_SIDE = SYMBOL_SIZE * BOARD_DIMENSIONS.x * 1.02;
+	const SIGN_SIZES = { width: SIGN_SIDE, height: SIGN_SIDE };
+	const BODY_HEIGHT = SIGN_SIDE * PLATE_BODY.height;
 	const TEXT_AREA = {
-		width: SIGN_SIZES.width * (720 / 920),
-		height: SIGN_SIZES.height * (540 / 720),
+		width: SIGN_SIDE * PLATE_INSET.width,
+		height: SIGN_SIDE * PLATE_INSET.height,
 	};
 
-	const dropY = new Tween(-SIGN_SIZES.height * 1.2);
+	const dropY = new Tween(-SIGN_SIDE * 1.1);
 	const swing = new Tween(0);
+	// one bright pass over the brass as it lands — the plate catching the light
+	const glint = new Tween(0);
 
 	// Turbo-scaled like NeonFrames. FreeSpinIntro times its number slam to land as
 	// this sign settles (SIGN_DROP_MS), so if the drop stopped scaling the two
@@ -58,6 +62,10 @@
 
 	onMount(() => {
 		dropY.set(0, { duration: scaled(SIGN_DROP_MS), easing: backOut });
+		(async () => {
+			await glint.set(0.55, { duration: scaled(120), delay: scaled(SIGN_DROP_MS * 0.55) });
+			await glint.set(0, { duration: scaled(520), easing: cubicOut });
+		})();
 		(async () => {
 			await swing.set(0.035, { duration: scaled(380), easing: cubicOut, delay: scaled(250) });
 			await swing.set(-0.022, { duration: scaled(420), easing: cubicOut });
@@ -72,13 +80,16 @@
 		x={context.stateGameDerived.boardLayout().x}
 		y={context.stateGameDerived.boardLayout().y +
 			dropY.current +
-			SIGN_SIZES.height * (props.scale ?? 1) * (props.offsetY ?? 0)}
+			BODY_HEIGHT * (props.scale ?? 1) * (props.offsetY ?? 0)}
 		rotation={swing.current}
 		scale={props.scale ?? 1}
 	>
-		<Sprite key="hmFsSign" anchor={0.5} {...SIGN_SIZES} />
-		<!-- children sit centered on the plank area (slightly below the emblem) -->
-		<Container y={SIGN_SIZES.height * 0.06}>
+		<Sprite key={PLATE_KEY} anchor={0.5} {...SIGN_SIZES} />
+		{#if glint.current > 0.01}
+			<Sprite key={PLATE_KEY} anchor={0.5} {...SIGN_SIZES} blendMode="add" alpha={glint.current} />
+		{/if}
+		<!-- children sit centred on the dark inset, under the crest -->
+		<Container y={SIGN_SIDE * PLATE_INSET.centerY}>
 			{@render props.children({ sizes: TEXT_AREA })}
 		</Container>
 	</Container>

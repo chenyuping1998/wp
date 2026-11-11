@@ -11,7 +11,7 @@
 	import { GAME_FONT, GAME_FONT_WEIGHT, DISPLAY_FONT, TITLE_FONT, TITLE_FONT_WEIGHT, DISPLAY_FONT_WEIGHT } from '../game/fonts';
 	import { Text } from 'pixi-svelte';
 	import { FadeContainer, WinCountUpProvider } from 'components-pixi';
-	import { bookEventAmountToCurrencyString } from 'utils-shared/amount';
+	import { bookEventAmountToCountUpString } from 'utils-shared/amount';
 	import { waitForResolve } from 'utils-shared/wait';
 	import { CanvasSizeRectangle } from 'components-layout';
 	import { OnMount } from 'components-shared';
@@ -43,13 +43,14 @@
 	};
 
 	const title = gameText('totalWin');
-	// The plaque still has FREE SPINS baked into its upper third. Keep every
-	// dynamic summary label below that artwork instead of trying to cover it:
-	// at the old -0.26 position TOTAL WIN crossed the bottom of the gold letters.
-	// These shared ratios also keep long translated labels and the amount as one
-	// vertically balanced summary block on every viewport.
-	const SUMMARY_TITLE_Y = 0.02;
-	const SUMMARY_AMOUNT_Y = 0.28;
+	// Where TOTAL WIN and the amount sit, in fractions of the plank's text area
+	// (FreeSpinAnimation puts this origin 0.06 of the sign's height BELOW its
+	// centre). They were at 0.02 / 0.28 to clear a FREE SPINS title baked into
+	// an older plaque; fs_sign.png is blank, and that offset left the block
+	// sitting on the bottom rail. Same fix and numbers as Turf War (2026-09-23),
+	// whose FreeSpinAnimation is identical; the gap between the two is unchanged.
+	const SUMMARY_TITLE_Y = -0.18;
+	const SUMMARY_AMOUNT_Y = 0.08;
 
 	context.eventEmitter.subscribeOnMount({
 		freeSpinOutroShow: () => (show = true),
@@ -88,18 +89,16 @@
 								fontWeight: TITLE_FONT_WEIGHT,
 								letterSpacing: 6,
 								fill: [0xE8D48B, 0xC9A227, 0x8A6D1F],
-								stroke: 0x14100D,
-								strokeThickness: 6,
-								dropShadow: true,
-								dropShadowColor: 0x000000,
-								dropShadowBlur: 12,
-								dropShadowDistance: 3,
+								stroke: { color: 0x14100D, width: 6 },
+								dropShadow: { color: 0x000000, blur: 12, distance: 3, angle: Math.PI / 6, alpha: 1 },
 							}}
 						/>
+						<!-- precision from the FINAL amount, held every frame: per-frame
+						     formatting printed "$53.8644" on the way to $97.60 -->
 						<GoldText
 							y={sizes.height * SUMMARY_AMOUNT_Y}
 							fontSize={sizes.width * 0.15}
-							text={bookEventAmountToCurrencyString(countUpAmount)}
+							text={bookEventAmountToCountUpString(countUpAmount, amount)}
 							maxWidth={sizes.width * 0.9}
 						/>
 					{/snippet}

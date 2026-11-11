@@ -1,0 +1,152 @@
+{
+  "requests": [
+    {
+      "url": "https://stub.local/bet/replay/turf-war/7/base/64?lang=en",
+      "method": "GET",
+      "body": null,
+      "status": 200,
+      "payoutMultiplier": 0.7
+    }
+  ],
+  "errors": [],
+  "samples": 101,
+  "hits": [],
+  "states": [
+    {
+      "gameType": "basegame",
+      "isTurbo": false,
+      "betMode": "base",
+      "dimmedBy": 0,
+      "anticipation": [],
+      "time": 813.5
+    }
+  ],
+  "game": {
+    "gameType": "basegame",
+    "isTurbo": false,
+    "betMode": "base",
+    "dimmedBy": 1,
+    "anticipation": [
+      0,
+      0,
+      0,
+      0,
+      0
+    ]
+  },
+  "reels": [
+    {
+      "reel": 0,
+      "motion": "stopped",
+      "spinType": "normal",
+      "anticipating": false,
+      "symbolState": "win",
+      "names": [
+        "L4",
+        "L1",
+        "L3",
+        "H2",
+        "H5",
+        "H2"
+      ]
+    },
+    {
+      "reel": 1,
+      "motion": "stopped",
+      "spinType": "normal",
+      "anticipating": false,
+      "symbolState": "win",
+      "names": [
+        "L1",
+        "W",
+        "H5",
+        "H3",
+        "H5",
+        "H5"
+      ]
+    },
+    {
+      "reel": 2,
+      "motion": "stopped",
+      "spinType": "normal",
+      "anticipating": false,
+      "symbolState": "win",
+      "names": [
+        "L3",
+        "L1",
+        "H3",
+        "H4",
+        "H5",
+        "W"
+      ]
+    },
+    {
+      "reel": 3,
+      "motion": "stopped",
+      "spinType": "normal",
+      "anticipating": false,
+      "symbolState": "static",
+      "names": [
+        "H2",
+        "H2",
+        "H5",
+        "H5",
+        "L3",
+        "SW"
+      ]
+    },
+    {
+      "reel": 4,
+      "motion": "stopped",
+      "spinType": "normal",
+      "anticipating": false,
+      "symbolState": "static",
+      "names": [
+        "L2",
+        "H4",
+        "L1",
+        "L2",
+        "L1",
+        "L4"
+      ]
+    }
+  ],
+  "text": {
+    "social": false,
+    "pixiTexts": 20,
+    "hits": [],
+    "verdict": "PASS"
+  },
+  "center": {
+    "html": [],
+    "glyphs": "no window.__PIXI_APP__"
+  },
+  "visibleTexts": [
+    "WILD",
+    "2x",
+    "$0.20",
+    "$0.50",
+    "11:07",
+    "TURF WAR",
+    "MODE",
+    "Base Game",
+    "BASE BET",
+    "$1.00",
+    "COST MULTIPLIER",
+    "1x",
+    "TOTAL BET COST",
+    "$1.00",
+    "PAYOUT MULTIPLIER",
+    "0.7x",
+    "TOTAL WIN",
+    "$0.70",
+    "\u21ba",
+    "REPLAY"
+  ],
+  "scroll": {
+    "w": 1024,
+    "h": 576,
+    "sw": 1024,
+    "sh": 576
+  }
+}

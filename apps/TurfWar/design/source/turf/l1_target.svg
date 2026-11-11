@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512">
+  <!-- A rough target tag: the low-pay stencil family stays flat and gray, while
+       the crown silhouette is reserved for the high-pay chain. -->
+  <g transform="translate(77 77) scale(.7)">
+  <g fill="none" stroke="#aca9a4" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M254 77 C365 70 438 148 442 248 C446 360 365 435 258 438 C143 443 72 358 70 254 C67 151 143 82 254 77 Z"
+          stroke="#777773" stroke-width="33" opacity=".62" transform="translate(5 6)"/>
+    <path d="M254 77 C365 70 438 148 442 248 C446 360 365 435 258 438 C143 443 72 358 70 254 C67 151 143 82 254 77 Z"
+          stroke-width="30"/>
+    <path d="M258 149 C322 143 366 187 369 250 C373 317 324 364 259 369 C194 371 145 319 146 254 C147 194 193 153 258 149 Z"
+          stroke="#878782" stroke-width="27"/>
+    <path d="M258 149 C322 143 366 187 369 250 C373 317 324 364 259 369 C194 371 145 319 146 254 C147 194 193 153 258 149 Z"
+          stroke-width="18"/>
+    <path d="M252 213 L257 303 M212 256 L301 254" stroke-width="21"/>
+  </g>
+  <path d="M243 246 C250 234 266 233 276 244 C287 256 283 274 270 281 C256 290 239 283 235 269 C232 260 236 252 243 246 Z" fill="#b5b1ab"/>
+  <g fill="#aaa7a1">
+    <path d="M103 358 C106 380 105 407 113 427 C118 434 123 427 123 419 L122 374 Z"/>
+    <path d="M391 339 C393 365 389 392 397 412 C402 422 408 414 408 405 L411 348 Z"/>
+    <path d="M224 429 C225 453 221 469 227 483 C231 490 237 484 237 476 L240 432 Z"/>
+    <circle cx="83" cy="162" r="8"/><circle cx="66" cy="184" r="4"/>
+    <circle cx="429" cy="136" r="5"/><circle cx="454" cy="155" r="3"/>
+    <circle cx="54" cy="318" r="6"/><circle cx="468" cy="310" r="7"/>
+  </g>
+  </g>
+</svg>

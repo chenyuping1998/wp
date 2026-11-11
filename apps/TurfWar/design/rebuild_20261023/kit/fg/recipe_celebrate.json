@@ -1,0 +1,199 @@
+{
+ "fps": 30,
+ "facing": 1,
+ "size": 2.47,
+ "roles": {
+  "root": "root",
+  "hip": "hip",
+  "chest": "chest",
+  "head": "head",
+  "body": "hip",
+  "fists": [
+   "ik-fist-front"
+  ],
+  "fist": "ik-fist-front",
+  "fistFront": "ik-fist-front",
+  "fistBack": "ik-fist-back",
+  "feet": [
+   "ik-foot-back",
+   "ik-foot-front"
+  ],
+  "shoulders": [
+   "upperArmB",
+   "upperArmF"
+  ],
+  "shoulderBack": "upperArmB"
+ },
+ "animations": [
+  {
+   "name": "celebrate",
+   "preset": "celebrate",
+   "params": {
+    "elbow": 15,
+    "angle": 88,
+    "swing": 65,
+    "bounce": 14
+   },
+   "tracks": [
+    {
+     "bone": "upperArmB",
+     "channel": "rotate",
+     "type": "poses",
+     "points": [
+      {
+       "time": 0,
+       "value": 0.0
+      },
+      {
+       "time": 0.2,
+       "value": 18.0,
+       "ease": "cubicOut"
+      },
+      {
+       "time": 0.45,
+       "value": 2.0,
+       "ease": "sineInOut"
+      },
+      {
+       "time": 0.65,
+       "value": 18.0,
+       "ease": "cubicOut"
+      },
+      {
+       "time": 0.95,
+       "value": 2.0,
+       "ease": "sineInOut"
+      },
+      {
+       "time": 1.2,
+       "value": 0.0,
+       "ease": "sineInOut"
+      }
+     ]
+    },
+    {
+     "bone": "foreArmB",
+     "channel": "rotate",
+     "type": "poses",
+     "points": [
+      {
+       "time": 0,
+       "value": 0.0
+      },
+      {
+       "time": 0.2,
+       "value": -24.0,
+       "ease": "cubicOut"
+      },
+      {
+       "time": 0.45,
+       "value": -4.8,
+       "ease": "sineInOut"
+      },
+      {
+       "time": 0.65,
+       "value": -24.0,
+       "ease": "cubicOut"
+      },
+      {
+       "time": 0.95,
+       "value": -4.8,
+       "ease": "sineInOut"
+      },
+      {
+       "time": 1.2,
+       "value": 0.0,
+       "ease": "sineInOut"
+      }
+     ]
+    },
+    {
+     "bone": "ik-foot-back",
+     "channel": "y",
+     "type": "poses",
+     "points": [
+      {
+       "time": 0,
+       "value": 0
+      },
+      {
+       "time": 0.04,
+       "value": 0
+      },
+      {
+       "time": 0.14,
+       "value": 50,
+       "ease": "cubicOut"
+      },
+      {
+       "time": 0.27,
+       "value": 0,
+       "ease": "quadIn"
+      },
+      {
+       "time": 0.64,
+       "value": 0
+      },
+      {
+       "time": 0.74,
+       "value": 38,
+       "ease": "cubicOut"
+      },
+      {
+       "time": 0.87,
+       "value": 0,
+       "ease": "quadIn"
+      },
+      {
+       "time": 1.2,
+       "value": 0
+      }
+     ]
+    },
+    {
+     "bone": "ik-foot-front",
+     "channel": "y",
+     "type": "poses",
+     "points": [
+      {
+       "time": 0,
+       "value": 0
+      },
+      {
+       "time": 0.04,
+       "value": 0
+      },
+      {
+       "time": 0.14,
+       "value": 50,
+       "ease": "cubicOut"
+      },
+      {
+       "time": 0.27,
+       "value": 0,
+       "ease": "quadIn"
+      },
+      {
+       "time": 0.64,
+       "value": 0
+      },
+      {
+       "time": 0.74,
+       "value": 38,
+       "ease": "cubicOut"
+      },
+      {
+       "time": 0.87,
+       "value": 0,
+       "ease": "quadIn"
+      },
+      {
+       "time": 1.2,
+       "value": 0
+      }
+     ]
+    }
+   ]
+  }
+ ]
+}

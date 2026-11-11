@@ -108,7 +108,10 @@
 		fs_outro: 'capo/sfx/fs_outro.wav',
 		win_cap: 'capo/sfx/win_cap.wav',
 		coin_shimmer: 'capo/sfx/coin_shimmer.wav',
-		wild_expand: 'capo/sfx/sw_gunfire.wav',
+		// The Violin Case opening — latches, lid, the band's 6/9 stab
+		// (design/generate_game_sfx.py capo). Was sw_gunfire.wav: the case replaced
+		// the tommy gun on screen but kept firing it (2026-10-12 audit).
+		wild_expand: 'capo/sfx/case_open.wav',
 		frame_big_land: 'capo/sfx/frame_big_land.wav',
 		mult_update: 'capo/sfx/mult_update.wav',
 		neon_zap: 'capo/sfx/vault_open.wav',
@@ -273,7 +276,9 @@
 	// exists in this file for the music duck (routeThroughFilter), so this adds
 	// a decode pass, not a second audio stack.
 	const sfxBuffers: Partial<Record<CnSfxName, AudioBuffer>> = {};
-	const sfxLoops: Partial<Record<CnSfxName, { source: AudioBufferSourceNode; gain: GainNode }>> = {};
+	const sfxLoops: Partial<Record<CnSfxName, { source: AudioBufferSourceNode; gain: GainNode; scale: number }>> = {};
+	// the element fallback's own scale, for the same reason
+	const loopElementScale: Partial<Record<CnSfxName, number>> = {};
 
 	/**
 	 * The shared context, created on demand. Constructing one before a user
@@ -398,6 +403,7 @@
 		if (ctx && buffer) {
 			const running = sfxLoops[name];
 			if (running) {
+				running.scale = volumeScale;
 				running.gain.gain.value = sfxVolume(volumeScale);
 				running.source.playbackRate.value = rate;
 				return;
@@ -411,7 +417,7 @@
 			source.playbackRate.value = rate;
 			source.connect(gain);
 			source.start();
-			sfxLoops[name] = { source, gain };
+			sfxLoops[name] = { source, gain, scale: volumeScale };
 			return;
 		}
 		playCnLoopElement(name, volumeScale, rate);
@@ -456,6 +462,7 @@
 		const audio = getCnSfx(name);
 		const alreadyRunning = audio.loop && !audio.paused;
 		audio.loop = true;
+		loopElementScale[name] = volumeScale;
 		audio.volume = sfxVolume(volumeScale);
 		audio.playbackRate = rate;
 		if (alreadyRunning) return;
@@ -560,6 +567,24 @@
 	$effect(() => {
 		const vol = stateSoundDerived.volumeMusic();
 		if (bgmAudio) bgmAudio.volume = vol;
+	});
+
+	// A loop's gain was set once, when it started. Muting (or turning effects
+	// down) during a tease or a big win left reel_tension and coin_shimmer
+	// playing at the old level until they stopped — Engine guideline 107 wants
+	// every sound to follow the setting immediately. No ramp: a mute is a mute.
+	$effect(() => {
+		const vol = stateSoundDerived.volumeSoundEffect();
+		for (const node of Object.values(sfxLoops)) {
+			if (!node) continue;
+			const ctx = node.gain.context;
+			node.gain.gain.cancelScheduledValues(ctx.currentTime);
+			node.gain.gain.setValueAtTime(Math.min(1, vol * node.scale), ctx.currentTime);
+		}
+		for (const [name, scale] of Object.entries(loopElementScale)) {
+			const audio = cnSfxAudio[name as CnSfxName];
+			if (audio?.loop) audio.volume = Math.min(1, vol * (scale ?? 1));
+		}
 	});
 
 	context.eventEmitter.subscribeOnMount({

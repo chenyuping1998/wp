@@ -5,6 +5,17 @@ description: Building and shipping slot games on Stake Engine in the `wp` pnpm m
 
 # Stake Engine slot games (wp monorepo)
 
+## 角色美術與動作：零可見缺陷交付門檻（Stone，2026-10-25）
+
+只要交付角色美術、rig、動作或含角色的遊戲，就適用以下硬性驗收。**殘影、毛邊／白邊、碎片、肢體分離、接縫露底、破口或錯誤輪廓任一仍可見，即為未完成；修好前不得回報完成、交件或打包。**
+
+- 逐層在亮底、暗底與原生解析度檢查。分層肢體必須是完整連續的部件，補齊被遮住的解剖與關節重疊；軀幹不得夾手臂殘影、拳套不得夾臉／胸口或袖口外的毛、服裝不得夾腿部碎片。網格角色也須檢查輪廓拉裂與貼圖殘影。
+- Stone 補充（2026-10-26，相撲猴前臂修正）：粗壯角色仍須有連續、自然收窄的上下臂輪廓；前臂與肘部不得出現非設計需要的腫塊、圓球堆疊或香腸式分節。先辨別來源畫稿與動作變形，連同上臂末端及袖口銜接一起檢查；修來源後用原動作幅度驗證彎肘、伸展與轉場，不能只修靜態或靠縮小動作掩蓋。
+- 逐一檢查**所有交付動作**（spine-motion 預設六動作也須全看），包含起終格、過渡／中間格、最大彎曲與伸展。重點看肩、肘、頸、髖、膝、腕；靜態疊圖、檢查器 PASS 或流暢度 100 都不能代替實際渲染。檢查器不支援此 rig 格式時不得當作通過。
+- 先修造成缺陷的來源拆層、遮擋區補繪、權重或 rig。不得靠縮小動作／角色、加遮擋或挑好看的靜態格掩蓋；修正後重看受影響動作。合理動作預算仍須通過完整表演驗收。
+- 已整合遊戲須在桌機與直式手機實際試玩，包含 MG／FG、角色反應、轉場與 feature cut-in，檢查破口、殘影、裁切與接縫；保留實際截圖、動作預覽及新舊對照。
+- 交件前核對來源層、實際合成 full、Spine images、runtime 裁圖與座標、烘焙動作、預覽及 upload 包皆為同一最終版本。母圖若與合成有差異須如實留對照，不得冒稱零差異；不得拿舊預覽證明新版正常。
+
 Three games share this repo: WildParty, GoBananas, EmberForge. They are separate
 apps over a common set of packages, so most mistakes here are either "I broke the
 other two games" or "the build was green and the game is dead".
@@ -410,6 +421,14 @@ upload-and-wait cycle, and almost all of them are cheaper to build in than to
 retrofit. The case log underneath explains what each reviewer comment actually
 meant, which is rarely what it says.
 
+**RTP is a house rule, not a per-game choice:** every mode of every game sits
+between 96.00% and 96.10% (Stone, 2026-10-11), and inside one game the modes
+must differ: the base spin is lowest and every buy-bonus mode sits a little
+higher, the pricier buy higher again (Stone, 2026-10-15). Never ship a game with
+one RTP figure on every mode. How to pick the figures and how to move a built
+game without re-simulating are in the game-reskin skill
+(`references/math-retarget.md`, "The house RTP band").
+
 The two items that generalise beyond the checklist:
 
 - **Whatever the animation shows as covering the board is what the maths must
@@ -421,6 +440,36 @@ The two items that generalise beyond the checklist:
 
 `references/certification.md` holds the requirements themselves — restricted
 words, replay, money, and the presentation notes that keep coming back.
+
+**Before every submission, run Engine's official self-check,
+`references/engine-self-check.md`** (Stone, 2026-10-15: 「以後送審前檢查加入這份標準」).
+It is read-only until asked: walk every guideline, give each a verdict (PASS /
+FAIL / AT RISK / NEEDS A HUMAN / N/A) with `file:line` or quoted-text evidence
+and Engine's guideline number, then offer fixes one at a time. Run it on the
+build that will actually be uploaded, and compare against what is already
+*published* on the platform. Report in its Part 4 format. The file's tail maps the
+checks onto our playtest stub.
+
+**The self-check also runs two house presentation checks** (Stone, 2026-10-16):
+label centring with `scripts/ui_center_audit.js` and cast arm ghosts with the
+game-reskin skill's `scripts/check_cast_underlay.py`.
+Since 2026-10-20 it also runs `scripts/social_text_audit.js` (restricted words
+and K/M amounts read off the live screen, pixi text included) and a legibility
+read of every value a symbol carries — the two things Sushi Monkey's reviews
+caught that no static guard could. Both are spelled out at the
+end of `engine-self-check.md`. Two facts behind them worth knowing while
+building, not only at submission:
+
+- **pixi's `anchor: 0.5` is not optical centre.** The text box is measured on
+  '|ÉqÅM', so the accent of É sits in it: plain capitals in Bungee/Anton land
+  ~8-12% of the font size below the box centre, and a glyph the face lacks ('∞'
+  in Anton) falls back to another font and sits lower still. Anything that must
+  sit dead-centre on a plate goes through `inkOffsetY` (components-ui-pixi
+  `src/inkCenter.ts`, so far only in the wp-banandit worktree) or a theme offset
+  (`barReadoutOffsetY`, `stackedTileTextOffsetY`, `buyBonusLabelOffsetY`). In
+  HTML, draw '+' / '−' with CSS bars rather than typing them.
+- **A still frame cannot show an arm ghost.** It only exists while the arm is
+  away from its rest pose, so check the motions, not the idle.
 
 `references/approval-guidelines.md` is the 51-item checklist a reviewer ticks
 off on the approval page, transcribed. It is scored **separately from the star
@@ -468,3 +517,35 @@ Two things about the rating worth knowing while planning, not at submission:
 - **Reskinning template spines does not answer "poor animations".** Retexturing
   changes the picture and leaves the motion identical. Budget symbol craft and
   motion as their own workstream rather than as part of a visual overhaul.
+
+## Uploading to the platform (stakecli)
+
+When Stone says 「上傳」, it means push a staged folder to studio.engine.io, using the
+community `stakecli` (github.com/mnemoo/cli, installed at `~/.local/bin/stakecli`).
+It is not the same as 「打包」, which only stages into `upload/<Game>/`. Stone logs
+in personally by running `stakecli` and pasting the `sid` into its login screen,
+which saves it to the macOS keychain. Never ask for, read or pass the SID; if
+`auth_status` says it is invalid, ask Stone to log in again.
+
+`scripts/stakecli_call.py <tool> '<json>'` calls one tool on `stakecli mcp`.
+Team `silver-stars`; slugs come from `list_games {"team":"silver-stars"}`.
+Folders are `upload/<Game>/frontend` (type `front`) and `upload/<Game>/math`
+(type `math`). A game must already exist on the platform before you can upload.
+
+0. The official self-check (`references/engine-self-check.md`) has been run on
+   this build and its FAILs fixed or explicitly accepted by Stone.
+1. `validate_upload_path` → `plan_upload`, both read-only. Show Stone the files
+   it will upload, delete and leave unchanged (and the compliance result for
+   math), and wait for a yes.
+2. `execute_upload` with that exact `plan_id`. This only touches scratch, but it
+   can delete remote files. Run `plan_upload` again and expect 0 actions.
+3. `publish {"confirm":true}` only after a **separate** yes. 「上傳」 alone
+   does not mean publish. Report the version it returns, then check it with
+   `get_game`.
+4. Updating the approval's version (`update_approval_version`) also needs its own
+   yes, and it only works while the approval is open (`get_game` →
+   `detail.approval.open`). When it is closed, the fix is a new submission on
+   the website, which stakecli cannot make.
+
+Check every math mode's RTP offline first:
+`stakecli compliance upload/<Game>/math | grep 'RTP: '`.

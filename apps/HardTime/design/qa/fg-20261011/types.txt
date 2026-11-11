@@ -1,0 +1,2784 @@
+
+> hard-time@0.0.0 check:types /Users/stone/stake-engine/wp/apps/HardTime
+> node ../../node_modules/.pnpm/svelte-check@4.7.6_picomatch@4.0.4_svelte@5.20.5_typescript@5.9.3/node_modules/svelte-check/bin/svelte-check --threshold error --output human
+
+The following Vite config options will be overridden by SvelteKit:
+  - base
+The following Vite config options will be overridden by SvelteKit:
+  - base
+/Users/stone/stake-engine/wp/apps/HardTime/design/build_story_stub_data.mjs:1:16
+Error: Cannot find module 'node:fs' or its corresponding type declarations. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/build_story_stub_data.mjs:2:18
+Error: Cannot find module 'node:path' or its corresponding type declarations. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/build_story_stub_data.mjs:3:31
+Error: Cannot find module 'node:url' or its corresponding type declarations. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/build_story_stub_data.mjs:6:15
+Error: Parameter 'name' implicitly has an 'any' type. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/build_story_stub_data.mjs:6:133
+Error: This regular expression flag is only available when targeting 'es2018' or later. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/build_story_stub_data.mjs:9:20
+Error: Parameter 'books' implicitly has an 'any' type. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/build_story_stub_data.mjs:12:66
+Error: Parameter 'b' implicitly has an 'any' type. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/build_story_stub_data.mjs:13:38
+Error: Parameter 'event' implicitly has an 'any' type. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/build_story_stub_data.mjs:15:45
+Error: Parameter 'event' implicitly has an 'any' type. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/build_story_stub_data.mjs:15:74
+Error: Parameter 'light' implicitly has an 'any' type. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/build_story_stub_data.mjs:15:102
+Error: Parameter 'cell' implicitly has an 'any' type. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/build_story_stub_data.mjs:16:45
+Error: Parameter 'event' implicitly has an 'any' type. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/build_story_stub_data.mjs:16:74
+Error: Parameter 'light' implicitly has an 'any' type. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/build_story_stub_data.mjs:20:15
+Error: Parameter 'books' implicitly has an 'any' type. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/build_story_stub_data.mjs:20:22
+Error: Parameter 'cost' implicitly has an 'any' type. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/build_story_stub_data.mjs:20:57
+Error: Parameter 'b' implicitly has an 'any' type. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/build_story_stub_data.mjs:20:107
+Error: Parameter 'b' implicitly has an 'any' type. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/check_anticipation.mjs:21:18
+Error: Cannot find module 'path' or its corresponding type declarations. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/check_anticipation.mjs:22:31
+Error: Cannot find module 'url' or its corresponding type declarations. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/check_anticipation.mjs:25:73
+Error: Top-level 'await' expressions are only allowed when the 'module' option is set to 'es2022', 'esnext', 'system', 'node16', 'node18', 'node20', 'nodenext', or 'preserve', and the 'target' option is set to 'es2017' or higher. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/check_anticipation.mjs:30:15
+Error: Parameter 'msg' implicitly has an 'any' type. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/check_anticipation.mjs:79:17
+Error: Parameter 'magnitude' implicitly has an 'any' type. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/check_anticipation.mjs:104:5
+Error: Cannot find name 'process'. Do you need to install type definitions for node? Try `npm i --save-dev @types/node`. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/check_anticipation.mjs:114:1
+Error: Cannot find name 'process'. Do you need to install type definitions for node? Try `npm i --save-dev @types/node`. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/check_assets.mjs:5:16
+Error: Cannot find module 'fs' or its corresponding type declarations. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/check_assets.mjs:6:18
+Error: Cannot find module 'path' or its corresponding type declarations. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/check_assets.mjs:7:31
+Error: Cannot find module 'url' or its corresponding type declarations. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/check_assets.mjs:39:1
+Error: Cannot find name 'process'. Do you need to install type definitions for node? Try `npm i --save-dev @types/node`. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/check_assets_exist.mjs:5:16
+Error: Cannot find module 'fs' or its corresponding type declarations. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/check_assets_exist.mjs:6:18
+Error: Cannot find module 'path' or its corresponding type declarations. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/check_assets_exist.mjs:7:31
+Error: Cannot find module 'url' or its corresponding type declarations. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/check_assets_exist.mjs:22:2
+Error: Cannot find name 'process'. Do you need to install type definitions for node? Try `npm i --save-dev @types/node`. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/lib/pngAlpha.mjs:21:18
+Error: Cannot find module 'zlib' or its corresponding type declarations. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/lib/pngAlpha.mjs:23:27
+Error: Parameter 'buffer' implicitly has an 'any' type. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/lib/pngAlpha.mjs:52:31
+Error: Cannot find name 'Buffer'. Did you mean 'buffer'? 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/lib/pngAlpha.mjs:57:19
+Error: Cannot find name 'Buffer'. Did you mean 'buffer'? 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/lib/pngAlpha.mjs:58:18
+Error: Cannot find name 'Buffer'. Did you mean 'buffer'? 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/lib/castMesh.mjs:10:16
+Error: Cannot find module 'fs' or its corresponding type declarations. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/lib/castMesh.mjs:11:18
+Error: Cannot find module 'path' or its corresponding type declarations. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/lib/castMesh.mjs:28:36
+Error: Parameter 'appRoot' implicitly has an 'any' type. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/lib/castMesh.mjs:47:30
+Error: Parameter 'appRoot' implicitly has an 'any' type. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/lib/castMesh.mjs:47:39
+Error: Parameter 'motion' implicitly has an 'any' type. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/lib/castMesh.mjs:47:49
+Error: Property 'rigPath' does not exist on type '{}'. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/lib/castMesh.mjs:47:58
+Error: Property 'texturePath' does not exist on type '{}'. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/lib/castMesh.mjs:56:19
+Error: Parameter 'x' implicitly has an 'any' type. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/lib/castMesh.mjs:56:22
+Error: Parameter 'y' implicitly has an 'any' type. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/lib/castMesh.mjs:69:27
+Error: Binding element 'i' implicitly has an 'any' type. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/lib/castMesh.mjs:69:30
+Error: Binding element 'j' implicitly has an 'any' type. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/lib/castMesh.mjs:69:33
+Error: Binding element 'k' implicitly has an 'any' type. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/lib/castMesh.mjs:87:22
+Error: Binding element 'x' implicitly has an 'any' type. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/lib/castMesh.mjs:87:25
+Error: Binding element 'y' implicitly has an 'any' type. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/lib/castMesh.mjs:87:29
+Error: Parameter 'i' implicitly has an 'any' type. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/lib/castMesh.mjs:93:23
+Error: Parameter 'v' implicitly has an 'any' type. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/lib/castMesh.mjs:105:21
+Error: Parameter 'state' implicitly has an 'any' type. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/lib/castMesh.mjs:113:29
+Error: Binding element 'i' implicitly has an 'any' type. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/lib/castMesh.mjs:113:32
+Error: Binding element 'j' implicitly has an 'any' type. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/lib/castMesh.mjs:113:35
+Error: Binding element 'k' implicitly has an 'any' type. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/lib/castMesh.mjs:115:54
+Error: Parameter 'w' implicitly has an 'any' type. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/lib/castMesh.mjs:115:57
+Error: Parameter 'b' implicitly has an 'any' type. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/lib/castMesh.mjs:118:31
+Error: Binding element 'i' implicitly has an 'any' type. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/lib/castMesh.mjs:118:34
+Error: Binding element 'j' implicitly has an 'any' type. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/lib/castMesh.mjs:118:37
+Error: Binding element 'k' implicitly has an 'any' type. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/lib/castMesh.mjs:124:19
+Error: Parameter 'areas' implicitly has an 'any' type. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/lib/castMesh.mjs:124:26
+Error: Parameter 'acc' implicitly has an 'any' type. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/lib/castMesh.mjs:140:18
+Error: Parameter 'acc' implicitly has an 'any' type. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/lib/castMesh.mjs:141:17
+Error: Parameter 't' implicitly has an 'any' type. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/check_cast_motion.mjs:26:16
+Error: Cannot find module 'fs' or its corresponding type declarations. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/check_cast_motion.mjs:27:18
+Error: Cannot find module 'path' or its corresponding type declarations. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/check_cast_motion.mjs:28:31
+Error: Cannot find module 'url' or its corresponding type declarations. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/check_cast_motion.mjs:35:19
+Error: Cannot find name 'process'. Do you need to install type definitions for node? Try `npm i --save-dev @types/node`. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/check_cast_motion.mjs:35:38
+Error: Parameter 'a' implicitly has an 'any' type. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/check_cast_motion.mjs:36:16
+Error: Top-level 'await' expressions are only allowed when the 'module' option is set to 'es2022', 'esnext', 'system', 'node16', 'node18', 'node20', 'nodenext', or 'preserve', and the 'target' option is set to 'es2017' or higher. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/check_cast_motion.mjs:39:16
+Error: Cannot find name 'process'. Do you need to install type definitions for node? Try `npm i --save-dev @types/node`. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/check_cast_motion.mjs:40:7
+Error: Variable 'problems' implicitly has type 'any[]' in some locations where its type cannot be determined. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/check_cast_motion.mjs:41:15
+Error: Parameter 'm' implicitly has an 'any' type. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/check_cast_motion.mjs:42:15
+Error: Parameter 'm' implicitly has an 'any' type. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/check_cast_motion.mjs:98:19
+Error: Parameter 'bone' implicitly has an 'any' type. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/check_cast_motion.mjs:120:18
+Error: Element implicitly has an 'any' type because expression of type 'string' can't be used to index type '{ guy: { arm_l: number; arm_r: number; fore_l: number; fore_r: number; hips: number; waist: number; chest: number; neck: number; head: number; }; }'.
+  No index signature with a parameter of type 'string' was found on type '{ guy: { arm_l: number; arm_r: number; fore_l: number; fore_r: number; hips: number; waist: number; chest: number; neck: number; head: number; }; }'. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/check_cast_motion.mjs:152:42
+Error: Type 'string' is not assignable to type 'null'. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/check_cast_motion.mjs:215:17
+Error: Parameter 'tier' implicitly has an 'any' type. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/check_cast_motion.mjs:283:7
+Error: Element implicitly has an 'any' type because expression of type 'string' can't be used to index type '{ arm_l: string; fore_l: string; arm_r: string; fore_r: string; }'.
+  No index signature with a parameter of type 'string' was found on type '{ arm_l: string; fore_l: string; arm_r: string; fore_r: string; }'. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/check_cast_motion.mjs:287:69
+Error: Element implicitly has an 'any' type because expression of type 'string' can't be used to index type '{ arm_l: string; fore_l: string; arm_r: string; fore_r: string; }'.
+  No index signature with a parameter of type 'string' was found on type '{ arm_l: string; fore_l: string; arm_r: string; fore_r: string; }'. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/check_cast_motion.mjs:358:16
+Error: Element implicitly has an 'any' type because expression of type 'string' can't be used to index type '{ arm_l: number; arm_r: number; fore_l: number; fore_r: number; hips: number; waist: number; chest: number; neck: number; head: number; }'.
+  No index signature with a parameter of type 'string' was found on type '{ arm_l: number; arm_r: number; fore_l: number; fore_r: number; hips: number; waist: number; chest: number; neck: number; head: number; }'. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/check_cast_motion.mjs:373:13
+Error: Parameter 'v' implicitly has an 'any' type. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/check_cast_motion.mjs:413:46
+Error: 'error' is of type 'unknown'. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/check_cast_motion.mjs:423:70
+Error: Parameter 'a' implicitly has an 'any' type. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/check_cast_motion.mjs:423:73
+Error: Parameter 'b' implicitly has an 'any' type. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/check_cast_motion.mjs:424:25
+Error: Parameter 'w' implicitly has an 'any' type. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/check_cast_motion.mjs:455:19
+Error: Binding element 'x' implicitly has an 'any' type. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/check_cast_motion.mjs:455:22
+Error: Binding element 'y' implicitly has an 'any' type. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/check_cast_motion.mjs:455:26
+Error: Parameter 'poly' implicitly has an 'any' type. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/check_cast_motion.mjs:471:54
+Error: Parameter 'b' implicitly has an 'any' type. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/check_cast_motion.mjs:471:57
+Error: Parameter 'i' implicitly has an 'any' type. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/check_cast_motion.mjs:472:85
+Error: Parameter 'r' implicitly has an 'any' type. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/check_cast_motion.mjs:479:10
+Error: Parameter 'v' implicitly has an 'any' type. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/check_cast_motion.mjs:479:13
+Error: Parameter 'i' implicitly has an 'any' type. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/check_cast_motion.mjs:480:14
+Error: Binding element 'v' implicitly has an 'any' type. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/check_cast_motion.mjs:481:13
+Error: Binding element 'i' implicitly has an 'any' type. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/check_cast_motion.mjs:486:30
+Error: Parameter 'sum' implicitly has an 'any' type. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/check_cast_motion.mjs:486:35
+Error: Parameter 'i' implicitly has an 'any' type. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/check_cast_motion.mjs:548:18
+Error: Variable 'problems' implicitly has an 'any[]' type. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/check_cast_motion.mjs:549:2
+Error: Cannot find name 'process'. Do you need to install type definitions for node? Try `npm i --save-dev @types/node`. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/check_feature_titles.mjs:18:30
+Error: Cannot find module 'node:fs' or its corresponding type declarations. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/check_feature_titles.mjs:19:31
+Error: Cannot find module 'node:url' or its corresponding type declarations. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/check_feature_titles.mjs:20:31
+Error: Cannot find module 'node:path' or its corresponding type declarations. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/check_feature_titles.mjs:33:2
+Error: Cannot find name 'process'. Do you need to install type definitions for node? Try `npm i --save-dev @types/node`. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/check_feature_titles.mjs:40:2
+Error: Cannot find name 'process'. Do you need to install type definitions for node? Try `npm i --save-dev @types/node`. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/check_frame_beat.mjs:25:18
+Error: Cannot find module 'path' or its corresponding type declarations. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/check_frame_beat.mjs:26:31
+Error: Cannot find module 'url' or its corresponding type declarations. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/check_frame_beat.mjs:29:70
+Error: Top-level 'await' expressions are only allowed when the 'module' option is set to 'es2022', 'esnext', 'system', 'node16', 'node18', 'node20', 'nodenext', or 'preserve', and the 'target' option is set to 'es2017' or higher. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/check_frame_beat.mjs:34:15
+Error: Parameter 'msg' implicitly has an 'any' type. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/check_frame_beat.mjs:52:2
+Error: Element implicitly has an 'any' type because expression of type 'string' can't be used to index type '{}'.
+  No index signature with a parameter of type 'string' was found on type '{}'. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/check_frame_beat.mjs:55:2
+Error: Element implicitly has an 'any' type because expression of type 'string' can't be used to index type '{}'.
+  No index signature with a parameter of type 'string' was found on type '{}'. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/check_frame_beat.mjs:55:24
+Error: Parameter 'f' implicitly has an 'any' type. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/check_frame_beat.mjs:55:27
+Error: Parameter 'i' implicitly has an 'any' type. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/check_frame_beat.mjs:84:15
+Error: Parameter 'tier' implicitly has an 'any' type. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/check_frame_beat.mjs:84:21
+Error: Parameter 'channel' implicitly has an 'any' type. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/check_frame_beat.mjs:84:45
+Error: Element implicitly has an 'any' type because expression of type 'any' can't be used to index type '{}'. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/check_frame_beat.mjs:84:63
+Error: Parameter 'f' implicitly has an 'any' type. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/check_frame_beat.mjs:89:20
+Error: Parameter 'tier' implicitly has an 'any' type. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/check_frame_beat.mjs:89:41
+Error: Element implicitly has an 'any' type because expression of type 'any' can't be used to index type '{}'. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/check_frame_beat.mjs:89:59
+Error: Parameter 'f' implicitly has an 'any' type. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/check_frame_beat.mjs:109:27
+Error: Element implicitly has an 'any' type because expression of type 'string' can't be used to index type '{}'.
+  No index signature with a parameter of type 'string' was found on type '{}'. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/check_frame_beat.mjs:109:40
+Error: Element implicitly has an 'any' type because expression of type 'string' can't be used to index type '{}'.
+  No index signature with a parameter of type 'string' was found on type '{}'. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/check_frame_beat.mjs:109:58
+Error: Parameter 'f' implicitly has an 'any' type. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/check_frame_beat.mjs:110:7
+Error: Variable 'mean' implicitly has type 'any[]' in some locations where its type cannot be determined. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/check_frame_beat.mjs:110:18
+Error: Variable 'stdev' implicitly has type 'any[]' in some locations where its type cannot be determined. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/check_frame_beat.mjs:112:38
+Error: Element implicitly has an 'any' type because expression of type 'string' can't be used to index type '{}'.
+  No index signature with a parameter of type 'string' was found on type '{}'. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/check_frame_beat.mjs:112:51
+Error: Parameter 'r' implicitly has an 'any' type. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/check_frame_beat.mjs:117:15
+Error: Parameter 'tier' implicitly has an 'any' type. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/check_frame_beat.mjs:120:18
+Error: Element implicitly has an 'any' type because expression of type 'any' can't be used to index type '{}'. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/check_frame_beat.mjs:120:34
+Error: Parameter 'r' implicitly has an 'any' type. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/check_frame_beat.mjs:120:48
+Error: Variable 'mean' implicitly has an 'any[]' type. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/check_frame_beat.mjs:120:59
+Error: Variable 'stdev' implicitly has an 'any[]' type. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/check_frame_beat.mjs:121:28
+Error: Parameter 'a' implicitly has an 'any' type. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/check_frame_beat.mjs:121:31
+Error: Parameter 'b' implicitly has an 'any' type. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/check_frame_beat.mjs:175:22
+Error: The left-hand side of an arithmetic operation must be of type 'any', 'number', 'bigint' or an enum type. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/check_frame_beat.mjs:175:29
+Error: The right-hand side of an arithmetic operation must be of type 'any', 'number', 'bigint' or an enum type. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/check_frame_beat.mjs:177:5
+Error: Cannot find name 'process'. Do you need to install type definitions for node? Try `npm i --save-dev @types/node`. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/check_frame_beat.mjs:183:54
+Error: Property 'toFixed' does not exist on type 'string | number'.
+  Property 'toFixed' does not exist on type 'string'. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/check_frame_beat.mjs:187:99
+Error: Property 'toFixed' does not exist on type 'string | number'.
+  Property 'toFixed' does not exist on type 'string'. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/check_frame_beat.mjs:188:1
+Error: Cannot find name 'process'. Do you need to install type definitions for node? Try `npm i --save-dev @types/node`. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/check_idle_breathe.mjs:23:18
+Error: Cannot find module 'path' or its corresponding type declarations. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/check_idle_breathe.mjs:24:31
+Error: Cannot find module 'url' or its corresponding type declarations. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/check_idle_breathe.mjs:27:95
+Error: Top-level 'await' expressions are only allowed when the 'module' option is set to 'es2022', 'esnext', 'system', 'node16', 'node18', 'node20', 'nodenext', or 'preserve', and the 'target' option is set to 'es2017' or higher. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/check_idle_breathe.mjs:32:15
+Error: Parameter 'msg' implicitly has an 'any' type. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/check_idle_breathe.mjs:104:5
+Error: Cannot find name 'process'. Do you need to install type definitions for node? Try `npm i --save-dev @types/node`. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/check_idle_breathe.mjs:118:1
+Error: Cannot find name 'process'. Do you need to install type definitions for node? Try `npm i --save-dev @types/node`. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/check_idle_sway.mjs:30:18
+Error: Cannot find module 'path' or its corresponding type declarations. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/check_idle_sway.mjs:31:31
+Error: Cannot find module 'url' or its corresponding type declarations. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/check_idle_sway.mjs:34:103
+Error: Top-level 'await' expressions are only allowed when the 'module' option is set to 'es2022', 'esnext', 'system', 'node16', 'node18', 'node20', 'nodenext', or 'preserve', and the 'target' option is set to 'es2017' or higher. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/check_idle_sway.mjs:38:16
+Error: Cannot find name 'process'. Do you need to install type definitions for node? Try `npm i --save-dev @types/node`. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/check_idle_sway.mjs:39:7
+Error: Variable 'problems' implicitly has type 'any[]' in some locations where its type cannot be determined. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/check_idle_sway.mjs:40:15
+Error: Parameter 'message' implicitly has an 'any' type. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/check_idle_sway.mjs:43:7
+Error: 'gcd' implicitly has return type 'any' because it does not have a return type annotation and is referenced directly or indirectly in one of its return expressions. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/check_idle_sway.mjs:43:14
+Error: Parameter 'a' implicitly has an 'any' type. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/check_idle_sway.mjs:43:17
+Error: Parameter 'b' implicitly has an 'any' type. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/check_idle_sway.mjs:44:14
+Error: Parameter 'a' implicitly has an 'any' type. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/check_idle_sway.mjs:44:17
+Error: Parameter 'b' implicitly has an 'any' type. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/check_idle_sway.mjs:70:16
+Error: Parameter 'rig' implicitly has an 'any' type. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/check_idle_sway.mjs:70:21
+Error: Parameter 'part' implicitly has an 'any' type. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/check_idle_sway.mjs:90:53
+Error: Parameter 'p' implicitly has an 'any' type. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/check_idle_sway.mjs:111:37
+Error: Parameter 'p' implicitly has an 'any' type. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/check_idle_sway.mjs:112:36
+Error: Parameter 'p' implicitly has an 'any' type. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/check_idle_sway.mjs:119:35
+Error: Parameter 'p' implicitly has an 'any' type. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/check_idle_sway.mjs:214:18
+Error: Variable 'problems' implicitly has an 'any[]' type. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/check_idle_sway.mjs:215:2
+Error: Cannot find name 'process'. Do you need to install type definitions for node? Try `npm i --save-dev @types/node`. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/check_layered_cast.mjs:1:16
+Error: Cannot find module 'node:fs' or its corresponding type declarations. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/check_layered_cast.mjs:2:18
+Error: Cannot find module 'node:path' or its corresponding type declarations. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/check_layered_cast.mjs:3:31
+Error: Cannot find module 'node:url' or its corresponding type declarations. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/check_layered_cast.mjs:4:20
+Error: Cannot find module 'node:assert/strict' or its corresponding type declarations. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/check_layered_cast.mjs:16:33
+Error: Parameter 'p' implicitly has an 'any' type. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/check_layered_cast.mjs:21:71
+Error: Parameter 'a' implicitly has an 'any' type. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/check_layered_cast.mjs:21:73
+Error: Parameter 'b' implicitly has an 'any' type. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/check_layered_cast.mjs:22:110
+Error: Parameter 'b' implicitly has an 'any' type. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/check_layered_cast.mjs:22:128
+Error: Parameter 'n' implicitly has an 'any' type. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/check_layered_cast.mjs:23:54
+Error: Parameter 'b' implicitly has an 'any' type. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/check_layered_cast.mjs:23:97
+Error: Parameter 'w' implicitly has an 'any' type. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/check_layered_cast.mjs:24:17
+Error: Parameter 'x' implicitly has an 'any' type. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/check_layered_cast.mjs:24:19
+Error: Parameter 'y' implicitly has an 'any' type. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/check_layered_cast.mjs:25:25
+Error: Parameter 'tri' implicitly has an 'any' type. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/check_layered_cast.mjs:25:47
+Error: Parameter 'i' implicitly has an 'any' type. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/check_layered_cast.mjs:25:87
+Error: Parameter 'p' implicitly has an 'any' type. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/check_layered_cast.mjs:25:89
+Error: Parameter 'i' implicitly has an 'any' type. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/check_layered_cast.mjs:25:153
+Error: Parameter 'a' implicitly has an 'any' type. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/check_layered_cast.mjs:25:155
+Error: Parameter 'b' implicitly has an 'any' type. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/check_layered_cast.mjs:25:181
+Error: Parameter 'a' implicitly has an 'any' type. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/check_layered_cast.mjs:25:183
+Error: Parameter 'b' implicitly has an 'any' type. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/check_layered_cast.mjs:27:105
+Error: Parameter 'p' implicitly has an 'any' type. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/check_layered_cast.mjs:29:15
+Error: Parameter 'v' implicitly has an 'any' type. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/check_layered_cast.mjs:29:17
+Error: Parameter 'a' implicitly has an 'any' type. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/check_layered_cast.mjs:29:19
+Error: Parameter 'b' implicitly has an 'any' type. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/check_layered_cast.mjs:29:21
+Error: Parameter 'c' implicitly has an 'any' type. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/check_layered_cast.mjs:31:15
+Error: Parameter 'state' implicitly has an 'any' type. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/check_layered_cast.mjs:31:187
+Error: Element implicitly has an 'any' type because expression of type 'any' can't be used to index type '{}'. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/check_layered_cast.mjs:40:4
+Error: Cannot find name 'process'. Do you need to install type definitions for node? Try `npm i --save-dev @types/node`. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/check_layered_cast.mjs:46:41
+Error: Parameter 'p' implicitly has an 'any' type. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/check_poses.mjs:19:18
+Error: Cannot find module 'path' or its corresponding type declarations. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/check_poses.mjs:20:31
+Error: Cannot find module 'url' or its corresponding type declarations. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/check_poses.mjs:23:65
+Error: Top-level 'await' expressions are only allowed when the 'module' option is set to 'es2022', 'esnext', 'system', 'node16', 'node18', 'node20', 'nodenext', or 'preserve', and the 'target' option is set to 'es2017' or higher. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/check_poses.mjs:26:21
+Error: Top-level 'await' expressions are only allowed when the 'module' option is set to 'es2022', 'esnext', 'system', 'node16', 'node18', 'node20', 'nodenext', or 'preserve', and the 'target' option is set to 'es2017' or higher. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/check_poses.mjs:28:16
+Error: Cannot find name 'process'. Do you need to install type definitions for node? Try `npm i --save-dev @types/node`. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/check_poses.mjs:29:7
+Error: Variable 'problems' implicitly has type 'any[]' in some locations where its type cannot be determined. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/check_poses.mjs:30:15
+Error: Parameter 'm' implicitly has an 'any' type. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/check_poses.mjs:91:18
+Error: Variable 'problems' implicitly has an 'any[]' type. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/check_poses.mjs:92:2
+Error: Cannot find name 'process'. Do you need to install type definitions for node? Try `npm i --save-dev @types/node`. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/check_reel_stop_sound.mjs:2:16
+Error: Cannot find module 'node:fs' or its corresponding type declarations. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/check_reel_stop_sound.mjs:19:2
+Error: Cannot find name 'process'. Do you need to install type definitions for node? Try `npm i --save-dev @types/node`. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/check_rules_match_wins.mjs:36:16
+Error: Cannot find module 'fs' or its corresponding type declarations. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/check_rules_match_wins.mjs:37:18
+Error: Cannot find module 'path' or its corresponding type declarations. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/check_rules_match_wins.mjs:38:18
+Error: Cannot find module 'zlib' or its corresponding type declarations. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/check_rules_match_wins.mjs:39:31
+Error: Cannot find module 'url' or its corresponding type declarations. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/check_rules_match_wins.mjs:42:16
+Error: Cannot find name 'process'. Do you need to install type definitions for node? Try `npm i --save-dev @types/node`. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/check_rules_match_wins.mjs:42:36
+Error: Cannot find name 'process'. Do you need to install type definitions for node? Try `npm i --save-dev @types/node`. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/check_rules_match_wins.mjs:43:17
+Error: Cannot find name 'process'. Do you need to install type definitions for node? Try `npm i --save-dev @types/node`. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/check_rules_match_wins.mjs:45:17
+Error: Top-level 'await' expressions are only allowed when the 'module' option is set to 'es2022', 'esnext', 'system', 'node16', 'node18', 'node20', 'nodenext', or 'preserve', and the 'target' option is set to 'es2017' or higher. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/check_rules_match_wins.mjs:48:15
+Error: Parameter 'msg' implicitly has an 'any' type. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/check_rules_match_wins.mjs:54:17
+Error: Parameter 'symbol' implicitly has an 'any' type. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/check_rules_match_wins.mjs:54:25
+Error: Parameter 'count' implicitly has an 'any' type. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/check_rules_match_wins.mjs:66:17
+Error: Parameter 'book' implicitly has an 'any' type. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/check_rules_match_wins.mjs:69:30
+Error: Cannot find name 'process'. Do you need to install type definitions for node? Try `npm i --save-dev @types/node`. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/check_rules_match_wins.mjs:137:40
+Error: Parameter 'p' implicitly has an 'any' type. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/check_rules_match_wins.mjs:137:60
+Error: Parameter 'a' implicitly has an 'any' type. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/check_rules_match_wins.mjs:137:63
+Error: Parameter 'b' implicitly has an 'any' type. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/check_rules_match_wins.mjs:178:1
+Error: Cannot find name 'process'. Do you need to install type definitions for node? Try `npm i --save-dev @types/node`. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/check_social_words.mjs:26:16
+Error: Cannot find module 'fs' or its corresponding type declarations. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/check_social_words.mjs:27:18
+Error: Cannot find module 'path' or its corresponding type declarations. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/check_social_words.mjs:28:31
+Error: Cannot find module 'url' or its corresponding type declarations. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/check_social_words.mjs:84:26
+Error: Parameter 'text' implicitly has an 'any' type. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/check_social_words.mjs:99:17
+Error: Parameter 'file' implicitly has an 'any' type. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/check_social_words.mjs:99:23
+Error: Parameter 'kind' implicitly has an 'any' type. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/check_social_words.mjs:99:29
+Error: Parameter 'text' implicitly has an 'any' type. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/check_social_words.mjs:99:35
+Error: Parameter 'hits' implicitly has an 'any' type. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/check_social_words.mjs:100:38
+Error: Parameter 'h' implicitly has an 'any' type. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/check_social_words.mjs:101:44
+Error: Element implicitly has an 'any' type because expression of type 'any' can't be used to index type '{ 'win feature': string; 'pay out': string; 'paid out': string; 'pays out': string; 'place your bets': string; 'at the cost of': string; 'cost of': string; 'buy bonus': string; 'bonus buy': string; 'total bet': string; ... 26 more ...; paytable: string; }'. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/check_social_words.mjs:109:22
+Error: Parameter 'dir' implicitly has an 'any' type. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/check_social_words.mjs:111:59
+Error: Parameter 'e' implicitly has an 'any' type. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/check_social_words.mjs:198:1
+Error: Cannot find name 'process'. Do you need to install type definitions for node? Try `npm i --save-dev @types/node`. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/check_sounds.mjs:18:16
+Error: Cannot find module 'fs' or its corresponding type declarations. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/check_sounds.mjs:19:18
+Error: Cannot find module 'path' or its corresponding type declarations. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/check_sounds.mjs:20:31
+Error: Cannot find module 'url' or its corresponding type declarations. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/check_sounds.mjs:43:7
+Error: Variable 'problems' implicitly has type 'any[]' in some locations where its type cannot be determined. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/check_sounds.mjs:44:15
+Error: Parameter 'message' implicitly has an 'any' type. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/check_sounds.mjs:77:15
+Error: Parameter 'dir' implicitly has an 'any' type. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/check_sounds.mjs:78:56
+Error: Parameter 'entry' implicitly has an 'any' type. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/check_sounds.mjs:103:5
+Error: Cannot find name 'process'. Do you need to install type definitions for node? Try `npm i --save-dev @types/node`. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/check_sounds.mjs:108:35
+Error: Element implicitly has an 'any' type because expression of type 'any' can't be used to index type '{ bgm_main: string; bgm_freespin: string; sfx_bigwin_coinloop: string; sfx_anticipation: string; bgm_winlevel_big: string; bgm_winlevel_superwin: string; bgm_winlevel_mega: string; bgm_winlevel_epic: string; bgm_winlevel_max: string; }'. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/check_sounds.mjs:115:2
+Error: Variable 'problems' implicitly has an 'any[]' type. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/check_sounds.mjs:116:2
+Error: Cannot find name 'process'. Do you need to install type definitions for node? Try `npm i --save-dev @types/node`. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/check_sprite_keys.mjs:8:16
+Error: Cannot find module 'fs' or its corresponding type declarations. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/check_sprite_keys.mjs:9:18
+Error: Cannot find module 'path' or its corresponding type declarations. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/check_sprite_keys.mjs:10:31
+Error: Cannot find module 'url' or its corresponding type declarations. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/check_sprite_keys.mjs:19:15
+Error: Parameter 'dir' implicitly has an 'any' type. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/check_sprite_keys.mjs:20:56
+Error: Parameter 'entry' implicitly has an 'any' type. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/check_sprite_keys.mjs:40:2
+Error: Cannot find name 'process'. Do you need to install type definitions for node? Try `npm i --save-dev @types/node`. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/check_symbol_motion.mjs:59:16
+Error: Cannot find module 'fs' or its corresponding type declarations. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/check_symbol_motion.mjs:60:18
+Error: Cannot find module 'path' or its corresponding type declarations. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/check_symbol_motion.mjs:61:31
+Error: Cannot find module 'url' or its corresponding type declarations. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/check_symbol_motion.mjs:64:55
+Error: Top-level 'await' expressions are only allowed when the 'module' option is set to 'es2022', 'esnext', 'system', 'node16', 'node18', 'node20', 'nodenext', or 'preserve', and the 'target' option is set to 'es2017' or higher. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/check_symbol_motion.mjs:67:53
+Error: Top-level 'await' expressions are only allowed when the 'module' option is set to 'es2022', 'esnext', 'system', 'node16', 'node18', 'node20', 'nodenext', or 'preserve', and the 'target' option is set to 'es2017' or higher. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/check_symbol_motion.mjs:72:15
+Error: Parameter 'msg' implicitly has an 'any' type. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/check_symbol_motion.mjs:115:19
+Error: Parameter 'label' implicitly has an 'any' type. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/check_symbol_motion.mjs:154:18
+Error: Parameter 'label' implicitly has an 'any' type. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/check_symbol_motion.mjs:154:25
+Error: Parameter 'table' implicitly has an 'any' type. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/check_symbol_motion.mjs:154:32
+Error: Parameter 'windowMs' implicitly has an 'any' type. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/check_symbol_motion.mjs:175:3
+Error: Element implicitly has an 'any' type because expression of type 'string' can't be used to index type '{}'.
+  No index signature with a parameter of type 'string' was found on type '{}'. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/check_symbol_motion.mjs:194:69
+Error: Parameter 'sum' implicitly has an 'any' type. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/check_symbol_motion.mjs:194:74
+Error: Parameter 'o' implicitly has an 'any' type. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/check_symbol_motion.mjs:237:42
+Error: Parameter 's' implicitly has an 'any' type. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/check_symbol_motion.mjs:237:45
+Error: Parameter 'o' implicitly has an 'any' type. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/check_symbol_motion.mjs:259:8
+Error: Variable 'mean' implicitly has type 'any[]' in some locations where its type cannot be determined. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/check_symbol_motion.mjs:260:8
+Error: Variable 'stdev' implicitly has type 'any[]' in some locations where its type cannot be determined. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/check_symbol_motion.mjs:262:39
+Error: Element implicitly has an 'any' type because expression of type 'string' can't be used to index type '{}'.
+  No index signature with a parameter of type 'string' was found on type '{}'. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/check_symbol_motion.mjs:262:54
+Error: Parameter 'row' implicitly has an 'any' type. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/check_symbol_motion.mjs:268:28
+Error: Element implicitly has an 'any' type because expression of type 'string' can't be used to index type '{}'.
+  No index signature with a parameter of type 'string' was found on type '{}'. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/check_symbol_motion.mjs:268:38
+Error: Element implicitly has an 'any' type because expression of type 'string' can't be used to index type '{}'.
+  No index signature with a parameter of type 'string' was found on type '{}'. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/check_symbol_motion.mjs:268:56
+Error: Parameter 'row' implicitly has an 'any' type. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/check_symbol_motion.mjs:268:73
+Error: Parameter 'v' implicitly has an 'any' type. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/check_symbol_motion.mjs:268:76
+Error: Parameter 'c' implicitly has an 'any' type. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/check_symbol_motion.mjs:268:87
+Error: Variable 'mean' implicitly has an 'any[]' type. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/check_symbol_motion.mjs:268:98
+Error: Variable 'stdev' implicitly has an 'any[]' type. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/check_symbol_motion.mjs:275:19
+Error: Element implicitly has an 'any' type because expression of type 'string' can't be used to index type '{}'.
+  No index signature with a parameter of type 'string' was found on type '{}'. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/check_symbol_motion.mjs:275:32
+Error: Parameter 'row' implicitly has an 'any' type. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/check_symbol_motion.mjs:276:29
+Error: Parameter 'a' implicitly has an 'any' type. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/check_symbol_motion.mjs:276:32
+Error: Parameter 'b' implicitly has an 'any' type. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/check_symbol_motion.mjs:277:28
+Error: Parameter 'a' implicitly has an 'any' type. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/check_symbol_motion.mjs:277:31
+Error: Parameter 'b' implicitly has an 'any' type. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/check_symbol_motion.mjs:279:3
+Error: Element implicitly has an 'any' type because expression of type 'string' can't be used to index type '{}'.
+  No index signature with a parameter of type 'string' was found on type '{}'. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/check_symbol_motion.mjs:280:7
+Error: Element implicitly has an 'any' type because expression of type 'string' can't be used to index type '{}'.
+  No index signature with a parameter of type 'string' was found on type '{}'. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/check_symbol_motion.mjs:281:52
+Error: Element implicitly has an 'any' type because expression of type 'string' can't be used to index type '{}'.
+  No index signature with a parameter of type 'string' was found on type '{}'. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/check_symbol_motion.mjs:304:16
+Error: Parameter 'name' implicitly has an 'any' type. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/check_symbol_motion.mjs:307:19
+Error: Element implicitly has an 'any' type because expression of type 'any' can't be used to index type '{}'. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/check_symbol_motion.mjs:307:32
+Error: Parameter 'row' implicitly has an 'any' type. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/check_symbol_motion.mjs:308:29
+Error: Parameter 'a' implicitly has an 'any' type. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/check_symbol_motion.mjs:308:32
+Error: Parameter 'b' implicitly has an 'any' type. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/check_symbol_motion.mjs:315:28
+Error: Element implicitly has an 'any' type because expression of type 'string' can't be used to index type '{}'.
+  No index signature with a parameter of type 'string' was found on type '{}'. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/check_symbol_motion.mjs:320:14
+Error: Element implicitly has an 'any' type because expression of type 'string' can't be used to index type '{}'.
+  No index signature with a parameter of type 'string' was found on type '{}'. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/check_symbol_motion.mjs:321:14
+Error: Element implicitly has an 'any' type because expression of type 'string' can't be used to index type '{}'.
+  No index signature with a parameter of type 'string' was found on type '{}'. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/check_symbol_motion.mjs:327:23
+Error: The left-hand side of an arithmetic operation must be of type 'any', 'number', 'bigint' or an enum type. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/check_symbol_motion.mjs:327:30
+Error: The right-hand side of an arithmetic operation must be of type 'any', 'number', 'bigint' or an enum type. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/check_symbol_motion.mjs:329:18
+Error: Element implicitly has an 'any' type because expression of type 'any' can't be used to index type '{ win: number; land: number; }'. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/check_symbol_motion.mjs:330:65
+Error: Property 'toFixed' does not exist on type 'string | number'.
+  Property 'toFixed' does not exist on type 'string'. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/check_symbol_motion.mjs:330:81
+Error: Element implicitly has an 'any' type because expression of type 'any' can't be used to index type '{ win: number; land: number; }'. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/check_symbol_motion.mjs:334:6
+Error: Cannot find name 'process'. Do you need to install type definitions for node? Try `npm i --save-dev @types/node`. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/check_symbol_motion.mjs:336:48
+Error: Element implicitly has an 'any' type because expression of type 'string' can't be used to index type '{}'.
+  No index signature with a parameter of type 'string' was found on type '{}'. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/check_symbol_motion.mjs:338:67
+Error: Property 'toFixed' does not exist on type 'string | number'.
+  Property 'toFixed' does not exist on type 'string'. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/check_symbol_motion.mjs:339:41
+Error: Object is possibly 'undefined'. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/check_symbol_motion.mjs:339:57
+Error: Property 'toFixed' does not exist on type 'string | number'.
+  Property 'toFixed' does not exist on type 'string'. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/check_symbol_motion.mjs:339:72
+Error: Object is possibly 'undefined'. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/check_symbol_motion.mjs:339:93
+Error: Object is possibly 'undefined'. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/check_symbol_motion.mjs:366:19
+Error: Parameter 'motion' implicitly has an 'any' type. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/check_symbol_motion.mjs:369:61
+Error: Parameter 's' implicitly has an 'any' type. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/check_symbol_motion.mjs:369:64
+Error: Parameter 'o' implicitly has an 'any' type. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/check_symbol_motion.mjs:393:25
+Error: The left-hand side of an arithmetic operation must be of type 'any', 'number', 'bigint' or an enum type. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/check_symbol_motion.mjs:393:32
+Error: The right-hand side of an arithmetic operation must be of type 'any', 'number', 'bigint' or an enum type. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/check_symbol_motion.mjs:394:6
+Error: Cannot find name 'process'. Do you need to install type definitions for node? Try `npm i --save-dev @types/node`. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/check_symbol_motion.mjs:396:66
+Error: Property 'toFixed' does not exist on type 'string | number'.
+  Property 'toFixed' does not exist on type 'string'. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/check_symbol_motion.mjs:429:24
+Error: Parameter 'source' implicitly has an 'any' type. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/check_symbol_motion.mjs:429:32
+Error: Parameter 'tableName' implicitly has an 'any' type. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/check_symbol_motion.mjs:446:5
+Error: Element implicitly has an 'any' type because expression of type 'any' can't be used to index type '{}'. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/check_symbol_motion.mjs:451:5
+Error: Element implicitly has an 'any' type because expression of type 'any' can't be used to index type '{}'. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/check_symbol_motion.mjs:454:4
+Error: Element implicitly has an 'any' type because expression of type 'any' can't be used to index type '{}'. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/check_symbol_motion.mjs:465:18
+Error: Parameter 'left' implicitly has an 'any' type. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/check_symbol_motion.mjs:465:24
+Error: Parameter 'right' implicitly has an 'any' type. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/check_symbol_motion.mjs:480:22
+Error: Parameter 'line' implicitly has an 'any' type. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/check_symbol_motion.mjs:500:27
+Error: Parameter 'a' implicitly has an 'any' type. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/check_symbol_motion.mjs:500:30
+Error: Parameter 'b' implicitly has an 'any' type. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/check_symbol_motion.mjs:501:17
+Error: Parameter 'block' implicitly has an 'any' type. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/check_symbol_motion.mjs:501:38
+Error: Parameter 'line' implicitly has an 'any' type. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/check_symbol_motion.mjs:502:19
+Error: Parameter 'block' implicitly has an 'any' type. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/check_symbol_motion.mjs:504:13
+Error: Parameter 'line' implicitly has an 'any' type. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/check_symbol_motion.mjs:505:14
+Error: Parameter 'line' implicitly has an 'any' type. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/check_symbol_motion.mjs:506:13
+Error: Parameter 'n' implicitly has an 'any' type. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/check_symbol_motion.mjs:540:52
+Error: Element implicitly has an 'any' type because expression of type 'string' can't be used to index type '{}'.
+  No index signature with a parameter of type 'string' was found on type '{}'. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/check_symbol_motion.mjs:548:9
+Error: Element implicitly has an 'any' type because expression of type 'string' can't be used to index type '{}'.
+  No index signature with a parameter of type 'string' was found on type '{}'. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/check_symbol_motion.mjs:549:40
+Error: Element implicitly has an 'any' type because expression of type 'string' can't be used to index type '{}'.
+  No index signature with a parameter of type 'string' was found on type '{}'. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/check_symbol_motion.mjs:549:54
+Error: Element implicitly has an 'any' type because expression of type 'string' can't be used to index type '{}'.
+  No index signature with a parameter of type 'string' was found on type '{}'. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/check_symbol_motion.mjs:551:19
+Error: Element implicitly has an 'any' type because expression of type '`${string}:${string}`' can't be used to index type '{}'. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/check_symbol_motion.mjs:566:24
+Error: The left-hand side of an arithmetic operation must be of type 'any', 'number', 'bigint' or an enum type. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/check_symbol_motion.mjs:566:31
+Error: The right-hand side of an arithmetic operation must be of type 'any', 'number', 'bigint' or an enum type. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/check_symbol_motion.mjs:567:6
+Error: Cannot find name 'process'. Do you need to install type definitions for node? Try `npm i --save-dev @types/node`. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/check_symbol_motion.mjs:569:68
+Error: Property 'toFixed' does not exist on type 'string | number'.
+  Property 'toFixed' does not exist on type 'string'. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/check_symbol_motion.mjs:575:69
+Error: Property 'toFixed' does not exist on type 'string | number'.
+  Property 'toFixed' does not exist on type 'string'. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/check_symbol_motion.mjs:576:68
+Error: Property 'toFixed' does not exist on type 'string | number'.
+  Property 'toFixed' does not exist on type 'string'. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/check_symbol_motion.mjs:579:1
+Error: Cannot find name 'process'. Do you need to install type definitions for node? Try `npm i --save-dev @types/node`. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/check_symbol_parts.mjs:23:16
+Error: Cannot find module 'fs' or its corresponding type declarations. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/check_symbol_parts.mjs:24:18
+Error: Cannot find module 'path' or its corresponding type declarations. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/check_symbol_parts.mjs:25:31
+Error: Cannot find module 'url' or its corresponding type declarations. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/check_symbol_parts.mjs:28:64
+Error: Top-level 'await' expressions are only allowed when the 'module' option is set to 'es2022', 'esnext', 'system', 'node16', 'node18', 'node20', 'nodenext', or 'preserve', and the 'target' option is set to 'es2017' or higher. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/check_symbol_parts.mjs:29:46
+Error: Top-level 'await' expressions are only allowed when the 'module' option is set to 'es2022', 'esnext', 'system', 'node16', 'node18', 'node20', 'nodenext', or 'preserve', and the 'target' option is set to 'es2017' or higher. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/check_symbol_parts.mjs:30:28
+Error: Top-level 'await' expressions are only allowed when the 'module' option is set to 'es2022', 'esnext', 'system', 'node16', 'node18', 'node20', 'nodenext', or 'preserve', and the 'target' option is set to 'es2017' or higher. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/check_symbol_parts.mjs:31:21
+Error: Top-level 'await' expressions are only allowed when the 'module' option is set to 'es2022', 'esnext', 'system', 'node16', 'node18', 'node20', 'nodenext', or 'preserve', and the 'target' option is set to 'es2017' or higher. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/check_symbol_parts.mjs:32:21
+Error: Top-level 'await' expressions are only allowed when the 'module' option is set to 'es2022', 'esnext', 'system', 'node16', 'node18', 'node20', 'nodenext', or 'preserve', and the 'target' option is set to 'es2017' or higher. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/check_symbol_parts.mjs:35:15
+Error: Parameter 'msg' implicitly has an 'any' type. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/check_symbol_parts.mjs:96:36
+Error: Parameter 'part' implicitly has an 'any' type. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/check_symbol_parts.mjs:104:4
+Error: Element implicitly has an 'any' type because expression of type 'any' can't be used to index type '{}'. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/check_symbol_parts.mjs:140:9
+Error: Variable 'mean' implicitly has type 'any[]' in some locations where its type cannot be determined. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/check_symbol_parts.mjs:140:20
+Error: Variable 'stdev' implicitly has type 'any[]' in some locations where its type cannot be determined. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/check_symbol_parts.mjs:142:40
+Error: Element implicitly has an 'any' type because expression of type 'string' can't be used to index type '{}'.
+  No index signature with a parameter of type 'string' was found on type '{}'. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/check_symbol_parts.mjs:142:55
+Error: Parameter 'r' implicitly has an 'any' type. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/check_symbol_parts.mjs:147:17
+Error: Parameter 'name' implicitly has an 'any' type. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/check_symbol_parts.mjs:150:17
+Error: Element implicitly has an 'any' type because expression of type 'any' can't be used to index type '{}'. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/check_symbol_parts.mjs:150:35
+Error: Parameter 'r' implicitly has an 'any' type. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/check_symbol_parts.mjs:150:49
+Error: Variable 'mean' implicitly has an 'any[]' type. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/check_symbol_parts.mjs:150:60
+Error: Variable 'stdev' implicitly has an 'any[]' type. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/check_symbol_parts.mjs:151:28
+Error: Parameter 'a' implicitly has an 'any' type. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/check_symbol_parts.mjs:151:31
+Error: Parameter 'b' implicitly has an 'any' type. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/check_symbol_parts.mjs:158:26
+Error: Element implicitly has an 'any' type because expression of type 'string' can't be used to index type '{}'.
+  No index signature with a parameter of type 'string' was found on type '{}'. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/check_symbol_parts.mjs:162:8
+Error: Element implicitly has an 'any' type because expression of type 'string' can't be used to index type '{}'.
+  No index signature with a parameter of type 'string' was found on type '{}'. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/check_symbol_parts.mjs:162:85
+Error: Element implicitly has an 'any' type because expression of type 'string' can't be used to index type '{}'.
+  No index signature with a parameter of type 'string' was found on type '{}'. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/check_symbol_parts.mjs:167:15
+Error: Element implicitly has an 'any' type because expression of type 'string' can't be used to index type '{}'.
+  No index signature with a parameter of type 'string' was found on type '{}'. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/check_symbol_parts.mjs:167:41
+Error: Element implicitly has an 'any' type because expression of type 'string' can't be used to index type '{}'.
+  No index signature with a parameter of type 'string' was found on type '{}'. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/check_symbol_parts.mjs:175:24
+Error: The left-hand side of an arithmetic operation must be of type 'any', 'number', 'bigint' or an enum type. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/check_symbol_parts.mjs:175:31
+Error: The right-hand side of an arithmetic operation must be of type 'any', 'number', 'bigint' or an enum type. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/check_symbol_parts.mjs:176:7
+Error: Cannot find name 'process'. Do you need to install type definitions for node? Try `npm i --save-dev @types/node`. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/check_symbol_parts.mjs:178:68
+Error: Property 'toFixed' does not exist on type 'string | number'.
+  Property 'toFixed' does not exist on type 'string'. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/check_symbol_parts.mjs:233:6
+Error: Cannot find name 'process'. Do you need to install type definitions for node? Try `npm i --save-dev @types/node`. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/check_symbol_parts.mjs:246:1
+Error: Cannot find name 'process'. Do you need to install type definitions for node? Try `npm i --save-dev @types/node`. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/check_ui_palette.mjs:51:43
+Error: Cannot find module 'node:fs' or its corresponding type declarations. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/check_ui_palette.mjs:52:41
+Error: Cannot find module 'node:path' or its corresponding type declarations. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/check_ui_palette.mjs:53:31
+Error: Cannot find module 'node:url' or its corresponding type declarations. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/check_ui_palette.mjs:56:16
+Error: Cannot find name 'process'. Do you need to install type definitions for node? Try `npm i --save-dev @types/node`. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/check_ui_palette.mjs:66:12
+Error: Parameter 'f' implicitly has an 'any' type. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/check_ui_palette.mjs:67:9
+Error: Parameter 'f' implicitly has an 'any' type. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/check_ui_palette.mjs:96:24
+Error: Parameter 'src' implicitly has an 'any' type. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/check_ui_palette.mjs:102:15
+Error: Binding element 'r' implicitly has an 'any' type. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/check_ui_palette.mjs:102:18
+Error: Binding element 'g' implicitly has an 'any' type. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/check_ui_palette.mjs:102:21
+Error: Binding element 'b' implicitly has an 'any' type. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/check_ui_palette.mjs:120:7
+Error: Variable 'findings' implicitly has type 'any[]' in some locations where its type cannot be determined. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/check_ui_palette.mjs:121:7
+Error: Variable 'seen' implicitly has type 'any[]' in some locations where its type cannot be determined. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/check_ui_palette.mjs:127:17
+Error: Parameter 'line' implicitly has an 'any' type. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/check_ui_palette.mjs:127:23
+Error: Parameter 'i' implicitly has an 'any' type. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/check_ui_palette.mjs:141:28
+Error: Argument of type 'number[]' is not assignable to parameter of type '[any, any, any]'.
+  Target requires 3 element(s) but source may have fewer. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/check_ui_palette.mjs:168:18
+Error: Variable 'seen' implicitly has an 'any[]' type. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/check_ui_palette.mjs:171:15
+Error: Variable 'seen' implicitly has an 'any[]' type. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/check_ui_palette.mjs:181:18
+Error: Variable 'findings' implicitly has an 'any[]' type. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/check_ui_palette.mjs:186:2
+Error: Cannot find name 'process'. Do you need to install type definitions for node? Try `npm i --save-dev @types/node`. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/check_undefined_refs.mjs:7:16
+Error: Cannot find module 'fs' or its corresponding type declarations. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/check_undefined_refs.mjs:8:18
+Error: Cannot find module 'path' or its corresponding type declarations. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/check_undefined_refs.mjs:9:31
+Error: Cannot find module 'url' or its corresponding type declarations. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/check_undefined_refs.mjs:28:24
+Error: Parameter 'code' implicitly has an 'any' type. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/check_undefined_refs.mjs:64:28
+Error: Parameter 'markup' implicitly has an 'any' type. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/check_undefined_refs.mjs:82:15
+Error: Parameter 'dir' implicitly has an 'any' type. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/check_undefined_refs.mjs:83:56
+Error: Parameter 'entry' implicitly has an 'any' type. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/check_undefined_refs.mjs:190:1
+Error: Cannot find name 'process'. Do you need to install type definitions for node? Try `npm i --save-dev @types/node`. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/measure_cast_travel.mjs:17:30
+Error: Cannot find module 'node:fs' or its corresponding type declarations. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/measure_cast_travel.mjs:18:31
+Error: Cannot find module 'node:url' or its corresponding type declarations. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/measure_cast_travel.mjs:19:31
+Error: Cannot find module 'node:path' or its corresponding type declarations. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/measure_cast_travel.mjs:22:86
+Error: Top-level 'await' expressions are only allowed when the 'module' option is set to 'es2022', 'esnext', 'system', 'node16', 'node18', 'node20', 'nodenext', or 'preserve', and the 'target' option is set to 'es2017' or higher. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/measure_cast_travel.mjs:54:29
+Error: Parameter 'b' implicitly has an 'any' type. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/measure_cast_travel.mjs:55:33
+Error: Parameter '_' implicitly has an 'any' type. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/measure_cast_travel.mjs:55:36
+Error: Parameter 'index' implicitly has an 'any' type. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/measure_cast_travel.mjs:58:14
+Error: Parameter 'value' implicitly has an 'any' type. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/measure_cast_travel.mjs:58:21
+Error: Parameter 'j' implicitly has an 'any' type. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/measure_cast_travel.mjs:61:18
+Error: Rest parameter 'names' implicitly has an 'any[]' type. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/measure_cast_travel.mjs:62:25
+Error: Parameter 'd' implicitly has an 'any' type. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/measure_cast_travel.mjs:62:28
+Error: Parameter 'i' implicitly has an 'any' type. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/measure_cast_travel.mjs:62:78
+Error: Parameter 'i' implicitly has an 'any' type. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/measure_cast_travel.mjs:75:15
+Error: Parameter 'tier' implicitly has an 'any' type. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/measure_cast_travel.mjs:75:21
+Error: Parameter 'reactionAge' implicitly has an 'any' type. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/measure_cast_travel.mjs:75:34
+Error: Parameter 'durationMs' implicitly has an 'any' type. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/measure_cast_travel.mjs:75:46
+Error: Parameter 'timeMs' implicitly has an 'any' type. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/measure_cast_travel.mjs:81:25
+Error: Parameter '_' implicitly has an 'any' type. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/measure_cast_travel.mjs:81:28
+Error: Parameter 'i' implicitly has an 'any' type. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/measure_cast_travel.mjs:91:17
+Error: Parameter 'tier' implicitly has an 'any' type. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/measure_cast_travel.mjs:91:23
+Error: Parameter 'durationMs' implicitly has an 'any' type. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/measure_cast_travel.mjs:97:38
+Error: Parameter 'v' implicitly has an 'any' type. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/measure_cast_travel.mjs:98:37
+Error: Parameter 'v' implicitly has an 'any' type. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/measure_cast_travel.mjs:98:40
+Error: Parameter 'i' implicitly has an 'any' type. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/measure_cast_travel.mjs:98:100
+Error: Parameter 'i' implicitly has an 'any' type. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/measure_cast_travel.mjs:121:29
+Error: Parameter 'tier' implicitly has an 'any' type. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/measure_cast_travel.mjs:121:35
+Error: Parameter 'age' implicitly has an 'any' type. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/measure_cast_travel.mjs:121:40
+Error: Parameter 'durationMs' implicitly has an 'any' type. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/measure_cast_travel.mjs:155:17
+Error: Cannot find name 'process'. Do you need to install type definitions for node? Try `npm i --save-dev @types/node`. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/measure_cast_travel.mjs:158:14
+Error: Parameter 'v' implicitly has an 'any' type. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/measure_cast_travel.mjs:168:18
+Error: Element implicitly has an 'any' type because expression of type 'string' can't be used to index type '{ win: number; winBig: number; trigger: number; }'.
+  No index signature with a parameter of type 'string' was found on type '{ win: number; winBig: number; trigger: number; }'. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/measure_cast_travel.mjs:178:48
+Error: Element implicitly has an 'any' type because expression of type 'string' can't be used to index type '{ win: { rise: number; stretch: number; lean: number; push: { bone: string; x: number; y: number; }; bones: { hips: number[]; waist: number[]; chest: number[]; neck: number[]; head: number[]; arm_l: number[]; fore_l: number[]; arm_r: number[]; fore_r: number[]; }; }; winBig: { ...; }; trigger: { ...; }; }'.
+  No index signature with a parameter of type 'string' was found on type '{ win: { rise: number; stretch: number; lean: number; push: { bone: string; x: number; y: number; }; bones: { hips: number[]; waist: number[]; chest: number[]; neck: number[]; head: number[]; arm_l: number[]; fore_l: number[]; arm_r: number[]; fore_r: number[]; }; }; winBig: { ...; }; trigger: { ...; }; }'. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/measure_cast_travel.mjs:178:108
+Error: Element implicitly has an 'any' type because expression of type 'string' can't be used to index type '{ win: number; winBig: number; trigger: number; }'.
+  No index signature with a parameter of type 'string' was found on type '{ win: number; winBig: number; trigger: number; }'. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/measure_cast_travel.mjs:186:3
+Error: Cannot find name 'process'. Do you need to install type definitions for node? Try `npm i --save-dev @types/node`. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/measure_joint_limits.mjs:22:18
+Error: Cannot find module 'path' or its corresponding type declarations. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/measure_joint_limits.mjs:23:31
+Error: Cannot find module 'url' or its corresponding type declarations. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/measure_joint_limits.mjs:28:16
+Error: Top-level 'await' expressions are only allowed when the 'module' option is set to 'es2022', 'esnext', 'system', 'node16', 'node18', 'node20', 'nodenext', or 'preserve', and the 'target' option is set to 'es2017' or higher. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/measure_joint_limits.mjs:40:13
+Error: Parameter 'bone' implicitly has an 'any' type. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/measure_joint_limits.mjs:40:19
+Error: Parameter 'deg' implicitly has an 'any' type. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/playtest_stub.js:29:21
+Error: Property '__STUB_DATA__' does not exist on type 'Window & typeof globalThis'. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/playtest_stub.js:41:7
+Error: Variable 'forced' implicitly has type 'any' in some locations where its type cannot be determined. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/playtest_stub.js:43:7
+Error: Variable 'current' implicitly has type 'any' in some locations where its type cannot be determined. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/playtest_stub.js:46:17
+Error: Parameter 'mode' implicitly has an 'any' type. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/playtest_stub.js:48:14
+Error: Variable 'forced' implicitly has an 'any' type. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/playtest_stub.js:57:9
+Error: Variable 'levels' implicitly has type 'any[]' in some locations where its type cannot be determined. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/playtest_stub.js:62:12
+Error: Variable 'levels' implicitly has an 'any[]' type. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/playtest_stub.js:65:17
+Error: Parameter 'body' implicitly has an 'any' type. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/playtest_stub.js:97:31
+Error: Parameter 'body' implicitly has an 'any' type. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/playtest_stub.js:114:7
+Error: Element implicitly has an 'any' type because expression of type 'any' can't be used to index type '{}'. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/playtest_stub.js:114:29
+Error: Element implicitly has an 'any' type because expression of type 'any' can't be used to index type '{}'. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/playtest_stub.js:136:11
+Error: Variable 'current' implicitly has an 'any' type. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/playtest_stub.js:155:67
+Error: Property 'url' does not exist on type 'Request | URL'.
+  Property 'url' does not exist on type 'URL'. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/playtest_stub.js:194:17
+Error: Element implicitly has an 'any' type because expression of type 'any' can't be used to index type '{ '/wallet/authenticate': () => Promise<Response>; '/wallet/play': (body: any) => Promise<Response>; '/bet/event': () => Promise<Response>; '/wallet/end-round': () => Promise<...>; }'. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/playtest_stub.js:197:29
+Error: Argument of type 'BodyInit' is not assignable to parameter of type 'string'.
+  Type 'ArrayBuffer' is not assignable to type 'string'. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/playtest_stub.js:198:38
+Error: Property 'mode' does not exist on type '{}'. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/playtest_stub.js:202:10
+Error: Property '__stub' does not exist on type 'Window & typeof globalThis'. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/playtest_stub.js:203:22
+Error: Parameter 'id' implicitly has an 'any' type. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/playtest_stub.js:210:44
+Error: Property '__STUB_CATALOGUE__' does not exist on type 'Window & typeof globalThis'. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/playtest_stub.js:211:27
+Error: Parameter 'v' implicitly has an 'any' type. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/probe_idle_sway.mjs:14:23
+Error: Cannot find module 'child_process' or its corresponding type declarations. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/probe_idle_sway.mjs:15:14
+Error: Cannot find name 'process'. Do you need to install type definitions for node? Try `npm i --save-dev @types/node`. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/probe_idle_sway.mjs:15:45
+Error: Cannot find name 'process'. Do you need to install type definitions for node? Try `npm i --save-dev @types/node`. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/probe_idle_sway.mjs:20:15
+Error: Parameter 'ms' implicitly has an 'any' type. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/probe_idle_sway.mjs:22:114
+Error: Parameter 't' implicitly has an 'any' type. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/probe_idle_sway.mjs:24:1
+Error: Top-level 'await' expressions are only allowed when the 'module' option is set to 'es2022', 'esnext', 'system', 'node16', 'node18', 'node20', 'nodenext', or 'preserve', and the 'target' option is set to 'es2017' or higher. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/probe_idle_sway.mjs:26:16
+Error: Parameter 'e' implicitly has an 'any' type. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/probe_idle_sway.mjs:27:15
+Error: Parameter 'm' implicitly has an 'any' type. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/probe_idle_sway.mjs:28:24
+Error: Parameter 'e' implicitly has an 'any' type. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/probe_idle_sway.mjs:29:22
+Error: Parameter 'x' implicitly has an 'any' type. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/probe_idle_sway.mjs:29:25
+Error: Parameter 'y' implicitly has an 'any' type. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/probe_idle_sway.mjs:30:1
+Error: Top-level 'await' expressions are only allowed when the 'module' option is set to 'es2022', 'esnext', 'system', 'node16', 'node18', 'node20', 'nodenext', or 'preserve', and the 'target' option is set to 'es2017' or higher. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/probe_idle_sway.mjs:30:31
+Error: Top-level 'await' expressions are only allowed when the 'module' option is set to 'es2022', 'esnext', 'system', 'node16', 'node18', 'node20', 'nodenext', or 'preserve', and the 'target' option is set to 'es2017' or higher. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/probe_idle_sway.mjs:30:58
+Error: Top-level 'await' expressions are only allowed when the 'module' option is set to 'es2022', 'esnext', 'system', 'node16', 'node18', 'node20', 'nodenext', or 'preserve', and the 'target' option is set to 'es2017' or higher. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/probe_idle_sway.mjs:31:1
+Error: Top-level 'await' expressions are only allowed when the 'module' option is set to 'es2022', 'esnext', 'system', 'node16', 'node18', 'node20', 'nodenext', or 'preserve', and the 'target' option is set to 'es2017' or higher. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/probe_idle_sway.mjs:32:45
+Error: Top-level 'await' expressions are only allowed when the 'module' option is set to 'es2022', 'esnext', 'system', 'node16', 'node18', 'node20', 'nodenext', or 'preserve', and the 'target' option is set to 'es2017' or higher. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/probe_idle_sway.mjs:32:61
+Error: Top-level 'await' expressions are only allowed when the 'module' option is set to 'es2022', 'esnext', 'system', 'node16', 'node18', 'node20', 'nodenext', or 'preserve', and the 'target' option is set to 'es2017' or higher. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/probe_idle_sway.mjs:33:1
+Error: Top-level 'await' expressions are only allowed when the 'module' option is set to 'es2022', 'esnext', 'system', 'node16', 'node18', 'node20', 'nodenext', or 'preserve', and the 'target' option is set to 'es2017' or higher. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/probe_idle_sway.mjs:37:15
+Error: Top-level 'await' expressions are only allowed when the 'module' option is set to 'es2022', 'esnext', 'system', 'node16', 'node18', 'node20', 'nodenext', or 'preserve', and the 'target' option is set to 'es2017' or higher. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/probe_idle_sway.mjs:38:17
+Error: Top-level 'await' expressions are only allowed when the 'module' option is set to 'es2022', 'esnext', 'system', 'node16', 'node18', 'node20', 'nodenext', or 'preserve', and the 'target' option is set to 'es2017' or higher. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/probe_idle_sway.mjs:40:3
+Error: Top-level 'await' expressions are only allowed when the 'module' option is set to 'es2022', 'esnext', 'system', 'node16', 'node18', 'node20', 'nodenext', or 'preserve', and the 'target' option is set to 'es2017' or higher. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/probe_idle_sway.mjs:41:3
+Error: Top-level 'await' expressions are only allowed when the 'module' option is set to 'es2022', 'esnext', 'system', 'node16', 'node18', 'node20', 'nodenext', or 'preserve', and the 'target' option is set to 'es2017' or higher. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/probe_idle_sway.mjs:42:41
+Error: Top-level 'await' expressions are only allowed when the 'module' option is set to 'es2022', 'esnext', 'system', 'node16', 'node18', 'node20', 'nodenext', or 'preserve', and the 'target' option is set to 'es2017' or higher. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/probe_idle_sway.mjs:42:120
+Error: Top-level 'await' expressions are only allowed when the 'module' option is set to 'es2022', 'esnext', 'system', 'node16', 'node18', 'node20', 'nodenext', or 'preserve', and the 'target' option is set to 'es2017' or higher. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/probe_idle_sway.mjs:43:3
+Error: Top-level 'await' expressions are only allowed when the 'module' option is set to 'es2022', 'esnext', 'system', 'node16', 'node18', 'node20', 'nodenext', or 'preserve', and the 'target' option is set to 'es2017' or higher. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/probe_idle_sway.mjs:46:1
+Error: Top-level 'await' expressions are only allowed when the 'module' option is set to 'es2022', 'esnext', 'system', 'node16', 'node18', 'node20', 'nodenext', or 'preserve', and the 'target' option is set to 'es2017' or higher. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/probe_idle_sway.mjs:76:1
+Error: Top-level 'await' expressions are only allowed when the 'module' option is set to 'es2022', 'esnext', 'system', 'node16', 'node18', 'node20', 'nodenext', or 'preserve', and the 'target' option is set to 'es2017' or higher. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/probe_idle_sway.mjs:77:27
+Error: Top-level 'await' expressions are only allowed when the 'module' option is set to 'es2022', 'esnext', 'system', 'node16', 'node18', 'node20', 'nodenext', or 'preserve', and the 'target' option is set to 'es2017' or higher. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/probe_idle_sway.mjs:78:19
+Error: Cannot find name 'process'. Do you need to install type definitions for node? Try `npm i --save-dev @types/node`. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/probe_idle_sway.mjs:80:120
+Error: Cannot find name 'process'. Do you need to install type definitions for node? Try `npm i --save-dev @types/node`. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/probe_idle_sway.mjs:105:1
+Error: Cannot find name 'process'. Do you need to install type definitions for node? Try `npm i --save-dev @types/node`. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/probe_layout.mjs:20:23
+Error: Cannot find module 'child_process' or its corresponding type declarations. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/probe_layout.mjs:21:16
+Error: Cannot find module 'fs' or its corresponding type declarations. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/probe_layout.mjs:23:14
+Error: Cannot find name 'process'. Do you need to install type definitions for node? Try `npm i --save-dev @types/node`. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/probe_layout.mjs:24:13
+Error: Cannot find name 'process'. Do you need to install type definitions for node? Try `npm i --save-dev @types/node`. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/probe_layout.mjs:34:16
+Error: Parameter 'ms' implicitly has an 'any' type. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/probe_layout.mjs:49:88
+Error: Parameter 't' implicitly has an 'any' type. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/probe_layout.mjs:57:17
+Error: Parameter 'method' implicitly has an 'any' type. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/probe_layout.mjs:58:21
+Error: Parameter 'x' implicitly has an 'any' type. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/probe_layout.mjs:59:23
+Error: Parameter 'n' implicitly has an 'any' type. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/probe_layout.mjs:59:134
+Error: Cannot find name 'Buffer'. Do you need to install type definitions for node? Try `npm i --save-dev @types/node`. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/probe_layout.mjs:60:24
+Error: Parameter 'x' implicitly has an 'any' type. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/probe_layout.mjs:60:27
+Error: Parameter 'y' implicitly has an 'any' type. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/probe_layout.mjs:146:9
+Error: Cannot find name 'process'. Do you need to install type definitions for node? Try `npm i --save-dev @types/node`. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/probe_motion.mjs:17:23
+Error: Cannot find module 'child_process' or its corresponding type declarations. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/probe_motion.mjs:18:16
+Error: Cannot find module 'fs' or its corresponding type declarations. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/probe_motion.mjs:20:14
+Error: Cannot find name 'process'. Do you need to install type definitions for node? Try `npm i --save-dev @types/node`. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/probe_motion.mjs:21:22
+Error: Cannot find name 'process'. Do you need to install type definitions for node? Try `npm i --save-dev @types/node`. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/probe_motion.mjs:30:16
+Error: Parameter 'ms' implicitly has an 'any' type. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/probe_motion.mjs:35:17
+Error: Top-level 'await' expressions are only allowed when the 'module' option is set to 'es2022', 'esnext', 'system', 'node16', 'node18', 'node20', 'nodenext', or 'preserve', and the 'target' option is set to 'es2017' or higher. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/probe_motion.mjs:35:42
+Error: Parameter 't' implicitly has an 'any' type. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/probe_motion.mjs:36:3
+Error: Top-level 'await' expressions are only allowed when the 'module' option is set to 'es2022', 'esnext', 'system', 'node16', 'node18', 'node20', 'nodenext', or 'preserve', and the 'target' option is set to 'es2017' or higher. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/probe_motion.mjs:38:54
+Error: Cannot find name 'process'. Do you need to install type definitions for node? Try `npm i --save-dev @types/node`. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/probe_motion.mjs:41:1
+Error: Top-level 'await' expressions are only allowed when the 'module' option is set to 'es2022', 'esnext', 'system', 'node16', 'node18', 'node20', 'nodenext', or 'preserve', and the 'target' option is set to 'es2017' or higher. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/probe_motion.mjs:44:7
+Error: Variable 'consoleLines' implicitly has type 'any[]' in some locations where its type cannot be determined. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/probe_motion.mjs:45:17
+Error: Parameter 'e' implicitly has an 'any' type. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/probe_motion.mjs:48:70
+Error: Parameter 'a' implicitly has an 'any' type. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/probe_motion.mjs:55:15
+Error: Parameter 'method' implicitly has an 'any' type. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/probe_motion.mjs:56:25
+Error: Parameter 'expr' implicitly has an 'any' type. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/probe_motion.mjs:61:22
+Error: Parameter 'x' implicitly has an 'any' type. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/probe_motion.mjs:61:25
+Error: Parameter 'y' implicitly has an 'any' type. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/probe_motion.mjs:68:1
+Error: Top-level 'await' expressions are only allowed when the 'module' option is set to 'es2022', 'esnext', 'system', 'node16', 'node18', 'node20', 'nodenext', or 'preserve', and the 'target' option is set to 'es2017' or higher. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/probe_motion.mjs:69:1
+Error: Top-level 'await' expressions are only allowed when the 'module' option is set to 'es2022', 'esnext', 'system', 'node16', 'node18', 'node20', 'nodenext', or 'preserve', and the 'target' option is set to 'es2017' or higher. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/probe_motion.mjs:74:1
+Error: Top-level 'await' expressions are only allowed when the 'module' option is set to 'es2022', 'esnext', 'system', 'node16', 'node18', 'node20', 'nodenext', or 'preserve', and the 'target' option is set to 'es2017' or higher. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/probe_motion.mjs:75:1
+Error: Top-level 'await' expressions are only allowed when the 'module' option is set to 'es2022', 'esnext', 'system', 'node16', 'node18', 'node20', 'nodenext', or 'preserve', and the 'target' option is set to 'es2017' or higher. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/probe_motion.mjs:81:3
+Error: Top-level 'await' expressions are only allowed when the 'module' option is set to 'es2022', 'esnext', 'system', 'node16', 'node18', 'node20', 'nodenext', or 'preserve', and the 'target' option is set to 'es2017' or higher. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/probe_motion.mjs:82:3
+Error: Top-level 'await' expressions are only allowed when the 'module' option is set to 'es2022', 'esnext', 'system', 'node16', 'node18', 'node20', 'nodenext', or 'preserve', and the 'target' option is set to 'es2017' or higher. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/probe_motion.mjs:84:1
+Error: Top-level 'await' expressions are only allowed when the 'module' option is set to 'es2022', 'esnext', 'system', 'node16', 'node18', 'node20', 'nodenext', or 'preserve', and the 'target' option is set to 'es2017' or higher. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/probe_motion.mjs:87:1
+Error: Top-level 'await' expressions are only allowed when the 'module' option is set to 'es2022', 'esnext', 'system', 'node16', 'node18', 'node20', 'nodenext', or 'preserve', and the 'target' option is set to 'es2017' or higher. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/probe_motion.mjs:131:20
+Error: Top-level 'await' expressions are only allowed when the 'module' option is set to 'es2022', 'esnext', 'system', 'node16', 'node18', 'node20', 'nodenext', or 'preserve', and the 'target' option is set to 'es2017' or higher. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/probe_motion.mjs:142:17
+Error: Cannot find name 'process'. Do you need to install type definitions for node? Try `npm i --save-dev @types/node`. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/probe_motion.mjs:143:14
+Error: Top-level 'await' expressions are only allowed when the 'module' option is set to 'es2022', 'esnext', 'system', 'node16', 'node18', 'node20', 'nodenext', or 'preserve', and the 'target' option is set to 'es2017' or higher. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/probe_motion.mjs:144:21
+Error: Parameter 'name' implicitly has an 'any' type. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/probe_motion.mjs:146:46
+Error: Cannot find name 'Buffer'. Do you need to install type definitions for node? Try `npm i --save-dev @types/node`. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/probe_motion.mjs:149:5
+Error: Cannot find name 'process'. Do you need to install type definitions for node? Try `npm i --save-dev @types/node`. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/probe_motion.mjs:154:3
+Error: Top-level 'await' expressions are only allowed when the 'module' option is set to 'es2022', 'esnext', 'system', 'node16', 'node18', 'node20', 'nodenext', or 'preserve', and the 'target' option is set to 'es2017' or higher. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/probe_motion.mjs:155:3
+Error: Top-level 'await' expressions are only allowed when the 'module' option is set to 'es2022', 'esnext', 'system', 'node16', 'node18', 'node20', 'nodenext', or 'preserve', and the 'target' option is set to 'es2017' or higher. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/probe_motion.mjs:155:40
+Error: Cannot find name 'process'. Do you need to install type definitions for node? Try `npm i --save-dev @types/node`. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/probe_motion.mjs:157:23
+Error: Cannot find name 'process'. Do you need to install type definitions for node? Try `npm i --save-dev @types/node`. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/probe_motion.mjs:159:44
+Error: Top-level 'await' expressions are only allowed when the 'module' option is set to 'es2022', 'esnext', 'system', 'node16', 'node18', 'node20', 'nodenext', or 'preserve', and the 'target' option is set to 'es2017' or higher. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/probe_motion.mjs:159:94
+Error: Top-level 'await' expressions are only allowed when the 'module' option is set to 'es2022', 'esnext', 'system', 'node16', 'node18', 'node20', 'nodenext', or 'preserve', and the 'target' option is set to 'es2017' or higher. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/probe_motion.mjs:161:5
+Error: Top-level 'await' expressions are only allowed when the 'module' option is set to 'es2022', 'esnext', 'system', 'node16', 'node18', 'node20', 'nodenext', or 'preserve', and the 'target' option is set to 'es2017' or higher. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/probe_motion.mjs:166:3
+Error: Top-level 'await' expressions are only allowed when the 'module' option is set to 'es2022', 'esnext', 'system', 'node16', 'node18', 'node20', 'nodenext', or 'preserve', and the 'target' option is set to 'es2017' or higher. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/probe_motion.mjs:169:36
+Error: Top-level 'await' expressions are only allowed when the 'module' option is set to 'es2022', 'esnext', 'system', 'node16', 'node18', 'node20', 'nodenext', or 'preserve', and the 'target' option is set to 'es2017' or higher. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/probe_motion.mjs:169:90
+Error: Top-level 'await' expressions are only allowed when the 'module' option is set to 'es2022', 'esnext', 'system', 'node16', 'node18', 'node20', 'nodenext', or 'preserve', and the 'target' option is set to 'es2017' or higher. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/probe_motion.mjs:171:5
+Error: Top-level 'await' expressions are only allowed when the 'module' option is set to 'es2022', 'esnext', 'system', 'node16', 'node18', 'node20', 'nodenext', or 'preserve', and the 'target' option is set to 'es2017' or higher. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/probe_motion.mjs:175:16
+Error: Top-level 'await' expressions are only allowed when the 'module' option is set to 'es2022', 'esnext', 'system', 'node16', 'node18', 'node20', 'nodenext', or 'preserve', and the 'target' option is set to 'es2017' or higher. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/probe_motion.mjs:176:18
+Error: Cannot find name 'process'. Do you need to install type definitions for node? Try `npm i --save-dev @types/node`. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/probe_motion.mjs:179:50
+Error: Variable 'consoleLines' implicitly has an 'any[]' type. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/probe_motion.mjs:181:1
+Error: Cannot find name 'process'. Do you need to install type definitions for node? Try `npm i --save-dev @types/node`. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/probe_platform_ux.mjs:17:23
+Error: Cannot find module 'child_process' or its corresponding type declarations. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/probe_platform_ux.mjs:19:14
+Error: Cannot find name 'process'. Do you need to install type definitions for node? Try `npm i --save-dev @types/node`. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/probe_platform_ux.mjs:28:16
+Error: Parameter 'ms' implicitly has an 'any' type. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/probe_platform_ux.mjs:33:17
+Error: Top-level 'await' expressions are only allowed when the 'module' option is set to 'es2022', 'esnext', 'system', 'node16', 'node18', 'node20', 'nodenext', or 'preserve', and the 'target' option is set to 'es2017' or higher. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/probe_platform_ux.mjs:33:42
+Error: Parameter 't' implicitly has an 'any' type. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/probe_platform_ux.mjs:34:3
+Error: Top-level 'await' expressions are only allowed when the 'module' option is set to 'es2022', 'esnext', 'system', 'node16', 'node18', 'node20', 'nodenext', or 'preserve', and the 'target' option is set to 'es2017' or higher. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/probe_platform_ux.mjs:36:54
+Error: Cannot find name 'process'. Do you need to install type definitions for node? Try `npm i --save-dev @types/node`. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/probe_platform_ux.mjs:39:1
+Error: Top-level 'await' expressions are only allowed when the 'module' option is set to 'es2022', 'esnext', 'system', 'node16', 'node18', 'node20', 'nodenext', or 'preserve', and the 'target' option is set to 'es2017' or higher. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/probe_platform_ux.mjs:42:17
+Error: Parameter 'e' implicitly has an 'any' type. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/probe_platform_ux.mjs:43:15
+Error: Parameter 'method' implicitly has an 'any' type. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/probe_platform_ux.mjs:44:25
+Error: Parameter 'expr' implicitly has an 'any' type. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/probe_platform_ux.mjs:49:22
+Error: Parameter 'x' implicitly has an 'any' type. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/probe_platform_ux.mjs:49:25
+Error: Parameter 'y' implicitly has an 'any' type. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/probe_platform_ux.mjs:56:20
+Error: Parameter 'text' implicitly has an 'any' type. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/probe_platform_ux.mjs:56:26
+Error: Parameter 'code' implicitly has an 'any' type. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/probe_platform_ux.mjs:56:32
+Error: Parameter 'vk' implicitly has an 'any' type. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/probe_platform_ux.mjs:62:24
+Error: Parameter 'text' implicitly has an 'any' type. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/probe_platform_ux.mjs:62:30
+Error: Parameter 'code' implicitly has an 'any' type. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/probe_platform_ux.mjs:62:36
+Error: Parameter 'vk' implicitly has an 'any' type. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/probe_platform_ux.mjs:64:1
+Error: Top-level 'await' expressions are only allowed when the 'module' option is set to 'es2022', 'esnext', 'system', 'node16', 'node18', 'node20', 'nodenext', or 'preserve', and the 'target' option is set to 'es2017' or higher. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/probe_platform_ux.mjs:65:1
+Error: Top-level 'await' expressions are only allowed when the 'module' option is set to 'es2022', 'esnext', 'system', 'node16', 'node18', 'node20', 'nodenext', or 'preserve', and the 'target' option is set to 'es2017' or higher. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/probe_platform_ux.mjs:66:1
+Error: Top-level 'await' expressions are only allowed when the 'module' option is set to 'es2022', 'esnext', 'system', 'node16', 'node18', 'node20', 'nodenext', or 'preserve', and the 'target' option is set to 'es2017' or higher. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/probe_platform_ux.mjs:67:1
+Error: Top-level 'await' expressions are only allowed when the 'module' option is set to 'es2022', 'esnext', 'system', 'node16', 'node18', 'node20', 'nodenext', or 'preserve', and the 'target' option is set to 'es2017' or higher. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/probe_platform_ux.mjs:75:17
+Error: Cannot find name 'process'. Do you need to install type definitions for node? Try `npm i --save-dev @types/node`. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/probe_platform_ux.mjs:77:3
+Error: Top-level 'await' expressions are only allowed when the 'module' option is set to 'es2022', 'esnext', 'system', 'node16', 'node18', 'node20', 'nodenext', or 'preserve', and the 'target' option is set to 'es2017' or higher. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/probe_platform_ux.mjs:78:3
+Error: Top-level 'await' expressions are only allowed when the 'module' option is set to 'es2022', 'esnext', 'system', 'node16', 'node18', 'node20', 'nodenext', or 'preserve', and the 'target' option is set to 'es2017' or higher. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/probe_platform_ux.mjs:79:3
+Error: Top-level 'await' expressions are only allowed when the 'module' option is set to 'es2022', 'esnext', 'system', 'node16', 'node18', 'node20', 'nodenext', or 'preserve', and the 'target' option is set to 'es2017' or higher. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/probe_platform_ux.mjs:81:3
+Error: Top-level 'await' expressions are only allowed when the 'module' option is set to 'es2022', 'esnext', 'system', 'node16', 'node18', 'node20', 'nodenext', or 'preserve', and the 'target' option is set to 'es2017' or higher. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/probe_platform_ux.mjs:82:3
+Error: Top-level 'await' expressions are only allowed when the 'module' option is set to 'es2022', 'esnext', 'system', 'node16', 'node18', 'node20', 'nodenext', or 'preserve', and the 'target' option is set to 'es2017' or higher. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/probe_platform_ux.mjs:83:3
+Error: Top-level 'await' expressions are only allowed when the 'module' option is set to 'es2022', 'esnext', 'system', 'node16', 'node18', 'node20', 'nodenext', or 'preserve', and the 'target' option is set to 'es2017' or higher. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/probe_platform_ux.mjs:88:48
+Error: Top-level 'await' expressions are only allowed when the 'module' option is set to 'es2022', 'esnext', 'system', 'node16', 'node18', 'node20', 'nodenext', or 'preserve', and the 'target' option is set to 'es2017' or higher. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/probe_platform_ux.mjs:88:67
+Error: Top-level 'await' expressions are only allowed when the 'module' option is set to 'es2022', 'esnext', 'system', 'node16', 'node18', 'node20', 'nodenext', or 'preserve', and the 'target' option is set to 'es2017' or higher. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/probe_platform_ux.mjs:89:1
+Error: Top-level 'await' expressions are only allowed when the 'module' option is set to 'es2022', 'esnext', 'system', 'node16', 'node18', 'node20', 'nodenext', or 'preserve', and the 'target' option is set to 'es2017' or higher. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/probe_platform_ux.mjs:97:26
+Error: Parameter 'limit' implicitly has an 'any' type. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/probe_platform_ux.mjs:108:7
+Error: Variable 'results' implicitly has type 'any[]' in some locations where its type cannot be determined. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/probe_platform_ux.mjs:109:16
+Error: Parameter 'name' implicitly has an 'any' type. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/probe_platform_ux.mjs:109:22
+Error: Parameter 'pass' implicitly has an 'any' type. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/probe_platform_ux.mjs:109:28
+Error: Parameter 'detail' implicitly has an 'any' type. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/probe_platform_ux.mjs:111:1
+Error: Top-level 'await' expressions are only allowed when the 'module' option is set to 'es2022', 'esnext', 'system', 'node16', 'node18', 'node20', 'nodenext', or 'preserve', and the 'target' option is set to 'es2017' or higher. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/probe_platform_ux.mjs:114:1
+Error: Top-level 'await' expressions are only allowed when the 'module' option is set to 'es2022', 'esnext', 'system', 'node16', 'node18', 'node20', 'nodenext', or 'preserve', and the 'target' option is set to 'es2017' or higher. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/probe_platform_ux.mjs:115:15
+Error: Top-level 'await' expressions are only allowed when the 'module' option is set to 'es2022', 'esnext', 'system', 'node16', 'node18', 'node20', 'nodenext', or 'preserve', and the 'target' option is set to 'es2017' or higher. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/probe_platform_ux.mjs:117:1
+Error: Top-level 'await' expressions are only allowed when the 'module' option is set to 'es2022', 'esnext', 'system', 'node16', 'node18', 'node20', 'nodenext', or 'preserve', and the 'target' option is set to 'es2017' or higher. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/probe_platform_ux.mjs:130:1
+Error: Top-level 'await' expressions are only allowed when the 'module' option is set to 'es2022', 'esnext', 'system', 'node16', 'node18', 'node20', 'nodenext', or 'preserve', and the 'target' option is set to 'es2017' or higher. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/probe_platform_ux.mjs:131:1
+Error: Top-level 'await' expressions are only allowed when the 'module' option is set to 'es2022', 'esnext', 'system', 'node16', 'node18', 'node20', 'nodenext', or 'preserve', and the 'target' option is set to 'es2017' or higher. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/probe_platform_ux.mjs:132:1
+Error: Top-level 'await' expressions are only allowed when the 'module' option is set to 'es2022', 'esnext', 'system', 'node16', 'node18', 'node20', 'nodenext', or 'preserve', and the 'target' option is set to 'es2017' or higher. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/probe_platform_ux.mjs:133:22
+Error: Top-level 'await' expressions are only allowed when the 'module' option is set to 'es2022', 'esnext', 'system', 'node16', 'node18', 'node20', 'nodenext', or 'preserve', and the 'target' option is set to 'es2017' or higher. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/probe_platform_ux.mjs:136:1
+Error: Top-level 'await' expressions are only allowed when the 'module' option is set to 'es2022', 'esnext', 'system', 'node16', 'node18', 'node20', 'nodenext', or 'preserve', and the 'target' option is set to 'es2017' or higher. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/probe_platform_ux.mjs:137:1
+Error: Top-level 'await' expressions are only allowed when the 'module' option is set to 'es2022', 'esnext', 'system', 'node16', 'node18', 'node20', 'nodenext', or 'preserve', and the 'target' option is set to 'es2017' or higher. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/probe_platform_ux.mjs:138:21
+Error: Top-level 'await' expressions are only allowed when the 'module' option is set to 'es2022', 'esnext', 'system', 'node16', 'node18', 'node20', 'nodenext', or 'preserve', and the 'target' option is set to 'es2017' or higher. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/probe_platform_ux.mjs:141:1
+Error: Top-level 'await' expressions are only allowed when the 'module' option is set to 'es2022', 'esnext', 'system', 'node16', 'node18', 'node20', 'nodenext', or 'preserve', and the 'target' option is set to 'es2017' or higher. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/probe_platform_ux.mjs:143:1
+Error: Top-level 'await' expressions are only allowed when the 'module' option is set to 'es2022', 'esnext', 'system', 'node16', 'node18', 'node20', 'nodenext', or 'preserve', and the 'target' option is set to 'es2017' or higher. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/probe_platform_ux.mjs:144:1
+Error: Top-level 'await' expressions are only allowed when the 'module' option is set to 'es2022', 'esnext', 'system', 'node16', 'node18', 'node20', 'nodenext', or 'preserve', and the 'target' option is set to 'es2017' or higher. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/probe_platform_ux.mjs:147:12
+Error: Top-level 'await' expressions are only allowed when the 'module' option is set to 'es2022', 'esnext', 'system', 'node16', 'node18', 'node20', 'nodenext', or 'preserve', and the 'target' option is set to 'es2017' or higher. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/probe_platform_ux.mjs:148:1
+Error: Top-level 'await' expressions are only allowed when the 'module' option is set to 'es2022', 'esnext', 'system', 'node16', 'node18', 'node20', 'nodenext', or 'preserve', and the 'target' option is set to 'es2017' or higher. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/probe_platform_ux.mjs:149:1
+Error: Top-level 'await' expressions are only allowed when the 'module' option is set to 'es2022', 'esnext', 'system', 'node16', 'node18', 'node20', 'nodenext', or 'preserve', and the 'target' option is set to 'es2017' or higher. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/probe_platform_ux.mjs:150:12
+Error: Top-level 'await' expressions are only allowed when the 'module' option is set to 'es2022', 'esnext', 'system', 'node16', 'node18', 'node20', 'nodenext', or 'preserve', and the 'target' option is set to 'es2017' or higher. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/probe_platform_ux.mjs:153:1
+Error: Top-level 'await' expressions are only allowed when the 'module' option is set to 'es2022', 'esnext', 'system', 'node16', 'node18', 'node20', 'nodenext', or 'preserve', and the 'target' option is set to 'es2017' or higher. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/probe_platform_ux.mjs:154:1
+Error: Top-level 'await' expressions are only allowed when the 'module' option is set to 'es2022', 'esnext', 'system', 'node16', 'node18', 'node20', 'nodenext', or 'preserve', and the 'target' option is set to 'es2017' or higher. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/probe_platform_ux.mjs:155:12
+Error: Top-level 'await' expressions are only allowed when the 'module' option is set to 'es2022', 'esnext', 'system', 'node16', 'node18', 'node20', 'nodenext', or 'preserve', and the 'target' option is set to 'es2017' or higher. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/probe_platform_ux.mjs:159:1
+Error: Top-level 'await' expressions are only allowed when the 'module' option is set to 'es2022', 'esnext', 'system', 'node16', 'node18', 'node20', 'nodenext', or 'preserve', and the 'target' option is set to 'es2017' or higher. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/probe_platform_ux.mjs:160:1
+Error: Top-level 'await' expressions are only allowed when the 'module' option is set to 'es2022', 'esnext', 'system', 'node16', 'node18', 'node20', 'nodenext', or 'preserve', and the 'target' option is set to 'es2017' or higher. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/probe_platform_ux.mjs:161:1
+Error: Top-level 'await' expressions are only allowed when the 'module' option is set to 'es2022', 'esnext', 'system', 'node16', 'node18', 'node20', 'nodenext', or 'preserve', and the 'target' option is set to 'es2017' or higher. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/probe_platform_ux.mjs:162:12
+Error: Top-level 'await' expressions are only allowed when the 'module' option is set to 'es2022', 'esnext', 'system', 'node16', 'node18', 'node20', 'nodenext', or 'preserve', and the 'target' option is set to 'es2017' or higher. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/probe_platform_ux.mjs:164:18
+Error: Top-level 'await' expressions are only allowed when the 'module' option is set to 'es2022', 'esnext', 'system', 'node16', 'node18', 'node20', 'nodenext', or 'preserve', and the 'target' option is set to 'es2017' or higher. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/probe_platform_ux.mjs:164:36
+Error: Top-level 'await' expressions are only allowed when the 'module' option is set to 'es2022', 'esnext', 'system', 'node16', 'node18', 'node20', 'nodenext', or 'preserve', and the 'target' option is set to 'es2017' or higher. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/probe_platform_ux.mjs:164:74
+Error: Top-level 'await' expressions are only allowed when the 'module' option is set to 'es2022', 'esnext', 'system', 'node16', 'node18', 'node20', 'nodenext', or 'preserve', and the 'target' option is set to 'es2017' or higher. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/probe_platform_ux.mjs:166:1
+Error: Top-level 'await' expressions are only allowed when the 'module' option is set to 'es2022', 'esnext', 'system', 'node16', 'node18', 'node20', 'nodenext', or 'preserve', and the 'target' option is set to 'es2017' or higher. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/probe_platform_ux.mjs:167:1
+Error: Top-level 'await' expressions are only allowed when the 'module' option is set to 'es2022', 'esnext', 'system', 'node16', 'node18', 'node20', 'nodenext', or 'preserve', and the 'target' option is set to 'es2017' or higher. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/probe_platform_ux.mjs:168:15
+Error: Top-level 'await' expressions are only allowed when the 'module' option is set to 'es2022', 'esnext', 'system', 'node16', 'node18', 'node20', 'nodenext', or 'preserve', and the 'target' option is set to 'es2017' or higher. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/probe_platform_ux.mjs:170:1
+Error: Top-level 'await' expressions are only allowed when the 'module' option is set to 'es2022', 'esnext', 'system', 'node16', 'node18', 'node20', 'nodenext', or 'preserve', and the 'target' option is set to 'es2017' or higher. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/probe_platform_ux.mjs:171:1
+Error: Top-level 'await' expressions are only allowed when the 'module' option is set to 'es2022', 'esnext', 'system', 'node16', 'node18', 'node20', 'nodenext', or 'preserve', and the 'target' option is set to 'es2017' or higher. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/probe_platform_ux.mjs:172:35
+Error: Top-level 'await' expressions are only allowed when the 'module' option is set to 'es2022', 'esnext', 'system', 'node16', 'node18', 'node20', 'nodenext', or 'preserve', and the 'target' option is set to 'es2017' or higher. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/probe_platform_ux.mjs:174:1
+Error: Top-level 'await' expressions are only allowed when the 'module' option is set to 'es2022', 'esnext', 'system', 'node16', 'node18', 'node20', 'nodenext', or 'preserve', and the 'target' option is set to 'es2017' or higher. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/probe_platform_ux.mjs:175:1
+Error: Top-level 'await' expressions are only allowed when the 'module' option is set to 'es2022', 'esnext', 'system', 'node16', 'node18', 'node20', 'nodenext', or 'preserve', and the 'target' option is set to 'es2017' or higher. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/probe_platform_ux.mjs:176:13
+Error: Top-level 'await' expressions are only allowed when the 'module' option is set to 'es2022', 'esnext', 'system', 'node16', 'node18', 'node20', 'nodenext', or 'preserve', and the 'target' option is set to 'es2017' or higher. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/probe_platform_ux.mjs:187:3
+Error: Top-level 'await' expressions are only allowed when the 'module' option is set to 'es2022', 'esnext', 'system', 'node16', 'node18', 'node20', 'nodenext', or 'preserve', and the 'target' option is set to 'es2017' or higher. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/probe_platform_ux.mjs:192:24
+Error: Top-level 'await' expressions are only allowed when the 'module' option is set to 'es2022', 'esnext', 'system', 'node16', 'node18', 'node20', 'nodenext', or 'preserve', and the 'target' option is set to 'es2017' or higher. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/probe_platform_ux.mjs:197:19
+Error: Top-level 'await' expressions are only allowed when the 'module' option is set to 'es2022', 'esnext', 'system', 'node16', 'node18', 'node20', 'nodenext', or 'preserve', and the 'target' option is set to 'es2017' or higher. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/probe_platform_ux.mjs:198:56
+Error: Top-level 'await' expressions are only allowed when the 'module' option is set to 'es2022', 'esnext', 'system', 'node16', 'node18', 'node20', 'nodenext', or 'preserve', and the 'target' option is set to 'es2017' or higher. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/probe_platform_ux.mjs:198:85
+Error: Top-level 'await' expressions are only allowed when the 'module' option is set to 'es2022', 'esnext', 'system', 'node16', 'node18', 'node20', 'nodenext', or 'preserve', and the 'target' option is set to 'es2017' or higher. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/probe_platform_ux.mjs:203:3
+Error: Top-level 'await' expressions are only allowed when the 'module' option is set to 'es2022', 'esnext', 'system', 'node16', 'node18', 'node20', 'nodenext', or 'preserve', and the 'target' option is set to 'es2017' or higher. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/probe_platform_ux.mjs:206:16
+Error: Variable 'results' implicitly has an 'any[]' type. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/probe_platform_ux.mjs:209:7
+Error: Cannot find name 'process'. Do you need to install type definitions for node? Try `npm i --save-dev @types/node`. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/probe_platform_ux.mjs:211:1
+Error: Cannot find name 'process'. Do you need to install type definitions for node? Try `npm i --save-dev @types/node`. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/probe_poses.mjs:12:23
+Error: Cannot find module 'child_process' or its corresponding type declarations. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/probe_poses.mjs:13:14
+Error: Cannot find name 'process'. Do you need to install type definitions for node? Try `npm i --save-dev @types/node`. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/probe_poses.mjs:13:45
+Error: Cannot find name 'process'. Do you need to install type definitions for node? Try `npm i --save-dev @types/node`. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/probe_poses.mjs:18:15
+Error: Parameter 'ms' implicitly has an 'any' type. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/probe_poses.mjs:20:114
+Error: Parameter 't' implicitly has an 'any' type. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/probe_poses.mjs:22:1
+Error: Top-level 'await' expressions are only allowed when the 'module' option is set to 'es2022', 'esnext', 'system', 'node16', 'node18', 'node20', 'nodenext', or 'preserve', and the 'target' option is set to 'es2017' or higher. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/probe_poses.mjs:24:16
+Error: Parameter 'e' implicitly has an 'any' type. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/probe_poses.mjs:25:15
+Error: Parameter 'm' implicitly has an 'any' type. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/probe_poses.mjs:26:24
+Error: Parameter 'e' implicitly has an 'any' type. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/probe_poses.mjs:27:22
+Error: Parameter 'x' implicitly has an 'any' type. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/probe_poses.mjs:27:25
+Error: Parameter 'y' implicitly has an 'any' type. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/probe_poses.mjs:28:1
+Error: Top-level 'await' expressions are only allowed when the 'module' option is set to 'es2022', 'esnext', 'system', 'node16', 'node18', 'node20', 'nodenext', or 'preserve', and the 'target' option is set to 'es2017' or higher. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/probe_poses.mjs:28:31
+Error: Top-level 'await' expressions are only allowed when the 'module' option is set to 'es2022', 'esnext', 'system', 'node16', 'node18', 'node20', 'nodenext', or 'preserve', and the 'target' option is set to 'es2017' or higher. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/probe_poses.mjs:28:58
+Error: Top-level 'await' expressions are only allowed when the 'module' option is set to 'es2022', 'esnext', 'system', 'node16', 'node18', 'node20', 'nodenext', or 'preserve', and the 'target' option is set to 'es2017' or higher. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/probe_poses.mjs:29:1
+Error: Top-level 'await' expressions are only allowed when the 'module' option is set to 'es2022', 'esnext', 'system', 'node16', 'node18', 'node20', 'nodenext', or 'preserve', and the 'target' option is set to 'es2017' or higher. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/probe_poses.mjs:30:45
+Error: Top-level 'await' expressions are only allowed when the 'module' option is set to 'es2022', 'esnext', 'system', 'node16', 'node18', 'node20', 'nodenext', or 'preserve', and the 'target' option is set to 'es2017' or higher. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/probe_poses.mjs:30:61
+Error: Top-level 'await' expressions are only allowed when the 'module' option is set to 'es2022', 'esnext', 'system', 'node16', 'node18', 'node20', 'nodenext', or 'preserve', and the 'target' option is set to 'es2017' or higher. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/probe_poses.mjs:31:1
+Error: Top-level 'await' expressions are only allowed when the 'module' option is set to 'es2022', 'esnext', 'system', 'node16', 'node18', 'node20', 'nodenext', or 'preserve', and the 'target' option is set to 'es2017' or higher. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/probe_poses.mjs:33:1
+Error: Top-level 'await' expressions are only allowed when the 'module' option is set to 'es2022', 'esnext', 'system', 'node16', 'node18', 'node20', 'nodenext', or 'preserve', and the 'target' option is set to 'es2017' or higher. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/probe_poses.mjs:80:25
+Error: Top-level 'await' expressions are only allowed when the 'module' option is set to 'es2022', 'esnext', 'system', 'node16', 'node18', 'node20', 'nodenext', or 'preserve', and the 'target' option is set to 'es2017' or higher. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/probe_poses.mjs:82:3
+Error: Top-level 'await' expressions are only allowed when the 'module' option is set to 'es2022', 'esnext', 'system', 'node16', 'node18', 'node20', 'nodenext', or 'preserve', and the 'target' option is set to 'es2017' or higher. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/probe_poses.mjs:84:25
+Error: Top-level 'await' expressions are only allowed when the 'module' option is set to 'es2022', 'esnext', 'system', 'node16', 'node18', 'node20', 'nodenext', or 'preserve', and the 'target' option is set to 'es2017' or higher. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/probe_poses.mjs:85:15
+Error: Top-level 'await' expressions are only allowed when the 'module' option is set to 'es2022', 'esnext', 'system', 'node16', 'node18', 'node20', 'nodenext', or 'preserve', and the 'target' option is set to 'es2017' or higher. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/probe_poses.mjs:86:19
+Error: Cannot find name 'process'. Do you need to install type definitions for node? Try `npm i --save-dev @types/node`. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/probe_poses.mjs:100:72
+Error: Cannot find name 'process'. Do you need to install type definitions for node? Try `npm i --save-dev @types/node`. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/probe_poses.mjs:102:1
+Error: Cannot find name 'process'. Do you need to install type definitions for node? Try `npm i --save-dev @types/node`. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/probe_replay.mjs:31:23
+Error: Cannot find module 'child_process' or its corresponding type declarations. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/probe_replay.mjs:32:16
+Error: Cannot find module 'fs' or its corresponding type declarations. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/probe_replay.mjs:34:14
+Error: Cannot find name 'process'. Do you need to install type definitions for node? Try `npm i --save-dev @types/node`. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/probe_replay.mjs:35:13
+Error: Cannot find name 'process'. Do you need to install type definitions for node? Try `npm i --save-dev @types/node`. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/probe_replay.mjs:41:16
+Error: Parameter 'ms' implicitly has an 'any' type. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/probe_replay.mjs:44:86
+Error: Parameter 't' implicitly has an 'any' type. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/probe_replay.mjs:48:1
+Error: Top-level 'await' expressions are only allowed when the 'module' option is set to 'es2022', 'esnext', 'system', 'node16', 'node18', 'node20', 'nodenext', or 'preserve', and the 'target' option is set to 'es2017' or higher. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/probe_replay.mjs:49:46
+Error: Variable 'console_' implicitly has type 'any[]' in some locations where its type cannot be determined. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/probe_replay.mjs:50:17
+Error: Parameter 'e' implicitly has an 'any' type. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/probe_replay.mjs:53:45
+Error: Parameter 'a' implicitly has an 'any' type. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/probe_replay.mjs:59:15
+Error: Parameter 'method' implicitly has an 'any' type. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/probe_replay.mjs:60:25
+Error: Parameter 'expr' implicitly has an 'any' type. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/probe_replay.mjs:61:21
+Error: Parameter 'name' implicitly has an 'any' type. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/probe_replay.mjs:63:42
+Error: Cannot find name 'Buffer'. Do you need to install type definitions for node? Try `npm i --save-dev @types/node`. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/probe_replay.mjs:65:22
+Error: Parameter 'x' implicitly has an 'any' type. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/probe_replay.mjs:65:25
+Error: Parameter 'y' implicitly has an 'any' type. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/probe_replay.mjs:67:1
+Error: Top-level 'await' expressions are only allowed when the 'module' option is set to 'es2022', 'esnext', 'system', 'node16', 'node18', 'node20', 'nodenext', or 'preserve', and the 'target' option is set to 'es2017' or higher. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/probe_replay.mjs:68:1
+Error: Top-level 'await' expressions are only allowed when the 'module' option is set to 'es2022', 'esnext', 'system', 'node16', 'node18', 'node20', 'nodenext', or 'preserve', and the 'target' option is set to 'es2017' or higher. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/probe_replay.mjs:69:1
+Error: Top-level 'await' expressions are only allowed when the 'module' option is set to 'es2022', 'esnext', 'system', 'node16', 'node18', 'node20', 'nodenext', or 'preserve', and the 'target' option is set to 'es2017' or higher. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/probe_replay.mjs:70:1
+Error: Top-level 'await' expressions are only allowed when the 'module' option is set to 'es2022', 'esnext', 'system', 'node16', 'node18', 'node20', 'nodenext', or 'preserve', and the 'target' option is set to 'es2017' or higher. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/probe_replay.mjs:71:1
+Error: Top-level 'await' expressions are only allowed when the 'module' option is set to 'es2022', 'esnext', 'system', 'node16', 'node18', 'node20', 'nodenext', or 'preserve', and the 'target' option is set to 'es2017' or higher. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/probe_replay.mjs:72:1
+Error: Top-level 'await' expressions are only allowed when the 'module' option is set to 'es2022', 'esnext', 'system', 'node16', 'node18', 'node20', 'nodenext', or 'preserve', and the 'target' option is set to 'es2017' or higher. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/probe_replay.mjs:73:1
+Error: Top-level 'await' expressions are only allowed when the 'module' option is set to 'es2022', 'esnext', 'system', 'node16', 'node18', 'node20', 'nodenext', or 'preserve', and the 'target' option is set to 'es2017' or higher. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/probe_replay.mjs:75:1
+Error: Top-level 'await' expressions are only allowed when the 'module' option is set to 'es2022', 'esnext', 'system', 'node16', 'node18', 'node20', 'nodenext', or 'preserve', and the 'target' option is set to 'es2017' or higher. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/probe_replay.mjs:76:1
+Error: Top-level 'await' expressions are only allowed when the 'module' option is set to 'es2022', 'esnext', 'system', 'node16', 'node18', 'node20', 'nodenext', or 'preserve', and the 'target' option is set to 'es2017' or higher. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/probe_replay.mjs:77:1
+Error: Top-level 'await' expressions are only allowed when the 'module' option is set to 'es2022', 'esnext', 'system', 'node16', 'node18', 'node20', 'nodenext', or 'preserve', and the 'target' option is set to 'es2017' or higher. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/probe_replay.mjs:81:13
+Error: Top-level 'await' expressions are only allowed when the 'module' option is set to 'es2022', 'esnext', 'system', 'node16', 'node18', 'node20', 'nodenext', or 'preserve', and the 'target' option is set to 'es2017' or higher. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/probe_replay.mjs:86:16
+Error: Top-level 'await' expressions are only allowed when the 'module' option is set to 'es2022', 'esnext', 'system', 'node16', 'node18', 'node20', 'nodenext', or 'preserve', and the 'target' option is set to 'es2017' or higher. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/probe_replay.mjs:91:15
+Error: Top-level 'await' expressions are only allowed when the 'module' option is set to 'es2022', 'esnext', 'system', 'node16', 'node18', 'node20', 'nodenext', or 'preserve', and the 'target' option is set to 'es2017' or higher. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/probe_replay.mjs:105:15
+Error: Top-level 'await' expressions are only allowed when the 'module' option is set to 'es2022', 'esnext', 'system', 'node16', 'node18', 'node20', 'nodenext', or 'preserve', and the 'target' option is set to 'es2017' or higher. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/probe_replay.mjs:107:26
+Error: Parameter 't' implicitly has an 'any' type. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/probe_replay.mjs:113:3
+Error: Top-level 'await' expressions are only allowed when the 'module' option is set to 'es2022', 'esnext', 'system', 'node16', 'node18', 'node20', 'nodenext', or 'preserve', and the 'target' option is set to 'es2017' or higher. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/probe_replay.mjs:132:24
+Error: Parameter 'label' implicitly has an 'any' type. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/probe_replay.mjs:132:31
+Error: Parameter 'ms' implicitly has an 'any' type. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/probe_replay.mjs:133:9
+Error: Variable 'timeline' implicitly has type 'any[]' in some locations where its type cannot be determined. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/probe_replay.mjs:144:9
+Error: Variable 'timeline' implicitly has an 'any[]' type. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/probe_replay.mjs:155:17
+Error: Top-level 'await' expressions are only allowed when the 'module' option is set to 'es2022', 'esnext', 'system', 'node16', 'node18', 'node20', 'nodenext', or 'preserve', and the 'target' option is set to 'es2017' or higher. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/probe_replay.mjs:155:44
+Error: Cannot find name 'process'. Do you need to install type definitions for node? Try `npm i --save-dev @types/node`. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/probe_replay.mjs:166:29
+Error: Top-level 'await' expressions are only allowed when the 'module' option is set to 'es2022', 'esnext', 'system', 'node16', 'node18', 'node20', 'nodenext', or 'preserve', and the 'target' option is set to 'es2017' or higher. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/probe_replay.mjs:180:5
+Error: Top-level 'await' expressions are only allowed when the 'module' option is set to 'es2022', 'esnext', 'system', 'node16', 'node18', 'node20', 'nodenext', or 'preserve', and the 'target' option is set to 'es2017' or higher. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/probe_replay.mjs:181:20
+Error: Top-level 'await' expressions are only allowed when the 'module' option is set to 'es2022', 'esnext', 'system', 'node16', 'node18', 'node20', 'nodenext', or 'preserve', and the 'target' option is set to 'es2017' or higher. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/probe_replay.mjs:181:47
+Error: Cannot find name 'process'. Do you need to install type definitions for node? Try `npm i --save-dev @types/node`. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/probe_replay.mjs:188:13
+Error: Top-level 'await' expressions are only allowed when the 'module' option is set to 'es2022', 'esnext', 'system', 'node16', 'node18', 'node20', 'nodenext', or 'preserve', and the 'target' option is set to 'es2017' or higher. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/probe_replay.mjs:190:13
+Error: Top-level 'await' expressions are only allowed when the 'module' option is set to 'es2022', 'esnext', 'system', 'node16', 'node18', 'node20', 'nodenext', or 'preserve', and the 'target' option is set to 'es2017' or higher. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/probe_replay.mjs:192:31
+Error: Variable 'console_' implicitly has an 'any[]' type. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/probe_replay.mjs:194:7
+Error: Cannot find name 'process'. Do you need to install type definitions for node? Try `npm i --save-dev @types/node`. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/probe_tease.mjs:24:23
+Error: Cannot find module 'child_process' or its corresponding type declarations. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/probe_tease.mjs:25:14
+Error: Cannot find name 'process'. Do you need to install type definitions for node? Try `npm i --save-dev @types/node`. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/probe_tease.mjs:25:42
+Error: Cannot find name 'process'. Do you need to install type definitions for node? Try `npm i --save-dev @types/node`. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/probe_tease.mjs:30:15
+Error: Parameter 'ms' implicitly has an 'any' type. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/probe_tease.mjs:32:114
+Error: Parameter 't' implicitly has an 'any' type. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/probe_tease.mjs:34:1
+Error: Top-level 'await' expressions are only allowed when the 'module' option is set to 'es2022', 'esnext', 'system', 'node16', 'node18', 'node20', 'nodenext', or 'preserve', and the 'target' option is set to 'es2017' or higher. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/probe_tease.mjs:36:16
+Error: Parameter 'e' implicitly has an 'any' type. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/probe_tease.mjs:37:15
+Error: Parameter 'm' implicitly has an 'any' type. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/probe_tease.mjs:38:24
+Error: Parameter 'e' implicitly has an 'any' type. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/probe_tease.mjs:39:22
+Error: Parameter 'x' implicitly has an 'any' type. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/probe_tease.mjs:39:25
+Error: Parameter 'y' implicitly has an 'any' type. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/probe_tease.mjs:40:1
+Error: Top-level 'await' expressions are only allowed when the 'module' option is set to 'es2022', 'esnext', 'system', 'node16', 'node18', 'node20', 'nodenext', or 'preserve', and the 'target' option is set to 'es2017' or higher. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/probe_tease.mjs:40:31
+Error: Top-level 'await' expressions are only allowed when the 'module' option is set to 'es2022', 'esnext', 'system', 'node16', 'node18', 'node20', 'nodenext', or 'preserve', and the 'target' option is set to 'es2017' or higher. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/probe_tease.mjs:40:58
+Error: Top-level 'await' expressions are only allowed when the 'module' option is set to 'es2022', 'esnext', 'system', 'node16', 'node18', 'node20', 'nodenext', or 'preserve', and the 'target' option is set to 'es2017' or higher. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/probe_tease.mjs:41:1
+Error: Top-level 'await' expressions are only allowed when the 'module' option is set to 'es2022', 'esnext', 'system', 'node16', 'node18', 'node20', 'nodenext', or 'preserve', and the 'target' option is set to 'es2017' or higher. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/probe_tease.mjs:42:45
+Error: Top-level 'await' expressions are only allowed when the 'module' option is set to 'es2022', 'esnext', 'system', 'node16', 'node18', 'node20', 'nodenext', or 'preserve', and the 'target' option is set to 'es2017' or higher. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/probe_tease.mjs:42:61
+Error: Top-level 'await' expressions are only allowed when the 'module' option is set to 'es2022', 'esnext', 'system', 'node16', 'node18', 'node20', 'nodenext', or 'preserve', and the 'target' option is set to 'es2017' or higher. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/probe_tease.mjs:43:1
+Error: Top-level 'await' expressions are only allowed when the 'module' option is set to 'es2022', 'esnext', 'system', 'node16', 'node18', 'node20', 'nodenext', or 'preserve', and the 'target' option is set to 'es2017' or higher. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/probe_tease.mjs:45:1
+Error: Top-level 'await' expressions are only allowed when the 'module' option is set to 'es2022', 'esnext', 'system', 'node16', 'node18', 'node20', 'nodenext', or 'preserve', and the 'target' option is set to 'es2017' or higher. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/probe_tease.mjs:91:25
+Error: Top-level 'await' expressions are only allowed when the 'module' option is set to 'es2022', 'esnext', 'system', 'node16', 'node18', 'node20', 'nodenext', or 'preserve', and the 'target' option is set to 'es2017' or higher. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/probe_tease.mjs:93:3
+Error: Top-level 'await' expressions are only allowed when the 'module' option is set to 'es2022', 'esnext', 'system', 'node16', 'node18', 'node20', 'nodenext', or 'preserve', and the 'target' option is set to 'es2017' or higher. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/probe_tease.mjs:95:25
+Error: Top-level 'await' expressions are only allowed when the 'module' option is set to 'es2022', 'esnext', 'system', 'node16', 'node18', 'node20', 'nodenext', or 'preserve', and the 'target' option is set to 'es2017' or higher. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/probe_tease.mjs:96:15
+Error: Top-level 'await' expressions are only allowed when the 'module' option is set to 'es2022', 'esnext', 'system', 'node16', 'node18', 'node20', 'nodenext', or 'preserve', and the 'target' option is set to 'es2017' or higher. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/probe_tease.mjs:97:20
+Error: Top-level 'await' expressions are only allowed when the 'module' option is set to 'es2022', 'esnext', 'system', 'node16', 'node18', 'node20', 'nodenext', or 'preserve', and the 'target' option is set to 'es2017' or higher. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/probe_tease.mjs:108:22
+Error: Parameter 'names' implicitly has an 'any' type. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/probe_tease.mjs:112:21
+Error: Parameter 'n' implicitly has an 'any' type. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/probe_tease.mjs:112:24
+Error: Parameter 'i' implicitly has an 'any' type. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/probe_tease.mjs:119:38
+Error: Parameter 'n' implicitly has an 'any' type. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/probe_tease.mjs:132:19
+Error: Cannot find name 'process'. Do you need to install type definitions for node? Try `npm i --save-dev @types/node`. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/probe_tease.mjs:132:57
+Error: Cannot find name 'process'. Do you need to install type definitions for node? Try `npm i --save-dev @types/node`. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/probe_turbo_stagger.mjs:19:23
+Error: Cannot find module 'child_process' or its corresponding type declarations. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/probe_turbo_stagger.mjs:21:14
+Error: Cannot find name 'process'. Do you need to install type definitions for node? Try `npm i --save-dev @types/node`. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/probe_turbo_stagger.mjs:22:24
+Error: Cannot find name 'process'. Do you need to install type definitions for node? Try `npm i --save-dev @types/node`. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/probe_turbo_stagger.mjs:30:16
+Error: Parameter 'ms' implicitly has an 'any' type. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/probe_turbo_stagger.mjs:35:24
+Error: Parameter 't' implicitly has an 'any' type. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/probe_turbo_stagger.mjs:40:54
+Error: Cannot find name 'process'. Do you need to install type definitions for node? Try `npm i --save-dev @types/node`. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/probe_turbo_stagger.mjs:43:1
+Error: Top-level 'await' expressions are only allowed when the 'module' option is set to 'es2022', 'esnext', 'system', 'node16', 'node18', 'node20', 'nodenext', or 'preserve', and the 'target' option is set to 'es2017' or higher. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/probe_turbo_stagger.mjs:46:17
+Error: Parameter 'e' implicitly has an 'any' type. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/probe_turbo_stagger.mjs:50:15
+Error: Parameter 'method' implicitly has an 'any' type. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/probe_turbo_stagger.mjs:53:25
+Error: Parameter 'expr' implicitly has an 'any' type. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/probe_turbo_stagger.mjs:74:22
+Error: Parameter 'x' implicitly has an 'any' type. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/probe_turbo_stagger.mjs:74:25
+Error: Parameter 'y' implicitly has an 'any' type. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/probe_turbo_stagger.mjs:81:1
+Error: Top-level 'await' expressions are only allowed when the 'module' option is set to 'es2022', 'esnext', 'system', 'node16', 'node18', 'node20', 'nodenext', or 'preserve', and the 'target' option is set to 'es2017' or higher. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/probe_turbo_stagger.mjs:82:1
+Error: Top-level 'await' expressions are only allowed when the 'module' option is set to 'es2022', 'esnext', 'system', 'node16', 'node18', 'node20', 'nodenext', or 'preserve', and the 'target' option is set to 'es2017' or higher. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/probe_turbo_stagger.mjs:83:1
+Error: Top-level 'await' expressions are only allowed when the 'module' option is set to 'es2022', 'esnext', 'system', 'node16', 'node18', 'node20', 'nodenext', or 'preserve', and the 'target' option is set to 'es2017' or higher. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/probe_turbo_stagger.mjs:88:1
+Error: Top-level 'await' expressions are only allowed when the 'module' option is set to 'es2022', 'esnext', 'system', 'node16', 'node18', 'node20', 'nodenext', or 'preserve', and the 'target' option is set to 'es2017' or higher. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/probe_turbo_stagger.mjs:95:3
+Error: Top-level 'await' expressions are only allowed when the 'module' option is set to 'es2022', 'esnext', 'system', 'node16', 'node18', 'node20', 'nodenext', or 'preserve', and the 'target' option is set to 'es2017' or higher. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/probe_turbo_stagger.mjs:96:3
+Error: Top-level 'await' expressions are only allowed when the 'module' option is set to 'es2022', 'esnext', 'system', 'node16', 'node18', 'node20', 'nodenext', or 'preserve', and the 'target' option is set to 'es2017' or higher. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/probe_turbo_stagger.mjs:98:1
+Error: Top-level 'await' expressions are only allowed when the 'module' option is set to 'es2022', 'esnext', 'system', 'node16', 'node18', 'node20', 'nodenext', or 'preserve', and the 'target' option is set to 'es2017' or higher. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/probe_turbo_stagger.mjs:103:1
+Error: Top-level 'await' expressions are only allowed when the 'module' option is set to 'es2022', 'esnext', 'system', 'node16', 'node18', 'node20', 'nodenext', or 'preserve', and the 'target' option is set to 'es2017' or higher. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/probe_turbo_stagger.mjs:137:1
+Error: Top-level 'await' expressions are only allowed when the 'module' option is set to 'es2022', 'esnext', 'system', 'node16', 'node18', 'node20', 'nodenext', or 'preserve', and the 'target' option is set to 'es2017' or higher. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/probe_turbo_stagger.mjs:138:1
+Error: Top-level 'await' expressions are only allowed when the 'module' option is set to 'es2022', 'esnext', 'system', 'node16', 'node18', 'node20', 'nodenext', or 'preserve', and the 'target' option is set to 'es2017' or higher. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/probe_turbo_stagger.mjs:139:29
+Error: Top-level 'await' expressions are only allowed when the 'module' option is set to 'es2022', 'esnext', 'system', 'node16', 'node18', 'node20', 'nodenext', or 'preserve', and the 'target' option is set to 'es2017' or higher. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/probe_turbo_stagger.mjs:141:16
+Error: Top-level 'await' expressions are only allowed when the 'module' option is set to 'es2022', 'esnext', 'system', 'node16', 'node18', 'node20', 'nodenext', or 'preserve', and the 'target' option is set to 'es2017' or higher. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/probe_turbo_stagger.mjs:158:16
+Error: Top-level 'await' expressions are only allowed when the 'module' option is set to 'es2022', 'esnext', 'system', 'node16', 'node18', 'node20', 'nodenext', or 'preserve', and the 'target' option is set to 'es2017' or higher. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/probe_turbo_stagger.mjs:160:5
+Error: Top-level 'await' expressions are only allowed when the 'module' option is set to 'es2022', 'esnext', 'system', 'node16', 'node18', 'node20', 'nodenext', or 'preserve', and the 'target' option is set to 'es2017' or higher. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/probe_turbo_stagger.mjs:163:3
+Error: Top-level 'await' expressions are only allowed when the 'module' option is set to 'es2022', 'esnext', 'system', 'node16', 'node18', 'node20', 'nodenext', or 'preserve', and the 'target' option is set to 'es2017' or higher. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/probe_turbo_stagger.mjs:165:47
+Error: Top-level 'await' expressions are only allowed when the 'module' option is set to 'es2022', 'esnext', 'system', 'node16', 'node18', 'node20', 'nodenext', or 'preserve', and the 'target' option is set to 'es2017' or higher. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/probe_turbo_stagger.mjs:167:14
+Error: Top-level 'await' expressions are only allowed when the 'module' option is set to 'es2022', 'esnext', 'system', 'node16', 'node18', 'node20', 'nodenext', or 'preserve', and the 'target' option is set to 'es2017' or higher. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/probe_turbo_stagger.mjs:168:27
+Error: Parameter 'r' implicitly has an 'any' type. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/probe_turbo_stagger.mjs:168:46
+Error: Parameter 'x' implicitly has an 'any' type. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/probe_turbo_stagger.mjs:169:20
+Error: Parameter 'label' implicitly has an 'any' type. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/probe_turbo_stagger.mjs:169:27
+Error: Parameter 'set' implicitly has an 'any' type. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/probe_turbo_stagger.mjs:171:28
+Error: Parameter 'r' implicitly has an 'any' type. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/probe_turbo_stagger.mjs:172:29
+Error: Parameter 'r' implicitly has an 'any' type. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/probe_turbo_stagger.mjs:172:54
+Error: Parameter 'v' implicitly has an 'any' type. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/probe_turbo_stagger.mjs:172:57
+Error: Parameter 'i' implicitly has an 'any' type. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/probe_turbo_stagger.mjs:173:16
+Error: Parameter 'a' implicitly has an 'any' type. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/probe_turbo_stagger.mjs:173:38
+Error: Parameter 'x' implicitly has an 'any' type. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/probe_turbo_stagger.mjs:173:41
+Error: Parameter 'y' implicitly has an 'any' type. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/probe_turbo_stagger.mjs:180:42
+Error: Parameter 'r' implicitly has an 'any' type. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/probe_turbo_stagger.mjs:181:42
+Error: Parameter 'r' implicitly has an 'any' type. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/probe_turbo_stagger.mjs:182:43
+Error: Parameter 'r' implicitly has an 'any' type. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/probe_turbo_stagger.mjs:183:43
+Error: Parameter 'r' implicitly has an 'any' type. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/probe_turbo_stagger.mjs:186:7
+Error: Cannot find name 'process'. Do you need to install type definitions for node? Try `npm i --save-dev @types/node`. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/probe_turbo_stagger.mjs:187:1
+Error: Cannot find name 'process'. Do you need to install type definitions for node? Try `npm i --save-dev @types/node`. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/probe_win_line_leak.mjs:27:23
+Error: Cannot find module 'child_process' or its corresponding type declarations. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/probe_win_line_leak.mjs:28:14
+Error: Cannot find name 'process'. Do you need to install type definitions for node? Try `npm i --save-dev @types/node`. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/probe_win_line_leak.mjs:34:16
+Error: Parameter 'ms' implicitly has an 'any' type. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/probe_win_line_leak.mjs:37:86
+Error: Parameter 't' implicitly has an 'any' type. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/probe_win_line_leak.mjs:41:1
+Error: Top-level 'await' expressions are only allowed when the 'module' option is set to 'es2022', 'esnext', 'system', 'node16', 'node18', 'node20', 'nodenext', or 'preserve', and the 'target' option is set to 'es2017' or higher. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/probe_win_line_leak.mjs:43:17
+Error: Parameter 'e' implicitly has an 'any' type. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/probe_win_line_leak.mjs:44:15
+Error: Parameter 'method' implicitly has an 'any' type. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/probe_win_line_leak.mjs:45:25
+Error: Parameter 'expr' implicitly has an 'any' type. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/probe_win_line_leak.mjs:46:22
+Error: Parameter 'x' implicitly has an 'any' type. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/probe_win_line_leak.mjs:46:25
+Error: Parameter 'y' implicitly has an 'any' type. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/probe_win_line_leak.mjs:48:1
+Error: Top-level 'await' expressions are only allowed when the 'module' option is set to 'es2022', 'esnext', 'system', 'node16', 'node18', 'node20', 'nodenext', or 'preserve', and the 'target' option is set to 'es2017' or higher. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/probe_win_line_leak.mjs:49:1
+Error: Top-level 'await' expressions are only allowed when the 'module' option is set to 'es2022', 'esnext', 'system', 'node16', 'node18', 'node20', 'nodenext', or 'preserve', and the 'target' option is set to 'es2017' or higher. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/probe_win_line_leak.mjs:50:1
+Error: Top-level 'await' expressions are only allowed when the 'module' option is set to 'es2022', 'esnext', 'system', 'node16', 'node18', 'node20', 'nodenext', or 'preserve', and the 'target' option is set to 'es2017' or higher. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/probe_win_line_leak.mjs:51:1
+Error: Top-level 'await' expressions are only allowed when the 'module' option is set to 'es2022', 'esnext', 'system', 'node16', 'node18', 'node20', 'nodenext', or 'preserve', and the 'target' option is set to 'es2017' or higher. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/probe_win_line_leak.mjs:52:1
+Error: Top-level 'await' expressions are only allowed when the 'module' option is set to 'es2022', 'esnext', 'system', 'node16', 'node18', 'node20', 'nodenext', or 'preserve', and the 'target' option is set to 'es2017' or higher. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/probe_win_line_leak.mjs:55:1
+Error: Top-level 'await' expressions are only allowed when the 'module' option is set to 'es2022', 'esnext', 'system', 'node16', 'node18', 'node20', 'nodenext', or 'preserve', and the 'target' option is set to 'es2017' or higher. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/probe_win_line_leak.mjs:70:36
+Error: Cannot find name 'process'. Do you need to install type definitions for node? Try `npm i --save-dev @types/node`. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/probe_win_line_leak.mjs:71:3
+Error: Top-level 'await' expressions are only allowed when the 'module' option is set to 'es2022', 'esnext', 'system', 'node16', 'node18', 'node20', 'nodenext', or 'preserve', and the 'target' option is set to 'es2017' or higher. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/probe_win_line_leak.mjs:74:3
+Error: Top-level 'await' expressions are only allowed when the 'module' option is set to 'es2022', 'esnext', 'system', 'node16', 'node18', 'node20', 'nodenext', or 'preserve', and the 'target' option is set to 'es2017' or higher. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/probe_win_line_leak.mjs:78:19
+Error: Top-level 'await' expressions are only allowed when the 'module' option is set to 'es2022', 'esnext', 'system', 'node16', 'node18', 'node20', 'nodenext', or 'preserve', and the 'target' option is set to 'es2017' or higher. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/probe_win_line_leak.mjs:79:22
+Error: Top-level 'await' expressions are only allowed when the 'module' option is set to 'es2022', 'esnext', 'system', 'node16', 'node18', 'node20', 'nodenext', or 'preserve', and the 'target' option is set to 'es2017' or higher. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/probe_win_line_leak.mjs:80:5
+Error: Top-level 'await' expressions are only allowed when the 'module' option is set to 'es2022', 'esnext', 'system', 'node16', 'node18', 'node20', 'nodenext', or 'preserve', and the 'target' option is set to 'es2017' or higher. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/probe_win_line_leak.mjs:82:15
+Error: Top-level 'await' expressions are only allowed when the 'module' option is set to 'es2022', 'esnext', 'system', 'node16', 'node18', 'node20', 'nodenext', or 'preserve', and the 'target' option is set to 'es2017' or higher. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/probe_win_line_leak.mjs:85:14
+Error: Top-level 'await' expressions are only allowed when the 'module' option is set to 'es2022', 'esnext', 'system', 'node16', 'node18', 'node20', 'nodenext', or 'preserve', and the 'target' option is set to 'es2017' or higher. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/probe_win_line_leak.mjs:87:31
+Error: Binding element 'lines' implicitly has an 'any' type. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/probe_win_line_leak.mjs:87:38
+Error: Binding element 'spinning' implicitly has an 'any' type. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/probe_win_line_leak.mjs:88:88
+Error: Parameter 'r' implicitly has an 'any' type. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/probe_win_line_leak.mjs:92:7
+Error: Cannot find name 'process'. Do you need to install type definitions for node? Try `npm i --save-dev @types/node`. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/run_check_parts.mjs:17:27
+Error: Cannot find module 'child_process' or its corresponding type declarations. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/run_check_parts.mjs:18:18
+Error: Cannot find module 'path' or its corresponding type declarations. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/run_check_parts.mjs:19:31
+Error: Cannot find module 'url' or its corresponding type declarations. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/run_check_parts.mjs:25:2
+Error: Cannot find name 'process'. Do you need to install type definitions for node? Try `npm i --save-dev @types/node`. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/run_check_parts.mjs:44:2
+Error: Cannot find name 'process'. Do you need to install type definitions for node? Try `npm i --save-dev @types/node`. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/run_check_parts.mjs:49:48
+Error: Cannot find name 'process'. Do you need to install type definitions for node? Try `npm i --save-dev @types/node`. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/run_check_parts.mjs:52:2
+Error: Cannot find name 'process'. Do you need to install type definitions for node? Try `npm i --save-dev @types/node`. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/run_check_parts.mjs:53:2
+Error: Cannot find name 'process'. Do you need to install type definitions for node? Try `npm i --save-dev @types/node`. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/design/_legacy_assets/dead_static_20261010/static/assets/sprites/uiSlotsAssetsBespoke/index.ts:1:35
+Error: Cannot find module 'utils-pixi' or its corresponding type declarations. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/node_modules/utils-xstate/node_modules/rgs-requests/node_modules/rgs-fetcher/src/rgsFetcher.ts:62:15
+Error: Type '"get"' cannot be used to index type 'paths[T]'. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/node_modules/utils-xstate/node_modules/rgs-requests/node_modules/rgs-fetcher/src/rgsFetcher.ts:62:15
+Error: Type '"responses"' cannot be used to index type 'paths[T]["get"]'. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/node_modules/utils-xstate/node_modules/rgs-requests/node_modules/rgs-fetcher/src/rgsFetcher.ts:62:15
+Error: Type '200' cannot be used to index type 'paths[T]["get"]["responses"]'. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/node_modules/utils-xstate/node_modules/rgs-requests/node_modules/rgs-fetcher/src/rgsFetcher.ts:62:15
+Error: Type '"content"' cannot be used to index type 'paths[T]["get"]["responses"][200]'. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/node_modules/utils-xstate/node_modules/rgs-requests/node_modules/rgs-fetcher/src/rgsFetcher.ts:62:15
+Error: Type '"application/json"' cannot be used to index type 'paths[T]["get"]["responses"][200]["content"]'. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/node_modules/components-ui-html/node_modules/envs/src/envs.svelte.ts:1:34
+Error: Cannot find module '$env/static/public' or its corresponding type declarations. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/node_modules/utils-slots/src/createReelForCascading.svelte.ts:165:88
+Error: Property 'symbolIndex' does not exist on type '{ rawSymbol: TRawSymbol; symbolIndexOfBoard: number; symbolY: Tween<number>; symbolState: TSymbolState; oncomplete: () => void; }'. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/src/game/bookEventHandlerMap.ts:240:4
+Error: Type 'readonly [readonly [{ readonly name: "L1"; }, { readonly name: "L3"; }, { readonly name: "H2"; }, { readonly name: "H5"; }, { readonly name: "H2"; }, { readonly name: "L3"; }, { readonly name: "L4"; }, { readonly name: "L1"; }, ... 55 more ..., { ...; }], readonly [...], readonly [...], readonly [...], readonly [......' is not assignable to type 'RawSymbol[][] | undefined'.
+  The type 'readonly [readonly [{ readonly name: "L1"; }, { readonly name: "L3"; }, { readonly name: "H2"; }, { readonly name: "H5"; }, { readonly name: "H2"; }, { readonly name: "L3"; }, { readonly name: "L4"; }, { readonly name: "L1"; }, ... 55 more ..., { ...; }], readonly [...], readonly [...], readonly [...], readonly [...]]' is 'readonly' and cannot be assigned to the mutable type 'RawSymbol[][]'. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/src/game/bookEventHandlerMap.ts:352:28
+Error: Type '"expandingWildsClear"' is not assignable to type '"buyBonusConfirm" | "bet" | "transition" | "autoBet" | "resumeBet" | "hotKey" | "hotKeySpace" | "hotKeyEscape" | "stopButtonClick" | "stopButtonEnable" | "uiShow" | "uiHide" | ... 49 more ... | "scatterBurst"'. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/src/game/bookEventHandlerMap.ts:544:28
+Error: Type '"expandingWildsClear"' is not assignable to type '"buyBonusConfirm" | "bet" | "transition" | "autoBet" | "resumeBet" | "hotKey" | "hotKeySpace" | "hotKeyEscape" | "stopButtonClick" | "stopButtonEnable" | "uiShow" | "uiHide" | ... 49 more ... | "scatterBurst"'. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/src/game/bookEventHandlerMap.ts:577:28
+Error: Type '"expandingWildsClear"' is not assignable to type '"buyBonusConfirm" | "bet" | "transition" | "autoBet" | "resumeBet" | "hotKey" | "hotKeySpace" | "hotKeyEscape" | "stopButtonClick" | "stopButtonEnable" | "uiShow" | "uiHide" | ... 49 more ... | "scatterBurst"'. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/src/game/utils.ts:170:9
+Error: Element implicitly has an 'any' type because expression of type 'SymbolState' can't be used to index type '{ static: { type: "sprite"; assetKey: string; sizeRatios: { width: number; height: number; }; }; spin: { type: "sprite"; assetKey: string; sizeRatios: { width: number; height: number; }; }; land: { type: "sprite"; assetKey: string; sizeRatios: { ...; }; }; postWinStatic: { ...; }; win: { ...; }; }'.
+  Property 'explosion' does not exist on type '{ static: { type: "sprite"; assetKey: string; sizeRatios: { width: number; height: number; }; }; spin: { type: "sprite"; assetKey: string; sizeRatios: { width: number; height: number; }; }; land: { type: "sprite"; assetKey: string; sizeRatios: { ...; }; }; postWinStatic: { ...; }; win: { ...; }; }'. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/src/components/SymbolArt.svelte:97:3
+Error: Block-scoped variable 'mode' used before its declaration. (ts)
+
+/Users/stone/stake-engine/wp/apps/HardTime/src/components/SymbolArt.svelte:97:3
+Error: Variable 'mode' is used before being assigned. (ts)
+
+/Users/stone/stake-engine/wp/apps/HardTime/src/components/SymbolArt.svelte:141:9
+Error: Property 'parts' does not exist on type 'never'. (ts)
+
+/Users/stone/stake-engine/wp/apps/HardTime/src/components/SymbolArt.svelte:141:27
+Error: Parameter 'part' implicitly has an 'any' type. (ts)
+
+/Users/stone/stake-engine/wp/apps/HardTime/src/components/SymbolArt.svelte:271:13
+Error: Property 'key' does not exist on type 'never'. (ts)
+
+/Users/stone/stake-engine/wp/apps/HardTime/src/components/GoldText.svelte:83:4
+Error: Object literal may only specify known properties, and 'strokeThickness' does not exist in type 'TextStyle | TextStyleOptions'. (ts)
+
+/Users/stone/stake-engine/wp/apps/HardTime/src/components/GoldText.svelte:96:4
+Error: Object literal may only specify known properties, and 'strokeThickness' does not exist in type 'TextStyle | TextStyleOptions'. (ts)
+
+/Users/stone/stake-engine/wp/apps/HardTime/src/components/GoldText.svelte:112:4
+Error: Object literal may only specify known properties, and 'strokeThickness' does not exist in type 'TextStyle | TextStyleOptions'. (ts)
+
+/Users/stone/stake-engine/wp/apps/HardTime/src/components/FeatureSplashPanel.svelte:155:5
+Error: Object literal may only specify known properties, and 'strokeThickness' does not exist in type 'TextStyle | TextStyleOptions'. (ts)
+
+/Users/stone/stake-engine/wp/apps/HardTime/src/components/PressToContinue.svelte:58:4
+Error: Type 'number' is not assignable to type 'TextStyleFontWeight | undefined'. (ts)
+
+/Users/stone/stake-engine/wp/apps/HardTime/src/components/FreeSpinIntro.svelte:274:6
+Error: Type 'number' is not assignable to type 'TextStyleFontWeight | undefined'. (ts)
+
+/Users/stone/stake-engine/wp/apps/HardTime/src/components/FreeSpinIntro.svelte:314:6
+Error: Type 'number' is not assignable to type 'TextStyleFontWeight | undefined'. (ts)
+
+/Users/stone/stake-engine/wp/apps/HardTime/src/components/FreeSpinCounter.svelte:118:5
+Error: Type 'number' is not assignable to type 'TextStyleFontWeight | undefined'. (ts)
+
+/Users/stone/stake-engine/wp/apps/HardTime/src/components/FreeSpinOutro.svelte:89:9
+Error: Type 'number' is not assignable to type 'TextStyleFontWeight | undefined'. (ts)
+
+/Users/stone/stake-engine/wp/apps/HardTime/src/components/Win.svelte:221:27
+Error: 'winLevelData' is possibly 'undefined'. (ts)
+
+/Users/stone/stake-engine/wp/apps/HardTime/src/components/Win.svelte:238:24
+Error: 'winLevelData' is possibly 'undefined'. (ts)
+
+/Users/stone/stake-engine/wp/apps/HardTime/src/components/WinLines.svelte:164:36
+Error: Conversion of type '{ readonly "1": readonly [0, 0, 0, 0, 0]; readonly "2": readonly [1, 1, 1, 1, 1]; readonly "3": readonly [2, 2, 2, 2, 2]; readonly "4": readonly [3, 3, 3, 3, 3]; readonly "5": readonly [0, 1, 2, 1, 0]; readonly "6": readonly [1, 2, 3, 2, 1]; readonly "7": readonly [3, 2, 1, 2, 3]; ... 6 more ...; readonly "14": read...' to type 'Record<string, number[]>' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first.
+  Property '"1"' is incompatible with index signature.
+    The type 'readonly [0, 0, 0, 0, 0]' is 'readonly' and cannot be assigned to the mutable type 'number[]'. (ts)
+
+/Users/stone/stake-engine/wp/apps/HardTime/src/game/actor.ts:45:29
+Error: Type '"stickyPrizesClear"' is not assignable to type '"buyBonusConfirm" | "bet" | "transition" | "autoBet" | "resumeBet" | "hotKey" | "hotKeySpace" | "hotKeyEscape" | "stopButtonClick" | "stopButtonEnable" | "uiShow" | "uiHide" | ... 49 more ... | "scatterBurst"'. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/src/game/actor.ts:51:29
+Error: Type '"expandingWildsClear"' is not assignable to type '"buyBonusConfirm" | "bet" | "transition" | "autoBet" | "resumeBet" | "hotKey" | "hotKeySpace" | "hotKeyEscape" | "stopButtonClick" | "stopButtonEnable" | "uiShow" | "uiHide" | ... 49 more ... | "scatterBurst"'. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/src/game/actor.ts:87:4
+Error: Type 'readonly [readonly [{ readonly name: "L1"; }, { readonly name: "L3"; }, { readonly name: "H2"; }, { readonly name: "H5"; }, { readonly name: "H2"; }, { readonly name: "L3"; }, { readonly name: "L4"; }, { readonly name: "L1"; }, ... 55 more ..., { ...; }], readonly [...], readonly [...], readonly [...], readonly [......' is not assignable to type 'RawSymbol[][] | undefined'.
+  The type 'readonly [readonly [{ readonly name: "L1"; }, { readonly name: "L3"; }, { readonly name: "H2"; }, { readonly name: "H5"; }, { readonly name: "H2"; }, { readonly name: "L3"; }, { readonly name: "L4"; }, { readonly name: "L1"; }, ... 55 more ..., { ...; }], readonly [...], readonly [...], readonly [...], readonly [...]]' is 'readonly' and cannot be assigned to the mutable type 'RawSymbol[][]'. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/src/components/ui/ModalPayTable.svelte:101:34
+Error: Conversion of type '{ readonly "1": readonly [0, 0, 0, 0, 0]; readonly "2": readonly [1, 1, 1, 1, 1]; readonly "3": readonly [2, 2, 2, 2, 2]; readonly "4": readonly [3, 3, 3, 3, 3]; readonly "5": readonly [0, 1, 2, 1, 0]; readonly "6": readonly [1, 2, 3, 2, 1]; readonly "7": readonly [3, 2, 1, 2, 3]; ... 6 more ...; readonly "14": read...' to type 'Record<string, number[]>' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first.
+  Property '"1"' is incompatible with index signature.
+    The type 'readonly [0, 0, 0, 0, 0]' is 'readonly' and cannot be assigned to the mutable type 'number[]'. (ts)
+
+/Users/stone/stake-engine/wp/apps/HardTime/src/components/ui/ModalPayTable.svelte:108:19
+Error: Conversion of type '{ readonly W: { readonly paytable: readonly [{ readonly "5": 250; }]; readonly special_properties: readonly ["wild"]; }; readonly S: { readonly paytable: null; readonly special_properties: readonly ["scatter"]; }; readonly SW: { ...; }; ... 8 more ...; readonly L4: { ...; }; }' to type 'Record<string, { paytable?: { [k: string]: number; }[] | null | undefined; }>' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first.
+  Property '"W"' is incompatible with index signature.
+    Type '{ readonly paytable: readonly [{ readonly "5": 250; }]; readonly special_properties: readonly ["wild"]; }' is not comparable to type '{ paytable?: { [k: string]: number; }[] | null | undefined; }'.
+      Types of property 'paytable' are incompatible.
+        The type 'readonly [{ readonly "5": 250; }]' is 'readonly' and cannot be assigned to the mutable type '{ [k: string]: number; }[]'. (ts)
+
+/Users/stone/stake-engine/wp/apps/HardTime/src/components/ResumeBet.svelte:54:37
+Error: Type '"stickyPrizesClear"' is not assignable to type '"buyBonusConfirm" | "bet" | "transition" | "autoBet" | "resumeBet" | "hotKey" | "hotKeySpace" | "hotKeyEscape" | "stopButtonClick" | "stopButtonEnable" | "uiShow" | "uiHide" | ... 49 more ... | "scatterBurst"'. (ts)
+
+/Users/stone/stake-engine/wp/apps/HardTime/src/components/ResumeBet.svelte:56:36
+Error: Type '"expandingWildsClear"' is not assignable to type '"buyBonusConfirm" | "bet" | "transition" | "autoBet" | "resumeBet" | "hotKey" | "hotKeySpace" | "hotKeyEscape" | "stopButtonClick" | "stopButtonEnable" | "uiShow" | "uiHide" | ... 49 more ... | "scatterBurst"'. (ts)
+
+/Users/stone/stake-engine/wp/apps/HardTime/src/i18n/messagesMap/index.ts:13:40
+Error: Type '{ en: { HOME: string; }; zh: { HOME: string; }; }' is missing the following properties from type 'MessagesMap': ar, de, es, fr, and 10 more. 
+
+/Users/stone/stake-engine/wp/apps/HardTime/src/stories/ComponentsGame.stories.svelte:52:5
+Error: Type 'readonly [readonly [{ readonly name: "L1"; }, { readonly name: "L3"; }, { readonly name: "H2"; }, { readonly name: "H5"; }, { readonly name: "H2"; }, { readonly name: "L3"; }, { readonly name: "L4"; }, { readonly name: "L1"; }, ... 55 more ..., { ...; }], readonly [...], readonly [...], readonly [...], readonly [......' is not assignable to type 'RawSymbol[][] | undefined'.
+  The type 'readonly [readonly [{ readonly name: "L1"; }, { readonly name: "L3"; }, { readonly name: "H2"; }, { readonly name: "H5"; }, { readonly name: "H2"; }, { readonly name: "L3"; }, { readonly name: "L4"; }, { readonly name: "L1"; }, ... 55 more ..., { ...; }], readonly [...], readonly [...], readonly [...], readonly [...]]' is 'readonly' and cannot be assigned to the mutable type 'RawSymbol[][]'. (ts)
+
+/Users/stone/stake-engine/wp/apps/HardTime/src/stories/ModeBaseBook.stories.svelte:48:29
+Error: Type '({ index: number; type: string; amount: number; totalFs?: undefined; positions?: undefined; tier?: undefined; seedLights?: undefined; total?: undefined; lights?: undefined; reels?: undefined; totalWin?: undefined; ... 6 more ...; anticipation?: undefined; } | ... 7 more ... | { ...; })[] | ({ ...; } | ... 3 more ......' is not assignable to type 'BookEvent[]'.
+  Type '({ index: number; type: string; amount: number; totalFs?: undefined; positions?: undefined; tier?: undefined; seedLights?: undefined; total?: undefined; lights?: undefined; reels?: undefined; totalWin?: undefined; ... 6 more ...; anticipation?: undefined; } | ... 7 more ... | { ...; })[]' is not assignable to type 'BookEvent[]'.
+    Type '{ index: number; type: string; amount: number; totalFs?: undefined; positions?: undefined; tier?: undefined; seedLights?: undefined; total?: undefined; lights?: undefined; reels?: undefined; totalWin?: undefined; ... 6 more ...; anticipation?: undefined; } | ... 7 more ... | { ...; }' is not assignable to type 'BookEvent'.
+      Type '{ index: number; type: string; amount: number; totalFs?: undefined; positions?: undefined; tier?: undefined; seedLights?: undefined; total?: undefined; lights?: undefined; reels?: undefined; totalWin?: undefined; ... 6 more ...; anticipation?: undefined; }' is not assignable to type 'BookEvent'.
+        Type '{ index: number; type: string; amount: number; totalFs?: undefined; positions?: undefined; tier?: undefined; seedLights?: undefined; total?: undefined; lights?: undefined; reels?: undefined; totalWin?: undefined; ... 6 more ...; anticipation?: undefined; }' is not assignable to type 'BookEventReveal'.
+          Types of property 'type' are incompatible.
+            Type 'string' is not assignable to type '"reveal"'. (ts)
+
+/Users/stone/stake-engine/wp/apps/HardTime/src/stories/ModeBaseBookEvent.stories.svelte:43:47
+Error: Argument of type '{ index: number; type: string; board: ({ name: string; scatter?: undefined; } | { name: string; scatter: boolean; })[][]; paddingPositions: number[]; gameType: string; anticipation: number[]; }' is not assignable to parameter of type 'BookEvent'.
+  Type '{ index: number; type: string; board: ({ name: string; scatter?: undefined; } | { name: string; scatter: boolean; })[][]; paddingPositions: number[]; gameType: string; anticipation: number[]; }' is not assignable to type 'BookEventReveal'.
+    Types of property 'type' are incompatible.
+      Type 'string' is not assignable to type '"reveal"'. (ts)
+
+/Users/stone/stake-engine/wp/apps/HardTime/src/stories/ModeBaseBookEvent.stories.svelte:53:47
+Error: Argument of type '{ index: number; type: string; amount: number; }' is not assignable to parameter of type 'BookEvent'.
+  Type '{ index: number; type: string; amount: number; }' is not assignable to type 'BookEventWincap'.
+    Types of property 'type' are incompatible.
+      Type 'string' is not assignable to type '"wincap"'. (ts)
+
+/Users/stone/stake-engine/wp/apps/HardTime/src/stories/ModeBaseBookEvent.stories.svelte:63:47
+Error: Argument of type '{ index: number; type: string; totalFs: number; positions: { reel: number; row: number; }[]; }' is not assignable to parameter of type 'BookEvent'.
+  Type '{ index: number; type: string; totalFs: number; positions: { reel: number; row: number; }[]; }' is not assignable to type 'BookEventFreeSpinRetrigger'.
+    Types of property 'type' are incompatible.
+      Type 'string' is not assignable to type '"freeSpinRetrigger"'. (ts)
+
+/Users/stone/stake-engine/wp/apps/HardTime/src/stories/ModeBaseBookEvent.stories.svelte:73:47
+Error: Argument of type '{ index: number; type: string; amount: number; total: number; }' is not assignable to parameter of type 'BookEvent'.
+  Type '{ index: number; type: string; amount: number; total: number; }' is not assignable to type 'BookEventUpdateFreeSpin'.
+    Types of property 'type' are incompatible.
+      Type 'string' is not assignable to type '"updateFreeSpin"'. (ts)
+
+/Users/stone/stake-engine/wp/apps/HardTime/src/stories/ModeBaseBookEvent.stories.svelte:83:47
+Error: Argument of type '{ index: number; type: string; totalWin: number; wins: { symbol: string; kind: number; win: number; positions: { reel: number; row: number; }[]; meta: { lineIndex: number; multiplier: number; winWithoutMult: number; globalMult: number; lineMultiplier: number; }; }[]; }' is not assignable to parameter of type 'BookEvent'.
+  Type '{ index: number; type: string; totalWin: number; wins: { symbol: string; kind: number; win: number; positions: { reel: number; row: number; }[]; meta: { lineIndex: number; multiplier: number; winWithoutMult: number; globalMult: number; lineMultiplier: number; }; }[]; }' is not assignable to type 'BookEventWinInfo'.
+    Types of property 'type' are incompatible.
+      Type 'string' is not assignable to type '"winInfo"'. (ts)
+
+/Users/stone/stake-engine/wp/apps/HardTime/src/stories/ModeBaseBookEvent.stories.svelte:93:47
+Error: Argument of type '{ index: number; type: string; amount: number; winLevel: number; }' is not assignable to parameter of type 'BookEvent'.
+  Type '{ index: number; type: string; amount: number; winLevel: number; }' is not assignable to type 'BookEventFreeSpinEnd'.
+    Types of property 'type' are incompatible.
+      Type 'string' is not assignable to type '"freeSpinEnd"'. (ts)
+
+/Users/stone/stake-engine/wp/apps/HardTime/src/stories/ModeBaseBookEvent.stories.svelte:103:47
+Error: Argument of type '{ index: number; type: string; amount: number; winLevel: number; }' is not assignable to parameter of type 'BookEvent'.
+  Type '{ index: number; type: string; amount: number; winLevel: number; }' is not assignable to type 'BookEventFreeSpinEnd'.
+    Types of property 'type' are incompatible.
+      Type 'string' is not assignable to type '"freeSpinEnd"'. (ts)
+
+/Users/stone/stake-engine/wp/apps/HardTime/src/stories/ModeBaseBookEvent.stories.svelte:113:47
+Error: Argument of type '{ index: number; type: string; amount: number; }' is not assignable to parameter of type 'BookEvent'.
+  Type '{ index: number; type: string; amount: number; }' is not assignable to type 'BookEventWincap'.
+    Types of property 'type' are incompatible.
+      Type 'string' is not assignable to type '"wincap"'. (ts)
+
+/Users/stone/stake-engine/wp/apps/HardTime/src/stories/ModeBonusBook.stories.svelte:48:29
+Error: Type '({ index: number; type: string; amount: number; totalFs?: undefined; positions?: undefined; tier?: undefined; seedLights?: undefined; total?: undefined; totalWin?: undefined; wins?: undefined; winLevel?: undefined; ... 6 more ...; anticipation?: undefined; } | ... 7 more ... | { ...; })[]' is not assignable to type 'BookEvent[]'.
+  Type '{ index: number; type: string; amount: number; totalFs?: undefined; positions?: undefined; tier?: undefined; seedLights?: undefined; total?: undefined; totalWin?: undefined; wins?: undefined; winLevel?: undefined; ... 6 more ...; anticipation?: undefined; } | ... 7 more ... | { ...; }' is not assignable to type 'BookEvent'.
+    Type '{ index: number; type: string; amount: number; totalFs?: undefined; positions?: undefined; tier?: undefined; seedLights?: undefined; total?: undefined; totalWin?: undefined; wins?: undefined; winLevel?: undefined; ... 6 more ...; anticipation?: undefined; }' is not assignable to type 'BookEvent'.
+      Type '{ index: number; type: string; amount: number; totalFs?: undefined; positions?: undefined; tier?: undefined; seedLights?: undefined; total?: undefined; totalWin?: undefined; wins?: undefined; winLevel?: undefined; ... 6 more ...; anticipation?: undefined; }' is not assignable to type 'BookEventReveal'.
+        Types of property 'type' are incompatible.
+          Type 'string' is not assignable to type '"reveal"'. (ts)
+
+/Users/stone/stake-engine/wp/apps/HardTime/src/stories/ModeBonusBookEvent.stories.svelte:43:47
+Error: Argument of type '{ index: number; type: string; board: ({ name: string; wild: boolean; scatter?: undefined; } | { name: string; wild?: undefined; scatter?: undefined; } | { name: string; scatter: boolean; wild?: undefined; })[][]; paddingPositions: number[]; gameType: string; anticipation: number[]; }' is not assignable to parameter of type 'BookEvent'.
+  Type '{ index: number; type: string; board: ({ name: string; wild: boolean; scatter?: undefined; } | { name: string; wild?: undefined; scatter?: undefined; } | { name: string; scatter: boolean; wild?: undefined; })[][]; paddingPositions: number[]; gameType: string; anticipation: number[]; }' is not assignable to type 'BookEventReveal'.
+    Types of property 'type' are incompatible.
+      Type 'string' is not assignable to type '"reveal"'. (ts)
+
+/Users/stone/stake-engine/wp/apps/HardTime/src/stories/ModeBonusBookEvent.stories.svelte:53:47
+Error: Argument of type '{ index: number; type: string; amount: number; }' is not assignable to parameter of type 'BookEvent'.
+  Type '{ index: number; type: string; amount: number; }' is not assignable to type 'BookEventWincap'.
+    Types of property 'type' are incompatible.
+      Type 'string' is not assignable to type '"wincap"'. (ts)
+
+/Users/stone/stake-engine/wp/apps/HardTime/src/stories/ModeBonusBookEvent.stories.svelte:63:47
+Error: Argument of type '{ index: number; type: string; totalFs: number; positions: { reel: number; row: number; }[]; }' is not assignable to parameter of type 'BookEvent'.
+  Type '{ index: number; type: string; totalFs: number; positions: { reel: number; row: number; }[]; }' is not assignable to type 'BookEventFreeSpinRetrigger'.
+    Types of property 'type' are incompatible.
+      Type 'string' is not assignable to type '"freeSpinRetrigger"'. (ts)
+
+/Users/stone/stake-engine/wp/apps/HardTime/src/stories/ModeBonusBookEvent.stories.svelte:73:47
+Error: Argument of type '{ index: number; type: string; amount: number; total: number; }' is not assignable to parameter of type 'BookEvent'.
+  Type '{ index: number; type: string; amount: number; total: number; }' is not assignable to type 'BookEventUpdateFreeSpin'.
+    Types of property 'type' are incompatible.
+      Type 'string' is not assignable to type '"updateFreeSpin"'. (ts)
+
+/Users/stone/stake-engine/wp/apps/HardTime/src/stories/ModeBonusBookEvent.stories.svelte:83:47
+Error: Argument of type '{ index: number; type: string; totalWin: number; wins: { symbol: string; kind: number; win: number; positions: { reel: number; row: number; }[]; meta: { lineIndex: number; multiplier: number; winWithoutMult: number; globalMult: number; lineMultiplier: number; }; }[]; }' is not assignable to parameter of type 'BookEvent'.
+  Type '{ index: number; type: string; totalWin: number; wins: { symbol: string; kind: number; win: number; positions: { reel: number; row: number; }[]; meta: { lineIndex: number; multiplier: number; winWithoutMult: number; globalMult: number; lineMultiplier: number; }; }[]; }' is not assignable to type 'BookEventWinInfo'.
+    Types of property 'type' are incompatible.
+      Type 'string' is not assignable to type '"winInfo"'. (ts)
+
+/Users/stone/stake-engine/wp/apps/HardTime/src/stories/ModeBonusBookEvent.stories.svelte:93:47
+Error: Argument of type '{ index: number; type: string; amount: number; winLevel: number; }' is not assignable to parameter of type 'BookEvent'.
+  Type '{ index: number; type: string; amount: number; winLevel: number; }' is not assignable to type 'BookEventFreeSpinEnd'.
+    Types of property 'type' are incompatible.
+      Type 'string' is not assignable to type '"freeSpinEnd"'. (ts)
+
+/Users/stone/stake-engine/wp/apps/HardTime/src/stories/ModeBonusBookEvent.stories.svelte:112:47
+Error: Argument of type '{ index: number; type: string; lights: { reel: number; row: number; mult: number; cells: { reel: number; row: number; mult: number; doubled: boolean; }[]; }[]; reels: number[]; }' is not assignable to parameter of type 'BookEvent'.
+  Type '{ index: number; type: string; lights: { reel: number; row: number; mult: number; cells: { reel: number; row: number; mult: number; doubled: boolean; }[]; }[]; reels: number[]; }' is not assignable to type 'BookEventSearchlight'.
+    Types of property 'type' are incompatible.
+      Type 'string' is not assignable to type '"searchlight"'. (ts)
+
+/Users/stone/stake-engine/wp/apps/HardTime/src/stories/ModeBonusBookEvent.stories.svelte:122:47
+Error: Argument of type '{ index: number; type: string; cells: { reel: number; row: number; mult: number; }[]; }' is not assignable to parameter of type 'BookEvent'.
+  Type '{ index: number; type: string; cells: { reel: number; row: number; mult: number; }[]; }' is not assignable to type 'BookEventUpdateLights'.
+    Types of property 'type' are incompatible.
+      Type 'string' is not assignable to type '"updateLights"'. (ts)
+
+/Users/stone/stake-engine/wp/apps/HardTime/src/stories/ModeBonusBookEvent.stories.svelte:132:47
+Error: Argument of type '{ index: number; type: string; tier: string; seedLights: number; }' is not assignable to parameter of type 'BookEvent'.
+  Type '{ index: number; type: string; tier: string; seedLights: number; }' is not assignable to type 'BookEventBonusTier'.
+    Types of property 'type' are incompatible.
+      Type 'string' is not assignable to type '"bonusTier"'. (ts)
+
+/Users/stone/stake-engine/wp/apps/HardTime/src/stories/ModeBonusBookEvent.stories.svelte:142:47
+Error: Argument of type '{ index: number; type: string; amount: number; winLevel: number; }' is not assignable to parameter of type 'BookEvent'.
+  Type '{ index: number; type: string; amount: number; winLevel: number; }' is not assignable to type 'BookEventFreeSpinEnd'.
+    Types of property 'type' are incompatible.
+      Type 'string' is not assignable to type '"freeSpinEnd"'. (ts)
+
+/Users/stone/stake-engine/wp/apps/HardTime/src/stories/ModeBonusBookEvent.stories.svelte:152:47
+Error: Argument of type '{ index: number; type: string; amount: number; }' is not assignable to parameter of type 'BookEvent'.
+  Type '{ index: number; type: string; amount: number; }' is not assignable to type 'BookEventWincap'.
+    Types of property 'type' are incompatible.
+      Type 'string' is not assignable to type '"wincap"'. (ts)
+
+====================================
+svelte-check found 882 errors and 40 warnings in 60 files
+ ELIFECYCLE  Command failed with exit code 1.

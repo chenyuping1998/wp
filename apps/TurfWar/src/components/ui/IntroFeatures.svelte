@@ -9,6 +9,7 @@
 
 	import config from '../../game/config';
 	import { getSocialTerms } from '../../game/socialTerms';
+	import { gameText } from '../../game/i18nText';
 
 	// The whole opening: studio mark, game logo, volatility, what the game does,
 	// and the tap that starts it — one screen.
@@ -46,6 +47,13 @@
 	const props: Props = $props();
 
 	const T = getSocialTerms();
+	// The card follows ?lang= (game/i18nText.ts, 16 locales). Social play keeps
+	// the English below, which is worded through socialTerms; the translations
+	// are written for the real-money wording and are never checked against the
+	// social restricted list.
+	const social = stateUrlDerived.social();
+	const tx = (key: Parameters<typeof gameText>[0], en: string, vars?: Record<string, string | number>) =>
+		social ? en : gameText(key, vars);
 	const SYMBOLS = `${base}/assets/sprites/turfSymbols`;
 	const BRAND = `${base}/assets/sprites/turfBrand`;
 	// The Frame overlay comes from capoFrames/, the art the BOARD actually draws.
@@ -72,25 +80,29 @@
 	const VOLATILITY = 4;
 	const VOLATILITY_MAX = 5;
 
-	const panels: { icons: string[]; overlay?: string; title: string; body: string }[] = [
+	const panels: { icons: string[]; overlay?: string; grid?: boolean; badge?: string; title: string; body: string }[] = [
 		{
 			// The Frame is a hollow border — alone it reads as an empty box. Drawn
 			// over a symbol because that is the only way it ever appears in play.
 			icons: ['h1'],
 			overlay: 'frame_1x1',
-			title: 'LOOT BAGS',
-			body: `Frames land carrying <strong>2&times; to 100&times;</strong>, covering <strong>1, 4 or 9 positions</strong>. A Frame multiplies any win whose ${T.payline} crosses it &mdash; a bigger Frame counts once per position crossed &mdash; and where several take part in one win, their values <strong>add together</strong>.`,
+			title: tx('turfBagsTitle', 'LOOT BAGS'),
+			body: tx('turfBagsBody', `Loot Bags land carrying <strong>2&times; to 100&times;</strong>, covering <strong>1, 4 or 9 positions</strong>. A Loot Bag multiplies any win whose ${T.payline} crosses it &mdash; a bigger Loot Bag counts once per position crossed &mdash; and where several take part in one win, their values <strong>add together</strong>.`),
 		},
 		{
 			icons: ['sw'],
-			title: 'THE BRUISER',
-			body: `A Bruiser fills its <strong>entire reel with Wilds</strong> before any wins are counted. It lands on the three middle reels, and more than one can arrive on the same spin.`,
+			title: tx('turfBruiserTitle', 'THE BRUISER'),
+			body: tx('turfBruiserBody', `A Bruiser fills its <strong>entire reel with Wilds</strong> before any wins are counted. It lands on the three middle reels in normal play and on any reel in free spins.`),
 		},
 		{
-			icons: ['h1', 'h2', 'h3'],
+			// A mini 3×2 board with ONE frame round all of it: the frame shrunk onto
+			// a single symbol read as a stray dashed box (「loading頁面不知道是啥」 2026-10-23).
+			icons: ['h1', 'h2', 'h3', 'h4', 'h5', 'h1'],
 			overlay: 'frame_full',
-			title: 'THE BIG SCORE',
-			body: `On any spin the <strong>whole grid can become one Loot Bag</strong> worth <strong>5&times; to 50&times;</strong>, multiplying every winning ${T.payline} once per position. It can turn up in normal play and in every feature &mdash; and it does not need a win to appear.`,
+			grid: true,
+			badge: '50×',
+			title: tx('turfScoreTitle', 'THE BIG SCORE'),
+			body: tx('turfScoreBody', `On any spin the <strong>whole grid can become one Loot Bag</strong> worth <strong>5&times; to 50&times;</strong>, multiplying every winning ${T.payline} once per position. It can turn up in normal play and in every feature &mdash; and it does not need a win to appear.`),
 		},
 		// Three panels only: the opening card sells the two signature mechanics and
 		// the Big Score. The Free Spins tiers are covered in full in the rules modal
@@ -99,6 +111,46 @@
 	];
 
 	let show = $state(true);
+
+	// Fit the stage to the window. Stake review of Capo Nostra, 2026-10-14,
+	// Popout S: "the initial window displayed during game loading is not shown
+	// correctly" — this card is the same build. In a small popout the stacked
+	// panels were taller than the window, and since the card is centred the logo
+	// and the first panel ran off the top. The stage is measured at its natural
+	// size and scaled down to fit.
+	let stage = $state<HTMLElement>();
+	let studio = $state<HTMLElement>();
+	const portraitBadgeRoom = () => {
+		if (!studio || window.innerHeight <= window.innerWidth) return 0;
+		const bottom = parseFloat(getComputedStyle(studio).bottom) || 0;
+		return studio.offsetHeight + bottom * 2;
+	};
+	let fit = $state(1);
+	const measure = () => {
+		if (!stage) return;
+		const w = stage.offsetWidth;
+		const h = stage.offsetHeight;
+		if (!w || !h) return;
+		// the card's own padding is clamp(0.8rem, 2.5vh, 2rem) top and bottom
+		const padY = Math.min(32, Math.max(12.8, window.innerHeight * 0.025)) * 2;
+		// On a portrait phone the stage is as wide as the screen, so the studio
+		// mark (pinned bottom-left on its dark plate) lands on the stats line —
+		// at 320×568 it hid "MAX WIN 20,000×" (2026-10-30). Keep its height clear
+		// at both ends, since the stage is centred.
+		const badge = portraitBadgeRoom();
+		fit = Math.min(1, (window.innerHeight - padY - badge * 2) / h, (window.innerWidth * 0.98) / w);
+	};
+	$effect(() => {
+		if (!stage) return;
+		measure();
+		const ro = new ResizeObserver(measure);
+		ro.observe(stage);
+		window.addEventListener('resize', measure);
+		return () => {
+			ro.disconnect();
+			window.removeEventListener('resize', measure);
+		};
+	});
 
 	// This card is the ONLY opening screen. The pixi loading screen still runs
 	// underneath it — it is what actually loads the assets and reports progress —
@@ -142,6 +194,14 @@
 		dismiss();
 	};
 
+	// Enter continues, exactly as the click does and under the same conditions.
+	// Not Space: that is the spin key, and the press would carry on to the board.
+	const onkey = (e: KeyboardEvent) => {
+		if (e.key !== 'Enter' || !show || !armed || !ready) return;
+		e.preventDefault();
+		close();
+	};
+
 	// A short arming delay stops a stray click that was aimed at something else
 	// from dismissing the card before it has finished appearing.
 	let armed = $state(false);
@@ -165,6 +225,8 @@
 	});
 </script>
 
+<svelte:window onkeydown={onkey} />
+
 {#if show}
 	<!-- svelte-ignore a11y_click_events_have_key_events, a11y_no_static_element_interactions -->
 	<div
@@ -173,7 +235,8 @@
 		style:z-index={zIndex.modal + 20}
 		style:--bg={`url("${BG}/bg_base.png")`}
 		onclick={() => armed && ready && close()}
-		transition:fade={{ duration: 320 }}
+		in:fade={{ duration: 140 }}
+		out:fade={{ duration: 320 }}
 	>
 		<div class="hm-scrim"></div>
 
@@ -190,17 +253,17 @@
 		<div class="hm-cast-wrap hm-cast-wrap-left">
 			<img
 				class="hm-cast hm-cast-left"
-				src={`${base}/assets/sprites/turfCast/guy.png`}
+				src={`${base}/assets/castLayers/turf/loading.png`}
 				alt=""
 				aria-hidden="true"
 			/>
 		</div>
 
-		<div class="hm-stage">
-			<img class="hm-logo" src={`${BRAND}/logo.png`} alt="TURF WAR" />
+		<div class="hm-stage" bind:this={stage} style:transform={fit < 1 ? `scale(${fit})` : undefined}>
+			<div class="hm-logo street-wordmark">TURF WAR</div>
 
-			<div class="hm-vol">
-				<span class="hm-vol-label">VOLATILITY</span>
+			<div class="hm-vol hm-tag" style:--tag={`url(${base}/assets/sprites/turfUi/ticker_plate.png)`}>
+				<span class="hm-vol-label">{tx('introVolatility', 'VOLATILITY')}</span>
 				<span class="hm-bolts" aria-label={`Volatility ${VOLATILITY} of ${VOLATILITY_MAX}`}>
 					{#each Array(VOLATILITY_MAX) as _, i (i)}
 						<!--
@@ -228,8 +291,8 @@
 
 			<div class="hm-panels">
 				{#each panels as panel, i (panel.title)}
-					<section class="hm-panel" style:--delay={`${i * 100}ms`}>
-						<div class="hm-panel-icons" class:multi={panel.icons.length > 1}>
+					<section class="hm-panel" style:--delay={`${i * 100}ms`} style:--plate={`url(${base}/assets/sprites/turfUi/buybonus_plate.png)`}>
+						<div class="hm-panel-icons" class:multi={panel.icons.length > 1 && !panel.grid} class:grid={panel.grid}>
 							{#each panel.icons as icon, k (k)}
 								<img src={`${SYMBOLS}/${icon}.png`} alt="" aria-hidden="true" />
 							{/each}
@@ -241,9 +304,10 @@
 									aria-hidden="true"
 								/>
 							{/if}
+							{#if panel.badge}<span class="hm-panel-badge" aria-hidden="true">{panel.badge}</span>{/if}
 						</div>
-						<h2>{panel.title}</h2>
-						<p>{@html panel.body}</p>
+						<h2 dir="auto">{panel.title}</h2>
+						<p dir="auto">{@html panel.body}</p>
 					</section>
 				{/each}
 			</div>
@@ -254,11 +318,11 @@
 				figure there is worse than no figure. The rules panel carries RTP per
 				mode, read live from the maths config, which is where it belongs.
 			-->
-			<p class="hm-stats">
-				{lineCount} {T.paylinesUpper} &nbsp;/&nbsp; MAX WIN {maxWin}&times;
+			<p class="hm-stats hm-tag" dir="auto" style:--tag={`url(${base}/assets/sprites/turfUi/ticker_plate.png)`}>
+				{tx('introPaylines', `${lineCount} ${T.paylinesUpper}`, { lines: lineCount })} &nbsp;/&nbsp; {tx('introMaxWin', `MAX WIN ${maxWin}×`, { max: maxWin })}
 			</p>
-			<p class="hm-cta" class:waiting={!ready}>
-				{ready ? 'TAP TO CONTINUE' : 'LOADING…'}
+			<p class="hm-cta" class:waiting={!ready} dir="auto">
+				{ready ? tx('introTap', 'TAP TO CONTINUE') : tx('introLoading', 'LOADING…')}
 			</p>
 		</div>
 
@@ -267,7 +331,7 @@
 			certification notes treat those as two different things and ask for
 			exactly this outcome.
 		-->
-		<div class="hm-studio">
+		<div class="hm-studio" bind:this={studio}>
 			<svg class="hm-studio-star" viewBox="0 0 100 100" role="img" aria-label="Silverstars 777">
 				<polygon
 					points="50,7 61,38 94,38 67,57 77,89 50,70 23,89 33,57 6,38 39,38"
@@ -284,6 +348,7 @@
 {/if}
 
 <style lang="scss">
+ .hm-logo.street-wordmark {width:auto;white-space:nowrap;line-height:1.1;font-family:Bungee,sans-serif;font-size:clamp(30px,5vw,64px);color:#F5893D;-webkit-text-stroke:2px #121212;paint-order:stroke fill;filter:drop-shadow(3px 3px 0 #F7F5F0);transform:rotate(-2deg);}
 	@keyframes riseIn {
 		from {
 			opacity: 0;
@@ -410,14 +475,23 @@
 		box-sizing: border-box;
 		cursor: pointer;
 		overflow: hidden;
-		color: #d9d6ce;
+		color: #f7f5f0;
 		font-family: var(--gb-body-font, sans-serif);
-		background: var(--bg) center / cover no-repeat, #17191c;
+		background: var(--bg) center / cover no-repeat, #3a3d42;
+	}
+
+	/* 2026-11-05: the whole card used to start at opacity 0 and fade in after
+	   the 420 ms arming delay, so for that stretch the pixi loading screen
+	   behind it (its own title, MAX WIN line, tips and PRESS ANYWHERE) showed
+	   through the card's text — two screens of type on top of each other. The
+	   backdrop is now opaque from the first frame (the same street plate the
+	   loader uses); only the card's content waits for the arming delay. */
+	.hm-intro > :not(.hm-scrim) {
 		opacity: 0;
 		transition: opacity 0.35s ease;
 	}
 
-	.hm-intro.armed {
+	.hm-intro.armed > :not(.hm-scrim) {
 		opacity: 1;
 	}
 
@@ -427,9 +501,7 @@
 	.hm-scrim {
 		position: absolute;
 		inset: 0;
-		background:
-			radial-gradient(ellipse at 42% 52%, rgba(14, 15, 17, 0.9) 0%, rgba(14, 15, 17, 0.55) 45%, rgba(14, 15, 17, 0.82) 100%),
-			linear-gradient(180deg, rgba(14, 15, 17, 0.75) 0%, rgba(14, 15, 17, 0.2) 30%, rgba(14, 15, 17, 0.9) 100%);
+		background: rgba(18,18,18,.12);
 	}
 
 	/* Positioning + the one-shot entrance live here, on the wrapper. See the
@@ -472,8 +544,8 @@
 		object-fit: contain;
 		pointer-events: none;
 		filter:
-			drop-shadow(3px 0 0 #0e0f11) drop-shadow(-3px 0 0 #0e0f11) drop-shadow(0 3px 0 #0e0f11)
-			drop-shadow(0 -3px 0 #0e0f11) drop-shadow(0 12px 26px rgba(0, 0, 0, 0.7));
+			drop-shadow(3px 0 0 #121212) drop-shadow(-3px 0 0 #121212) drop-shadow(0 3px 0 #121212)
+			drop-shadow(0 -3px 0 #121212) drop-shadow(0 12px 26px rgba(0, 0, 0, 0.7));
 	}
 
 	/* The character keeps breathing after walking in — same technique as
@@ -525,19 +597,36 @@
 		width: min(58rem, 100%);
 		/* centred now that a figure stands on each side */
 		margin: 0 auto;
+		/* scaled to fit by `fit` above; scale about the middle */
+		flex-shrink: 0;
+		transform-origin: 50% 50%;
 	}
 
-	@media (max-width: 62rem) {
+	/* Narrow AND upright only. A small landscape popout keeps the full width and
+	   the three columns — stacking there tripled the height of a window that is
+	   already short. */
+	@media (max-width: 62rem) and (max-aspect-ratio: 1/1) {
 		.hm-stage {
 			width: min(32rem, 100%);
 		}
 	}
 
 	.hm-logo {
+ height: auto; min-height: 1.1em;
 		width: clamp(12rem, 26vw, 22rem);
 		height: auto;
 		filter: drop-shadow(0 6px 18px rgba(0, 0, 0, 0.8));
 		animation: riseIn 0.5s cubic-bezier(0.22, 1, 0.36, 1) both;
+	}
+
+	/* 2026-11-05: the volatility meter and "14 PAYLINES / MAX WIN 20,000×" sat
+	   straight on the backdrop (wall and wet pavement) — numbers on art, which
+	   the house rule forbids. Both now sit on the bet bar's own ticker plate. */
+	.hm-tag {
+		border: 12px solid transparent;
+		border-image: var(--tag) 24 fill / 12px / 0 stretch;
+		padding: 0.1rem 0.75rem;
+		filter: drop-shadow(4px 5px 0 rgba(14, 15, 17, 0.6));
 	}
 
 	.hm-vol {
@@ -551,7 +640,7 @@
 		font-family: var(--hm-title-font, var(--gb-display-font, sans-serif));
 		font-size: clamp(0.68rem, 1.4vw, 0.92rem);
 		letter-spacing: 0.2em;
-		color: #d9d6ce;
+		color: #f7f5f0;
 	}
 
 	.hm-bolts {
@@ -598,11 +687,12 @@
 
 	/* Below the width where three columns can hold readable body text, stack.
 	   The panels are the content, so reflowing beats shrinking. */
-	@media (max-width: 46rem) {
+	@media (max-width: 46rem) and (max-aspect-ratio: 1/1) {
 		.hm-panels {
 			grid-template-columns: 1fr;
 		}
 	}
+
 
 	/* Angled corners and a hard keyline instead of a soft neon pill: the card is
 	   meant to read as printed signage in the scene, not as an app dialog. */
@@ -625,14 +715,13 @@
 		gap: 0.35rem;
 		padding: clamp(0.7rem, 1.6vh, 1.1rem) clamp(0.6rem, 1.4vw, 1rem);
 		box-sizing: border-box;
-		background:
-			linear-gradient(180deg, rgba(58, 61, 66, 0.96) 0%, rgba(23, 25, 28, 0.97) 62%, rgba(42, 52, 62, 0.97) 100%);
-		border: 3px solid #0e0f11;
-		clip-path: polygon(18px 0, 100% 0, 100% calc(100% - 18px), calc(100% - 18px) 100%, 0 100%, 0 18px);
-		box-shadow:
-			inset 0 0 0 2px #d9d6ce,
-			inset 0 22px 34px -22px rgba(217, 214, 206, 0.5),
-			7px 7px 0 rgba(14, 15, 17, 0.75);
+		/* 2026-10-01: the game's painted Buy Bonus plate, nine-sliced by CSS.
+		   It was a three-stop linear gradient with an inset ring — "gradient
+		   fills" from review's Low quality assets tag, on the first screen a
+		   reviewer sees. Corners keep their drawn size; the well stretches. */
+		border: 30px solid transparent;
+		border-image: var(--plate) 130 fill / 44px / 4px stretch;
+		filter: drop-shadow(6px 8px 0 rgba(14, 15, 17, 0.7));
 		text-align: center;
 		animation: riseIn 0.5s cubic-bezier(0.22, 1, 0.36, 1) both;
 		animation-delay: var(--delay);
@@ -645,7 +734,7 @@
 		position: absolute;
 		inset: 3px 3px auto 3px;
 		height: clamp(3.4rem, 8vh, 5rem);
-		background: linear-gradient(180deg, rgba(156, 90, 34, 0.34) 0%, rgba(156, 90, 34, 0) 100%);
+		display: none;
 		pointer-events: none;
 	}
 
@@ -658,7 +747,7 @@
 		right: -1px;
 		width: 46px;
 		height: 46px;
-		background: linear-gradient(225deg, #465562 0%, #465562 46%, transparent 47%);
+		display: none;
 		pointer-events: none;
 	}
 
@@ -686,6 +775,39 @@
 		filter: drop-shadow(0 0 10px rgba(156, 90, 34, 0.6));
 	}
 
+	/* the Big Score: a small board, one frame stretched round all of it */
+	.hm-panel-icons.grid {
+		display: grid;
+		grid-template-columns: repeat(3, auto);
+		gap: 0.1rem 0.25rem;
+		width: fit-content;
+		margin-inline: auto;
+		padding: 0.35rem 0.55rem;
+	}
+	.hm-panel-icons.grid img:not(.hm-panel-overlay) {
+		width: clamp(2.1rem, 4.6vh, 2.8rem);
+		height: clamp(2.1rem, 4.6vh, 2.8rem);
+	}
+	.hm-panel-icons.grid .hm-panel-overlay {
+		width: 100%;
+		height: 100%;
+		object-fit: fill;
+	}
+	.hm-panel-badge {
+		position: absolute;
+		right: -0.9rem;
+		bottom: -0.55rem;
+		z-index: 2;
+		padding: 0.05rem 0.35rem;
+		font-family: 'Permanent Marker', var(--hm-title-font, sans-serif);
+		font-size: clamp(0.95rem, 1.9vw, 1.2rem);
+		color: #121212;
+		background: #f5893d;
+		border: 2px solid #121212;
+		border-radius: 4px;
+		transform: rotate(-6deg);
+	}
+
 	/* the three Scatters overlap, the way they read when they land together */
 	.hm-panel-icons.multi img:not(:first-child) {
 		margin-left: -0.95rem;
@@ -702,10 +824,10 @@
 		color: #f5893d;
 		/* heavy keyline on the type, the way signage in this idiom is drawn */
 		text-shadow:
-			2px 0 0 #0e0f11,
-			-2px 0 0 #0e0f11,
-			0 2px 0 #0e0f11,
-			0 -2px 0 #0e0f11,
+			2px 0 0 #121212,
+			-2px 0 0 #121212,
+			0 2px 0 #121212,
+			0 -2px 0 #121212,
 			0 0 16px rgba(156, 90, 34, 0.5);
 	}
 
@@ -717,11 +839,11 @@
 	}
 
 	.hm-panel :global(strong) {
-		/* #d9d6ce, not the darker #465562 this was first retimed to. These are the
+		/* #f7f5f0, not the darker #9a9ca0 this was first retimed to. These are the
 		   words carrying the numbers — "2x to 100x", "1, 4 or 9 positions" — and at
 		   12.6px the dark brass measured 3.19:1 against the panel, under the 4.5:1
 		   that normal-size text needs. The bright gold measures 8.9:1. */
-		color: #d9d6ce;
+		color: #f7f5f0;
 		font-weight: 700;
 	}
 
@@ -730,7 +852,7 @@
 		font-family: var(--hm-title-font, var(--gb-display-font, sans-serif));
 		font-size: clamp(0.68rem, 1.4vw, 0.9rem);
 		letter-spacing: 0.12em;
-		color: #d9d6ce;
+		color: #f7f5f0;
 		animation: riseIn 0.5s cubic-bezier(0.22, 1, 0.36, 1) both 0.32s;
 	}
 
@@ -748,14 +870,15 @@
 		font-size: clamp(0.78rem, 1.6vw, 1rem);
 		letter-spacing: 0.22em;
 		text-shadow:
-			2px 0 0 #0e0f11,
-			-2px 0 0 #0e0f11,
-			0 2px 0 #0e0f11,
-			0 -2px 0 #0e0f11;
+			2px 0 0 #121212,
+			-2px 0 0 #121212,
+			0 2px 0 #121212,
+			0 -2px 0 #121212;
 		animation: ctaPulse 1.7s ease-in-out infinite;
 	}
 
 	.hm-studio {
+ background:#121212; padding:6px 10px; border:2px solid #f7f5f0; border-radius:6px;
 		position: absolute;
 		left: clamp(0.8rem, 2vw, 1.6rem);
 		bottom: clamp(0.7rem, 2vh, 1.3rem);
@@ -792,5 +915,39 @@
 		   star's counter at 26px — 30px restores the optical size it was drawn at. */
 		font-size: 30px;
 		font-weight: 700;
+	}
+
+ @media (max-width: 620px) and (max-aspect-ratio: 1/1) {
+  /* Shared mobile rem is 12px: explicit px preserve readable body copy. */
+  .hm-panel {border-width:16px;border-image-width:26px;padding:10px 8px;gap:4px;}
+  .hm-panel p {font-size:11px;line-height:1.35;}
+  .hm-panel h2 {font-size:13px;}
+  .hm-panel-icons {min-height:32px;}
+  .hm-panel-icons img {width:32px;height:32px;}
+ }
+
+	/* (kept last so it wins the cascade) Short screens (phone landscape): the painted plate's frame is a fixed
+	   30px, which on a 390px-tall screen ate the copy's room and pushed the
+	   prompt off the bottom. Thinner frame, same art. */
+	@media (max-height: 520px) {
+		.hm-panel {
+			border-width: 14px;
+			border-image-width: 22px;
+			padding: 0.2rem 0.35rem;
+			gap: 0.15rem;
+		}
+		.hm-panel .hm-panel-icons {
+			display: none;
+		}
+		.hm-panels {
+			width: min(100%, 44rem);
+		}
+		.hm-panel h2 {
+			font-size: 0.74rem;
+		}
+		.hm-panel p {
+			font-size: 0.6rem;
+			line-height: 1.25;
+		}
 	}
 </style>

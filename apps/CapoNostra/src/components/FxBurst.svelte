@@ -20,12 +20,12 @@
 	const props: Props = $props();
 
 	const DURATION = 850;
-	const GOLD = [0xffd75e, 0xfff7d1, 0xffb04a, 0xffe98a];
+	const GOLD = [0xd9d5cd, 0xf9f5eb, 0xbcbcbc, 0xe9e5dc];
 	// Was JUNGLE — gold, cream, olive 0x8fbf4a, amber — and it sprayed green
 	// fxLeaf sprites. retheme_ui.py recoloured the sprite art and uiTheme.ts took
 	// the vector colours, but this FX layer was missed, so every big win threw
 	// jungle leaves over correct Miami-neon plaque art.
-	const NEON = [0xC9A227, 0xE8D48B, 0xfff7d1, 0x5C2126];
+	const NEON = [0xd4d0c6, 0xf7f4ec, 0xf9f5eb, 0x333333];
 
 	type Spark = {
 		angle: number;
@@ -99,7 +99,7 @@
 			const p = (t - delayP) / (1 - delayP);
 			if (p <= 0 || p >= 1) continue;
 			g.circle(0, 0, (18 + 68 * easeOut(p)) * s);
-			g.stroke({ width: width * s * (1 - p), color: 0xffe08a, alpha: (1 - p) * 0.7 });
+			g.stroke({ width: width * s * (1 - p), color: 0xe3dfd7, alpha: (1 - p) * 0.7 });
 		}
 	};
 </script>
@@ -110,7 +110,7 @@
 		<Sprite
 			key="fxGlow"
 			anchor={0.5}
-			tint={0xffe9a8}
+			tint={0xece8df}
 			blendMode="add"
 			width={150 * (props.scale ?? 1) * easeOut(Math.min(1, t * 3))}
 			height={150 * (props.scale ?? 1) * easeOut(Math.min(1, t * 3))}
@@ -120,11 +120,11 @@
 		{#each sparks as spark, index (index)}
 			{@const state = sparkState(spark, t)}
 			{#if state}
-				<!-- shard sprite follows the flavour: gold throws leaf shards, neon
-				     throws streaks. fxLeaf on the neon path was the visible half of
-				     the jungle carry-over - green leaves over Miami plaque art. -->
+				<!-- shards are streaks on both flavours. The gold path used to throw
+				     fxLeaf, a leaf silhouette left over from the jungle game; it was
+				     retired with the Art Deco recolour (2026-10-04). -->
 				<Sprite
-					key={spark.leaf ? (props.flavour === 'neon' ? 'fxStreak' : 'fxLeaf') : 'fxStar'}
+					key={spark.leaf ? 'fxStreak' : 'fxStar'}
 					anchor={0.5}
 					x={state.x}
 					y={state.y}

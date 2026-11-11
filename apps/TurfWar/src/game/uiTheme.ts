@@ -7,6 +7,7 @@ import { stateConfig } from 'state-shared';
 // controls. This policy lives in state-shared because components-ui-html (the
 // Autoplay panel button) cannot read uiTheme. Off by default; opted in here.
 stateConfig.explainInsufficientBalance = true;
+stateConfig.useRgsSocialCasino = true;
 
 // Turf War bet bar: concrete-grey plates, sodium-orange trim, bone-white icons —
 // ART_BRIEF.md §0 palette. These are the vector/text colours in the shared UI
@@ -22,36 +23,39 @@ setUiTheme({
 	// family rather than a synthesised bold.
 	fontFamily: GAME_FONT,
 	fontWeight: GAME_FONT_WEIGHT,
+	smallViewportReadouts: true,
+	alignReadoutInk: true,
+	externalFreeSpinCounter: true,
 
-	buttonFill: 0x17191c,
+	buttonFill: 0x3a3d42,
 	buttonFillLight: 0x3a3d42,
-	buttonFillDisabled: 0x2a343e,
+	buttonFillDisabled: 0x55585d,
 	// sodium-orange-lit so an ON toggle (turbo / autoplay) reads as ON at a
 	// glance under the bone-white icon art
 	buttonFillActive: 0x9c5a22,
 	buttonBorder: 0xf5893d,
-	buttonIconFill: 0xd9d6ce,
-	buttonIconStroke: 0x0e0f11,
+	buttonIconFill: 0xf7f5f0,
+	buttonIconStroke: 0x121212,
 
-	betFill: 0x17191c,
-	betBorder: 0xd9d6ce,
+	betFill: 0x3a3d42,
+	betBorder: 0xf7f5f0,
 
-	panelFill: 0x0e0f11,
+	panelFill: 0x121212,
 	panelBorder: 0x3a3d42,
 	labelFill: 0xffc38a,
 	balanceLabelFill: 0xffc38a,
 	// win reads in sodium orange, bet in cool steel so the three readouts stay
 	// tellable apart without leaving the palette
 	winAccent: { border: 0xf5893d, label: 0xffc38a },
-	betAccent: { border: 0x465562, label: 0xd9d6ce },
-	// Bone white, not pure white. §0 gives 骨白 #D9D6CE as the text colour and
-	// nothing in this game is pure white — a #FFFFFF figure on a #0E0F11 plate is
+	betAccent: { border: 0x9a9ca0, label: 0xf7f5f0 },
+	// Bone white, not pure white. §0 gives 骨白 #F7F5F0 as the text colour and
+	// nothing in this game is pure white — a #FFFFFF figure on a #121212 plate is
 	// the one object on the bar lit by something other than the sodium lamp
 	// everything else is lit by. It is still ~14:1 against the plate, so no
 	// legibility is traded for the palette.
-	valueFill: 0xd9d6ce,
-	valueStroke: 0x0e0f11,
-	valueShadow: 0x0e0f11,
+	valueFill: 0xf7f5f0,
+	valueStroke: 0x121212,
+	valueShadow: 0x121212,
 
 	// One slim strip along the foot, the arrangement players arrive already
 	// knowing. The side-rail version it replaces maximised board size — the rails
@@ -99,7 +103,7 @@ setUiTheme({
 	// the platform-chrome block below overwrote it before anyone saw it; the
 	// moment this game's own skin became the default, the strip under the
 	// concrete plates would have been dark green.
-	barFill: 0x17191c,
+	barFill: 0x3a3d42,
 	barAlpha: 0.94,
 
 	// Buy Bonus stays left of the board at its old size rather than joining the
@@ -128,9 +132,25 @@ setUiTheme({
 
 	// cursor-over feedback on the rail controls
 	hoverHighlight: true,
+	// 2026-10-01 (user: 游標移到按鈕都不要反灰，像 Deadwood 那樣): the round
+	// buttons light their own painted plate — drawn again additive in sodium
+	// dark — instead of the shared 16% white overlay, and the Bet readout gets
+	// a lit underline instead of a 12% white box.
+	hoverPlateLight: 0x9c5a22,
 
-	// 旋轉鍵的呼吸光暈
-	spinButtonGlow: true,
+	// 旋轉鍵的呼吸光暈 — off (2026-09-29). It breathed at idle and flared on
+	// press; Deadwood's first review scored the UI 5/10 and the collaborator's
+	// passing games all ship it off. The press is acknowledged by the icon.
+	spinButtonGlow: false,
+
+	// Buy Bonus hover lights the PLATE itself instead of laying the shared
+	// translucent white box over it (read as greyed-out on Deadwood, 2026-09-29):
+	// the plate is drawn again, additive. 2026-10-01: the tint was the light
+	// concrete grey #55585D, and a grey added over the whole plate still read
+	// as greyed-out (反灰); now sodium dark (§0 #9C5A22) like the round
+	// buttons, so the rust and paint warm up the way Deadwood's brass does.
+	buyBonusHoverSprite: 'buyBonusGlyph',
+	buyBonusHoverSpriteTint: 0x9c5a22,
 
 	// Same fix as Capo Nostra, same day: `betIconScale` (components-ui-pixi's
 	// shared default is 0.22, tuned for a flat circle) left the refresh mark
@@ -163,11 +183,35 @@ setUiTheme({
 	// bottlenecked by the tight spin-autoplay gap), so it gets its own bigger
 	// scale on top of railButtonScale. Reused Capo's measured value without
 	// re-deriving — same reasoning as spinScale/railButtonScale above.
-	turboButtonScale: 1.6,
+	// 2026-09-29: back to the same size as autoplay and the ± pair (was 1.6):
+	// next to a 1.15 autoplay the oversized turbo read as a different kind of
+	// control and the row looked unfinished.
+	turboButtonScale: 1.15,
+	// 2026-10-18: at the default 33 the 1.15 bolt's ring rode over the bar
+	// plate's orange rail (「按鈕超出bar匡」). The rail's inner edge is 16 units in
+	// from the frame (29 of bar_plate.png's 270 px over a 152-unit frame); the
+	// ring has a 38 radius, so 54 leaves ~14 of plate between them.
+	barTurboInset: 54,
 
-	// +/- enlarged ~29% with the spacing raised to match (ported from Capo Nostra).
-	stepButtonScale: 0.36,
-	stepButtonGap: 33,
+	// −  BET  +  in one row, the stepper the same size as autoplay/turbo
+	// (0.44 × railButtonScale). The stacked pair was small and left the span
+	// between Win and Bet empty, which review reads as unfinished; 'flank'
+	// widens the Balance/Win cells into it (2026-09-29, after Deadwood).
+	stepperLayout: 'flank',
+	flankWideCells: true,
+	stepButtonScale: 0.44,
+
+	// Portrait spin row. At the template sizes the menu plate (1.0 × 1.15) ran
+	// past the left edge and Buy Bonus sat flush on the right; the ± pair was
+	// the smallest control in the row (same fix as Hard Time / Capo Nostra).
+	portraitSideButtonX: 440,
+	portraitMenuScale: 0.72,
+	portraitStepScale: 0.55,
+	portraitStepX: 170,
+	portraitSideClusterX: 290,
+
+	// The plate otherwise stays lit through the whole feature.
+	buyBonusHideInFreeSpins: true,
 
 	// 2026-09-14 icon redraw (ported from Capo Nostra). The delivered set was drawn
 	// with heavy fused shapes (menu's bars one slab, settings a solid flower) and
@@ -226,6 +270,8 @@ setUiTheme({
 	sprites: {
 		base_ticker: 'hmUiTicker',
 		buyBonus: 'hmUiBuyBonus',
+		// same plate, drawn again additive on hover — see buyBonusHoverSprite
+		buyBonusGlyph: 'hmUiBuyBonus',
 		bet: 'turfUiSpinPlate',
 		base_mobile_drawer: 'turfUiDrawerPlate',
 		// 2026-09-15: the strip was bar_strip.png, a rail with 40px of ink in a 240px

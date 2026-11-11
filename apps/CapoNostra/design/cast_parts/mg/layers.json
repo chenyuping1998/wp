@@ -1,0 +1,10 @@
+{
+  "status": "single coherent image; newly authored mesh",
+  "joints": {
+    "hips": [
+      562.7725752508361,
+      994.6742474916388
+    ]
+  },
+  "motion_reference": "DeadwoodExpress self-authored conductor motion"
+}

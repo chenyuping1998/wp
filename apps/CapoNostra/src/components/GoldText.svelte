@@ -78,9 +78,8 @@
 		text={String(props.text)}
 		style={{
 			...base,
-			fill: props.stroke ?? 0x14100D,
-			stroke: props.stroke ?? 0x14100D,
-			strokeThickness: Math.max(2, props.fontSize * 0.13),
+			fill: props.stroke ?? 0x121212,
+			stroke: { color: props.stroke ?? 0x121212, width: Math.max(2, props.fontSize * 0.13) },
 		}}
 		alpha={0.85}
 	/>
@@ -91,13 +90,9 @@
 		onresize={(sizes) => (measuredWidth = sizes.width)}
 		style={{
 			...base,
-			fill: props.fill ?? [0xE8D48B, 0xC9A227, 0x8A6D1F],
-			stroke: props.stroke ?? 0x1a1206,
-			strokeThickness: Math.max(2, props.fontSize * 0.1),
-			dropShadow: true,
-			dropShadowColor: 0x000000,
-			dropShadowBlur: Math.max(4, props.fontSize * 0.12),
-			dropShadowDistance: Math.max(1.5, props.fontSize * 0.045),
+			fill: props.fill ?? [0xf7f4ec, 0xd4d0c6, 0x8c8c8c],
+			stroke: { color: props.stroke ?? 0x131313, width: Math.max(2, props.fontSize * 0.1) },
+			dropShadow: { color: 0x000000, blur: Math.max(4, props.fontSize * 0.12), distance: Math.max(1.5, props.fontSize * 0.045), angle: Math.PI / 6, alpha: 1 },
 		}}
 	/>
 
@@ -107,9 +102,8 @@
 		text={String(props.text)}
 		style={{
 			...base,
-			fill: [0xffffff, 0xfff3bd, 0xfff3bd],
-			stroke: 0x000000,
-			strokeThickness: 0,
+			fill: [0xffffff, 0xf4f0e7, 0xf4f0e7],
+			stroke: { color: 0x000000, width: 0 },
 		}}
 		alpha={0.3}
 	/>

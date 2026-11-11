@@ -8,6 +8,7 @@
 </script>
 
 <script lang="ts">
+ import StreetLabel from './StreetLabel.svelte';
 	import { onDestroy } from 'svelte';
 	import { Container, Sprite } from 'pixi-svelte';
 	import { FadeContainer, WinCountUpProvider } from 'components-pixi';
@@ -61,38 +62,56 @@
 	let onCountUpComplete = $state(() => {});
 
 	// camera shake as the presentation slams in
+	// Both run on the display's own frame clock. They were setInterval(16), which
+	// drifts against the refresh — on a 120 Hz screen every other frame repeated
+	// the last offset and the shake stuttered instead of decaying.
+	const onFrames = (ms: number, step: (p: number) => void) => {
+		const start = performance.now();
+		let raf = 0;
+		const tick = (now: number) => {
+			const p = Math.min(1, (now - start) / ms);
+			step(p);
+			if (p < 1) raf = requestAnimationFrame(tick);
+		};
+		raf = requestAnimationFrame(tick);
+		return () => cancelAnimationFrame(raf);
+	};
+
 	let shake = $state({ x: 0, y: 0 });
+	let stopShake = () => {};
 	const startShake = () => {
-		const start = Date.now();
-		const id = setInterval(() => {
-			const p = (Date.now() - start) / 700;
-			if (p >= 1) {
-				shake = { x: 0, y: 0 };
-				clearInterval(id);
-				return;
-			}
+		stopShake();
+		stopShake = onFrames(700, (p) => {
 			const amp = 11 * (1 - p) ** 2;
-			shake = { x: (Math.random() - 0.5) * 2 * amp, y: (Math.random() - 0.5) * 2 * amp };
-		}, 16);
+			shake =
+				p >= 1
+					? { x: 0, y: 0 }
+					: { x: (Math.random() - 0.5) * 2 * amp, y: (Math.random() - 0.5) * 2 * amp };
+		});
 	};
 
 	// hit-stop impact frame: white flash + scale punch on the slam-in
 	let flash = $state(0);
 	let punch = $state(1);
+	let stopImpact = () => {};
 	const startImpact = () => {
-		const start = Date.now();
-		const id = setInterval(() => {
-			const p = (Date.now() - start) / 280;
-			if (p >= 1) {
-				flash = 0;
-				punch = 1;
-				clearInterval(id);
-				return;
-			}
-			flash = Math.max(0, 0.8 * (1 - p * 1.4));
-			punch = 1 + 0.14 * (1 - p) ** 2;
-		}, 16);
+		stopImpact();
+		stopImpact = onFrames(280, (p) => {
+			flash = p >= 1 ? 0 : Math.max(0, 0.8 * (1 - p * 1.4));
+			punch = p >= 1 ? 1 : 1 + 0.14 * (1 - p) ** 2;
+		});
 	};
+
+	// 10x rung (winLevelMap withTenXRung): there is no banner to slam in, so the
+	// count itself has to land. A small scale pop as the number stops, without
+	// the big-win flash and shake.
+	const startLandPop = () => {
+		stopImpact();
+		stopImpact = onFrames(260, (p) => {
+			punch = p >= 1 ? 1 : 1 + 0.12 * Math.sin(Math.PI * p);
+		});
+	};
+
 
 	// ── plaque FX clock: entrance overshoot, breathing glow, periodic blink,
 	// rim twinkles and repeating bursts on the top tiers ──────────────────────
@@ -135,6 +154,12 @@
 	};
 	const stopBannerFx = () => {
 		cancelAnimationFrame(fxRaf);
+		stopShake();
+		stopImpact();
+		// a pop or slam cut short must not leave the next win scaled or flashed
+		shake = { x: 0, y: 0 };
+		punch = 1;
+		flash = 0;
 		fxNow = -1;
 		twinkles = [];
 	};
@@ -211,13 +236,16 @@
 						// the numbers start rolling
 						if (isBigWin) await waitForTimeout(90);
 						await startCountUp();
-						await waitForTimeout(isBigWin ? 1300 : 300);
+						// the 10x rung counts (duration > 0) and lands on a pop
+						const isCountUp = !isBigWin && duration > 0;
+						if (isCountUp) startLandPop();
+						await waitForTimeout(isBigWin ? 1300 : isCountUp ? 500 : 300);
 						oncomplete();
 					}}
 				/>
 
 				{#if isBigWin}
-					{@const fx = TIER_FX[winLevelData.alias] ?? TIER_FX.big}
+					{@const fx = TIER_FX[winLevelData?.alias ?? 'big'] ?? TIER_FX.big}
 					<MainContainer>
 						<BigWinFx
 							x={context.stateGameDerived.boardLayout().x + shake.x * 0.4}
@@ -234,7 +262,7 @@
 						scale={punch}
 					>
 						{#if isBigWin}
-							{@const alias = winLevelData.alias}
+							{@const alias = winLevelData?.alias ?? 'big'}
 							{@const fx = TIER_FX[alias] ?? TIER_FX.big}
 							{@const bannerKey = BANNER_KEY[alias] ?? BANNER_KEY.big}
 							{@const bw = SYMBOL_SIZE * 5.2}
@@ -245,23 +273,22 @@
 									key="fxGlow"
 									anchor={0.5}
 									tint={fx.glowTint}
-									blendMode="add"
+									blendMode="normal"
 									width={bw * 1.45}
 									height={bh * 1.8}
 									alpha={bannerPose.glow}
 								/>
-								<Sprite key={bannerKey} anchor={0.5} width={bw} height={bh} />
-								<!-- additive self-copy = the whole plaque flares -->
-								{#if bannerPose.blink > 0}
-									<Sprite
-										key={bannerKey}
-										anchor={0.5}
-										width={bw}
-										height={bh}
-										blendMode="add"
-										alpha={bannerPose.blink}
-									/>
-								{/if}
+								<Container>
+{#each ['big','superwin','mega','epic','max'].slice(0, Math.max(0, ['big','superwin','mega','epic','max'].indexOf(alias))+1) as previous, i}
+ {@const stamp = Math.max(0,Math.min(1,(fxNow-i*.09)/.13))}
+ {#if stamp>0}
+ <Container scale={1+.15*(1-stamp)} alpha={stamp} x={-6*i} y={6*i} rotation={-.018*i}>
+  <Sprite key={BANNER_KEY[previous]} anchor={0.5} width={bw} height={bh} />
+  <StreetLabel text={previous === 'max' ? 'MAX WIN' : previous === 'superwin' ? 'SUPER WIN' : `${previous.toUpperCase()} WIN`} width={bw*.9} height={bh*.30} anchor={.5} y={-bh*.23} />
+ </Container>
+ {/if}
+ {/each}
+</Container>
 								<!-- twinkles running the riveted rim -->
 								{#each twinkles as tw (tw.id)}
 									{@const p = Math.min(1, (fxNow - tw.born) / 0.7)}
@@ -272,7 +299,7 @@
 										y={Math.sin(tw.angle) * bh * 0.44}
 										rotation={p * 2}
 										tint={0xffffff}
-										blendMode="add"
+										blendMode="normal"
 										width={SYMBOL_SIZE * 0.5 * Math.sin(p * Math.PI)}
 										height={SYMBOL_SIZE * 0.5 * Math.sin(p * Math.PI)}
 										alpha={Math.sin(p * Math.PI)}
@@ -318,7 +345,11 @@
 					<CanvasSizeRectangle backgroundColor={0xffffff} backgroundAlpha={flash} />
 				{/if}
 
+				<!-- 2026-10-01: a small win is over in ~0.3s after its count, so the
+				     label only ever flashed for a fraction of a second on every
+				     paying spin. The tap still skips; only the words are big-win-only. -->
 				<PressToContinue
+					showLabel={false}
 					position="betweenBoardAndBottom"
 					onpress={() => (countUpCompleted ? oncomplete() : finishCountUp())}
 				/>

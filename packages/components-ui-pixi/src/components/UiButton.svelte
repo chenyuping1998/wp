@@ -160,7 +160,7 @@
 			backgroundColor={backgroundColor}
 			borderColor={uiTheme.buttonBorder}
 			borderWidth={plateActive ? uiTheme.buttonBorderWidthActive : uiTheme.buttonBorderWidth}
-			borderRadius={buttonProps.sizes.width * 0.5}
+			borderRadius={buttonProps.sizes.width * uiTheme.buttonCornerRadius}
 			{...plateActive
 				? {
 						alpha: 1,
@@ -179,7 +179,7 @@
 					const w = buttonProps.sizes.width * (held ? 0.93 : 1);
 					const h = buttonProps.sizes.height * (held ? 0.93 : 1);
 					g.clear();
-					g.roundRect(-w / 2, -h / 2, w, h, w * 0.5);
+					g.roundRect(-w / 2, -h / 2, w, h, w * uiTheme.buttonCornerRadius);
 					g.stroke({ width: uiTheme.buttonBorderWidthActive, color: uiTheme.buttonBorder });
 				}}
 			/>
@@ -196,7 +196,7 @@
 					const w = buttonProps.sizes.width * 0.93;
 					const h = buttonProps.sizes.height * 0.93;
 					g.clear();
-					g.roundRect(-w / 2, -h / 2, w, h, w * 0.5);
+					g.roundRect(-w / 2, -h / 2, w, h, w * uiTheme.buttonCornerRadius);
 					g.fill({ color: 0x000000, alpha: 0.28 });
 				}}
 			/>
@@ -224,9 +224,7 @@
 					const w = buttonProps.sizes.width;
 					const h = buttonProps.sizes.height;
 					g.clear();
-					// this checkout's theme has no buttonCornerRadius (it would be NaN
-					// and draw nothing); the bar's round controls are discs
-					g.circle(0, 0, Math.min(w, h) / 2 - 1.5);
+					g.roundRect(-w / 2, -h / 2, w, h, w * uiTheme.buttonCornerRadius);
 					g.fill({ color: uiTheme.hoverPlateLight ?? 0xffffff, alpha: 0.12 });
 					g.stroke({ width: 3, color: uiTheme.hoverPlateLight ?? 0xffffff, alpha: 1 });
 				}}
@@ -241,7 +239,7 @@
 					const w = buttonProps.sizes.width;
 					const h = buttonProps.sizes.height;
 					g.clear();
-					g.roundRect(-w / 2, -h / 2, w, h, w * 0.5);
+					g.roundRect(-w / 2, -h / 2, w, h, w * uiTheme.buttonCornerRadius);
 					g.fill({ color: 0xffffff, alpha: 0.16 });
 				}}
 			/>

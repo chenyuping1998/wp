@@ -8,8 +8,62 @@ are what a second or third round of generated art actually needs to follow.
 
 Sections that earned their place doing this for Capo Nostra:
 
+## 0. Art direction (the style lock) — every other section inherits this
+
+Filled in AFTER the user picked a style and approved a style frame
+(`art-direction.md`'s procedure), BEFORE any other section's prompts are
+written. Without it every prompt names only objects and moods, and the image
+model fills the gap with its own default look — the one five of this repo's
+games already share.
+
+- **Style + why, in two lines** — the chosen catalogue entry, the theme's
+  native medium it comes from, and the colour strategy the user chose.
+- **Technique rules as numbers**, not adjectives: contour weight (% of canvas
+  side, ≥ 2%), interior-line ratio, shading method (two-tone cel / black
+  spot-shadows / hatching / halftone layer / wash), value count per form,
+  texture minimums (hatch gap ≥ 3.5%, halftone pitch ≥ 4%), detail budget
+  ("detail only in the focal third").
+- **Palette** — hex list with a role and an **area cap** per colour, and the
+  reserved accent (one mechanic owns it; nothing else may use it).
+- **Value plan** — who gets saturation and outlines, in order: specials
+  (brightest, or the only colour), high pays (full colour), low pays (dark,
+  desaturated or outline-only, drawn in the world's own medium: graffiti tags,
+  carved stone, theme letters set from a font), background (no outline,
+  chroma below the symbols'). This is how Hacksaw's 2D titles carry pay
+  hierarchy and board-first readability (`hacksaw-style-atlas.md` rules 2–4);
+  §2's measured-luminance rule then checks it. For a textured or painted
+  style, a flat colour card behind each high pay can carry the hue instead,
+  so the portrait keeps its texture (Nolimit City's mugshot cards:
+  `nolimit-city-styles.md`, What transfers, rule 2).
+- **The style block** — the English prompt paragraph pasted in front of EVERY
+  prompt in this brief and in `design/cast_brief/README.md`, plus the style's
+  own negatives and the shared negatives list.
+- **What code does, not the model** — lettering (fonts / type plates),
+  halftone/grain/misregistration (one pitch, angle and file for the set),
+  glow/FX, palette quantisation (at 2×, then downscale, so edges keep their
+  anti-aliasing). State which script does each.
+- Keep this section's heading as `## 0…`: `archetype/brief.py --style`
+  extracts exactly that section into the cast brief.
+- **Keying colour** — chosen from outside the palette (never white/grey for a
+  paper-white or black-and-white style).
+- **Style frame** — path to the approved image(s), and its measured
+  `check_style.py` numbers (`colors95`, `soft`, `chroma`, `fit`, accent
+  shares) with the gates derived from them. Future rounds are judged against
+  these, not against anyone's memory of the look.
+- **Fonts** — title / body / numbers, from the style's catalogue entry,
+  glyph coverage checked for every shipped language.
+
 ## 1. Character
 
+- **Motion list + each motion's pose requirement (Step 0, Stone 2026-10-27) —
+  fill this in first, per figure (MG and FG).** List every motion the figure
+  performs (spine-motion's six: idle, idle_weave, punch, hit, jump, celebrate,
+  plus this game's reactions, cut-ins and intro cards), and under each the pose
+  it needs from the art, taken from "第 0 步" in
+  `~/tools/spine-generator/docs/生圖交付規格.md` (fist not open palm for a
+  punch, arms long enough and shoulder/armpit/chest painted for celebrate,
+  gaps between limbs and body, elbows and knees slightly bent, rear hand by the
+  cheek). Confirm the spine-motion template supports the pose before briefing.
 - Pose and cropping against the actual layout math (how much of the side band
   it needs to fill at the reference viewport — measure the source game's own
   proportions if there's a design reference, don't guess a percentage).
@@ -18,8 +72,13 @@ Sections that earned their place doing this for Capo Nostra:
   anywhere to draw the line between "arm" and "torso", and at animation scale
   the hands visibly drag into the jacket. State the minimum gap in the brief
   rather than discovering it after rigging.
-- One identity, matching the new theme's own logic for how many cast members
-  make sense — don't default to the source game's cast count.
+- **Two characters: §1a MG figure, §1b FG figure.** Two different people, not
+  one person relit. For each one: who they are in the theme, the archetype
+  picked, the cast brief path (`design/cast_brief/mg/`, `design/cast_brief/fg/`),
+  and the per-FG-tier lighting variants if any. Then one line on how the pair
+  contrasts (build, gender, age or one colour) and one line confirming both
+  share §0, light direction, feet line and head height. Neither may be a
+  pay-symbol portrait.
 
 ## 2. Symbols
 
@@ -38,6 +97,11 @@ Sections that earned their place doing this for Capo Nostra:
 - List which symbols reuse or are pre-scaled from an existing asset, if any
   (saves a redraw), and call out anything that must NOT reuse the source
   game's shape (a symbol whose silhouette IS the source game's mascot, say).
+- **Idle act per symbol (required, 2026-10-27, SKILL.md step 4 "The symbols
+  live too").** Next to each symbol write its ambient loop and its signature
+  act, and the pivot it moves about (hanging point, wheels, base), so the art
+  is drawn to support it — e.g. a chain needs a clear hanging top, a car
+  needs visible wheels/headlights, a building needs windows that can light.
 
 ## 3. Frames / win-indicator housing
 
@@ -51,6 +115,11 @@ Sections that earned their place doing this for Capo Nostra:
   around 60-70% peak opacity").
 
 ## 4. Board housing / frame art
+
+- Name the object the housing is, from the game's world (a trailer, prison
+  bars, a mine-shaft timber, cardboard and duct tape, a coffin in dirt), not
+  "an ornate frame". An ornamental gold bezel is the default look's frame
+  (`nolimit-city-styles.md`, What transfers, rule 1).
 
 - The housing's own alpha bounding box vs its nominal canvas size, if
   anything downstream measures against it (character placement, board-edge
@@ -136,6 +205,14 @@ Sections that earned their place doing this for Capo Nostra:
 - One per mode/tier the mechanic actually uses; name them by what they need
   to communicate (base vs. each feature tier) rather than assuming the source
   game's tier count.
+- Plan what will MOVE in each plate before it is drawn (every new game,
+  SKILL.md step 4 "The background lives"): 2–3 things per mode that animate
+  naturally — liquid, bubbles, a sign, sky glints, a small animal — placed
+  in the side margins or upper sky, not behind the board at 16:9 and not
+  behind the cast. Ask for them as clean, separable shapes (a tank with a
+  clear inside, a sign with an empty face, a pipe mouth with a puddle under
+  it) so code can mask or cut them out of the plate, as Pickle Panic's
+  `design/build_bg_fx.py` does.
 
 ## 8. Lettering vs. system-font audit
 
@@ -154,6 +231,13 @@ an assumption:
 
 ## 9. Verification checklist (fill in once art lands)
 
+- [ ] Whole symbol set (royals, Wild, Scatter included) inside the style
+      frame's `check_style.py` gates (§0) — one style on the reel, not two
+- [ ] AI-tells table (`art-direction.md`) walked at 180 px and 70 px: no baked
+      sheen/glow, no generated lettering, no fake halftone/hatching, no
+      nonsense ornament, counts correct, one light direction
+- [ ] Cast figure, UI chrome, FX colours and thumbnail carry §0 too, not just
+      the symbols
 - [ ] Three random symbols still identifiable shrunk to reel-cell size
 - [ ] Whole symbol set desaturated to greyscale still shows a luminance
       ladder matching pay order

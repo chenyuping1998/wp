@@ -1,0 +1,3127 @@
+{
+ "source": "the user's 「PP抄錄」 kit, games/<symbol>/ (timeline.json, init.txt, frames/)",
+ "captured": "2026-10-08",
+ "viewport": [
+  1280,
+  720
+ ],
+ "note": "panel holds are capped near 6 s: the capture script clicks a panel after 6 s with no server request. vswaysdogs' FG stopped at a pick screen (1 spin). Wolf Gold has no buy.",
+ "layout": {
+  "spin_button": [
+   0.775,
+   0.905
+  ],
+  "bet_minus_plus": "either side of spin, AUTOPLAY under it",
+  "info_menu_sound": [
+   [
+    0.11,
+    0.91
+   ],
+   [
+    0.14,
+    0.95
+   ]
+  ],
+  "credit_bet": "bottom left, two lines, right of INFO",
+  "win": "bottom centre",
+  "buy_panel": "left of the board (2019+ titles), stacked BUY FREE SPINS / ante DOUBLE CHANCE",
+  "intro_enter_button": [
+   0.845,
+   0.6
+  ],
+  "intro_footer": "DON'T SHOW NEXT TIME checkbox + volatility badge under the enter button"
+ },
+ "games": [
+  {
+   "symbol": "vs10bbbnz1000",
+   "name": "Big Bass Bonanza 1000",
+   "viewport": [
+    1280,
+    720
+   ],
+   "init": {
+    "shape": "5x3",
+    "lines": 10,
+    "rtp": {
+     "ante": 96.51,
+     "purchase_1": 96.51,
+     "purchase_0": 96.51,
+     "regular": 96.51
+    },
+    "max_win_x": {
+     "tbm": 20000,
+     "tbm_a": 13334
+    },
+    "buy": [
+     {
+      "x_bet": 100.0,
+      "type": "default"
+     },
+     {
+      "x_bet": 450.0,
+      "type": "fs"
+     }
+    ],
+    "ante_x_bet": [
+     1.5
+    ],
+    "coin_steps": 28,
+    "default_bet": 2.0,
+    "reel_sets": 13,
+    "paytable_tops": [
+     2000,
+     1000,
+     500,
+     200,
+     100,
+     50
+    ]
+   },
+   "timing": {
+    "loading_s": 13.4,
+    "intro_clicks": 1,
+    "spin_presentation_s": [
+     3.03,
+     2.89,
+     2.97,
+     2.45,
+     2.9,
+     38.43
+    ],
+    "spin_presentation_median_s": 2.9,
+    "spin_wins": [
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.4
+    ],
+    "server_latency_s": 0.45,
+    "fg_spins": 21,
+    "fg_total_s": 145.6,
+    "fg_spin_interval_median_s": 3.67,
+    "fg_spin_interval_p90_s": 13.14,
+    "fg_entry_s": 13.14,
+    "fg_exit_s": 2.88,
+    "fg_award": 10,
+    "fg_total_win_x": 102.2,
+    "panel_clicks": 14
+   },
+   "phases": {
+    "loading": {
+     "frames": 3,
+     "t0": 1.4,
+     "t1": 5.5,
+     "numbers": {
+      "colors95": 23,
+      "soft": 0.215,
+      "lum": 0.173,
+      "sat": 0.437,
+      "achromatic": 0.375
+     },
+     "top": [
+      "#101030",
+      "#101010",
+      "#103030",
+      "#303030",
+      "#303050",
+      "#503050"
+     ]
+    },
+    "intro": {
+     "frames": 1,
+     "t0": 14.4,
+     "t1": 14.4,
+     "numbers": {
+      "colors95": 824,
+      "soft": 0.551,
+      "lum": 0.399,
+      "sat": 0.649,
+      "achromatic": 0.096
+     },
+     "top": [
+      "#101010",
+      "#105050",
+      "#103030",
+      "#503010",
+      "#109070",
+      "#f0f0f0"
+     ]
+    },
+    "enter": {
+     "frames": 2,
+     "t0": 24.3,
+     "t1": 24.7,
+     "numbers": {
+      "colors95": 1191,
+      "soft": 0.536,
+      "lum": 0.432,
+      "sat": 0.643,
+      "achromatic": 0.049
+     },
+     "top": [
+      "#105050",
+      "#101010",
+      "#103030",
+      "#109070",
+      "#107050",
+      "#10d090"
+     ]
+    },
+    "main_idle": {
+     "frames": 1,
+     "t0": 36.6,
+     "t1": 36.6,
+     "numbers": {
+      "colors95": 1129,
+      "soft": 0.522,
+      "lum": 0.471,
+      "sat": 0.628,
+      "achromatic": 0.057
+     },
+     "top": [
+      "#101010",
+      "#105050",
+      "#f09050",
+      "#103030",
+      "#107050",
+      "#109070"
+     ]
+    },
+    "first_spin": {
+     "frames": 12,
+     "t0": 26.8,
+     "t1": 32.2,
+     "numbers": {
+      "colors95": 1107,
+      "soft": 0.528,
+      "lum": 0.475,
+      "sat": 0.621,
+      "achromatic": 0.051
+     },
+     "top": [
+      "#101010",
+      "#105050",
+      "#f09050",
+      "#103030",
+      "#109070",
+      "#301010"
+     ]
+    },
+    "spin": {
+     "frames": 76,
+     "t0": 44.2,
+     "t1": 117.7,
+     "numbers": {
+      "colors95": 1139,
+      "soft": 0.538,
+      "lum": 0.431,
+      "sat": 0.637,
+      "achromatic": 0.042
+     },
+     "top": [
+      "#101010",
+      "#105050",
+      "#103030",
+      "#503010",
+      "#301010",
+      "#f09050"
+     ]
+    },
+    "fg": {
+     "frames": 193,
+     "t0": 121.7,
+     "t1": 264.2,
+     "numbers": {
+      "colors95": 913,
+      "soft": 0.534,
+      "lum": 0.363,
+      "sat": 0.607,
+      "achromatic": 0.067
+     },
+     "top": [
+      "#101010",
+      "#103030",
+      "#303030",
+      "#303010",
+      "#103010",
+      "#301010"
+     ]
+    },
+    "after_fg": {
+     "frames": 1,
+     "t0": 267.2,
+     "t1": 267.2,
+     "numbers": {
+      "colors95": 299,
+      "soft": 0.532,
+      "lum": 0.261,
+      "sat": 0.558,
+      "achromatic": 0.078
+     },
+     "top": [
+      "#101010",
+      "#303010",
+      "#103030",
+      "#303030",
+      "#503010",
+      "#103010"
+     ]
+    },
+    "final": {
+     "frames": 1,
+     "t0": 267.3,
+     "t1": 267.3,
+     "numbers": {
+      "colors95": 299,
+      "soft": 0.531,
+      "lum": 0.261,
+      "sat": 0.558,
+      "achromatic": 0.078
+     },
+     "top": [
+      "#101010",
+      "#303010",
+      "#103030",
+      "#303030",
+      "#503010",
+      "#103010"
+     ]
+    },
+    "info": {
+     "frames": 1,
+     "t0": 272.9,
+     "t1": 272.9,
+     "numbers": {
+      "colors95": 217,
+      "soft": 0.339,
+      "lum": 0.1,
+      "sat": 0.495,
+      "achromatic": 0.237
+     },
+     "top": [
+      "#101010",
+      "#303030",
+      "#103010",
+      "#505050",
+      "#103030",
+      "#909090"
+     ]
+    }
+   },
+   "frames_total": 291
+  },
+  {
+   "symbol": "vs15godsofwar",
+   "name": "Zeus vs Hades – Gods of War",
+   "viewport": [
+    1280,
+    720
+   ],
+   "init": {
+    "shape": "5x5",
+    "lines": 10,
+    "rtp": {
+     "regular_200": 96.05,
+     "purchase_1": 96.08,
+     "purchase_0": 96.14,
+     "regular_400": 96.07,
+     "purchase_3": 96.01,
+     "purchase_2": 96.04
+    },
+    "max_win_x": {
+     "tbm": 15000
+    },
+    "buy": [
+     {
+      "x_bet": 150.0,
+      "type": "default"
+     },
+     {
+      "x_bet": 300.0,
+      "type": "default"
+     },
+     {
+      "x_bet": 75.0,
+      "type": "default"
+     },
+     {
+      "x_bet": 300.0,
+      "type": "default"
+     }
+    ],
+    "coin_steps": 28,
+    "default_bet": 2.0,
+    "reel_sets": 19,
+    "paytable_tops": [
+     200,
+     100,
+     50,
+     10
+    ]
+   },
+   "timing": {
+    "loading_s": 4.6,
+    "intro_clicks": 1,
+    "spin_presentation_s": [
+     2.73,
+     2.65,
+     9.12,
+     2.59,
+     2.88,
+     38.54
+    ],
+    "spin_presentation_median_s": 2.73,
+    "spin_wins": [
+     0.0,
+     0.0,
+     0.2,
+     0.0,
+     0.0,
+     2.0
+    ],
+    "server_latency_s": 0.4,
+    "fg_spins": 11,
+    "fg_total_s": 73.4,
+    "fg_spin_interval_median_s": 2.95,
+    "fg_spin_interval_p90_s": 8.08,
+    "fg_entry_s": 13.39,
+    "fg_exit_s": 2.69,
+    "fg_award": 10,
+    "fg_total_win_x": 7.3,
+    "panel_clicks": 3
+   },
+   "phases": {
+    "loading": {
+     "frames": 1,
+     "t0": 1.4,
+     "t1": 1.4,
+     "numbers": {
+      "colors95": 1,
+      "soft": 0.007,
+      "lum": 0.008,
+      "sat": 0.012,
+      "achromatic": 0.985
+     },
+     "top": [
+      "#101010",
+      "#303030",
+      "#301010",
+      "#d0d0d0",
+      "#909090",
+      "#b0b0b0"
+     ]
+    },
+    "intro": {
+     "frames": 14,
+     "t0": 5.7,
+     "t1": 13.6,
+     "numbers": {
+      "colors95": 1071,
+      "soft": 0.591,
+      "lum": 0.409,
+      "sat": 0.705,
+      "achromatic": 0.036
+     },
+     "top": [
+      "#501010",
+      "#301010",
+      "#101010",
+      "#701010",
+      "#107090",
+      "#1090b0"
+     ]
+    },
+    "enter": {
+     "frames": 3,
+     "t0": 15.3,
+     "t1": 16.2,
+     "numbers": {
+      "colors95": 717,
+      "soft": 0.559,
+      "lum": 0.316,
+      "sat": 0.695,
+      "achromatic": 0.031
+     },
+     "top": [
+      "#703030",
+      "#903010",
+      "#501010",
+      "#301010",
+      "#503050",
+      "#903030"
+     ]
+    },
+    "main_idle": {
+     "frames": 1,
+     "t0": 60.7,
+     "t1": 60.7,
+     "numbers": {
+      "colors95": 788,
+      "soft": 0.459,
+      "lum": 0.242,
+      "sat": 0.773,
+      "achromatic": 0.022
+     },
+     "top": [
+      "#301050",
+      "#301010",
+      "#101010",
+      "#301070",
+      "#501010",
+      "#701010"
+     ]
+    },
+    "first_spin": {
+     "frames": 8,
+     "t0": 18.4,
+     "t1": 21.2,
+     "numbers": {
+      "colors95": 652,
+      "soft": 0.539,
+      "lum": 0.246,
+      "sat": 0.767,
+      "achromatic": 0.017
+     },
+     "top": [
+      "#301010",
+      "#501010",
+      "#701010",
+      "#101010",
+      "#901010",
+      "#903010"
+     ]
+    },
+    "spin": {
+     "frames": 73,
+     "t0": 67.8,
+     "t1": 148.8,
+     "numbers": {
+      "colors95": 678,
+      "soft": 0.537,
+      "lum": 0.25,
+      "sat": 0.767,
+      "achromatic": 0.017
+     },
+     "top": [
+      "#301010",
+      "#301050",
+      "#301070",
+      "#101010",
+      "#501010",
+      "#701010"
+     ]
+    },
+    "fg": {
+     "frames": 97,
+     "t0": 151.1,
+     "t1": 203.6,
+     "numbers": {
+      "colors95": 986,
+      "soft": 0.503,
+      "lum": 0.277,
+      "sat": 0.738,
+      "achromatic": 0.026
+     },
+     "top": [
+      "#301050",
+      "#101010",
+      "#101030",
+      "#101050",
+      "#301010",
+      "#301070"
+     ]
+    },
+    "fg_end": {
+     "frames": 37,
+     "t0": 203.7,
+     "t1": 223.3,
+     "numbers": {
+      "colors95": 517,
+      "soft": 0.547,
+      "lum": 0.217,
+      "sat": 0.7,
+      "achromatic": 0.056
+     },
+     "top": [
+      "#101010",
+      "#301010",
+      "#501010",
+      "#101030",
+      "#301030",
+      "#701010"
+     ]
+    },
+    "after_fg": {
+     "frames": 1,
+     "t0": 224.0,
+     "t1": 224.0,
+     "numbers": {
+      "colors95": 478,
+      "soft": 0.541,
+      "lum": 0.205,
+      "sat": 0.705,
+      "achromatic": 0.055
+     },
+     "top": [
+      "#101010",
+      "#301010",
+      "#501010",
+      "#101030",
+      "#301030",
+      "#701010"
+     ]
+    },
+    "final": {
+     "frames": 1,
+     "t0": 224.0,
+     "t1": 224.0,
+     "numbers": {
+      "colors95": 466,
+      "soft": 0.54,
+      "lum": 0.203,
+      "sat": 0.706,
+      "achromatic": 0.055
+     },
+     "top": [
+      "#101010",
+      "#301010",
+      "#501010",
+      "#101030",
+      "#301030",
+      "#701010"
+     ]
+    },
+    "info": {
+     "frames": 1,
+     "t0": 229.6,
+     "t1": 229.6,
+     "numbers": {
+      "colors95": 308,
+      "soft": 0.403,
+      "lum": 0.13,
+      "sat": 0.563,
+      "achromatic": 0.247
+     },
+     "top": [
+      "#101010",
+      "#301010",
+      "#501010",
+      "#303030",
+      "#101030",
+      "#301030"
+     ]
+    }
+   },
+   "frames_total": 237
+  },
+  {
+   "symbol": "vs20fruitparty",
+   "name": "Fruit Party",
+   "viewport": [
+    1280,
+    720
+   ],
+   "init": {
+    "shape": "7x7",
+    "lines": 20,
+    "rtp": {
+     "regular": 96.47
+    },
+    "max_win_x": {
+     "tbm": 5000
+    },
+    "buy": [
+     {
+      "x_bet": 100.0,
+      "type": "fs",
+      "fs_count": 10
+     }
+    ],
+    "coin_steps": 23,
+    "default_bet": 2.0,
+    "reel_sets": 5,
+    "paytable_tops": [
+     3000,
+     2000,
+     1800,
+     1600,
+     1200,
+     800,
+     400
+    ]
+   },
+   "timing": {
+    "loading_s": 3.6,
+    "intro_clicks": 1,
+    "spin_presentation_s": [
+     3.12,
+     5.67,
+     3.46,
+     3.04,
+     5.33,
+     2.89
+    ],
+    "spin_presentation_median_s": 3.29,
+    "spin_wins": [
+     0.0,
+     0.8,
+     0.0,
+     0.0,
+     0.6,
+     0.0
+    ],
+    "server_latency_s": 0.4,
+    "fg_spins": 26,
+    "fg_total_s": 118.5,
+    "fg_spin_interval_median_s": 3.07,
+    "fg_spin_interval_p90_s": 3.58,
+    "fg_entry_s": 6.36,
+    "fg_exit_s": 7.87,
+    "fg_award": 10,
+    "fg_total_win_x": 249.6,
+    "panel_clicks": 4
+   },
+   "phases": {
+    "loading": {
+     "frames": 1,
+     "t0": 1.5,
+     "t1": 1.5,
+     "numbers": {
+      "colors95": 1,
+      "soft": 0.007,
+      "lum": 0.008,
+      "sat": 0.012,
+      "achromatic": 0.985
+     },
+     "top": [
+      "#101010",
+      "#303030",
+      "#301010",
+      "#d0d0d0",
+      "#909090",
+      "#b0b0b0"
+     ]
+    },
+    "intro": {
+     "frames": 3,
+     "t0": 4.7,
+     "t1": 10.2,
+     "numbers": {
+      "colors95": 2014,
+      "soft": 0.346,
+      "lum": 0.395,
+      "sat": 0.359,
+      "achromatic": 0.401
+     },
+     "top": [
+      "#f0f0f0",
+      "#9030f0",
+      "#f0d0f0",
+      "#f0b0f0",
+      "#d0f0f0",
+      "#9070f0"
+     ]
+    },
+    "enter": {
+     "frames": 1,
+     "t0": 14.9,
+     "t1": 14.9,
+     "numbers": {
+      "colors95": 2160,
+      "soft": 0.486,
+      "lum": 0.609,
+      "sat": 0.529,
+      "achromatic": 0.248
+     },
+     "top": [
+      "#f0f0f0",
+      "#f0f0d0",
+      "#d0d0f0",
+      "#d0d0d0",
+      "#50b0f0",
+      "#30b0f0"
+     ]
+    },
+    "main_idle": {
+     "frames": 1,
+     "t0": 24.0,
+     "t1": 24.0,
+     "numbers": {
+      "colors95": 2053,
+      "soft": 0.498,
+      "lum": 0.629,
+      "sat": 0.512,
+      "achromatic": 0.264
+     },
+     "top": [
+      "#f0f0f0",
+      "#f0f0d0",
+      "#d0d0f0",
+      "#50b0f0",
+      "#d0d0d0",
+      "#b0b0b0"
+     ]
+    },
+    "first_spin": {
+     "frames": 4,
+     "t0": 17.3,
+     "t1": 18.6,
+     "numbers": {
+      "colors95": 1953,
+      "soft": 0.494,
+      "lum": 0.665,
+      "sat": 0.458,
+      "achromatic": 0.33
+     },
+     "top": [
+      "#f0f0f0",
+      "#f0f0d0",
+      "#d0d0f0",
+      "#50b0f0",
+      "#d0d0d0",
+      "#b0d0f0"
+     ]
+    },
+    "spin": {
+     "frames": 48,
+     "t0": 31.2,
+     "t1": 76.3,
+     "numbers": {
+      "colors95": 1923,
+      "soft": 0.491,
+      "lum": 0.679,
+      "sat": 0.442,
+      "achromatic": 0.355
+     },
+     "top": [
+      "#f0f0f0",
+      "#f0f0d0",
+      "#d0d0f0",
+      "#50b0f0",
+      "#d0d0d0",
+      "#b0b0b0"
+     ]
+    },
+    "fg": {
+     "frames": 124,
+     "t0": 82.0,
+     "t1": 179.6,
+     "numbers": {
+      "colors95": 828,
+      "soft": 0.604,
+      "lum": 0.499,
+      "sat": 0.541,
+      "achromatic": 0.093
+     },
+     "top": [
+      "#f0f0f0",
+      "#d0f0f0",
+      "#f0b0f0",
+      "#f0d0f0",
+      "#9030f0",
+      "#b0f0f0"
+     ]
+    },
+    "fg_end": {
+     "frames": 1,
+     "t0": 180.3,
+     "t1": 180.3,
+     "numbers": {
+      "colors95": 675,
+      "soft": 0.521,
+      "lum": 0.247,
+      "sat": 0.649,
+      "achromatic": 0.069
+     },
+     "top": [
+      "#301030",
+      "#301050",
+      "#705070",
+      "#503070",
+      "#301070",
+      "#501070"
+     ]
+    },
+    "after_fg": {
+     "frames": 1,
+     "t0": 199.9,
+     "t1": 199.9,
+     "numbers": {
+      "colors95": 685,
+      "soft": 0.522,
+      "lum": 0.246,
+      "sat": 0.651,
+      "achromatic": 0.068
+     },
+     "top": [
+      "#301030",
+      "#301050",
+      "#705070",
+      "#503070",
+      "#301070",
+      "#501070"
+     ]
+    },
+    "final": {
+     "frames": 1,
+     "t0": 200.0,
+     "t1": 200.0,
+     "numbers": {
+      "colors95": 671,
+      "soft": 0.524,
+      "lum": 0.245,
+      "sat": 0.652,
+      "achromatic": 0.068
+     },
+     "top": [
+      "#301030",
+      "#301050",
+      "#705070",
+      "#503070",
+      "#301070",
+      "#501070"
+     ]
+    },
+    "info": {
+     "frames": 1,
+     "t0": 205.6,
+     "t1": 205.6,
+     "numbers": {
+      "colors95": 263,
+      "soft": 0.397,
+      "lum": 0.156,
+      "sat": 0.544,
+      "achromatic": 0.203
+     },
+     "top": [
+      "#101010",
+      "#301070",
+      "#705070",
+      "#303030",
+      "#505050",
+      "#503070"
+     ]
+    }
+   },
+   "frames_total": 186
+  },
+  {
+   "symbol": "vs20fruitswx",
+   "name": "Sweet Bonanza 1000",
+   "viewport": [
+    1280,
+    720
+   ],
+   "init": {
+    "shape": "6x5",
+    "lines": 20,
+    "rtp": {
+     "ante": 96.5,
+     "purchase_1": 96.55,
+     "purchase_0": 96.52,
+     "regular": 96.53
+    },
+    "max_win_x": {
+     "tbm": 25000,
+     "tbm_a": 20000
+    },
+    "buy": [
+     {
+      "x_bet": 100.0,
+      "type": "default"
+     },
+     {
+      "x_bet": 500.0,
+      "type": "default"
+     }
+    ],
+    "ante_x_bet": [
+     1.25
+    ],
+    "coin_steps": 23,
+    "default_bet": 2.0,
+    "reel_sets": 5,
+    "paytable_tops": [
+     1000,
+     500,
+     300,
+     240,
+     200,
+     160,
+     100,
+     80,
+     40
+    ]
+   },
+   "timing": {
+    "loading_s": 8.7,
+    "intro_clicks": 1,
+    "spin_presentation_s": [
+     3.81,
+     1.83,
+     4.13,
+     3.83,
+     1.84,
+     1.73
+    ],
+    "spin_presentation_median_s": 2.83,
+    "spin_wins": [
+     1.6,
+     0.0,
+     5.0,
+     1.5,
+     0.0,
+     0.0
+    ],
+    "server_latency_s": 0.44,
+    "fg_spins": 17,
+    "fg_total_s": 63.0,
+    "fg_spin_interval_median_s": 1.95,
+    "fg_spin_interval_p90_s": 5.49,
+    "fg_entry_s": 12.96,
+    "fg_exit_s": 1.91,
+    "fg_award": 10,
+    "fg_total_win_x": 174.0,
+    "panel_clicks": 3
+   },
+   "phases": {
+    "loading": {
+     "frames": 1,
+     "t0": 1.7,
+     "t1": 1.7,
+     "numbers": {
+      "colors95": 1,
+      "soft": 0.007,
+      "lum": 0.008,
+      "sat": 0.012,
+      "achromatic": 0.985
+     },
+     "top": [
+      "#101010",
+      "#303030",
+      "#301010",
+      "#d0d0d0",
+      "#909090",
+      "#b0b0b0"
+     ]
+    },
+    "intro": {
+     "frames": 7,
+     "t0": 10.2,
+     "t1": 18.2,
+     "numbers": {
+      "colors95": 1343,
+      "soft": 0.527,
+      "lum": 0.584,
+      "sat": 0.545,
+      "achromatic": 0.116
+     },
+     "top": [
+      "#f0f0f0",
+      "#b070f0",
+      "#f0d0f0",
+      "#1090f0",
+      "#f0b0f0",
+      "#7030d0"
+     ]
+    },
+    "enter": {
+     "frames": 2,
+     "t0": 20.2,
+     "t1": 20.7,
+     "numbers": {
+      "colors95": 1819,
+      "soft": 0.522,
+      "lum": 0.637,
+      "sat": 0.493,
+      "achromatic": 0.174
+     },
+     "top": [
+      "#f0f0f0",
+      "#f0d0d0",
+      "#f0d0f0",
+      "#f0f0d0",
+      "#1090f0",
+      "#70d0f0"
+     ]
+    },
+    "main_idle": {
+     "frames": 1,
+     "t0": 66.0,
+     "t1": 66.0,
+     "numbers": {
+      "colors95": 1787,
+      "soft": 0.529,
+      "lum": 0.631,
+      "sat": 0.498,
+      "achromatic": 0.162
+     },
+     "top": [
+      "#f0f0f0",
+      "#f0d0d0",
+      "#1090f0",
+      "#f0d0f0",
+      "#f0f0d0",
+      "#70d0f0"
+     ]
+    },
+    "first_spin": {
+     "frames": 2,
+     "t0": 23.5,
+     "t1": 24.0,
+     "numbers": {
+      "colors95": 1729,
+      "soft": 0.547,
+      "lum": 0.63,
+      "sat": 0.497,
+      "achromatic": 0.153
+     },
+     "top": [
+      "#f0f0f0",
+      "#f0d0d0",
+      "#f0d0f0",
+      "#f0f0d0",
+      "#1090f0",
+      "#70d0f0"
+     ]
+    },
+    "spin": {
+     "frames": 43,
+     "t0": 70.7,
+     "t1": 112.3,
+     "numbers": {
+      "colors95": 1621,
+      "soft": 0.552,
+      "lum": 0.662,
+      "sat": 0.463,
+      "achromatic": 0.176
+     },
+     "top": [
+      "#f0f0f0",
+      "#f0d0d0",
+      "#1090f0",
+      "#f0d0f0",
+      "#f0f0d0",
+      "#f0b0f0"
+     ]
+    },
+    "fg": {
+     "frames": 81,
+     "t0": 118.1,
+     "t1": 177.1,
+     "numbers": {
+      "colors95": 1548,
+      "soft": 0.522,
+      "lum": 0.472,
+      "sat": 0.603,
+      "achromatic": 0.055
+     },
+     "top": [
+      "#b070f0",
+      "#7050f0",
+      "#7030f0",
+      "#7010f0",
+      "#9050f0",
+      "#5030f0"
+     ]
+    },
+    "fg_end": {
+     "frames": 1,
+     "t0": 177.6,
+     "t1": 177.6,
+     "numbers": {
+      "colors95": 1119,
+      "soft": 0.488,
+      "lum": 0.401,
+      "sat": 0.651,
+      "achromatic": 0.071
+     },
+     "top": [
+      "#501070",
+      "#7010f0",
+      "#f0f0f0",
+      "#501050",
+      "#701070",
+      "#7030f0"
+     ]
+    },
+    "after_fg": {
+     "frames": 1,
+     "t0": 180.5,
+     "t1": 180.5,
+     "numbers": {
+      "colors95": 1183,
+      "soft": 0.496,
+      "lum": 0.398,
+      "sat": 0.658,
+      "achromatic": 0.06
+     },
+     "top": [
+      "#501070",
+      "#501050",
+      "#7010f0",
+      "#f0f0f0",
+      "#701070",
+      "#7030f0"
+     ]
+    },
+    "final": {
+     "frames": 1,
+     "t0": 180.6,
+     "t1": 180.6,
+     "numbers": {
+      "colors95": 1188,
+      "soft": 0.497,
+      "lum": 0.397,
+      "sat": 0.659,
+      "achromatic": 0.057
+     },
+     "top": [
+      "#501070",
+      "#501050",
+      "#7010f0",
+      "#701070",
+      "#f0f0f0",
+      "#7030f0"
+     ]
+    },
+    "info": {
+     "frames": 1,
+     "t0": 186.2,
+     "t1": 186.2,
+     "numbers": {
+      "colors95": 854,
+      "soft": 0.384,
+      "lum": 0.233,
+      "sat": 0.573,
+      "achromatic": 0.107
+     },
+     "top": [
+      "#101010",
+      "#7010f0",
+      "#f0f0f0",
+      "#7030f0",
+      "#303030",
+      "#909090"
+     ]
+    }
+   },
+   "frames_total": 141
+  },
+  {
+   "symbol": "vs20olympgate",
+   "name": "Gates of Olympus",
+   "viewport": [
+    1280,
+    720
+   ],
+   "init": {
+    "shape": "6x5",
+    "lines": 20,
+    "rtp": {
+     "ante": 96.5,
+     "purchase": 96.5,
+     "regular": 96.5
+    },
+    "max_win_x": {
+     "tbm": 5000,
+     "tbm_a": 4000
+    },
+    "buy": [
+     {
+      "x_bet": 100.0,
+      "type": "fsbl"
+     }
+    ],
+    "ante_x_bet": [
+     1.25
+    ],
+    "coin_steps": 23,
+    "default_bet": 2.0,
+    "reel_sets": 8,
+    "paytable_tops": [
+     1000,
+     500,
+     300,
+     240,
+     200,
+     160,
+     100,
+     80,
+     40
+    ]
+   },
+   "timing": {
+    "loading_s": 26.5,
+    "intro_clicks": 3,
+    "spin_presentation_s": [
+     2.08,
+     2.48,
+     8.5,
+     2.74
+    ],
+    "spin_presentation_median_s": 2.61,
+    "spin_wins": [
+     0.0,
+     0.0,
+     0.5,
+     0.0
+    ],
+    "server_latency_s": 0.57,
+    "fg_spins": 25,
+    "fg_total_s": 114.3,
+    "fg_spin_interval_median_s": 2.54,
+    "fg_spin_interval_p90_s": 3.65,
+    "fg_entry_s": 7.82,
+    "fg_exit_s": 8.19,
+    "fg_award": 15,
+    "fg_total_win_x": 84.0,
+    "panel_clicks": 3
+   },
+   "phases": {
+    "loading": {
+     "frames": 21,
+     "t0": 1.2,
+     "t1": 24.2,
+     "numbers": {
+      "colors95": 857,
+      "soft": 0.524,
+      "lum": 0.474,
+      "sat": 0.534,
+      "achromatic": 0.074
+     },
+     "top": [
+      "#503050",
+      "#301030",
+      "#907030",
+      "#703050",
+      "#705010",
+      "#705030"
+     ]
+    },
+    "intro": {
+     "frames": 1,
+     "t0": 27.8,
+     "t1": 27.8,
+     "numbers": {
+      "colors95": 864,
+      "soft": 0.527,
+      "lum": 0.462,
+      "sat": 0.531,
+      "achromatic": 0.074
+     },
+     "top": [
+      "#301030",
+      "#503050",
+      "#907030",
+      "#705010",
+      "#705030",
+      "#301010"
+     ]
+    },
+    "enter": {
+     "frames": 3,
+     "t0": 30.4,
+     "t1": 33.6,
+     "numbers": {
+      "colors95": 883,
+      "soft": 0.519,
+      "lum": 0.487,
+      "sat": 0.527,
+      "achromatic": 0.074
+     },
+     "top": [
+      "#907030",
+      "#301030",
+      "#705010",
+      "#905030",
+      "#705030",
+      "#b09030"
+     ]
+    },
+    "main_idle": {
+     "frames": 12,
+     "t0": 35.7,
+     "t1": 46.2,
+     "numbers": {
+      "colors95": 787,
+      "soft": 0.521,
+      "lum": 0.467,
+      "sat": 0.529,
+      "achromatic": 0.074
+     },
+     "top": [
+      "#907030",
+      "#503050",
+      "#301030",
+      "#705010",
+      "#705030",
+      "#b09030"
+     ]
+    },
+    "spin": {
+     "frames": 26,
+     "t0": 55.2,
+     "t1": 77.4,
+     "numbers": {
+      "colors95": 753,
+      "soft": 0.458,
+      "lum": 0.372,
+      "sat": 0.578,
+      "achromatic": 0.045
+     },
+     "top": [
+      "#301010",
+      "#301030",
+      "#503050",
+      "#501030",
+      "#503030",
+      "#703050"
+     ]
+    },
+    "fg": {
+     "frames": 102,
+     "t0": 81.2,
+     "t1": 174.7,
+     "numbers": {
+      "colors95": 1414,
+      "soft": 0.453,
+      "lum": 0.369,
+      "sat": 0.534,
+      "achromatic": 0.091
+     },
+     "top": [
+      "#503050",
+      "#301030",
+      "#301010",
+      "#501030",
+      "#501050",
+      "#703050"
+     ]
+    },
+    "fg_end": {
+     "frames": 1,
+     "t0": 175.2,
+     "t1": 175.2,
+     "numbers": {
+      "colors95": 671,
+      "soft": 0.528,
+      "lum": 0.275,
+      "sat": 0.591,
+      "achromatic": 0.042
+     },
+     "top": [
+      "#103030",
+      "#101030",
+      "#101010",
+      "#303030",
+      "#303050",
+      "#101050"
+     ]
+    },
+    "after_fg": {
+     "frames": 1,
+     "t0": 195.3,
+     "t1": 195.3,
+     "numbers": {
+      "colors95": 689,
+      "soft": 0.529,
+      "lum": 0.276,
+      "sat": 0.587,
+      "achromatic": 0.043
+     },
+     "top": [
+      "#103030",
+      "#101030",
+      "#101010",
+      "#303030",
+      "#303050",
+      "#101050"
+     ]
+    },
+    "final": {
+     "frames": 1,
+     "t0": 195.7,
+     "t1": 195.7,
+     "numbers": {
+      "colors95": 677,
+      "soft": 0.525,
+      "lum": 0.277,
+      "sat": 0.607,
+      "achromatic": 0.039
+     },
+     "top": [
+      "#103030",
+      "#101030",
+      "#101010",
+      "#101050",
+      "#303030",
+      "#303050"
+     ]
+    },
+    "info": {
+     "frames": 1,
+     "t0": 198.0,
+     "t1": 198.0,
+     "numbers": {
+      "colors95": 1031,
+      "soft": 0.442,
+      "lum": 0.388,
+      "sat": 0.576,
+      "achromatic": 0.046
+     },
+     "top": [
+      "#301030",
+      "#503050",
+      "#301010",
+      "#501050",
+      "#501030",
+      "#703050"
+     ]
+    }
+   },
+   "frames_total": 169
+  },
+  {
+   "symbol": "vs20olympmmd",
+   "name": "Gates of Olympus 2500",
+   "viewport": [
+    1280,
+    720
+   ],
+   "init": {
+    "lines": 20,
+    "rtp": {
+     "regular": 96.52,
+     "ante_1": 96.49,
+     "ante_2": 96.49,
+     "ante_3": 96.49,
+     "ante_4": 96.5,
+     "ante_5": 96.5,
+     "purchase_0": 96.5,
+     "purchase_1": 96.5,
+     "purchase_2": 96.5,
+     "purchase_3": 96.5
+    },
+    "max_win_x": {
+     "tbm": 25000,
+     "tbm_a1": 20000,
+     "tbm_a2": 9091,
+     "tbm_a3": 4546,
+     "tbm_a4": 1250,
+     "tbm_a5": 100
+    },
+    "buy": [
+     {
+      "x_bet": 100.0,
+      "type": "default"
+     },
+     {
+      "x_bet": 250.0,
+      "type": "default"
+     },
+     {
+      "x_bet": 500.0,
+      "type": "default"
+     },
+     {
+      "x_bet": 1250.0,
+      "type": "default"
+     }
+    ],
+    "ante_x_bet": [
+     1.25,
+     2.75,
+     5.5,
+     20.0,
+     250.0
+    ],
+    "coin_steps": 23,
+    "default_bet": 2.0,
+    "reel_sets": 17,
+    "paytable_tops": []
+   },
+   "timing": {
+    "loading_s": 6.6,
+    "intro_clicks": 1,
+    "spin_presentation_s": [
+     2.11,
+     5.24,
+     5.2,
+     2.19,
+     2.4,
+     2.08
+    ],
+    "spin_presentation_median_s": 2.29,
+    "spin_wins": [
+     0.0,
+     0.8,
+     0.5,
+     0.0,
+     0.0,
+     0.0
+    ],
+    "server_latency_s": 0.42,
+    "fg_spins": 27,
+    "fg_total_s": 153.8,
+    "fg_spin_interval_median_s": 3.56,
+    "fg_spin_interval_p90_s": 7.97,
+    "fg_entry_s": 12.79,
+    "fg_exit_s": 8.36,
+    "fg_award": 15,
+    "fg_total_win_x": 212.6,
+    "panel_clicks": 8
+   },
+   "phases": {
+    "loading": {
+     "frames": 1,
+     "t0": 1.7,
+     "t1": 1.7,
+     "numbers": {
+      "colors95": 1,
+      "soft": 0.007,
+      "lum": 0.008,
+      "sat": 0.012,
+      "achromatic": 0.985
+     },
+     "top": [
+      "#101010",
+      "#303030",
+      "#301010",
+      "#d0d0d0",
+      "#909090",
+      "#b0b0b0"
+     ]
+    },
+    "intro": {
+     "frames": 8,
+     "t0": 8.3,
+     "t1": 16.2,
+     "numbers": {
+      "colors95": 846,
+      "soft": 0.531,
+      "lum": 0.524,
+      "sat": 0.628,
+      "achromatic": 0.045
+     },
+     "top": [
+      "#701050",
+      "#501030",
+      "#301010",
+      "#501050",
+      "#b070d0",
+      "#f0b010"
+     ]
+    },
+    "enter": {
+     "frames": 2,
+     "t0": 19.2,
+     "t1": 19.7,
+     "numbers": {
+      "colors95": 1311,
+      "soft": 0.428,
+      "lum": 0.384,
+      "sat": 0.724,
+      "achromatic": 0.035
+     },
+     "top": [
+      "#701050",
+      "#301010",
+      "#501030",
+      "#501050",
+      "#905010",
+      "#701070"
+     ]
+    },
+    "main_idle": {
+     "frames": 1,
+     "t0": 40.3,
+     "t1": 40.3,
+     "numbers": {
+      "colors95": 1258,
+      "soft": 0.424,
+      "lum": 0.393,
+      "sat": 0.725,
+      "achromatic": 0.036
+     },
+     "top": [
+      "#301010",
+      "#701050",
+      "#501030",
+      "#501050",
+      "#905010",
+      "#501010"
+     ]
+    },
+    "first_spin": {
+     "frames": 4,
+     "t0": 22.4,
+     "t1": 24.6,
+     "numbers": {
+      "colors95": 1184,
+      "soft": 0.429,
+      "lum": 0.374,
+      "sat": 0.732,
+      "achromatic": 0.037
+     },
+     "top": [
+      "#701050",
+      "#501030",
+      "#301010",
+      "#501050",
+      "#301030",
+      "#905010"
+     ]
+    },
+    "spin": {
+     "frames": 47,
+     "t0": 45.3,
+     "t1": 84.0,
+     "numbers": {
+      "colors95": 1249,
+      "soft": 0.435,
+      "lum": 0.385,
+      "sat": 0.723,
+      "achromatic": 0.039
+     },
+     "top": [
+      "#701050",
+      "#501050",
+      "#301010",
+      "#501030",
+      "#905010",
+      "#701070"
+     ]
+    },
+    "fg": {
+     "frames": 198,
+     "t0": 86.2,
+     "t1": 219.3,
+     "numbers": {
+      "colors95": 1360,
+      "soft": 0.462,
+      "lum": 0.376,
+      "sat": 0.729,
+      "achromatic": 0.047
+     },
+     "top": [
+      "#103090",
+      "#103070",
+      "#101050",
+      "#301010",
+      "#101030",
+      "#503010"
+     ]
+    },
+    "fg_end": {
+     "frames": 33,
+     "t0": 219.8,
+     "t1": 239.0,
+     "numbers": {
+      "colors95": 709,
+      "soft": 0.533,
+      "lum": 0.317,
+      "sat": 0.687,
+      "achromatic": 0.028
+     },
+     "top": [
+      "#103030",
+      "#101010",
+      "#105050",
+      "#301030",
+      "#101030",
+      "#101070"
+     ]
+    },
+    "after_fg": {
+     "frames": 1,
+     "t0": 239.4,
+     "t1": 239.4,
+     "numbers": {
+      "colors95": 743,
+      "soft": 0.518,
+      "lum": 0.33,
+      "sat": 0.683,
+      "achromatic": 0.029
+     },
+     "top": [
+      "#103030",
+      "#101010",
+      "#105050",
+      "#101030",
+      "#301030",
+      "#101070"
+     ]
+    },
+    "final": {
+     "frames": 1,
+     "t0": 239.5,
+     "t1": 239.5,
+     "numbers": {
+      "colors95": 732,
+      "soft": 0.523,
+      "lum": 0.326,
+      "sat": 0.683,
+      "achromatic": 0.029
+     },
+     "top": [
+      "#103030",
+      "#101010",
+      "#105050",
+      "#301030",
+      "#101030",
+      "#101070"
+     ]
+    },
+    "info": {
+     "frames": 1,
+     "t0": 245.1,
+     "t1": 245.1,
+     "numbers": {
+      "colors95": 436,
+      "soft": 0.42,
+      "lum": 0.148,
+      "sat": 0.596,
+      "achromatic": 0.135
+     },
+     "top": [
+      "#101010",
+      "#301030",
+      "#303030",
+      "#5050b0",
+      "#503050",
+      "#505090"
+     ]
+    }
+   },
+   "frames_total": 297
+  },
+  {
+   "symbol": "vs20olympx",
+   "name": "Gates of Olympus 1000",
+   "viewport": [
+    1280,
+    720
+   ],
+   "init": {
+    "shape": "6x5",
+    "lines": 20,
+    "rtp": {
+     "ante": 96.5,
+     "purchase": 96.49,
+     "regular": 96.5
+    },
+    "max_win_x": {
+     "tbm": 15000,
+     "tbm_a": 12000
+    },
+    "buy": [
+     {
+      "x_bet": 100.0,
+      "type": "fsbl"
+     }
+    ],
+    "ante_x_bet": [
+     1.25
+    ],
+    "coin_steps": 23,
+    "default_bet": 2.0,
+    "reel_sets": 8,
+    "paytable_tops": [
+     1000,
+     500,
+     300,
+     240,
+     200,
+     160,
+     100,
+     80,
+     40
+    ]
+   },
+   "timing": {
+    "loading_s": 5.8,
+    "intro_clicks": 1,
+    "spin_presentation_s": [
+     1.72,
+     4.68,
+     2.13,
+     2.12,
+     2.05,
+     2.13
+    ],
+    "spin_presentation_median_s": 2.12,
+    "spin_wins": [
+     0.0,
+     0.8,
+     0.0,
+     0.0,
+     0.0,
+     0.0
+    ],
+    "server_latency_s": 0.48,
+    "fg_spins": 32,
+    "fg_total_s": 148.7,
+    "fg_spin_interval_median_s": 3.18,
+    "fg_spin_interval_p90_s": 7.95,
+    "fg_entry_s": 7.72,
+    "fg_exit_s": 2.24,
+    "fg_award": 15,
+    "fg_total_win_x": 177.0,
+    "panel_clicks": 5
+   },
+   "phases": {
+    "loading": {
+     "frames": 1,
+     "t0": 1.6,
+     "t1": 1.6,
+     "numbers": {
+      "colors95": 1,
+      "soft": 0.007,
+      "lum": 0.008,
+      "sat": 0.012,
+      "achromatic": 0.985
+     },
+     "top": [
+      "#101010",
+      "#303030",
+      "#301010",
+      "#d0d0d0",
+      "#909090",
+      "#b0b0b0"
+     ]
+    },
+    "intro": {
+     "frames": 12,
+     "t0": 7.0,
+     "t1": 14.9,
+     "numbers": {
+      "colors95": 1041,
+      "soft": 0.519,
+      "lum": 0.52,
+      "sat": 0.545,
+      "achromatic": 0.065
+     },
+     "top": [
+      "#301030",
+      "#905010",
+      "#f0d090",
+      "#9070b0",
+      "#f0d0b0",
+      "#f0f090"
+     ]
+    },
+    "enter": {
+     "frames": 2,
+     "t0": 17.2,
+     "t1": 17.8,
+     "numbers": {
+      "colors95": 1119,
+      "soft": 0.432,
+      "lum": 0.382,
+      "sat": 0.61,
+      "achromatic": 0.037
+     },
+     "top": [
+      "#301030",
+      "#301010",
+      "#503050",
+      "#501030",
+      "#501050",
+      "#703050"
+     ]
+    },
+    "main_idle": {
+     "frames": 1,
+     "t0": 62.6,
+     "t1": 62.6,
+     "numbers": {
+      "colors95": 1124,
+      "soft": 0.434,
+      "lum": 0.375,
+      "sat": 0.619,
+      "achromatic": 0.034
+     },
+     "top": [
+      "#301010",
+      "#503050",
+      "#301030",
+      "#703050",
+      "#501030",
+      "#501050"
+     ]
+    },
+    "first_spin": {
+     "frames": 9,
+     "t0": 20.4,
+     "t1": 24.6,
+     "numbers": {
+      "colors95": 878,
+      "soft": 0.443,
+      "lum": 0.396,
+      "sat": 0.607,
+      "achromatic": 0.035
+     },
+     "top": [
+      "#503050",
+      "#301010",
+      "#301030",
+      "#503010",
+      "#703050",
+      "#501050"
+     ]
+    },
+    "spin": {
+     "frames": 41,
+     "t0": 70.1,
+     "t1": 107.3,
+     "numbers": {
+      "colors95": 848,
+      "soft": 0.437,
+      "lum": 0.353,
+      "sat": 0.6,
+      "achromatic": 0.036
+     },
+     "top": [
+      "#301030",
+      "#503050",
+      "#301010",
+      "#703050",
+      "#501050",
+      "#501030"
+     ]
+    },
+    "fg": {
+     "frames": 192,
+     "t0": 112.8,
+     "t1": 240.9,
+     "numbers": {
+      "colors95": 1232,
+      "soft": 0.431,
+      "lum": 0.407,
+      "sat": 0.555,
+      "achromatic": 0.078
+     },
+     "top": [
+      "#301030",
+      "#503050",
+      "#301010",
+      "#503030",
+      "#703050",
+      "#501030"
+     ]
+    },
+    "fg_end": {
+     "frames": 41,
+     "t0": 241.5,
+     "t1": 261.0,
+     "numbers": {
+      "colors95": 612,
+      "soft": 0.533,
+      "lum": 0.26,
+      "sat": 0.574,
+      "achromatic": 0.058
+     },
+     "top": [
+      "#101010",
+      "#101030",
+      "#103030",
+      "#303030",
+      "#301070",
+      "#301050"
+     ]
+    },
+    "after_fg": {
+     "frames": 1,
+     "t0": 261.3,
+     "t1": 261.3,
+     "numbers": {
+      "colors95": 677,
+      "soft": 0.532,
+      "lum": 0.269,
+      "sat": 0.575,
+      "achromatic": 0.055
+     },
+     "top": [
+      "#101030",
+      "#101010",
+      "#103030",
+      "#301070",
+      "#303030",
+      "#303050"
+     ]
+    },
+    "final": {
+     "frames": 1,
+     "t0": 261.4,
+     "t1": 261.4,
+     "numbers": {
+      "colors95": 673,
+      "soft": 0.529,
+      "lum": 0.267,
+      "sat": 0.58,
+      "achromatic": 0.055
+     },
+     "top": [
+      "#101030",
+      "#101010",
+      "#103030",
+      "#301070",
+      "#303030",
+      "#303050"
+     ]
+    },
+    "info": {
+     "frames": 1,
+     "t0": 267.1,
+     "t1": 267.1,
+     "numbers": {
+      "colors95": 1064,
+      "soft": 0.428,
+      "lum": 0.386,
+      "sat": 0.614,
+      "achromatic": 0.038
+     },
+     "top": [
+      "#301010",
+      "#301030",
+      "#503050",
+      "#501030",
+      "#703050",
+      "#501050"
+     ]
+    }
+   },
+   "frames_total": 302
+  },
+  {
+   "symbol": "vs20starlight",
+   "name": "Starlight Princess",
+   "viewport": [
+    1280,
+    720
+   ],
+   "init": {
+    "shape": "6x5",
+    "lines": 20,
+    "rtp": {
+     "ante": 96.5,
+     "purchase": 96.5,
+     "regular": 96.5
+    },
+    "max_win_x": {
+     "tbm": 5000,
+     "tbm_a": 4000
+    },
+    "buy": [
+     {
+      "x_bet": 100.0,
+      "type": "fsbl"
+     }
+    ],
+    "ante_x_bet": [
+     1.25
+    ],
+    "coin_steps": 23,
+    "default_bet": 2.0,
+    "reel_sets": 8,
+    "paytable_tops": [
+     1000,
+     500,
+     300,
+     240,
+     200,
+     160,
+     100,
+     80,
+     40
+    ]
+   },
+   "timing": {
+    "loading_s": 4.3,
+    "intro_clicks": 2,
+    "spin_presentation_s": [
+     2.26,
+     7.8,
+     2.11,
+     2.25,
+     2.18,
+     7.88
+    ],
+    "spin_presentation_median_s": 2.25,
+    "spin_wins": [
+     0.0,
+     0.5,
+     0.0,
+     0.0,
+     0.0,
+     2.1
+    ],
+    "server_latency_s": 0.42,
+    "fg_spins": 30,
+    "fg_total_s": 133.3,
+    "fg_spin_interval_median_s": 2.67,
+    "fg_spin_interval_p90_s": 4.44,
+    "fg_entry_s": 13.45,
+    "fg_exit_s": 8.11,
+    "fg_award": 15,
+    "fg_total_win_x": 99.9,
+    "panel_clicks": 4
+   },
+   "phases": {
+    "loading": {
+     "frames": 1,
+     "t0": 1.5,
+     "t1": 1.5,
+     "numbers": {
+      "colors95": 1,
+      "soft": 0.007,
+      "lum": 0.008,
+      "sat": 0.012,
+      "achromatic": 0.985
+     },
+     "top": [
+      "#101010",
+      "#303030",
+      "#301010",
+      "#d0d0d0",
+      "#909090",
+      "#b0b0b0"
+     ]
+    },
+    "intro": {
+     "frames": 6,
+     "t0": 5.4,
+     "t1": 13.0,
+     "numbers": {
+      "colors95": 1495,
+      "soft": 0.517,
+      "lum": 0.534,
+      "sat": 0.536,
+      "achromatic": 0.187
+     },
+     "top": [
+      "#f0f0f0",
+      "#d0d0f0",
+      "#105090",
+      "#103070",
+      "#b0d0f0",
+      "#103050"
+     ]
+    },
+    "enter": {
+     "frames": 5,
+     "t0": 14.6,
+     "t1": 21.3,
+     "numbers": {
+      "colors95": 1369,
+      "soft": 0.504,
+      "lum": 0.451,
+      "sat": 0.525,
+      "achromatic": 0.184
+     },
+     "top": [
+      "#f0f0f0",
+      "#105090",
+      "#d0d0f0",
+      "#b0d0f0",
+      "#103070",
+      "#103050"
+     ]
+    },
+    "main_idle": {
+     "frames": 1,
+     "t0": 65.7,
+     "t1": 65.7,
+     "numbers": {
+      "colors95": 1879,
+      "soft": 0.429,
+      "lum": 0.424,
+      "sat": 0.64,
+      "achromatic": 0.125
+     },
+     "top": [
+      "#105090",
+      "#103070",
+      "#103050",
+      "#103090",
+      "#3070f0",
+      "#505050"
+     ]
+    },
+    "first_spin": {
+     "frames": 5,
+     "t0": 23.6,
+     "t1": 25.4,
+     "numbers": {
+      "colors95": 1564,
+      "soft": 0.422,
+      "lum": 0.394,
+      "sat": 0.671,
+      "achromatic": 0.113
+     },
+     "top": [
+      "#105090",
+      "#103050",
+      "#103070",
+      "#103090",
+      "#1050b0",
+      "#3070f0"
+     ]
+    },
+    "spin": {
+     "frames": 66,
+     "t0": 73.3,
+     "t1": 116.0,
+     "numbers": {
+      "colors95": 1683,
+      "soft": 0.429,
+      "lum": 0.406,
+      "sat": 0.658,
+      "achromatic": 0.116
+     },
+     "top": [
+      "#105090",
+      "#103070",
+      "#103050",
+      "#103090",
+      "#1050b0",
+      "#3070f0"
+     ]
+    },
+    "fg": {
+     "frames": 201,
+     "t0": 121.8,
+     "t1": 234.7,
+     "numbers": {
+      "colors95": 1868,
+      "soft": 0.411,
+      "lum": 0.378,
+      "sat": 0.681,
+      "achromatic": 0.061
+     },
+     "top": [
+      "#701090",
+      "#501070",
+      "#f0f0f0",
+      "#301050",
+      "#501090",
+      "#501050"
+     ]
+    },
+    "fg_end": {
+     "frames": 32,
+     "t0": 234.8,
+     "t1": 254.6,
+     "numbers": {
+      "colors95": 765,
+      "soft": 0.497,
+      "lum": 0.247,
+      "sat": 0.653,
+      "achromatic": 0.041
+     },
+     "top": [
+      "#101010",
+      "#101030",
+      "#303030",
+      "#301010",
+      "#301030",
+      "#7010d0"
+     ]
+    },
+    "after_fg": {
+     "frames": 1,
+     "t0": 255.0,
+     "t1": 255.0,
+     "numbers": {
+      "colors95": 750,
+      "soft": 0.497,
+      "lum": 0.246,
+      "sat": 0.652,
+      "achromatic": 0.041
+     },
+     "top": [
+      "#101010",
+      "#101030",
+      "#303030",
+      "#301030",
+      "#301010",
+      "#7010d0"
+     ]
+    },
+    "final": {
+     "frames": 1,
+     "t0": 255.1,
+     "t1": 255.1,
+     "numbers": {
+      "colors95": 764,
+      "soft": 0.5,
+      "lum": 0.251,
+      "sat": 0.651,
+      "achromatic": 0.044
+     },
+     "top": [
+      "#101010",
+      "#101030",
+      "#303030",
+      "#301030",
+      "#7010d0",
+      "#301010"
+     ]
+    },
+    "info": {
+     "frames": 4,
+     "t0": 260.7,
+     "t1": 272.6,
+     "numbers": {
+      "colors95": 1976,
+      "soft": 0.431,
+      "lum": 0.43,
+      "sat": 0.644,
+      "achromatic": 0.127
+     },
+     "top": [
+      "#105090",
+      "#103070",
+      "#103050",
+      "#103090",
+      "#3070f0",
+      "#1050b0"
+     ]
+    }
+   },
+   "frames_total": 323
+  },
+  {
+   "symbol": "vs20sugarrush",
+   "name": "Sugar Rush",
+   "viewport": [
+    1280,
+    720
+   ],
+   "init": {
+    "shape": "7x7",
+    "lines": 20,
+    "rtp": {
+     "purchase": 96.5,
+     "regular": 96.5
+    },
+    "max_win_x": {
+     "tbm": 5000
+    },
+    "buy": [
+     {
+      "x_bet": 100.0,
+      "type": "default"
+     }
+    ],
+    "coin_steps": 23,
+    "default_bet": 2.0,
+    "reel_sets": 1,
+    "paytable_tops": [
+     3000,
+     2000,
+     1200,
+     800,
+     600,
+     500,
+     400
+    ]
+   },
+   "timing": {
+    "loading_s": 7.1,
+    "intro_clicks": 7,
+    "spin_presentation_s": [
+     5.29,
+     8.71,
+     2.6,
+     2.61,
+     2.93,
+     2.87
+    ],
+    "spin_presentation_median_s": 2.9,
+    "spin_wins": [
+     0.5,
+     0.5,
+     0.0,
+     0.0,
+     0.0,
+     0.0
+    ],
+    "server_latency_s": 0.37,
+    "fg_spins": 25,
+    "fg_total_s": 122.2,
+    "fg_spin_interval_median_s": 3.32,
+    "fg_spin_interval_p90_s": 4.06,
+    "fg_entry_s": 9.0,
+    "fg_exit_s": 8.18,
+    "fg_award": 10,
+    "fg_total_win_x": 459.2,
+    "panel_clicks": 3
+   },
+   "phases": {
+    "loading": {
+     "frames": 3,
+     "t0": 1.4,
+     "t1": 4.7,
+     "numbers": {
+      "colors95": 1061,
+      "soft": 0.369,
+      "lum": 0.355,
+      "sat": 0.322,
+      "achromatic": 0.393
+     },
+     "top": [
+      "#b0b0d0",
+      "#3090d0",
+      "#5090d0",
+      "#90b0d0",
+      "#7090d0",
+      "#503070"
+     ]
+    },
+    "intro": {
+     "frames": 3,
+     "t0": 8.1,
+     "t1": 12.8,
+     "numbers": {
+      "colors95": 1368,
+      "soft": 0.542,
+      "lum": 0.593,
+      "sat": 0.466,
+      "achromatic": 0.11
+     },
+     "top": [
+      "#50b0f0",
+      "#f0f0f0",
+      "#5090f0",
+      "#b0d0f0",
+      "#30b0f0",
+      "#70b0f0"
+     ]
+    },
+    "enter": {
+     "frames": 3,
+     "t0": 17.5,
+     "t1": 18.3,
+     "numbers": {
+      "colors95": 1266,
+      "soft": 0.537,
+      "lum": 0.508,
+      "sat": 0.465,
+      "achromatic": 0.102
+     },
+     "top": [
+      "#305070",
+      "#707070",
+      "#505070",
+      "#705010",
+      "#705070",
+      "#507070"
+     ]
+    },
+    "main_idle": {
+     "frames": 1,
+     "t0": 55.6,
+     "t1": 55.6,
+     "numbers": {
+      "colors95": 1521,
+      "soft": 0.46,
+      "lum": 0.63,
+      "sat": 0.426,
+      "achromatic": 0.121
+     },
+     "top": [
+      "#d0d0f0",
+      "#d0f0f0",
+      "#f0f0f0",
+      "#f0d0f0",
+      "#b0d0f0",
+      "#f0b0f0"
+     ]
+    },
+    "spin": {
+     "frames": 42,
+     "t0": 62.5,
+     "t1": 107.8,
+     "numbers": {
+      "colors95": 1087,
+      "soft": 0.486,
+      "lum": 0.667,
+      "sat": 0.374,
+      "achromatic": 0.123
+     },
+     "top": [
+      "#d0d0f0",
+      "#d0f0f0",
+      "#b0d0f0",
+      "#f0d0f0",
+      "#f0f0f0",
+      "#f0b0f0"
+     ]
+    },
+    "fg": {
+     "frames": 132,
+     "t0": 114.2,
+     "t1": 215.6,
+     "numbers": {
+      "colors95": 1334,
+      "soft": 0.493,
+      "lum": 0.585,
+      "sat": 0.491,
+      "achromatic": 0.12
+     },
+     "top": [
+      "#f0d0f0",
+      "#f0f0f0",
+      "#d0b0f0",
+      "#f0b0f0",
+      "#d090f0",
+      "#b090f0"
+     ]
+    },
+    "fg_end": {
+     "frames": 39,
+     "t0": 215.7,
+     "t1": 235.0,
+     "numbers": {
+      "colors95": 784,
+      "soft": 0.556,
+      "lum": 0.313,
+      "sat": 0.715,
+      "achromatic": 0.031
+     },
+     "top": [
+      "#301050",
+      "#501070",
+      "#301070",
+      "#501050",
+      "#701070",
+      "#101030"
+     ]
+    },
+    "after_fg": {
+     "frames": 1,
+     "t0": 235.9,
+     "t1": 235.9,
+     "numbers": {
+      "colors95": 783,
+      "soft": 0.56,
+      "lum": 0.315,
+      "sat": 0.716,
+      "achromatic": 0.03
+     },
+     "top": [
+      "#301050",
+      "#501070",
+      "#301070",
+      "#501050",
+      "#701070",
+      "#101030"
+     ]
+    },
+    "final": {
+     "frames": 1,
+     "t0": 236.0,
+     "t1": 236.0,
+     "numbers": {
+      "colors95": 792,
+      "soft": 0.563,
+      "lum": 0.317,
+      "sat": 0.714,
+      "achromatic": 0.03
+     },
+     "top": [
+      "#301050",
+      "#501070",
+      "#301070",
+      "#501050",
+      "#701070",
+      "#101030"
+     ]
+    },
+    "info": {
+     "frames": 1,
+     "t0": 241.6,
+     "t1": 241.6,
+     "numbers": {
+      "colors95": 274,
+      "soft": 0.381,
+      "lum": 0.124,
+      "sat": 0.629,
+      "achromatic": 0.134
+     },
+     "top": [
+      "#101010",
+      "#301050",
+      "#501070",
+      "#301070",
+      "#101030",
+      "#501050"
+     ]
+    }
+   },
+   "frames_total": 226
+  },
+  {
+   "symbol": "vs25wolfgold",
+   "name": "Wolf Gold",
+   "viewport": [
+    1280,
+    720
+   ],
+   "init": {
+    "shape": "5x3",
+    "lines": 25,
+    "rtp": {
+     "regular": 96.0
+    },
+    "max_win_x": {},
+    "buy": [],
+    "coin_steps": 22,
+    "default_bet": 2.0,
+    "reel_sets": 2,
+    "paytable_tops": [
+     500,
+     400,
+     300,
+     200,
+     50
+    ]
+   },
+   "timing": {
+    "loading_s": 4.8,
+    "intro_clicks": 1,
+    "spin_presentation_s": [
+     38.53,
+     2.83,
+     38.51,
+     2.82,
+     3.08,
+     2.86
+    ],
+    "spin_presentation_median_s": 2.84,
+    "spin_wins": [
+     1.2,
+     0.0,
+     3.2,
+     0.0,
+     0.0,
+     0.0
+    ],
+    "server_latency_s": 0.4
+   },
+   "phases": {
+    "loading": {
+     "frames": 1,
+     "t0": 1.4,
+     "t1": 1.4,
+     "numbers": {
+      "colors95": 1,
+      "soft": 0.007,
+      "lum": 0.008,
+      "sat": 0.012,
+      "achromatic": 0.985
+     },
+     "top": [
+      "#101010",
+      "#303030",
+      "#301010",
+      "#d0d0d0",
+      "#909090",
+      "#b0b0b0"
+     ]
+    },
+    "intro": {
+     "frames": 13,
+     "t0": 6.2,
+     "t1": 13.5,
+     "numbers": {
+      "colors95": 469,
+      "soft": 0.586,
+      "lum": 0.384,
+      "sat": 0.712,
+      "achromatic": 0.024
+     },
+     "top": [
+      "#101010",
+      "#301010",
+      "#903010",
+      "#b05030",
+      "#501010",
+      "#303030"
+     ]
+    },
+    "enter": {
+     "frames": 1,
+     "t0": 16.7,
+     "t1": 16.7,
+     "numbers": {
+      "colors95": 591,
+      "soft": 0.549,
+      "lum": 0.378,
+      "sat": 0.742,
+      "achromatic": 0.02
+     },
+     "top": [
+      "#101050",
+      "#b05030",
+      "#903010",
+      "#905030",
+      "#501010",
+      "#f07030"
+     ]
+    },
+    "main_idle": {
+     "frames": 1,
+     "t0": 26.1,
+     "t1": 26.1,
+     "numbers": {
+      "colors95": 1354,
+      "soft": 0.437,
+      "lum": 0.452,
+      "sat": 0.654,
+      "achromatic": 0.047
+     },
+     "top": [
+      "#f0d090",
+      "#301010",
+      "#501010",
+      "#f0d0b0",
+      "#f0f0b0",
+      "#703010"
+     ]
+    },
+    "first_spin": {
+     "frames": 8,
+     "t0": 18.8,
+     "t1": 21.6,
+     "numbers": {
+      "colors95": 1387,
+      "soft": 0.49,
+      "lum": 0.442,
+      "sat": 0.643,
+      "achromatic": 0.038
+     },
+     "top": [
+      "#f0d090",
+      "#301010",
+      "#f0d0b0",
+      "#501010",
+      "#101010",
+      "#703010"
+     ]
+    },
+    "spin": {
+     "frames": 82,
+     "t0": 33.5,
+     "t1": 144.6,
+     "numbers": {
+      "colors95": 1284,
+      "soft": 0.499,
+      "lum": 0.465,
+      "sat": 0.636,
+      "achromatic": 0.026
+     },
+     "top": [
+      "#f0d090",
+      "#f0f0b0",
+      "#f0d0b0",
+      "#301010",
+      "#501010",
+      "#101010"
+     ]
+    },
+    "final": {
+     "frames": 1,
+     "t0": 146.5,
+     "t1": 146.5,
+     "numbers": {
+      "colors95": 1060,
+      "soft": 0.454,
+      "lum": 0.479,
+      "sat": 0.656,
+      "achromatic": 0.016
+     },
+     "top": [
+      "#f0d090",
+      "#f0f0b0",
+      "#f0d0b0",
+      "#301010",
+      "#501010",
+      "#101010"
+     ]
+    },
+    "info": {
+     "frames": 1,
+     "t0": 152.2,
+     "t1": 152.2,
+     "numbers": {
+      "colors95": 768,
+      "soft": 0.453,
+      "lum": 0.175,
+      "sat": 0.622,
+      "achromatic": 0.075
+     },
+     "top": [
+      "#101010",
+      "#301010",
+      "#501010",
+      "#703010",
+      "#903010",
+      "#101030"
+     ]
+    }
+   },
+   "frames_total": 108
+  },
+  {
+   "symbol": "vswaysdogs",
+   "name": "The Dog House Megaways",
+   "viewport": [
+    1280,
+    720
+   ],
+   "init": {
+    "shape": "6x7",
+    "lines": 20,
+    "rtp": {
+     "regular": 96.55
+    },
+    "max_win_x": {},
+    "buy": [
+     {
+      "x_bet": 100.0,
+      "type": "fsbl"
+     }
+    ],
+    "coin_steps": 23,
+    "default_bet": 2.0,
+    "reel_sets": 11,
+    "paytable_tops": [
+     150,
+     60,
+     40,
+     30,
+     20,
+     10
+    ]
+   },
+   "timing": {
+    "loading_s": 6.0,
+    "intro_clicks": 1,
+    "spin_presentation_s": [
+     1.64,
+     1.97,
+     1.9,
+     1.42,
+     1.56,
+     1.19
+    ],
+    "spin_presentation_median_s": 1.6,
+    "spin_wins": [
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     1.6
+    ],
+    "server_latency_s": 0.37,
+    "fg_spins": 1,
+    "fg_total_s": 302.9,
+    "fg_spin_interval_median_s": null,
+    "fg_spin_interval_p90_s": null,
+    "fg_entry_s": null,
+    "fg_exit_s": null,
+    "fg_award": null,
+    "fg_total_win_x": 0.0,
+    "panel_clicks": 48
+   },
+   "phases": {
+    "loading": {
+     "frames": 2,
+     "t0": 1.4,
+     "t1": 2.5,
+     "numbers": {
+      "colors95": 60,
+      "soft": 0.044,
+      "lum": 0.045,
+      "sat": 0.096,
+      "achromatic": 0.875
+     },
+     "top": [
+      "#101010",
+      "#f09070",
+      "#d07050",
+      "#301010",
+      "#903030",
+      "#b05030"
+     ]
+    },
+    "intro": {
+     "frames": 2,
+     "t0": 7.1,
+     "t1": 11.5,
+     "numbers": {
+      "colors95": 826,
+      "soft": 0.545,
+      "lum": 0.588,
+      "sat": 0.484,
+      "achromatic": 0.111
+     },
+     "top": [
+      "#70b050",
+      "#90d050",
+      "#70d0f0",
+      "#d0f0f0",
+      "#301010",
+      "#70b030"
+     ]
+    },
+    "enter": {
+     "frames": 1,
+     "t0": 16.7,
+     "t1": 16.7,
+     "numbers": {
+      "colors95": 978,
+      "soft": 0.526,
+      "lum": 0.603,
+      "sat": 0.478,
+      "achromatic": 0.111
+     },
+     "top": [
+      "#70b050",
+      "#90d050",
+      "#70d0f0",
+      "#d0f0f0",
+      "#70b030",
+      "#501070"
+     ]
+    },
+    "main_idle": {
+     "frames": 1,
+     "t0": 62.3,
+     "t1": 62.3,
+     "numbers": {
+      "colors95": 1184,
+      "soft": 0.513,
+      "lum": 0.453,
+      "sat": 0.599,
+      "achromatic": 0.052
+     },
+     "top": [
+      "#703030",
+      "#903030",
+      "#703010",
+      "#f09050",
+      "#905030",
+      "#305010"
+     ]
+    },
+    "first_spin": {
+     "frames": 8,
+     "t0": 19.9,
+     "t1": 28.1,
+     "numbers": {
+      "colors95": 1041,
+      "soft": 0.55,
+      "lum": 0.44,
+      "sat": 0.594,
+      "achromatic": 0.046
+     },
+     "top": [
+      "#703030",
+      "#903030",
+      "#905030",
+      "#703010",
+      "#f09050",
+      "#305010"
+     ]
+    },
+    "spin": {
+     "frames": 47,
+     "t0": 69.1,
+     "t1": 99.2,
+     "numbers": {
+      "colors95": 1030,
+      "soft": 0.56,
+      "lum": 0.442,
+      "sat": 0.586,
+      "achromatic": 0.046
+     },
+     "top": [
+      "#703030",
+      "#903030",
+      "#703010",
+      "#905030",
+      "#f09050",
+      "#305010"
+     ]
+    },
+    "fg": {
+     "frames": 8,
+     "t0": 104.0,
+     "t1": 111.5,
+     "numbers": {
+      "colors95": 1112,
+      "soft": 0.572,
+      "lum": 0.381,
+      "sat": 0.622,
+      "achromatic": 0.04
+     },
+     "top": [
+      "#703030",
+      "#903030",
+      "#905030",
+      "#703010",
+      "#f09050",
+      "#305010"
+     ]
+    },
+    "after_fg": {
+     "frames": 1,
+     "t0": 406.3,
+     "t1": 406.3,
+     "numbers": {
+      "colors95": 447,
+      "soft": 0.612,
+      "lum": 0.272,
+      "sat": 0.676,
+      "achromatic": 0.035
+     },
+     "top": [
+      "#301010",
+      "#503010",
+      "#703010",
+      "#103010",
+      "#101010",
+      "#303010"
+     ]
+    },
+    "final": {
+     "frames": 1,
+     "t0": 406.4,
+     "t1": 406.4,
+     "numbers": {
+      "colors95": 448,
+      "soft": 0.613,
+      "lum": 0.272,
+      "sat": 0.676,
+      "achromatic": 0.034
+     },
+     "top": [
+      "#301010",
+      "#503010",
+      "#703010",
+      "#103010",
+      "#101010",
+      "#303010"
+     ]
+    }
+   },
+   "frames_total": 71
+  }
+ ]
+}

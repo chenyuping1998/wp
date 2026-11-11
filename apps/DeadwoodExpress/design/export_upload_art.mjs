@@ -20,12 +20,13 @@ const png = async (name, width) => {
 
 await Promise.all([
  png('background.png', 1536), png('background_feature.png', 1536),
- png('conductor.png'), png('logo.png', 1024), png('bonus_button.png', 512),
+ png('conductor.png'), png('passenger.png'), png('logo.png', 1024), png('bonus_button.png', 512),
  png('card_standard.png', 768), png('card_premium.png', 768),
+ png('board_frame.png'),
  ...['H1','H2','H3','H4','H5','L1','L2','L3','L4','W','S'].map((symbol) => png(`symbol_${symbol}.png`, 512)),
- ...['glow','star','streak','leaf','vignette'].map((fx) => png(`fx_${fx}.png`)),
+ ...['glow','star','streak','leaf','vignette','ray'].map((fx) => png(`fx_${fx}.png`)),
  sharp(path.join(source, 'thumbnail_bg.png')).resize(1024,1024).png({compressionLevel:9,adaptiveFiltering:true,palette:true,quality:95,effort:10}).toFile(path.join(thumbnail,'DeadwoodExpress-BG.png')),
  sharp(path.join(source, 'thumbnail_fg.png')).resize(1024,1024).ensureAlpha().png({compressionLevel:9,adaptiveFiltering:true,palette:false,effort:10}).toFile(path.join(thumbnail,'DeadwoodExpress-FG.png')),
 ]);
-for (const name of ['conductor.rig.json','fs_panel.svg','fs_sign.svg','win_big.svg','win_superwin.svg','win_mega.svg','win_epic.svg','win_max.svg','icon_menu.svg','icon_menuExit.svg','icon_settings.svg','icon_info.svg','icon_payTable.svg','icon_soundOn.svg','icon_soundOff.svg','icon_autoSpin.svg']) cpSync(path.join(source,name),path.join(frontend,name));
+for (const name of ['wheel_brass.jpg','wheel_enamel.jpg','conductor.rig.json','passenger.rig.json','icon_menu.svg','icon_menuExit.svg','icon_settings.svg','icon_info.svg','icon_payTable.svg','icon_soundOn.svg','icon_soundOff.svg','icon_autoSpin.svg','icon_increase.svg','icon_decrease.svg']) cpSync(path.join(source,name),path.join(frontend,name));
 console.log('Exported optimized Deadwood runtime and store art.');

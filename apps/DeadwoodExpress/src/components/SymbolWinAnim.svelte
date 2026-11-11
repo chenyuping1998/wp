@@ -81,12 +81,18 @@
 	// burst at 132px without turning the cell into confetti; they are laid out on
 	// a fixed ring so two adjacent winning cells do not produce the same pattern
 	// twice by chance.
-	const SPARKS = 6;
-	const sparkAngles = Array.from(
-		{ length: SPARKS },
-		(_, i) => (i / SPARKS) * Math.PI * 2 + Math.random() * 0.5,
-	);
-	const spark = new Tween(0, { duration: fs(420), easing: cubicOut });
+	const SPARKS = 10;
+	// Ghost motes: soft lights that rise out of the cell and fade, like cold
+	// breath or steam. They replaced a burst of white four-point stars flung
+	// outward, which was Hot Miami's neon sparkle and the most generic thing on
+	// the board.
+	const motes = Array.from({ length: SPARKS }, (_, i) => ({
+		x: ((i + 0.5) / SPARKS - 0.5) * 0.8 + (Math.random() - 0.5) * 0.08,
+		y: 0.25 + Math.random() * 0.2,
+		rise: 0.45 + Math.random() * 0.25,
+		size: 0.16 + Math.random() * 0.1,
+	}));
+	const spark = new Tween(0, { duration: fs(820), easing: cubicOut });
 
 	// How long a winning cell stays lit before it reports done.
 	//
@@ -163,11 +169,14 @@
 		// At 1.45/1.18 it is unmistakably the symbol that just paid. Nothing masks
 		// the board, so overflowing the cell is safe — and overflowing is the
 		// point: it lifts the winning cell out of the grid.
-		const overshoot = 1 + (1.45 - 1) * motion.hitScale;
-		const settled = 1 + (1.18 - 1) * motion.hitScale;
+		// 09-26 cut this to 1.16 / 1.07 ("heavy, not a balloon") and the third
+		// review doubled "Poor animations". 1.38 / 1.15: a hair under Hot Miami's
+		// 1.45 because the board is 1.22x, but unmistakably the cell that paid.
+		const overshoot = 1 + (1.38 - 1) * motion.hitScale;
+		const settled = 1 + (1.15 - 1) * motion.hitScale;
 		hit.set(overshoot, { duration: fs(200), easing: backOut });
 		flash.set(0, { duration: fs(320), easing: cubicOut });
-		spark.set(1, { duration: fs(420), easing: cubicOut });
+		spark.set(1, { duration: fs(820), easing: cubicOut });
 		const settle = setTimeout(
 			() => hit.set(settled, { duration: fs(240), easing: cubicOut }),
 			fs(200),
@@ -201,7 +210,8 @@
 	// moment worth noticing. They are kept apart by colour rather than by shape:
 	// the Frame is gold 0xffd166 over a magenta glow, so this is cyan-white, which
 	// is also where the win-line palette lives.
-	const CYAN = 0x66f6ff;
+	// Deadwood's ghost teal (was Hot Miami's neon cyan 0x66f6ff)
+	const CYAN = 0x5fd6c4;
 	const WHITE = 0xffffff;
 
 	// Inset from the 118 cell pitch so two adjacent winning cells read as two
@@ -335,19 +345,18 @@
 		/>
 	{/each}
 
-	<!-- outward spark burst on the hit -->
+	<!-- ghost motes rising out of the cell on the hit -->
 	{#if spark.current < 1}
-		{#each sparkAngles as angle, i (i)}
-			{@const travel = SYMBOL_SIZE * (0.34 + 0.28 * spark.current)}
+		{#each motes as mote, i (i)}
 			<Sprite
 				anchor={0.5}
-				key="fxStar"
-				x={Math.cos(angle) * travel}
-				y={Math.sin(angle) * travel}
-				width={SYMBOL_SIZE * 0.3 * (1 - spark.current)}
-				height={SYMBOL_SIZE * 0.3 * (1 - spark.current)}
-				tint={CYAN}
-				alpha={0.9 * (1 - spark.current)}
+				key="fxGlow"
+				x={mote.x * SYMBOL_SIZE}
+				y={(mote.y - mote.rise * spark.current) * SYMBOL_SIZE}
+				width={SYMBOL_SIZE * mote.size * (1 + 0.6 * spark.current)}
+				height={SYMBOL_SIZE * mote.size * (1 + 0.6 * spark.current)}
+				tint={0xdff5ef}
+				alpha={0.8 * Math.sin(Math.PI * spark.current)}
 				blendMode="add"
 			/>
 		{/each}

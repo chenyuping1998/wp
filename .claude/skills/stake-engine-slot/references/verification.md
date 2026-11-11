@@ -12,6 +12,7 @@ question a green build cannot answer.
 - [Simulating input](#simulating-input)
 - [Known environment limits](#known-environment-limits)
 - [Replay test harness](#replay-test-harness)
+- [Measuring instead of eyeballing](#measuring-instead-of-eyeballing)
 
 ## When to bother
 
@@ -155,3 +156,34 @@ pnpm --dir apps/GoBananas build && node apps/GoBananas/design/make_replay_harnes
 
 It prints ready-made URLs. The output lands in `build-replaytest/` (gitignored) —
 the build you upload is never touched. Copy the pattern for other games.
+
+## Measuring instead of eyeballing
+
+A Browser-pane screenshot is downscaled to about 800 px wide, so a 2-4px
+misalignment or a thin ghost strip is invisible in it. Measure instead (Pickle
+Panic 2026-10-16, where the user found five such issues the screenshots hid):
+
+- **The pixi app is on `globalThis.__PIXI_APP__`.** Walk `app.stage` for Text
+  (`o.text !== undefined`), spines (`o.skeleton && o.state`), anything else.
+- **Pixels, not pictures:** `app.renderer.extract.pixels({target: app.stage,
+  frame: new R(x, y, w, h), resolution: 1})` (`R = app.stage.getBounds().rectangle.constructor`)
+  gives RGBA rows you can classify — plate colour vs ink — which is what
+  `scripts/ui_center_audit.js`'s `plate()` does.
+- **To look closely**, extract a region at `resolution: 3-6` with
+  `extract.canvas(...)` and show it in a fixed full-viewport `<img>` overlay
+  (`object-fit: contain`, `image-rendering: pixelated`), then screenshot. Remove
+  the overlay afterwards.
+- **HTML modals:** `transform: scale(4)` on the modal's fixed `.pop-up-wrap`
+  (with `transform-origin` at the control) magnifies one control; transforming
+  `body` instead blanks the screen, because the fixed elements re-anchor.
+- **Spine poses frame by frame:** `spine.autoUpdate = false`, then per frame
+  `state.clearTracks(); skeleton.setToSetupPose(); const e = state.setAnimation(0, name, false);
+  e.mixDuration = 0; spine.update(0); e.trackTime = t; spine.update(0); app.renderer.render(app.stage)`
+  and extract. Setting the pose through `state.apply` + `updateWorldTransform`
+  alone renders the old pose. Put `autoUpdate` back when done. A contact sheet
+  of 4-5 times per arm motion finds ghosts and clipping that the idle loop
+  never shows.
+- **A probe must prove it can see its target**: plant a known offender first
+  (a test button with extra top padding; set a Text to '∞' for a moment) and
+  watch the check report it, then remove it.
+

@@ -9,6 +9,7 @@ import type { EmitterEventSound } from '../components/Sound.svelte';
 import type { EmitterEventTransition } from '../components/Transition.svelte';
 import type { EmitterEventNeonFrames } from '../components/NeonFrames.svelte';
 import type { EmitterEventWildColumns } from '../components/WildColumns.svelte';
+import type { EmitterEventBigScore } from '../components/BigScore.svelte';
 import type { EmitterEventScatterBurst } from '../components/ScatterBurst.svelte';
 
 export type EmitterEventGame =
@@ -23,4 +24,5 @@ export type EmitterEventGame =
 	| EmitterEventTransition
 	| EmitterEventNeonFrames
 	| EmitterEventWildColumns
+	| EmitterEventBigScore
 	| EmitterEventScatterBurst;

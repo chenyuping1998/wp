@@ -1,0 +1,82 @@
+[
+  {
+    "variant": "base",
+    "root": "/Users/stone/stake-engine/wp/apps/TurfWar/static/assets/castLayers/turf/v5",
+    "poses": 3431,
+    "clips": [
+      {
+        "name": "idle",
+        "frames": 121
+      },
+      {
+        "name": "idle_weave",
+        "frames": 121
+      },
+      {
+        "name": "punch",
+        "frames": 53
+      },
+      {
+        "name": "hit",
+        "frames": 55
+      },
+      {
+        "name": "jump",
+        "frames": 74
+      },
+      {
+        "name": "celebrate",
+        "frames": 74
+      },
+      {
+        "name": "punch_big",
+        "frames": 53
+      }
+    ],
+    "inkTriangleAreaRatio": [
+      0.1065406601217319,
+      2.4043691159633322
+    ],
+    "visualAcceptance": "Source layers and rendered clips/transitions must also be inspected"
+  },
+  {
+    "variant": "fg",
+    "root": "/Users/stone/stake-engine/wp/apps/TurfWar/static/assets/castLayers/turf/v5",
+    "poses": 3431,
+    "clips": [
+      {
+        "name": "idle",
+        "frames": 121
+      },
+      {
+        "name": "idle_weave",
+        "frames": 121
+      },
+      {
+        "name": "punch",
+        "frames": 53
+      },
+      {
+        "name": "hit",
+        "frames": 55
+      },
+      {
+        "name": "jump",
+        "frames": 74
+      },
+      {
+        "name": "celebrate",
+        "frames": 74
+      },
+      {
+        "name": "punch_big",
+        "frames": 53
+      }
+    ],
+    "inkTriangleAreaRatio": [
+      0.23948861852829711,
+      2.2468412465956566
+    ],
+    "visualAcceptance": "Source layers and rendered clips/transitions must also be inspected"
+  }
+]

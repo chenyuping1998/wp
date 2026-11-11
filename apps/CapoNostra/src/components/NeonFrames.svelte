@@ -15,7 +15,7 @@
 	import { onMount } from 'svelte';
 	import { Tween } from 'svelte/motion';
 	import { backOut, cubicOut } from 'svelte/easing';
-	import { Container, Sprite, Text } from 'pixi-svelte';
+	import { Container, Graphics, Sprite, Text } from 'pixi-svelte';
 	import { stateBetDerived } from 'state-shared';
 	import { waitForTimeout } from 'utils-shared/wait';
 
@@ -29,6 +29,7 @@
 	// fontSize steps down a little because Orbitron sets wider per glyph, so
 	// "100x" still clears the cell.
 	import { DISPLAY_FONT, DISPLAY_FONT_WEIGHT } from '../game/fonts';
+	import { INK_DEEP, RED_BRIGHT, RED_PALE } from '../game/palette';
 	import { getSymbolX } from '../game/utils';
 	import { FRAME_TIMING as T } from '../game/frameTiming';
 	import { frameEntry, ENTRY_MS, tierOf as beatTierOf } from '../game/frameBeat';
@@ -216,15 +217,18 @@
 	// bigger label.
 	//
 	// Three tiers, split at the values a player already thinks in:
-	//   plain    2x-9x    the working Frame — gold on magenta, as before
-	//   premium  10x-24x  hotter gold, a halo, a slow travelling shine
-	//   elite    25x+     white-gold, a bigger halo, a second casting, faster shine
+	//   plain    2x-9x    the working Frame
+	//   premium  10x-24x  a red edge glow, a slow travelling shine
+	//   elite    25x+     a stronger edge glow, a second casting, faster shine
 	//
-	// All drawn from the same `hmFrame` sprite tinted differently rather than from
-	// new art, so the three read as one family and no asset is added.
-	const PLAIN = 0xffd166; // the existing frame gold
-	const PREMIUM = 0xffe9a3; // hotter, closer to white
-	const ELITE = 0xfffdf2; // white-gold, near-white
+	// Art Deco B version (ART_BRIEF §0.3, 2026-10-04): the frame art is drawn in
+	// the multiplier reds itself, so the casting is no longer tinted — it shows
+	// its own inks (tint 0xffffff). The tier colour below drives only what is
+	// drawn ON TOP of the art: the number, the arrival ring and the edge glow.
+	// Red here is the one place in the game it is allowed: red = a multiplier.
+	const PLAIN = RED_BRIGHT;
+	const PREMIUM = 0xff5a5f; // a lifted step of the same red, brighter on a dark cell
+	const ELITE = RED_PALE; // near-white rose: the hottest frame reads lightest
 
 	/**
 	 * What a Frame is WORTH, for styling purposes — not what it says on it.
@@ -241,9 +245,9 @@
 
 	const tierOf = (weight: number) => (weight >= 25 ? 'elite' : weight >= 10 ? 'premium' : 'plain');
 	const tintOf = (weight: number) => (weight >= 25 ? ELITE : weight >= 10 ? PREMIUM : PLAIN);
-	// `plain` gets no halo at all, so an ordinary spin does not turn the grid into
-	// a field of glows.
-	const haloOf = (weight: number) => (weight >= 25 ? 2.4 : weight >= 10 ? 1.7 : 0);
+	// `plain` gets no edge glow at all, so an ordinary spin does not turn the grid
+	// into a field of glows.
+	const haloOf = (weight: number) => (weight >= 25 ? 1 : weight >= 10 ? 0.6 : 0);
 	const artKeyOf = (frame: { size?: number }) =>
 		sizeOf(frame) >= 3 ? 'hmFrame3x3' : sizeOf(frame) >= 2 ? 'hmFrame2x2' : 'hmFrame1x1';
 	const edgeKeyOf = (frame: { size?: number }) =>
@@ -251,17 +255,20 @@
 
 	/**
 	 * Where the plate body actually sits inside each PNG, as fractions of the
-	 * image (alpha > 40 across 80% of a row/column, measured on
-	 * static/assets/sprites/capoFrames). The 2x2 briefcase carries its handle
-	 * ABOVE the body, so its plate only starts 11% down; stretching the whole
-	 * image to the footprint left the top row of symbols poking up past the gold
-	 * bar. The sprite is now sized so the BODY covers the footprint exactly and
-	 * the handle hangs above it.
+	 * image (alpha > 40 across 60% of a row/column, measured on
+	 * static/assets/sprites/capoFrames). The 2x2 cash box carries its handle
+	 * ABOVE the body, so its plate only starts 9% down; stretching the whole
+	 * image to the footprint left the top row of symbols poking up past the
+	 * bar. The sprite is sized so the BODY covers the footprint exactly and the
+	 * handle hangs above it.
+	 *
+	 * Re-measured 2026-10-04 on the Art Deco frames (ART_BRIEF §3): vault-door
+	 * 1x1, riveted cash box 2x2, round-vault-door surround 3x3.
 	 */
 	const PLATE_BOX: Record<number, { top: number; bottom: number; left: number; right: number }> = {
-		1: { top: 0.016, bottom: 0.98, left: 0.016, right: 0.984 },
-		2: { top: 0.111, bottom: 0.975, left: 0.02, right: 0.979 },
-		3: { top: 0.018, bottom: 0.969, left: 0.034, right: 0.966 },
+		1: { top: 0.027, bottom: 0.969, left: 0.031, right: 0.969 },
+		2: { top: 0.09, bottom: 0.977, left: 0.023, right: 0.977 },
+		3: { top: 0.017, bottom: 0.98, left: 0.012, right: 0.988 },
 	};
 	const plateFit = (frame: { size?: number }, span: number) => {
 		const box = PLATE_BOX[Math.min(3, sizeOf(frame))];
@@ -301,11 +308,9 @@
 			from it rather than from SYMBOL_SIZE, so a 2x2 and a 3x3 cover the cells
 			they actually own.
 
-			The art is still the 1x1 casting stretched to fit — frame_2x2.png and
-			frame_3x3.png are specified in ART_BRIEF.md and not drawn yet. When they
-			land, this is the one place that has to choose between them, and the
-			brief's rule about NOT scaling the border weight with the footprint is
-			what those separate files exist to satisfy.
+			Each size has its own art (frame_1x1/2x2/3x3.png, ART_BRIEF §3), with
+			the border weight NOT scaled with the footprint — which is why the
+			bigger frames have the bigger clear centre.
 		-->
 		{@const span = SYMBOL_SIZE * sizeOf(frame)}
 		{@const fit = plateFit(frame, span)}
@@ -328,33 +333,24 @@
 					alpha={pose.ringAlpha}
 				/>
 			{/if}
-			<!-- halo: nothing on a plain 2x-9x, a warm bloom on premium, bigger and
-			     brighter on elite -->
 			<!--
-				The halo is sized off ONE CELL, not off the frame's footprint.
-
-				It used to be `span * halo`, which was invisible while every frame was
-				1x1 and became the loudest thing on the board once big frames landed:
-				an elite 3x3 is 354px, so `span * 2.4` put an 850px additive bloom over
-				the middle of a 472px-tall board and washed the symbols underneath it
-				to white. A halo says "this frame is valuable"; a frame's footprint
-				already says how much board it covers. Scaling one by the other states
-				the same fact twice and blows out the cells the frame exists to
-				multiply.
-
-				A modest bump with size keeps a big elite frame from looking
-				under-lit next to a small one, without the area growing with span².
+				Edge glow on premium/elite. This used to be a round fxGlow bloom
+				sized off one cell, added over the middle of the frame. Over
+				black-and-white symbols an additive red bloom is a pink wash on
+				exactly the cells the frame multiplies, so the glow now follows the
+				frame's own border (its edge casting) and leaves the cells clean.
 			-->
 			{#if halo > 0}
-				{@const haloSpan = SYMBOL_SIZE * halo * (1 + (sizeOf(frame) - 1) * 0.25)}
 				<Sprite
-					key="fxGlow"
+					key={edgeKey}
 					anchor={{ x: 0.5, y: 0.5 }}
+					x={fit.x * 1.03}
+					y={fit.y * 1.03}
+					width={fit.width * 1.03}
+					height={fit.height * 1.03}
 					tint={tint}
 					blendMode="add"
-					width={haloSpan}
-					height={haloSpan}
-					alpha={(tier === 'elite' ? 0.4 : 0.24) * (0.6 + 0.4 * glow)}
+					alpha={halo * 0.45 * (0.6 + 0.4 * glow)}
 				/>
 			{/if}
 
@@ -365,7 +361,7 @@
 				y={fit.y}
 				width={fit.width}
 				height={fit.height}
-				tint={tint}
+				tint={0xffffff}
 				alpha={0.55 + 0.45 * glow}
 			/>
 
@@ -400,22 +396,14 @@
 				/>
 			{/if}
 
-			<!-- travelling shine, premium and elite only. A streak crossing the frame
-			     is what makes gold read as metal rather than as yellow. -->
+			<!-- A rail glint stays outside symbol silhouettes. -->
 			{#if tier !== 'plain'}
 				{@const t = (shine * (tier === 'elite' ? 2 : 1)) % 1}
-				<Sprite
-					key="fxStreak"
-					anchor={{ x: 0.5, y: 0.5 }}
-					x={(t - 0.5) * span * 1.5}
-					y={(0.5 - t) * span * 0.5}
-					rotation={-0.6}
-					tint={0xffffff}
-					blendMode="add"
-					width={span * 0.42}
-					height={span * 1.15}
-					alpha={(tier === 'elite' ? 0.5 : 0.3) * Math.sin(Math.PI * t)}
-				/>
+				<Sprite key="fxStreak" anchor={0.5}
+					x={(t - 0.5) * span * 0.82} y={-span * 0.46}
+					rotation={Math.PI / 2} tint={0xffffff} blendMode="add"
+					width={SYMBOL_SIZE * 0.06} height={SYMBOL_SIZE * 0.28}
+					alpha={(tier === 'elite' ? 0.35 : 0.22) * Math.sin(Math.PI * t)} />
 			{/if}
 
 			{#if context.stateGame.gameType === 'freegame'}
@@ -431,32 +419,48 @@
 				/>
 			{/if}
 
-			<!-- The multiplier sits at 0.22 of the span below centre, not 0.34.
-			     The plates carry a cleared centre circle of radius ~0.31 x span
-			     (design/soften_frames.py), and 0.34 put the number just OUTSIDE
-			     it — printed over the lower rim, the dial and the rivets, which is
-			     the least legible band on the whole plate. Inside the clear zone
-			     the digits sit on glass. -->
+		</Container>
+	{/each}
+
+	<!--
+		Multiplier labels, drawn in their own pass AFTER every frame (Stake review,
+		2026-10-14: "In some cases, the Vault Frame multiplier value is not fully
+		visible"). The label sits on the frame's lower rail and so hangs half into
+		the next row; while it was drawn inside its own frame, any frame later in
+		`active` — the 2x2's handle above its plate, the edge glow, the elite
+		second casting — painted over it. Frames never overlap (game_calculations
+		refuses it), so on top of all of them every label is clear.
+	-->
+	{#each active as frame (keyOf(frame))}
+		{@const weight = weightOf(frame)}
+		{@const tier = tierOf(weight)}
+		{@const tint = tintOf(weight)}
+		{@const pose = entryPose(frame)}
+		{@const span = SYMBOL_SIZE * sizeOf(frame)}
+		<Container
+			x={frameX(frame)}
+			y={frameY(frame)}
+			scale={(pose ? pose.scale : 1) * frame.scale.current}
+			rotation={pose ? pose.rotation : 0}
+		>
+			<!-- Keep the multiplier on the lower rail, clear of the symbol. -->
+			{@const labelW = SYMBOL_SIZE * (String(frame.mult).length >= 3 ? 0.56 : 0.43)}
+			<Graphics y={span * 0.46} draw={(g) => {
+				g.clear();
+				g.rect(-labelW / 2, -SYMBOL_SIZE * 0.11, labelW, SYMBOL_SIZE * 0.22);
+				g.fill({color: INK_DEEP, alpha: 0.98});
+				g.stroke({color: tint, width: SYMBOL_SIZE * 0.012});
+			}} />
 			<Text
 				text={`${frame.mult}x`}
 				anchor={{ x: 0.5, y: 0.5 }}
-				y={span * 0.22}
+				y={span * 0.46}
 				style={{
 					fontFamily: DISPLAY_FONT,
 					fontWeight: DISPLAY_FONT_WEIGHT,
-					// The number grows with the tier, so the ladder is legible without
-					// actually reading the digits — but it is sized off SYMBOL_SIZE, not
-					// off `span`. A 3x3's label scaled to its footprint would be three
-					// times the height of a 1x1's for a value that is only worth three
-					// times as much through geometry the player can already see; the
-					// footprint IS the size cue, and doubling up on it just makes the
-					// board shout. It gets a modest bump instead.
-					fontSize:
-						SYMBOL_SIZE *
-						(tier === 'elite' ? 0.33 : tier === 'premium' ? 0.28 : 0.24) *
-						(1 + (sizeOf(frame) - 1) * 0.18),
+					fontSize: SYMBOL_SIZE * (tier === 'elite' ? 0.20 : 0.18),
 					fill: tint,
-					stroke: { color: 0x1a1206, width: SYMBOL_SIZE * 0.045 },
+					stroke: { color: INK_DEEP, width: SYMBOL_SIZE * 0.018 },
 				}}
 			/>
 		</Container>

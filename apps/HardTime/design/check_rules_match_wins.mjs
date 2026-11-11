@@ -41,7 +41,7 @@ import { fileURLToPath } from 'url';
 const appRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const bundle = process.argv[2] && !process.argv[2].startsWith('--')
 	? path.resolve(process.argv[2])
-	: path.resolve(appRoot, '../../../upload/HotMiami/math');
+	: path.resolve(appRoot, '../../../upload/HardTime/math');
 const config = (await import(path.join(appRoot, 'src/game/config.ts'))).default;
 
 const problems = [];
@@ -63,7 +63,7 @@ const payFor = (symbol, count) => {
 
 // A round the maths truncated to the max win. Recognised by the payout sitting
 // exactly on the cap, which is also what the rules promise the player.
-const capped = (book) => book.payoutMultiplier === (config.betModes?.[book.mode ?? 'base']?.max_win ?? 20000) * 100;
+const capped = (book) => book.payoutMultiplier === (config.betModes?.[book.mode ?? 'base']?.max_win ?? config.betModes.base.max_win) * 100;
 
 const MODES = ['base', 'bonus', 'bonus_hits', 'bonus_epic'];
 const WINS_PER_MODE = Number(process.env.WINS_PER_MODE || 200);
@@ -81,7 +81,7 @@ for (const mode of MODES) {
 	let collectorWins = 0;
 	let framedWins = 0;
 	let cappedRounds = 0;
-	const cap = (config.betModes?.[mode]?.max_win ?? 20000) * 100;
+	const cap = (config.betModes?.[mode]?.max_win ?? config.betModes.base.max_win) * 100;
 
 	for (const line of text.split('\n')) {
 		if (!line.trim() || checkedRounds >= WINS_PER_MODE) break;
@@ -92,12 +92,22 @@ for (const mode of MODES) {
 		let roundTotal = 0;
 		let expectedTotal = 0;
 		let sawWinInfo = false;
+		let lit = new Map();
 		for (const event of book.events) {
+			if (event.type === 'reveal' && event.gameType === 'basegame') lit.clear();
+			if (event.type === 'bonusTier') lit.clear();
+			if (event.type === 'updateLights') lit = new Map(event.cells.map(c => [`${c.reel}:${c.row}`, c.mult]));
+			if (event.type === 'searchlight') for (const light of event.lights) for (const c of light.cells) lit.set(`${c.reel}:${c.row}`, c.mult);
 			if (event.type !== 'winInfo') continue;
 			sawWinInfo = true;
 			let infoTotal = 0;
 			for (const win of event.wins) {
 				const multiplier = win.meta?.multiplier ?? 1;
+				const beamMultiplier = Math.max(1, (win.positions ?? []).reduce((sum, p) => {
+					const m = lit.get(`${p.reel}:${p.row}`) ?? 1;
+					return sum + (m > 1 ? m : 0);
+				}, 0));
+				if (multiplier !== beamMultiplier) fail(`${mode} book ${book.id}: line multiplier ${multiplier}, Searchlight cells give ${beamMultiplier}`);
 				const withoutMult = win.meta?.winWithoutMult;
 
 				if (win.symbol === 'C') {
@@ -123,7 +133,7 @@ for (const mode of MODES) {
 					const expected = base * multiplier;
 					expectedTotal += expected;
 					if (!capped(book) && Math.round(win.win) !== Math.round(expected)) {
-						fail(`${mode} book ${book.id}: ${win.kind}× ${win.symbol} with a ${multiplier}× Frame paid ${win.win}, the rules give ${expected}`);
+						fail(`${mode} book ${book.id}: ${win.kind}× ${win.symbol} with a ${multiplier}× Searchlight paid ${win.win}, the rules give ${expected}`);
 					}
 					if (multiplier > 1) framedWins += 1;
 
@@ -135,6 +145,7 @@ for (const mode of MODES) {
 					}
 					if (payline && win.positions?.length) {
 						const reels = win.positions.map((p) => p.reel).sort((a, b) => a - b);
+						if (win.positions.some(p => payline[p.reel] + 1 !== p.row) || reels.some((reel, i) => reel !== i)) fail(`${mode} book ${book.id}: winning positions do not follow payline ${win.meta.lineIndex}`);
 						if (reels[0] !== 0) {
 							fail(`${mode} book ${book.id}: a ${win.symbol} win starts on reel ${reels[0]} — the rules say lines pay from the leftmost reel`);
 						}
@@ -169,7 +180,7 @@ for (const mode of MODES) {
 	if (checkedRounds === 0) fail(`${mode}: no winning rounds found to check`);
 	console.log(
 		`  ${mode.padEnd(11)} ${checkedRounds} winning rounds, ${checkedWins} wins recomputed` +
-			` (${framedWins} multiplied by Frames, ${collectorWins} Collector sweeps,` +
+			` (${framedWins} multiplied by Searchlights, ${collectorWins} Collector sweeps,` +
 			` ${cappedRounds} capped at ${cap / 100}×)`,
 	);
 }

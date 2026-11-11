@@ -111,7 +111,7 @@
 			key="fxGlow"
 			anchor={0.5}
 			tint={0xffe9a8}
-			blendMode="add"
+			blendMode="normal"
 			width={150 * (props.scale ?? 1) * easeOut(Math.min(1, t * 3))}
 			height={150 * (props.scale ?? 1) * easeOut(Math.min(1, t * 3))}
 			alpha={(1 - t) ** 1.6}

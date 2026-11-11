@@ -3,6 +3,8 @@
 	import { Container, Sprite } from 'pixi-svelte';
 
 	import SymbolArt from './SymbolArt.svelte';
+	import SymbolIdleFx from './SymbolIdleFx.svelte';
+	import { symbolIdleFrame } from '../game/symbolIdleMotion';
 
 	import { getSymbolInfo } from '../game/utils';
 	import { stateGame } from '../game/stateGame.svelte';
@@ -123,7 +125,8 @@
 	// Not while the reel is moving (the strip is blurred and travelling, and a
 	// breath would fight the motion blur), and not while landing (the landing
 	// motion owns the symbol for those 240ms).
-	const idling = $derived(!props.landing && blur <= 0.01);
+	const idling = $derived(!props.landing && blur <= 0.01 && !props.dim && dimAmount < 0.01 && !props.focus);
+	const idle = $derived(symbolIdleFrame(props.symbolName ?? '', idling ? idleClock.t : 0, idling && props.cell ? idlePhase(props.cell.reel, props.cell.row) : 0));
 	const breath = $derived(
 		idling && props.cell
 			? idleScale(idleClock.t, idlePhase(props.cell.reel, props.cell.row))
@@ -323,11 +326,12 @@
 		two it drew.
 	-->
 	<Container
-		x={props.x}
-		y={props.y}
+		x={(props.x ?? 0) + (idling ? idle.dx * SYMBOL_SIZE : 0)}
+		y={(props.y ?? 0) + (idling ? idle.dy * SYMBOL_SIZE : 0)}
+		rotation={idling ? idle.rotation : 0}
 		scale={{
-			x: focusScale * breath,
-			y: focusScale * breath * (blur > 0.01 ? 1 + 0.3 * blur : 1),
+			x: focusScale * breath * (idling ? idle.scaleX : 1),
+			y: focusScale * breath * (idling ? idle.scaleY : 1) * (blur > 0.01 ? 1 + 0.3 * blur : 1),
 		}}
 		alpha={(1 - 0.15 * blur) * dimAlpha}
 		tint={dimTint}
@@ -339,6 +343,9 @@
 			cell={blur > 0.01 ? undefined : props.cell}
 			swayT={idling ? idleClock.t : undefined}
 		/>
+		{#if idling && props.cell}
+			<SymbolIdleFx name={props.symbolName ?? ''} frame={idle} assetKey={props.symbolInfo.assetKey} {width} {height} />
+		{/if}
 	</Container>
 	<!-- focus bloom: additive copy of the same art, so the teased reel reads as
 	     lit rather than just bigger -->

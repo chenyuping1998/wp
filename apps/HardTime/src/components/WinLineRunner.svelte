@@ -158,7 +158,7 @@
 		a reel symbol flying down the payline, and it takes the line's own colour.
 	-->
 	<Sprite
-		key="fxStar"
+		key="fxGlow"
 		anchor={0.5}
 		x={pose.x + entryOffset}
 		y={pose.y}

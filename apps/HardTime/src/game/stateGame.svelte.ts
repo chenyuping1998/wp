@@ -193,6 +193,9 @@ export const stateGame = $state({
 	// is a real gesture, and the free-game trigger stays the biggest beat in the
 	// game. See game/castMotion.ts TIERS for the numbers.
 	castReaction: { kind: 'idle' as 'idle' | CastReactionKind, seq: 0 },
+	// The warden (Spine cast) answers the searchlight: each light that lands bumps
+	// this, and he points at the reels. One counter, no payload.
+	wardenReaction: { seq: 0 },
 });
 
 // The reel housing fills 94% of the box height (BOARD_SIZES is 590 tall and
@@ -378,6 +381,16 @@ if (typeof window !== 'undefined' && /[?&]hmdebug=1(&|$)/.test(window.location.s
 	(window as unknown as { __HM_EMIT__: (event: unknown) => void }).__HM_EMIT__ = (event) =>
 		eventEmitter.broadcast(event as Parameters<typeof eventEmitter.broadcast>[0]);
 
+	// Cast reactions on demand (Spine cast, 2026-10-20). A searchlight or a big
+	// win is a matter of luck in the stub, so the warden's point and the
+	// prisoner's lean could not be looked at deliberately without this.
+	//     __HM_CAST__('warden')            // as when a searchlight lands
+	//     __HM_CAST__('win' | 'winBig' | 'trigger')
+	(window as unknown as { __HM_CAST__: (kind: string) => void }).__HM_CAST__ = (kind) => {
+		if (kind === 'warden') stateGame.wardenReaction = { seq: stateGame.wardenReaction.seq + 1 };
+		else stateGame.castReaction = { kind: kind as CastReactionKind, seq: stateGame.castReaction.seq + 1 };
+	};
+
 	// Win lines are Graphics, not sprites, so nothing outside the game can see
 	// them — a screenshot catches one instant and the scene-graph probe reads
 	// transforms. This counter is what makes "no line was ever drawn while a reel
@@ -386,5 +399,5 @@ if (typeof window !== 'undefined' && /[?&]hmdebug=1(&|$)/.test(window.location.s
 		count: stateGame.debugWinLineCount,
 	});
 
-	console.info('[hmdebug] __HM_REELS__, __HM_GAME__, __HM_TURBO__, __HM_EMIT__ and __HM_LINES__ attached (audio: __HM_AUDIO__, __HM_REELSTOP__)');
+	console.info('[hmdebug] __HM_REELS__, __HM_GAME__, __HM_TURBO__, __HM_EMIT__, __HM_CAST__ and __HM_LINES__ attached (audio: __HM_AUDIO__, __HM_REELSTOP__)');
 }

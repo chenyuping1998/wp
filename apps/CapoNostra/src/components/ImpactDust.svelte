@@ -14,7 +14,7 @@
 	const props: Props = $props();
 
 	const DURATION = 360;
-	const DUST_COLORS = [0xd9c9a0, 0xe8dcb8, 0xc2ae82];
+	const DUST_COLORS = [0xccc9c1, 0xdfdbd3, 0xafafaf];
 
 	type Puff = { angle: number; speed: number; size: number; color: number };
 
@@ -67,7 +67,7 @@
 			key="fxGlow"
 			anchor={0.5}
 			y={-6}
-			tint={0xe8dcb8}
+			tint={0xdfdbd3}
 			blendMode="add"
 			width={130 * easeOut(Math.min(1, t * 2.5))}
 			height={34 * easeOut(Math.min(1, t * 2.5))}

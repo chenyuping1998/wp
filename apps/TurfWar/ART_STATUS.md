@@ -1,3 +1,5 @@
+> 2026-10-11 更新：FG 已改為 Kingpin 黑皮衣雪茄角色，取代舊版單角色／姿態變体需求。完成分層、動畫、封面與當前 MG 縮圖。下文保留歷史需求。
+
 # Turf War 美術實作狀態
 
 更新：2026-09-09。此檔取代繼承的 Capo Nostra 狀態；原始記錄保留於 ART_STATUS_capo_nostra_reference.md。

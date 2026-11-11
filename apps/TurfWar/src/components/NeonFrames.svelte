@@ -15,7 +15,7 @@
 	import { onMount } from 'svelte';
 	import { Tween } from 'svelte/motion';
 	import { backOut, cubicOut } from 'svelte/easing';
-	import { Container, Sprite, Text } from 'pixi-svelte';
+	import { Container, Sprite, Text, Graphics } from 'pixi-svelte';
 	import { stateBetDerived } from 'state-shared';
 	import { waitForTimeout } from 'utils-shared/wait';
 
@@ -28,7 +28,7 @@
 	// sit better inside a square frame than Titan One's rounded bubble digits.
 	// fontSize steps down a little because Orbitron sets wider per glyph, so
 	// "100x" still clears the cell.
-	import { DISPLAY_FONT, DISPLAY_FONT_WEIGHT } from '../game/fonts';
+	import { TAG_FONT as DISPLAY_FONT, DISPLAY_FONT_WEIGHT } from '../game/fonts';
 	import { getSymbolX } from '../game/utils';
 	import { FRAME_TIMING as T } from '../game/frameTiming';
 	import { frameEntry, ENTRY_MS, tierOf as beatTierOf } from '../game/frameBeat';
@@ -89,7 +89,7 @@
 		// a Frame already there being restated (a re-roll or a doubling), which
 		// has its own punch and must not replay the arrival.
 		entryT: from === 0 ? 0 : -1,
-		entryTier: beatTierOf(frame.mult),
+		entryTier: beatTierOf(frame.mult * sizeOf(frame)),
 	});
 
 	// One clock for every arriving Frame — a single rAF loop over the list rather
@@ -125,18 +125,21 @@
 	const upsert = (frames: FrameEntry[], entryScale: number) => {
 		const incoming = new Map(frames.map((frame) => [keyOf(frame), frame]));
 		const kept = active.filter((frame) => !incoming.has(keyOf(frame)));
+		const created: ActiveFrame[] = [];
 		const updated = frames.map((frame) => {
 			const existing = active.find((candidate) => keyOf(candidate) === keyOf(frame));
 			if (existing) {
 				existing.mult = frame.mult;
 				return existing;
 			}
-			return makeFrame(frame, entryScale);
+			const next = makeFrame(frame, entryScale);
+			created.push(next);
+			return next;
 		});
 		active = [...kept, ...updated];
 		// Frames that are ARRIVING run their per-tier motion; the tween is only
 		// still used for the restate/re-roll/doubling punches.
-		updated.forEach((frame) => {
+		created.forEach((frame) => {
 			if (frame.entryT >= 0) {
 				frame.scale.set(1, { duration: 0 });
 				frame.glow.set(1, { duration: 0 });
@@ -144,7 +147,7 @@
 				frame.scale.set(1, { duration: scaled(T.entryMs), easing: backOut });
 			}
 		});
-		if (updated.some((frame) => frame.entryT >= 0)) runEntries();
+		if (created.some((frame) => frame.entryT >= 0)) runEntries();
 	};
 
 	// per-reel reveal: hold the spin's Frames until each one's own reel stops, so
@@ -171,7 +174,7 @@
 			if (frames.some((frame) => sizeOf(frame) > 1)) {
 				context.eventEmitter.broadcast({ type: 'soundFrameBigLand' });
 			}
-			await pause(T.entryMs);
+			await pause(Math.max(T.entryMs, ...frames.map(frame => ENTRY_MS[beatTierOf(frame.mult * sizeOf(frame))])));
 		},
 		framesUpdate: async ({ frames }) => {
 			// Neon Nights refills every sticky Frame with a new multiplier between
@@ -180,22 +183,38 @@
 			const changed = active.filter((frame) =>
 				frames.some((candidate) => keyOf(candidate) === keyOf(frame) && candidate.mult !== frame.mult),
 			);
+			if (changed.length > 0) {
+				await Promise.all(changed.map((frame) =>
+					frame.scale.set(0.86, { duration: scaled(T.rerollOutMs), easing: cubicOut }),
+				));
+			}
+			// The new number and its sound share the impact, after anticipation.
 			upsert(frames, 1);
+			if (changed.length > 0) context.eventEmitter.broadcast({ type: 'soundOnce', name: 'sfx_multiplier_update' });
 			if (changed.length === 0) return;
-			await Promise.all(changed.map((frame) => frame.scale.set(1.18, { duration: scaled(T.rerollOutMs), easing: backOut })));
-			await Promise.all(changed.map((frame) => frame.scale.set(1, { duration: scaled(T.rerollInMs), easing: cubicOut })));
+			await Promise.all(changed.map((frame) =>
+				frame.scale.set(1, { duration: scaled(T.rerollInMs), easing: backOut }),
+			));
 		},
 		framesDoubled: async ({ frames }) => {
 			// Punch each doubled frame so the new value is noticed.
 			const touched = active.filter((frame) =>
 				frames.some((candidate) => keyOf(candidate) === keyOf(frame)),
 			);
+			await Promise.all(touched.map((frame) =>
+				frame.scale.set(0.88, { duration: scaled(T.doubleOutMs), easing: cubicOut }),
+			));
 			frames.forEach((frame) => {
 				const target = active.find((candidate) => keyOf(candidate) === keyOf(frame));
 				if (target) target.mult = frame.mult;
 			});
-			await Promise.all(touched.map((frame) => frame.scale.set(1.35, { duration: scaled(T.doubleOutMs), easing: backOut })));
-			await Promise.all(touched.map((frame) => frame.scale.set(1, { duration: scaled(T.doubleInMs), easing: cubicOut })));
+			if (touched.length > 0) context.eventEmitter.broadcast({ type: 'soundOnce', name: 'sfx_multiplier_update' });
+			await Promise.all(touched.map((frame) =>
+				frame.scale.set(1.35, { duration: scaled(T.doubleInMs * 0.45), easing: backOut }),
+			));
+			await Promise.all(touched.map((frame) =>
+				frame.scale.set(1, { duration: scaled(T.doubleInMs * 0.55), easing: cubicOut }),
+			));
 		},
 		bonusTierEnter: async () => {
 			active = [];
@@ -253,10 +272,14 @@
 	// never a tween per frame however many are on the grid.
 	let shine = $state(0);
 	onMount(() => {
-		const id = setInterval(() => {
-			shine = (Date.now() % 2600) / 2600;
-		}, 40);
-		return () => clearInterval(id);
+		// frame clock (was a 40 ms interval: the sweep stepped at 25 fps)
+		let raf = 0;
+		const tick = (now: number) => {
+			shine = (now % 2600) / 2600;
+			raf = requestAnimationFrame(tick);
+		};
+		raf = requestAnimationFrame(tick);
+		return () => cancelAnimationFrame(raf);
 	});
 </script>
 
@@ -288,102 +311,18 @@
 			scale={(pose ? pose.scale : 1) * frame.scale.current}
 			rotation={pose ? pose.rotation : 0}
 		>
-			<!-- arrival shock ring: premium throws a small one, elite a big one,
-			     plain none at all — see game/frameBeat.ts -->
-			{#if pose && pose.ringAlpha > 0.01}
-				<Sprite
-					key="fxGlow"
-					anchor={{ x: 0.5, y: 0.5 }}
-					tint={tint}
-					blendMode="add"
-					width={SYMBOL_SIZE * pose.ring * (1 + (sizeOf(frame) - 1) * 0.25)}
-					height={SYMBOL_SIZE * pose.ring * (1 + (sizeOf(frame) - 1) * 0.25)}
-					alpha={pose.ringAlpha}
-				/>
-			{/if}
-			<!-- halo: nothing on a plain 2x-9x, a warm bloom on premium, bigger and
-			     brighter on elite -->
-			<!--
-				The halo is sized off ONE CELL, not off the frame's footprint.
-
-				It used to be `span * halo`, which was invisible while every frame was
-				1x1 and became the loudest thing on the board once big frames landed:
-				an elite 3x3 is 354px, so `span * 2.4` put an 850px additive bloom over
-				the middle of a 472px-tall board and washed the symbols underneath it
-				to white. A halo says "this frame is valuable"; a frame's footprint
-				already says how much board it covers. Scaling one by the other states
-				the same fact twice and blows out the cells the frame exists to
-				multiply.
-
-				A modest bump with size keeps a big elite frame from looking
-				under-lit next to a small one, without the area growing with span².
-			-->
-			{#if halo > 0}
-				{@const haloSpan = SYMBOL_SIZE * halo * (1 + (sizeOf(frame) - 1) * 0.25)}
-				<Sprite
-					key="fxGlow"
-					anchor={{ x: 0.5, y: 0.5 }}
-					tint={tint}
-					blendMode="add"
-					width={haloSpan}
-					height={haloSpan}
-					alpha={(tier === 'elite' ? 0.4 : 0.24) * (0.6 + 0.4 * glow)}
-				/>
-			{/if}
-
-			<Sprite
-				key={artKey}
-				anchor={{ x: 0.5, y: 0.5 }}
-				width={span}
-				height={span}
-				tint={tint}
-				alpha={0.55 + 0.45 * glow}
-			/>
-
-			<!-- arrival flash: a white copy of the casting, fading out of the hit -->
-			{#if pose && pose.flash > 0.01}
-				<Sprite
-					key={edgeKey}
-					anchor={{ x: 0.5, y: 0.5 }}
-					width={span}
-					height={span}
-					tint={0xffffff}
-					blendMode="add"
-					alpha={pose.flash}
-				/>
-			{/if}
-
-			<!-- second, slightly larger casting on an elite: reads as heavier metal
-			     rather than as a different shape -->
-			{#if tier === 'elite'}
-				<Sprite
-					key={edgeKey}
-					anchor={{ x: 0.5, y: 0.5 }}
-					width={span * 1.06}
-					height={span * 1.06}
-					tint={ELITE}
-					blendMode="add"
-					alpha={0.28 * (0.5 + 0.5 * glow)}
-				/>
-			{/if}
-
-			<!-- travelling shine, premium and elite only. A streak crossing the frame
-			     is what makes gold read as metal rather than as yellow. -->
-			{#if tier !== 'plain'}
-				{@const t = (shine * (tier === 'elite' ? 2 : 1)) % 1}
-				<Sprite
-					key="fxStreak"
-					anchor={{ x: 0.5, y: 0.5 }}
-					x={(t - 0.5) * span * 1.5}
-					y={(0.5 - t) * span * 0.5}
-					rotation={-0.6}
-					tint={0xffffff}
-					blendMode="add"
-					width={span * 0.42}
-					height={span * 1.15}
-					alpha={(tier === 'elite' ? 0.5 : 0.3) * Math.sin(Math.PI * t)}
-				/>
-			{/if}
+            {#if frame.entryT >= 0}
+             <Graphics draw={(g)=>{
+              g.clear(); const half=span/2; const progress=frame.entryT/ENTRY_MS[frame.entryTier]*4;
+              const sides=[[-half,-half,half,-half],[half,-half,half,half],[half,half,-half,half],[-half,half,-half,-half]];
+              sides.forEach(([x,y,xx,yy],i)=>{const t=Math.max(0,Math.min(1,progress-i));if(t<=0)return;
+               g.moveTo(x,y);g.lineTo(x+(xx-x)*t,y+(yy-y)*t);g.stroke({color:0xf7f5f0,width:5});
+               g.moveTo(x,y);g.lineTo(x+(xx-x)*t,y+(yy-y)*t);g.stroke({color:0x121212,width:3.5});
+               g.moveTo(x,y);g.lineTo(x+(xx-x)*t,y+(yy-y)*t);g.stroke({color:0xf5893d,width:2});});
+             }} />
+            {:else}
+             <Sprite key={artKey} anchor={.5} width={span} height={span} />
+            {/if}
 
 			{#if context.stateGame.gameType === 'freegame'}
 				<!-- One fixed-size wax lock on the corner: sticky is a state, not a
@@ -398,34 +337,76 @@
 				/>
 			{/if}
 
-			<!-- The multiplier sits at 0.22 of the span below centre, not 0.34.
-			     The plates carry a cleared centre circle of radius ~0.31 x span
-			     (design/soften_frames.py), and 0.34 put the number just OUTSIDE
-			     it — printed over the lower rim, the dial and the rivets, which is
-			     the least legible band on the whole plate. Inside the clear zone
-			     the digits sit on glass. -->
-			<Text
-				text={`${frame.mult}x`}
-				anchor={{ x: 0.5, y: 0.5 }}
-				y={span * 0.22}
-				style={{
-					fontFamily: DISPLAY_FONT,
-					fontWeight: DISPLAY_FONT_WEIGHT,
-					// The number grows with the tier, so the ladder is legible without
-					// actually reading the digits — but it is sized off SYMBOL_SIZE, not
-					// off `span`. A 3x3's label scaled to its footprint would be three
-					// times the height of a 1x1's for a value that is only worth three
-					// times as much through geometry the player can already see; the
-					// footprint IS the size cue, and doubling up on it just makes the
-					// board shout. It gets a modest bump instead.
-					fontSize:
-						SYMBOL_SIZE *
-						(tier === 'elite' ? 0.33 : tier === 'premium' ? 0.28 : 0.24) *
-						(1 + (sizeOf(frame) - 1) * 0.18),
-					fill: tint,
-					stroke: { color: 0x0e0f11, width: SYMBOL_SIZE * 0.045 },
-				}}
-			/>
+		</Container>
+	{/each}
+
+	<!--
+		Multiplier tags, drawn in their own pass AFTER every frame. Stake review of
+		Capo Nostra, 2026-10-14: "In some cases, the Vault Frame multiplier value
+		is not fully visible" — same build. The tag hangs past the frame's corner
+		into the neighbouring cells, so while it was drawn inside its own frame any
+		frame later in `active` (its glow, arrival ring, flash) painted over it.
+		Frames never overlap, so on top of all of them every tag is clear.
+	-->
+	{#each active as frame (keyOf(frame))}
+		{@const weight = weightOf(frame)}
+		{@const tier = tierOf(weight)}
+		{@const tint = tintOf(weight)}
+		{@const pose = entryPose(frame)}
+		{@const glow = pose ? pose.glow : frame.glow.current}
+		{@const span = SYMBOL_SIZE * sizeOf(frame)}
+		<Container
+			x={frameX(frame)}
+			y={frameY(frame)}
+			scale={(pose ? pose.scale : 1) * frame.scale.current}
+			rotation={pose ? pose.rotation : 0}
+		>
+			<!--
+				The multiplier rides a painted tag on the frame's lower-right corner.
+				2026-10-01: it used to be bare text at 0.22 of the span below centre,
+				i.e. printed across the symbol it multiplies — over a bottle's label,
+				a chain's crown — with nothing behind it but the symbol art. A tag
+				off the symbol keeps both readable, and a painted plate (the game's
+				own drawer plate) instead of a text label is what makes it read as
+				an object on the board. The tag is sized off SYMBOL_SIZE, with a
+				modest bump per tier and footprint, for the same reason the number
+				always was: the footprint is already the size cue.
+			-->
+			{@const tag =
+				SYMBOL_SIZE *
+				// 2026-10-15: +35% — on the sticker board a 0.46 tag read as a corner dot
+				// ("9x" at ~16px on a 1280 screen). The tag now sits half off the cell.
+				// 2026-10-23: the 10-23 redraw's plate is a heavy white-ringed disc; at
+				// 0.62–0.76 hanging half off the cell it covered the neighbours
+				// (「100X倍數那個會擋住」). Smaller, and tucked inside the corner.
+				(tier === 'elite' ? 0.5 : tier === 'premium' ? 0.46 : 0.42) *
+				(1 + (sizeOf(frame) - 1) * 0.12)}
+			<Container x={span * 0.5 - tag * 0.5} y={span * 0.5 - tag * 0.5}>
+				{#if tier !== 'plain'}
+					<Sprite
+						key="fxGlow"
+						anchor={0.5}
+						tint={tint}
+						blendMode="normal"
+						width={tag * 1.9}
+						height={tag * 1.9}
+						alpha={0.35 * (0.6 + 0.4 * glow)}
+					/>
+				{/if}
+				<Sprite key="turfUiDrawerPlate" anchor={0.5} width={tag} height={tag} />
+				<Text
+					text={`${frame.mult}x`}
+					anchor={{ x: 0.5, y: 0.5 }}
+					y={tag * 0.02}
+					style={{
+						fontFamily: DISPLAY_FONT,
+						fontWeight: DISPLAY_FONT_WEIGHT,
+						fontSize: tag * (String(frame.mult).length > 2 ? 0.34 : String(frame.mult).length > 1 ? 0.4 : 0.48),
+						fill: tint,
+						stroke: { color: 0x0e0f11, width: tag * 0.07 },
+					}}
+				/>
+			</Container>
 		</Container>
 	{/each}
 

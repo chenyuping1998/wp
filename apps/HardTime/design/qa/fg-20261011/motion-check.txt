@@ -1,0 +1,26 @@
+{
+  "poses": 3472,
+  "flips": 0,
+  "minAreaRatio": 0.7294,
+  "maxAreaRatio": 1.2487,
+  "worst": {
+    "shrink": "arm_r tri 167",
+    "grow": "arm_r tri 143"
+  },
+  "minInkMarginPx": 76.63,
+  "armBendPx": {
+    "arm_r": 3.34,
+    "arm_l": 3.35
+  },
+  "layers": [
+    "arm_r",
+    "prop_bat",
+    "body",
+    "arm_l",
+    "dangle_chain",
+    "head",
+    "dangle_mask",
+    "fingers_r"
+  ]
+}
+check_layered_cast ok

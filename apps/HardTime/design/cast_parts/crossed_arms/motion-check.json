@@ -1,0 +1,31 @@
+{
+  "poses": 3232,
+  "inkVertexBounds": [
+    276.448974609375,
+    106.77780151367188,
+    801.583984375,
+    1759.593017578125
+  ],
+  "minAreaRatio": 0.8535037009612616,
+  "maxAreaRatio": 1.1565327354074644,
+  "flips": 0,
+  "minInkVertexMargin": 106.77780151367188,
+  "byPart": {
+    "head": {
+      "min": 0.8535037009612616,
+      "max": 1.1565327354074644,
+      "flips": 0
+    },
+    "body": {
+      "min": 0.9300231433013925,
+      "max": 1.07286902118919,
+      "flips": 0
+    }
+  },
+  "ownership": "body has zero arm weights; each arm uses only its two bones",
+  "speeds": [
+    1,
+    2,
+    4
+  ]
+}

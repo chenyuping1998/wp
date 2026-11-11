@@ -67,3 +67,15 @@
 	})}
 	{template}
 />
+
+<Story
+  name="layered prisoner trigger"
+  args={templateArgs({
+    skipLoadingScreen: true,
+    data: {},
+    action: async () => {
+      stateGame.castReaction = { kind: 'trigger', seq: stateGame.castReaction.seq + 1 };
+    },
+  })}
+  {template}
+/>

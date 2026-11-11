@@ -9,7 +9,6 @@
 	// only free-text comment a sibling game's review left was "Bonus buy menu is
 	// too simple". See ModalBuyBonus.svelte.
 	import ModalError from 'components-ui-html/src/components/ModalError.svelte';
-	import ModalBetMenu from 'components-ui-html/src/components/ModalBetMenu.svelte';
 
 	import ModalBuyBonusConfirm from 'components-ui-html/src/components/ModalBuyBonusConfirm.svelte';
 	import ModalAutoSpin from 'components-ui-html/src/components/ModalAutoSpin.svelte';
@@ -17,6 +16,9 @@
 	import ModalSettings from 'components-ui-html/src/components/ModalSettings.svelte';
 
 	import ModalBuyBonus from './ModalBuyBonus.svelte';
+	// Local since 2026-09-21: the shared Bet menu was never reskinned and could
+	// not be from here — see ModalBetMenu.svelte's header.
+	import ModalBetMenu from './ModalBetMenu.svelte';
 	import ModalPayTable from './ModalPayTable.svelte';
 	import ModalGameRules from './ModalGameRules.svelte';
 
@@ -108,7 +110,11 @@
 	:global(.pop-up-wrap p),
 	:global(.pop-up-wrap li),
 	:global(.pop-up-wrap td),
-	:global(.pop-up-wrap th) {
+	:global(.pop-up-wrap th),
+	/* <button> does not inherit font-family — the UA sheet gives it its own — so
+	   without naming it here every label inside a shared panel's buttons (Auto
+	   Spin's counts, Settings' toggles) came out in the OS default sans. */
+	:global(.pop-up-wrap button) {
 		font-family: var(--gb-body-font) !important;
 	}
 
@@ -129,6 +135,14 @@
 		font-family: var(--hm-title-font, var(--gb-display-font)) !important;
 		font-weight: 700 !important;
 		letter-spacing: 0.06em;
+	}
+
+	/* Every panel title in the lettering accent, as the Bet menu's and the Buy
+	   Bonus heading are — the shared panels' were left white. The indent
+	   balances the letter-spacing that trails the last glyph. */
+	:global(.pop-up-wrap .ui-modal-title-wrap) {
+		color: var(--capo-gold) !important;
+		text-indent: 0.06em;
 	}
 
 	/* ── Bonus buy menu sizing (Hot Miami only) ─────────────────────────────
@@ -230,15 +244,116 @@
 		transform: scale(0.97);
 	}
 
-	/* Close button (×) */
+	/* ── Shared option grids: Auto Spin rounds, its loss / win limits ──────────
+	   (The Bet menu no longer comes through here — see ModalBetMenu.svelte.)
+
+	   These chips are BaseIcon rectangles that mark the chosen option with an
+	   INLINE style: a white border, and on Auto Spin a purple (#5d2396) fill. The
+	   .rectangle rule above beats inline styles with !important, which is the
+	   only way to — and so it also erased the selection: every option looked
+	   the same. The inline border is the one reliable signal left, so the
+	   selected look is keyed off it. Attribute + class outranks the plain class
+	   rule, !important against !important. */
+	:global(.rectangle[style*='white solid']) {
+		background: linear-gradient(180deg, var(--capo-wine) 0%, var(--capo-wine-deep) 100%) !important;
+		border: 2px solid var(--capo-gold) !important;
+		box-shadow:
+			0 0 14px rgba(var(--capo-gold-rgb), 0.4),
+			inset 0 1px 0 rgba(var(--capo-gold-light-rgb), 0.2) !important;
+	}
+
+	/* Chip labels: the number face, line-height 1 so the line box is the em box
+	   and flex centring lands the figures in the middle. */
+	:global(.base-button-content span) {
+		font-family: var(--hm-number-font) !important;
+		font-weight: 700;
+		line-height: 1;
+		color: var(--capo-bone);
+	}
+
+	:global(.base-button-content span.selected) {
+		color: var(--capo-gold-light) !important;
+		text-shadow: none !important;
+	}
+
+	/* AutoSpinsOptions pushes ∞ DOWN 0.3rem with a margin, to compensate for a
+	   glyph in the template's face. In ours it just sat low. */
+	:global(.base-button-content .infinity) {
+		margin-top: 0 !important;
+		line-height: 1 !important;
+		/* Orbitron has no ∞, so it falls back to a face where it is tiny. */
+		font-family: var(--gb-body-font) !important;
+		font-size: 1.5rem !important;
+	}
+
+	/* Auto Spin's ADVANCED box: an inline white 2px frame from the template. */
+	:global(.pop-up-wrap [style*='2px solid white']) {
+		border: 1px solid rgba(var(--capo-gold-rgb), 0.45) !important;
+		background: rgba(var(--capo-ink-deep-rgb), 0.5);
+	}
+
+	/* The full-width action under a panel (START AUTOPLAY): the same wine plate,
+	   edge and title-face caps as the Bet menu's CONFIRM. */
+	:global(.ui-modal-button-wrap .rectangle) {
+		background: linear-gradient(180deg, var(--capo-wine) 0%, var(--capo-wine-deep) 100%) !important;
+		border: 2px solid var(--capo-gold) !important;
+	}
+
+	:global(.ui-modal-button-wrap .base-button-content span) {
+		font-family: var(--hm-title-font) !important;
+		color: var(--capo-gold-light);
+		letter-spacing: 0.16em;
+		/* letter-spacing trails the last glyph too; the indent balances it. */
+		text-indent: 0.16em;
+	}
+
+	/* Close button (×) — every panel's, from components-shared/Popup.svelte.
+	   Popup draws it as the TEXT "×" at 3rem with line-height 0, so where the
+	   cross lands depends on the glyph's ink inside whatever face loads: measured
+	   3.9px below the button's centre. The glyph is hidden (font-size 0) and the
+	   cross drawn as two bars about the centre instead, in the same gold ring as
+	   the bet stepper's − and +, so it cannot sit off-centre in any font. */
 	:global(.close-button) {
-		color: rgba(var(--capo-gold-rgb), 0.85) !important;
-		transition: color 0.2s ease, text-shadow 0.2s ease !important;
+		position: relative !important;
+		font-size: 0 !important;
+		width: 2.5rem !important;
+		height: 2.5rem !important;
+		margin: 0.6rem !important;
+		padding: 0 !important;
+		border-radius: 50% !important;
+		border: 2px solid rgba(var(--capo-gold-rgb), 0.75) !important;
+		background: radial-gradient(
+			circle at 50% 35%,
+			rgba(var(--capo-wine-rgb), 0.95) 0%,
+			rgba(var(--capo-ink-deep-rgb), 1) 78%
+		) !important;
+		box-shadow: 0 2px 8px rgba(0, 0, 0, 0.5) !important;
+		transition: border-color 0.15s ease, box-shadow 0.15s ease !important;
+	}
+
+	:global(.close-button::before),
+	:global(.close-button::after) {
+		content: '';
+		position: absolute;
+		left: 50%;
+		top: 50%;
+		width: 46%;
+		height: 3px;
+		border-radius: 2px;
+		background: var(--capo-gold-light);
+	}
+
+	:global(.close-button::before) {
+		transform: translate(-50%, -50%) rotate(45deg);
+	}
+
+	:global(.close-button::after) {
+		transform: translate(-50%, -50%) rotate(-45deg);
 	}
 
 	:global(.close-button:hover) {
-		color: var(--capo-bone) !important;
-		text-shadow: 0 0 12px rgba(var(--capo-gold-rgb), 0.85) !important;
+		border-color: var(--capo-gold-light) !important;
+		box-shadow: 0 0 14px rgba(var(--capo-gold-rgb), 0.55) !important;
 	}
 
 	/* Modal backdrop — warm near-black. Was a jungle shade carried over from

@@ -1,0 +1,4 @@
+prisoner: intentional painted sleeve 4515 RGB px; removed/replaced silhouette 286 px
+prisoner: holes 0 px, repainted 1136 px (0.22% of the figure)  PASS
+warden: intentional painted sleeve 0 RGB px; removed/replaced silhouette 0 px
+warden: holes 0 px, repainted 1898 px (0.32% of the figure)  PASS

@@ -42,13 +42,13 @@ const primaryMachines = createPrimaryMachines<Bet>({
 		// superspin sticky coins live for exactly one bought round
 		if (stateGame.stickyPrizes.length > 0) {
 			stateGame.stickyPrizes = [];
-			eventEmitter.broadcast({ type: 'stickyPrizesClear' });
+
 		}
 		// sticky expanded wilds stay on screen through the free-game outro and
 		// the idle board (they must keep hiding the W stacks underneath) — the
 		// next spin is what sweeps them away
 		if (stateGame.gameType === 'basegame') {
-			eventEmitter.broadcast({ type: 'expandingWildsClear' });
+			eventEmitter.broadcast({ type: 'wildColumnClear' });
 
 			// Neon Frames belong to the round that landed them, and the moment the
 			// player asks for another round they are last round's furniture.
@@ -84,7 +84,7 @@ const primaryMachines = createPrimaryMachines<Bet>({
 
 		const forceNormalPreSpin = stateBet.isTurbo && stateGame.gameType === 'freegame';
 		await stateGameDerived.enhancedBoard.preSpin({
-			paddingBoard: config.paddingReels[stateGame.gameType],
+			paddingBoard: config.paddingReels[stateGame.gameType].map((reel) => reel.map((symbol) => ({ ...symbol }))),
 			isTurboBeforeAllOverride: forceNormalPreSpin ? false : undefined,
 		});
 	},

@@ -1,0 +1,104 @@
+{
+  "src/components/CastFigure.svelte": {
+    "matches": true
+  },
+  "src/components/CastFigureMesh.svelte": {
+    "matches": true
+  },
+  "src/components/Cast.svelte": {
+    "matches": true
+  },
+  "src/game/layeredCastMotion.ts": {
+    "matches": true
+  },
+  "src/game/spineCastFigure.ts": {
+    "matches": true
+  },
+  "src/game/spineCastData.ts": {
+    "matches": true
+  },
+  "src/game/castMotion.ts": {
+    "matches": true
+  },
+  "src/game/castPlacement.ts": {
+    "matches": true
+  },
+  "static/assets/castLayers/turf/v5/fg/arm_far.png": {
+    "matches": true
+  },
+  "static/assets/castLayers/turf/v5/fg/cast.spine.json": {
+    "matches": true
+  },
+  "static/assets/castLayers/turf/v5/fg/body.png": {
+    "matches": true
+  },
+  "static/assets/castLayers/turf/v5/fg/head.png": {
+    "matches": true
+  },
+  "static/assets/castLayers/turf/v5/fg/arm_near.png": {
+    "matches": true
+  },
+  "static/assets/castLayers/turf/v5/base/arm_far.png": {
+    "matches": true
+  },
+  "static/assets/castLayers/turf/v5/base/cast.spine.json": {
+    "matches": true
+  },
+  "static/assets/castLayers/turf/v5/base/body.png": {
+    "matches": true
+  },
+  "static/assets/castLayers/turf/v5/base/head.png": {
+    "matches": true
+  },
+  "static/assets/castLayers/turf/v5/base/arm_near.png": {
+    "matches": true
+  },
+  "design/rebuild_20261023/cast/mg/arm_r.png": {
+    "matches": true
+  },
+  "design/rebuild_20261023/cast/mg/body.png": {
+    "matches": true
+  },
+  "design/rebuild_20261023/cast/mg/head.png": {
+    "matches": true
+  },
+  "design/rebuild_20261023/cast/mg/arm_l.png": {
+    "matches": true
+  },
+  "design/rebuild_20261023/cast/mg/full.png": {
+    "matches": true
+  },
+  "design/rebuild_20261023/cast/fg/arm_r.png": {
+    "matches": true
+  },
+  "design/rebuild_20261023/cast/fg/body.png": {
+    "matches": true
+  },
+  "design/rebuild_20261023/cast/fg/head.png": {
+    "matches": true
+  },
+  "design/rebuild_20261023/cast/fg/arm_l.png": {
+    "matches": true
+  },
+  "design/rebuild_20261023/cast/fg/full.png": {
+    "matches": true
+  },
+  "design/rebuild_20261023/kit/mg/mesh.json": {
+    "matches": true
+  },
+  "design/rebuild_20261023/kit/fg/mesh.json": {
+    "matches": true
+  },
+  "design/rebuild_20261023/build_mesh_cast.py": {
+    "matches": true
+  },
+  "design/check_spine_motion_cast.mjs": {
+    "matches": true
+  },
+  "design/check_cast_proportions.py": {
+    "matches": true
+  },
+  "design/lib/cast_visibility.py": {
+    "matches": true
+  }
+}

@@ -25,6 +25,9 @@ export const getSocialTerms = () => {
 	return {
 		bet: pick('bet', 'amount'), // "your bet" / "your amount"
 		totalBet: pick('total bet', 'total amount'),
+		// Max win is a multiple of the BASE bet, not of a feature's entry cost —
+		// "total bet" read as the 100x-1000x buy price there (2026-09-27).
+		baseBet: pick('base bet', 'base amount'),
 		betLevel: pick('bet level', 'amount level'),
 		betLevels: pick('bet levels', 'amount levels'),
 		betMenu: pick('bet menu', 'play menu'),

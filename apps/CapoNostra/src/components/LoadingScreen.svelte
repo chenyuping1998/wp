@@ -44,7 +44,8 @@
 	// background art behind them. So the SCRIM does the holding back instead: the
 	// photograph goes down to 0.74 black and the people stay as they are.
 	const castHeight = $derived(layout.height * 0.9);
-	const castWidth = $derived((castHeight * 441) / 1100);
+	// castLayers/don/full.png is the Don's ink box, 891x1599 (2026-09-28 redraw)
+	const castWidth = $derived((castHeight * 891) / 1599);
 
 	// Their sway runs off the same clock as everywhere else, which is what keeps
 	// the two of them out of step with each other (6500ms and 4000ms) rather than
@@ -67,11 +68,11 @@
 	const TIPS = [
 		'VAULT FRAMES LAND ON THE GRID AND REVEAL A 2×–100× MULTIPLIER',
 		'FRAMES SHARING A WINNING LINE ARE ADDED TOGETHER',
-		'THE TOMMY GUN FILLS ITS ENTIRE REEL WITH WILDS',
+		'THE VIOLIN CASE FILLS ITS ENTIRE REEL WITH WILDS',
 		'3, 4 OR 5 SCATTERS OPEN SOLDIER, CAPO OR THE DON',
 		'SOLDIER STARTS WITH ONE STICKY FRAME, REFILLED EACH SPIN',
 		'CAPO: A FRAME THAT WINS DOUBLES BEFORE THE NEXT SPIN',
-		'THE DON GUARANTEES A TOMMY GUN ON EVERY SPIN',
+		'THE DON GUARANTEES A VIOLIN CASE ON EVERY SPIN',
 	];
 	// Read the grid and the cap out of the maths config rather than writing them
 	// into the string. This line shipped as GoBananas' "5X5, 15 LINES — MAX WIN
@@ -162,6 +163,38 @@
 		/>
 
 		<!--
+			Shade under the words (2026-10-12). Replay skips the opening card, so this
+			is the first screen a reviewer sees there, and the tip line ran over a lit
+			pillar and the figure while the prompt sat right on the floor's highlight
+			(read as a strike-through). Feathered bands, drawn under the figure so he
+			stays at full strength; the prompt band is at the foot of the cover.
+		-->
+		<Graphics
+			draw={(g) => {
+				g.clear();
+				const left = layout.width * 0.5 - coverW * 0.5;
+				const feather = (top: number, bottom: number, alpha: number) => {
+					const steps = 6;
+					const edge = (bottom - top) * 0.22;
+					g.rect(left, top + edge, coverW, bottom - top - 2 * edge);
+					g.fill({ color: 0x000000, alpha });
+					for (let i = 0; i < steps; i++) {
+						const a = (alpha * (steps - i)) / (steps + 1);
+						const h = edge / steps;
+						g.rect(left, top + edge - (i + 1) * h, coverW, h);
+						g.fill({ color: 0x000000, alpha: a });
+						g.rect(left, bottom - edge + i * h, coverW, h);
+						g.fill({ color: 0x000000, alpha: a });
+					}
+				};
+				const textTop = layout.height * 0.3 + logoWidth * (LOGO_H / LOGO_W) * 0.38;
+				feather(textTop, layout.height * 0.66 + 110, 0.55);
+				const foot = layout.height * 0.5 + coverH * 0.5;
+				feather(layout.height - 140, foot + 40, 0.8);
+			}}
+		/>
+
+		<!--
 			ONE figure, on the right.
 
 			This drew two — the boss on the left and hmCastGirlMesh on the right,
@@ -175,15 +208,18 @@
 			symmetry that no longer exists.
 		-->
 		<Container
-			x={layout.width - castWidth * 0.72}
+			x={layout.width - castWidth * 0.5}
 			y={layout.height}
 		>
-			<Sprite
-				key="hmCastGuyMesh"
-				anchor={{ x: 0.5, y: 1 }}
-				width={castWidth}
-				height={castHeight}
-			/>
+			<!-- mirrored: the Don is drawn facing screen-right and stands on the right -->
+			<Container scale={{ x: -1, y: 1 }}>
+				<Sprite
+					key="capoCastDon_full"
+					anchor={{ x: 0.5, y: 1 }}
+					width={castWidth}
+					height={castHeight}
+				/>
+			</Container>
 		</Container>
 
 		<!-- The real logo, not a typeset stand-in for it -->
@@ -205,7 +241,7 @@
 				fontFamily: BODY_FONT,
 				fontSize: Math.max(13, Math.min(19, layout.width * 0.014)),
 				fontWeight: '600',
-				fill: 0xffd75e,
+				fill: 0xd9d5cd,
 				letterSpacing: 3,
 			}}
 		/>
@@ -222,16 +258,16 @@
 					const h = 10;
 					g.clear();
 					g.roundRect(-w / 2, -h / 2, w, h, h / 2);
-					g.fill({ color: 0x1b0f3a, alpha: 0.95 });
-					g.stroke({ width: 2, color: 0x5C2126, alpha: 0.65 });
+					g.fill({ color: 0x171717, alpha: 0.95 });
+					g.stroke({ width: 2, color: 0x333333, alpha: 0.65 });
 					const fill = (w - 6) * (animatedProgress / 100);
 					if (fill > 2) {
 						g.roundRect(-w / 2 + 3, -h / 2 + 3, fill, h - 6, (h - 6) / 2);
-						g.fill({ color: 0xC9A227, alpha: 0.95 });
+						g.fill({ color: 0xd4d0c6, alpha: 0.95 });
 						// the leading 40% cools toward cyan, so the bar has a direction
 						const head = Math.min(fill, fill * 0.4);
 						g.roundRect(-w / 2 + 3 + fill - head, -h / 2 + 3, head, h - 6, (h - 6) / 2);
-						g.fill({ color: 0xE8D48B, alpha: 0.85 });
+						g.fill({ color: 0xf7f4ec, alpha: 0.85 });
 					}
 				}}
 			/>
@@ -245,7 +281,7 @@
 						fontFamily: BODY_FONT,
 						fontSize: 14,
 						fontWeight: '600',
-						fill: 0xe8d3b6,
+						fill: 0xdad6ce,
 						letterSpacing: 2,
 					}}
 				/>
@@ -260,11 +296,11 @@
 					fontFamily: BODY_FONT,
 					fontSize: Math.max(13, Math.min(17, layout.width * 0.0125)),
 					fontWeight: '600',
-					fill: 0xffd75e,
+					fill: 0xd9d5cd,
 					letterSpacing: 2,
 					align: 'center',
 					wordWrap: true,
-					wordWrapWidth: layout.width * 0.62,
+					wordWrapWidth: layout.width * 0.42,
 				}}
 			/>
 		</Container>

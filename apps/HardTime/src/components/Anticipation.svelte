@@ -102,9 +102,8 @@
 		draw={(g) => {
 			const h = BOARD_SIZES.height;
 			g.clear();
-			g.beginFill(0xC9A227, (0.1 + 0.12 * pulse) * intensity);
-			g.drawRoundedRect(LEFT + 3, 3, SYMBOL_SIZE - 6, h - 6, 12);
-			g.endFill();
+			g.roundRect(LEFT + 3, 3, SYMBOL_SIZE - 6, h - 6, 12);
+			g.fill({ color: 0xC9A227, alpha: (0.1 + 0.12 * pulse) * intensity });
 
 			// full-height frame: nested strokes so the edge reads as a lit tube
 			// Pixi 8 strokes: build path, then stroke. v7's lineStyle renders nothing.

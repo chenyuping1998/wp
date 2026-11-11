@@ -5191,6 +5191,9 @@ importers:
 
   apps/TurfWar:
     dependencies:
+      '@esotericsoftware/spine-core':
+        specifier: 4.3.13
+        version: 4.3.13
       '@esotericsoftware/spine-pixi-v8':
         specifier: 4.2.74
         version: 4.2.74(pixi.js@8.8.1)

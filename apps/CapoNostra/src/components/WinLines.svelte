@@ -41,10 +41,10 @@
 	// Only 14 are ever used (config.paylines), but the list is longer so the
 	// modulo below never wraps onto an adjacent index.
 	const LINE_COLORS = [
-		0xe8d48b, 0xf5e6b8, 0xc9a227, 0xd9a441, 0xb8862b,
-		0xa8323c, 0xc85a4a, 0xe0a07a, 0xfff3d0, 0x9aa0a6,
-		0xc3cbd1, 0xd8b24a, 0xefc978, 0xbf7a3c, 0x8f9a7e,
-		0xdcc9a0, 0xa67c52, 0xf0d9a8,
+		0xf7f4ec, 0xe9e5dc, 0xd4d0c6, 0xa9a9a9, 0x8b8b8b,
+		0x565656, 0x797979, 0xafafaf, 0xf7f2e9, 0x9f9f9f,
+		0xcdc9c1, 0xb2b2b2, 0xcecbc3, 0x888888, 0x949494,
+		0xcdcac2, 0x848484, 0xdedad2,
 	];
 
 	// deterministic per-line jitter: same line always moves the same way, but no
@@ -198,6 +198,33 @@
 			});
 			if (built.length === 0) return;
 
+			// Lines that end on the same cell would put their value plates exactly
+			// on top of one another, so three paying lines read as one. Stake
+			// review of Deadwood Express, 2026-10-04: "When multiple paylines cross
+			// each other, only one winning payline is visually displayed, even
+			// though multiple payline wins are included in the final payout."
+			// Plates sharing a cell are fanned out into a column, clamped inside
+			// the board, so every line's own value is on screen and they visibly
+			// add up to the total. Ported from Deadwood's WinLines (2026-10-14).
+			const groups = new Map<string, ActiveLine[]>();
+			for (const line of built) {
+				if (!line.plate || !line.win) continue;
+				const key = `${line.plate.x},${line.plate.y}`;
+				groups.set(key, [...(groups.get(key) ?? []), line]);
+			}
+			const pitch = PLATE.h + 8;
+			const minY = PLATE.h / 2 + 2;
+			const maxY = SYMBOL_SIZE * BOARD_DIMENSIONS.y - PLATE.h / 2 - 2;
+			for (const group of groups.values()) {
+				if (group.length < 2) continue;
+				const span = pitch * (group.length - 1);
+				const origin = group[0].plate!;
+				const first = Math.min(Math.max(origin.y - span / 2, minY), Math.max(minY, maxY - span));
+				group.forEach((line, i) => {
+					line.plate = { x: origin.x, y: first + pitch * i };
+				});
+			}
+
 			lines = built;
 			show = true;
 			context.eventEmitter.broadcast({ type: 'boardShow' });
@@ -272,7 +299,7 @@
 			};
 			// scorch underlay: reads as a burn mark where the line crosses the
 			// gold expanding-wild panel, and all but disappears over the dark board
-			stroke(11, 0x1a1206, 0.5);
+			stroke(11, 0x131313, 0.5);
 			stroke(7, line.color, 0.22);
 			stroke(3, line.color, 0.95);
 			stroke(1.2, 0xffffff, 0.5);
@@ -316,7 +343,7 @@
 						draw={(g) => {
 							g.clear();
 							g.roundRect(-PLATE.w / 2, -PLATE.h / 2, PLATE.w, PLATE.h, PLATE.r);
-							g.fill({ color: 0x140a24, alpha: 0.88 });
+							g.fill({ color: 0x101010, alpha: 0.88 });
 							g.roundRect(-PLATE.w / 2, -PLATE.h / 2, PLATE.w, PLATE.h, PLATE.r);
 							g.stroke({ width: 2, color: line.color, alpha: 0.95 });
 						}}

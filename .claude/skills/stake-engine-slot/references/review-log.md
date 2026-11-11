@@ -23,6 +23,8 @@ an entry when you want to know what a reviewer's one-line comment really meant.
 - [Every stake must be one the server named](#every-stake-must-be-one-the-server-named)
 - [A guard that cannot see its target](#a-guard-that-cannot-see-its-target)
 - [The oncomplete race — one shape, five places](#the-oncomplete-race--one-shape-five-places)
+- [Deadwood Express post-approval — ten issues, shared fixes](#deadwood-express-post-approval--ten-issues-shared-fixes)
+- [Sushi Monkey 2026-10-20 — three things every guard passed](#sushi-monkey-2026-10-20--three-things-every-guard-passed)
 - [Production bugs worth recognising again](#production-bugs-worth-recognising-again)
 - [Working with the reviewers](#working-with-the-reviewers)
 
@@ -55,6 +57,10 @@ Run this before the first upload. Each line maps to a round that was lost.
       $0.01 stake renders `$0.00` and stops matching the server's JSON.
 - [ ] Amount parameters are in API units — 1,000,000 = 1 coin. A launcher
       `balance=100000000` is 100 coins, not 100 million.
+- [ ] **No K / M abbreviations anywhere** — bet menu chips included: 1,000.00,
+      never 1.00K (Sushi Monkey 2026-10-20). Check the bet menu with a ladder that
+      reaches 750,000 (the playtest stub stops at 100) and run
+      `scripts/social_text_audit.js` on it.
 
 **Social mode (`?social=true`)**
 
@@ -64,6 +70,11 @@ Run this before the first upload. Each line maps to a round that was lost.
 - [ ] Check the quiet surfaces too: the spin ticker, feature-buy dialogs, the
       insufficient-balance message, the replay panel.
 - [ ] A static guard runs on build.
+- [ ] …and a **runtime** pass: `scripts/social_text_audit.js` pasted into the page
+      at `?social=true&currency=GC`, `__textAudit.scan()` on every screen (splash
+      first). The static guard cannot see a string literal in a `<script>` array
+      that pixi draws — that is how "capped at 10,000× your bet" reached review
+      on Sushi Monkey's splash card.
 
 **Game information**
 
@@ -73,8 +84,18 @@ Run this before the first upload. Each line maps to a round that was lost.
       prose.
 - [ ] Every feature the maths implements — retriggers included.
 - [ ] The max-win cap and what happens when a round hits it.
+- [ ] A symbol that **carries a value** (plate, sack, coin, frame): the info names
+      what it looks like, says how the value is shown, and **lists every value it
+      can carry** (from the maths config's prize table, per mode). The info icon
+      matches what lands on the reel — badge included.
 
 **Presentation**
+
+- [ ] **Every value printed on a symbol is legible on the reel**: glyph colour vs
+      its backing measured, not assumed — capture at native resolution (pixi
+      extract / rAF canvas grab) for each value tier (1×, 10×, 100×…). Sushi
+      Monkey's copper digit PNGs sat on a copper disc: no value visible, the
+      blank disc read as a coin (review 2026-10-20).
 
 - [ ] Bet bar in the conventional arrangement; occasional expensive actions
       (feature buy) kept away from the control pressed every few seconds.
@@ -84,6 +105,20 @@ Run this before the first upload. Each line maps to a round that was lost.
 - [ ] Spacebar bound to the bet button.
 - [ ] Every modal tested at the smallest supported size, including the popout.
 - [ ] Stake Engine's splash removed; your own studio logo kept.
+- [ ] **Every label sits optically centred in its button or plate — measured,
+      not eyeballed** (`scripts/ui_center_audit.js`: `html()` per open modal,
+      `glyphs()`, `plate()` per bar/portrait plate; tolerance 1px). Pickle Panic
+      2026-10-16: an '∞' low on the autoplay badge, the autoplay-menu '∞', the
+      bet-menu ± and every Balance/Win/Bet stack 3-4px low — none visible at a
+      glance at 1x, all reported by the user one at a time.
+- [ ] **No still picture of a character at a feature beat**: every cut-in,
+      intro/outro card, upgrade overlay or plaque that shows the cast animates
+      it in layers on the beat's clock (game-reskin §5 step 6). Pickle Panic FG
+      chop, 2026-10-16: the chef was one static punch drawing that only slid.
+- [ ] **Cast arms leave no ghost when they move**: trunk underlay must not run
+      down the arm (game-reskin `scripts/check_cast_underlay.py`), and the
+      arm-swing motions are looked at frame by frame in the game, not only the
+      idle loop. Pickle Panic FG 2026-10-16: a smeared second arm beside the body.
 
 **Cover art**
 
@@ -558,6 +593,44 @@ Two rules:
    one dropped beat, and it is worth having whether or not the race is the cause
    — which matters, because these are intermittent and "no longer observed" is
    not evidence.
+
+## Deadwood Express post-approval — ten issues, shared fixes
+
+Approved 2026-10-04 with open issues. Most were in shared packages, so every
+game picks them up on its next build.
+
+| Reported | Cause | Fix (where) |
+| :-- | :-- | :-- |
+| Active base round does not restore its bet (bonus does) | a winning base round was **end-round'ed the moment the play response arrived**, before any reel moved — reload mid-win found no active round and opened on `defaultBetLevel` | `singleRoundWin` now ends the round in `endGame`, like `bonusWin`; resumeGame re-pins `betAmount` from the round (`utils-xstate/createPrimaryMachines.ts`). Zero-win rounds still send no end-round. |
+| Currency symbols vs codes mixed (RUB/UGX/XOF as codes, USD as `$`) | Intl `currencyDisplay:'symbol'` at en-US only has symbols for a few currencies | Stake's own table (stake-engine.com/docs/rgs → Supported Currencies): symbol + before/after per currency; XGC→GC, XSC→SC, XEC→SC, all suffixed (`utils-shared/amount.ts`) |
+| Bet levels restricted by balance (+ dead at $0) | `correctBetAmount` clamped to what the balance could afford | Clamp removed; only min/max + snap to `betLevels`. Affordability is checked at bet time (`isBetCostAvailable` → insufficient-funds notice, no play request). **This reverses "Every stake must be one the server named"'s affordability rung** — the snap-to-ladder part stands. |
+| Holding +/− keeps stepping | `createBetRepeat` 150ms hold-repeat; Shift+arrow OS auto-repeat | Hold-repeat disabled for all games; arrow shortcuts ignore `event.repeat` (`components-ui-pixi/platformUx.svelte.ts`, `EnableShortcuts.svelte`) |
+| Rules: max free spins, "if there is no limit, clarify" | not stated | One sentence: no limit; ends when spins run out or max win is reached |
+| Popout S/L: intro cannot be passed | intro card laid out in fixed px; button off-screen | card scaled to fit the window; click anywhere / Enter continues |
+| Popout S: logo covers symbols | fixed-REM logo vs scaling board | logo sized to the room beside/above the housing, hidden below 40% |
+| Crossing lines: "only one payline displayed" | value plates sit on the line's last cell; lines ending on the same cell stacked plates exactly | coincident plates fanned into a column; each line full-strength only over its paying reels |
+| Replay end: bar lacks the card's info | bar showed MULTIPLIER / WIN / AMOUNT | game publishes the card rows to `stateReplay.summary`; bottom bar and portrait render all six with the card's labels (`UiLabel` captions now condense to `maxWidth`) |
+| Game borders / thumbnail too dark against the site | α0.9 black corner vignette; roof + coat on the tile's edges | screen-blended edge mist + lit rim; thumbnail BG mist veil + FG dissolve at the edges (`design/build_thumbnail_light_edges.py`), border-ring luminance 90 → 204 |
+
+Testing notes: the playtest stub gained `?resume=<mode>&ramt=<stake>` (an active
+round in /authenticate) and `?bal=<amount>`; neither existed, which is why the
+resume and zero-balance paths were never exercised before submission.
+
+---
+
+## Sushi Monkey 2026-10-20 — three things every guard passed
+
+Two review rounds in one day. Each finding passed the build and every static
+guard, and each was obvious the moment someone looked at the running game.
+
+| Reported | Cause | Fix | Check that now catches it |
+| :-- | :-- | :-- | :-- |
+| "The Sushi Plate mechanic is unclear": no value on any plate, the plate looks like "a copper coin or cookie", possible values not in the info | `SackBadge` drew the `plate` digit set — solid copper PNGs — on a copper disc. Same colour on same colour; the disc also covered the two maki that identify the symbol | Paper chit on the plate's rim under the maki; copper digits on paper < 10×, charcoal on copper ≥ 10×. Info lists 1–50× (+100×/250× in FS) and shows the chit on the icon | Presentation: value legibility per tier at native resolution; Game information: value-carrying symbols list every value |
+| Restricted words in social mode — the splash's MAX WIN card | `body:'The total win is capped at 10,000× your bet.'` in a `<script>` array rendered by pixi `Text`. `check_social_words.mjs` reads templates and `pick()`/ternary branches only, so it printed OK | `getSocialTerms().bet` ("amount" in social) | `scripts/social_text_audit.js` — reads pixi `Text` under `__PIXI_APP__.stage` and the DOM |
+| "All values displayed fully without K or M" — bet menu 1.00K … 750.00K | shared `BetMenuAmountGrid.svelte` (and Capo/HT/Turf's own `ModalBetMenu.svelte`) abbreviated above 999 | `toLocaleString('en-US', 2 decimals)`; long labels step the font down to keep three per row | same audit script (`abbreviated` hits) with a 750,000 ladder in the stub |
+
+Already-live games are not patched for findings like these (Stone, 2026-10-20) —
+port to games still in review only.
 
 ## Production bugs worth recognising again
 

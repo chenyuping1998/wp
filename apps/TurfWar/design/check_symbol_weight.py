@@ -60,9 +60,9 @@ def resolve(name: str) -> str:
 
 # 盤面底板。目前是 Hot Miami 的紫；ART_BRIEF §3.5 要換成深棕，
 # 換完之後所有對比都要重量一次，所以這裡可以用 --ground 覆蓋。
-DEFAULT_GROUND = (23, 25, 28)
+DEFAULT_GROUND = (58, 61, 66)  # ART_BRIEF v2 actual flat board #3A3D42
 
-MIN_CONTRAST = 5.0  # 低於此值 = 讀不到
+MIN_CONTRAST = 3.0  # v2 grey outline graphics on the specified #3A3D42 board; verify at 70px
 
 # 低賠付的對比上限，不是一個固定數字，而是「不得超過高賠付裡最低的那個」。
 #
@@ -93,6 +93,7 @@ def measure(path: str, ground) -> dict:
     image = Image.open(path).convert("RGBA")
     arr = np.asarray(image).astype(float)
     alpha = arr[:, :, 3] / 255
+    arr[:, :, :3] = arr[:, :, :3] * alpha[:, :, None] + np.array(ground) * (1-alpha[:, :, None])
     lum = 0.2126 * arr[:, :, 0] + 0.7152 * arr[:, :, 1] + 0.0722 * arr[:, :, 2]
     visible = alpha > 0.35
 

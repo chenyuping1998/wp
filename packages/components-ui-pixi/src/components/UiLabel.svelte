@@ -4,6 +4,7 @@
 	import UiSprite from './UiSprite.svelte';
 	import { UI_BASE_FONT_SIZE } from '../constants';
 	import { uiTheme } from '../theme.svelte';
+	import { inkOffsetY } from '../inkCenter';
 
 	type Props = {
 		label: string;
@@ -43,6 +44,15 @@
 		pop?: number;
 		/** tint on the value text, for a flash. Undefined = none */
 		valueTint?: number;
+		/**
+		 * Treat caption + value + chevron as ONE group and centre that, with the
+		 * chevron right after the value. Default: the text is centred and the
+		 * chevron sits at a fixed 3.6 font-sizes to its right, wherever the value
+		 * ends — with a short stake ("$1.00") that left a wide empty gap and put
+		 * the chevron nearer the + button than the amount, so − BET + read as
+		 * lopsided (2026-09-29). The flank stepper passes true.
+		 */
+		centerGroup?: boolean;
 	};
 
 	const props: Props = $props();
@@ -59,17 +69,33 @@
 	// the two chase each other. Wrapping keeps the reported width the natural one.
 	let valueWidth = $state(0);
 	let labelWidth = $state(0);
-	// the caption obeys the same bound; it never fired until the replay summary
-	// put six captions side by side (Deadwood review, 2026-10-04)
+	const valueScale = $derived(
+		props.maxWidth && valueWidth > props.maxWidth ? props.maxWidth / valueWidth : 1,
+	);
+	// The caption obeys the same bound. Every caption the bar had fitted its cell,
+	// so this never fired — until the replay summary put six of them, some as
+	// long as "TOTAL PLAY AMOUNT", side by side, and they ran into each other.
 	const labelScale = $derived(
 		props.labelScale ??
 			(props.maxWidth && labelWidth > props.maxWidth ? props.maxWidth / labelWidth : 1),
 	);
-	const valueScale = $derived(
-		props.maxWidth && valueWidth > props.maxWidth ? props.maxWidth / valueWidth : 1,
-	);
 
 	const accent = $derived(props.accent ?? { border: uiTheme.panelBorder, label: uiTheme.labelFill });
+
+	// Chevron geometry, shared by both placements.
+	const CHEVRON_HALF = UI_BASE_FONT_SIZE * 0.3;
+	const CHEVRON_GAP = UI_BASE_FONT_SIZE * 0.35;
+	const grouped = $derived(!!props.centerGroup && !!props.interactive && uiTheme.labelAffordance);
+	// the wider of the two text lines, as drawn
+	const textWidth = $derived(Math.max(labelWidth * labelScale, valueWidth * valueScale));
+	// grouped: chevron right after the text, and the text shifted left by half
+	// of what the chevron adds, so the whole group's centre is x = 0
+	const groupShift = $derived(grouped ? -(CHEVRON_GAP + CHEVRON_HALF * 2) / 2 : 0);
+	// grouped, it sits on the VALUE line's centre (value spans 1.0-2.0 font
+	// sizes): beside the amount it opens, not between caption and amount
+	const chevronX = $derived(
+		grouped ? groupShift + textWidth / 2 + CHEVRON_GAP + CHEVRON_HALF : UI_BASE_FONT_SIZE * 3.6,
+	);
 
 	// The caption is a WORD and the value is a NUMBER, and a game may want them in
 	// different faces — see uiTheme.valueFontFamily. Both keys are null by default
@@ -86,6 +112,23 @@
 		strokeThickness: 3,
 	});
 
+	// Stacked readouts only (uiTheme.stackedLabelFontFamily / stackedTextScale):
+	// a plainer caption face and both lines shrunk onto the plate's centre. At the
+	// defaults (null / 1) the style and positions are exactly the old ones.
+	const stackedLabelStyle = $derived({
+		...labelStyle,
+		...(uiTheme.stackedLabelFontFamily ? { fontFamily: uiTheme.stackedLabelFontFamily } : {}),
+		...(uiTheme.stackedLabelFontWeight ? { fontWeight: uiTheme.stackedLabelFontWeight } : {}),
+	});
+	const stackScale = $derived(uiTheme.stackedTextScale ?? 1);
+	const stackShift = $derived(
+		(stackScale === 1
+			? 0
+			: (props.tiled ? -20 + UI_BASE_FONT_SIZE * 1.5 : UI_BASE_FONT_SIZE) - stackScale * UI_BASE_FONT_SIZE) +
+			// stacked text lifts inside its own tile only (uiTheme.stackedTileTextOffsetY)
+			(props.tiled ? (uiTheme.stackedTileTextOffsetY ?? 0) : 0),
+	);
+
 	// uniform across Balance / Win / Bet — never tinted by accent
 	const valueStyle = $derived({
 		fontFamily: uiTheme.valueFontFamily ?? uiTheme.fontFamily,
@@ -99,6 +142,9 @@
 		dropShadowBlur: 2,
 		dropShadowDistance: 1,
 	});
+	const valueInkY = $derived(uiTheme.alignReadoutInk
+		? inkOffsetY('H', valueStyle) - inkOffsetY(props.value, valueStyle)
+		: 0);
 </script>
 
 {#if props.stacked}
@@ -115,11 +161,12 @@
 			borderWidth={5}
 		/>
 	{/if}
-	<Container scale={labelScale}>
+	<Container y={stackShift} scale={stackScale}>
+	<Container x={groupShift} scale={labelScale}>
 		<Text
 			anchor={{ x: 0.5, y: 0 }}
 			text={props.label}
-			style={labelStyle}
+			style={stackedLabelStyle}
 			onresize={({ width }) => {
 				labelWidth = width;
 				props.onlabelwidth?.(width);
@@ -131,14 +178,16 @@
 		or a fold turns "9,999,652,000" into something that reads as a different
 		number, and a smaller but complete one does not.
 	-->
-	<Container y={UI_BASE_FONT_SIZE} scale={valueScale * popScale}>
+	<Container x={groupShift} y={UI_BASE_FONT_SIZE} scale={valueScale * popScale}>
 		<Text
 			anchor={{ x: 0.5, y: 0 }}
 			text={props.value}
+			y={valueInkY}
 			style={valueStyle}
 			tint={props.valueTint ?? 0xffffff}
 			onresize={({ width }) => (valueWidth = width)}
 		/>
+	</Container>
 	</Container>
 	{#if props.hovered && uiTheme.hoverHighlight && uiTheme.hoverPlateLight !== undefined}
 		<!-- a short lit underline under the amount instead of a grey box -->
@@ -216,8 +265,8 @@
 		/>
 		<!-- chevron marking this panel as tappable -->
 		<Graphics
-			x={UI_BASE_FONT_SIZE * 3.6}
-			y={UI_BASE_FONT_SIZE * 1.1}
+			x={chevronX}
+			y={stackShift + stackScale * UI_BASE_FONT_SIZE * (grouped ? 1.5 : 1.1)}
 			draw={(g) => {
 				const s = UI_BASE_FONT_SIZE * 0.3;
 				g.clear();
@@ -249,6 +298,7 @@
 	<Text
 		anchor={{ x: 1, y: 0.5 }}
 		text={props.value}
+		y={valueInkY}
 		style={valueStyle}
 		x={UI_BASE_FONT_SIZE * 10}
 		scale={popScale}

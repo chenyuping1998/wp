@@ -27,6 +27,12 @@
 		src: new URL('../../assets/sprites/hardTimeFx/fx_streak.png', import.meta.url).href,
 		preload: true,
 	},
+	// soft light shaft for the big-win sunburst (DeadwoodExpress/design/make_fx_ray.py)
+	fxRay: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/hardTimeFx/fx_ray.png', import.meta.url).href,
+		preload: true,
+	},
 	// Side-profile car for the scene transition (design/build_transition_car.py).
 	// The car SYMBOL is three-quarter front-on — the angle that reads in a reel
 	// cell — and slid sideways it looks like a car pointing at you being dragged.
@@ -239,15 +245,56 @@
 	hmCastGuy: {
 		type: 'sprite',
 		src: new URL('../../assets/sprites/hardTimeCast/prisoner.png', import.meta.url).href,
-		preload: true,
+		preload: false,
 	},
 	hmCastGuyMesh: {
 		type: 'sprite',
 		src: new URL('../../assets/sprites/hardTimeCast/prisoner.png', import.meta.url).href,
+		preload: false,
+	},
+	// loading screen: the crossed-arms prisoner who stands beside the board
+	// (2026-10-03; it still showed the retired A-pose cut-out)
+	htLoadingCast: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/hardTimeCast/prisoner_crossed.png', import.meta.url).href,
+		preload: true,
+	},
+	htCastHead: {
+		type: 'sprite',
+		src: new URL('../../assets/castLayers/prisoner_crossed/head.png', import.meta.url).href,
+		preload: true,
+	},
+	htCastBody: {
+		type: 'sprite',
+		src: new URL('../../assets/castLayers/prisoner_crossed/body.png', import.meta.url).href,
 		preload: true,
 	},
 
-	// No Spine cast. The two Spine rigs that sat here (hmCastGuySpine /
+	// Spine cast (2026-10-20): both figures on screen at once, warden left of
+	// the board and prisoner right, on one shared idle clock. Built by
+	// design/build_cast_spine.py from the castLayers art above (weighted
+	// meshes, leg IK with the feet pinned, physics on the towel / whistle /
+	// radio cord / keys) - the Iron Jaw recipe, see Cast.svelte USE_SPINE_CAST.
+	htPrisonerSpine: {
+		type: 'spine',
+		src: {
+			atlas: new URL('../../assets/spines/htCast/prisoner.atlas', import.meta.url).href,
+			skeleton: new URL('../../assets/spines/htCast/prisoner.json', import.meta.url).href,
+			scale: 1,
+		},
+		preload: true,
+	},
+	htWardenSpine: {
+		type: 'spine',
+		src: {
+			atlas: new URL('../../assets/spines/htCast/warden.atlas', import.meta.url).href,
+			skeleton: new URL('../../assets/spines/htCast/warden.json', import.meta.url).href,
+			scale: 1,
+		},
+		preload: true,
+	},
+
+	// (Historical) No Spine cast. The two Spine rigs that sat here (hmCastGuySpine /
 	// hmCastGirlSpine, Hot Miami's man and woman) were registered with
 	// `preload: true` and loaded on every boot, but nothing mounted
 	// CastFigureSpine — Cast.svelte renders the mesh rig (USE_MESH_CAST). 5.4MB
@@ -360,4 +407,12 @@
 		src: new URL('../../assets/audio/sounds.json', import.meta.url).href,
 		preload: true,
 	},
+	htWardenArmR: { type: 'sprite', src: new URL('../../assets/castLayers/warden/arm_r.png', import.meta.url).href, preload: false },
+	htWardenPropBat: { type: 'sprite', src: new URL('../../assets/castLayers/warden/prop_bat.png', import.meta.url).href, preload: false },
+	htWardenBody: { type: 'sprite', src: new URL('../../assets/castLayers/warden/body.png', import.meta.url).href, preload: false },
+	htWardenArmL: { type: 'sprite', src: new URL('../../assets/castLayers/warden/arm_l.png', import.meta.url).href, preload: false },
+	htWardenDangleChain: { type: 'sprite', src: new URL('../../assets/castLayers/warden/dangle_chain.png', import.meta.url).href, preload: false },
+	htWardenHead: { type: 'sprite', src: new URL('../../assets/castLayers/warden/head.png', import.meta.url).href, preload: false },
+	htWardenDangleMask: { type: 'sprite', src: new URL('../../assets/castLayers/warden/dangle_mask.png', import.meta.url).href, preload: false },
+	htWardenFingersR: { type: 'sprite', src: new URL('../../assets/castLayers/warden/fingers_r.png', import.meta.url).href, preload: false },
 } as const;

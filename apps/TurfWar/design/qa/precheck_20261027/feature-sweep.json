@@ -1,0 +1,6395 @@
+[
+  {
+    "mode": "BONUS",
+    "currency": "XSC",
+    "book": {
+      "id": 0,
+      "payout": 2980,
+      "events": [
+        "reveal",
+        "setTotalWin",
+        "freeSpinTrigger",
+        "bonusTier",
+        "updateFreeSpin",
+        "reveal",
+        "newFrames",
+        "setTotalWin",
+        "updateFreeSpin",
+        "reveal",
+        "wildExpand",
+        "updateFrames",
+        "setTotalWin",
+        "updateFreeSpin",
+        "reveal",
+        "wildExpand",
+        "updateFrames",
+        "newFrames",
+        "winInfo",
+        "setWin",
+        "setTotalWin",
+        "updateFreeSpin",
+        "reveal",
+        "updateFrames",
+        "setTotalWin",
+        "updateFreeSpin",
+        "reveal",
+        "updateFrames",
+        "setTotalWin",
+        "updateFreeSpin",
+        "reveal",
+        "updateFrames",
+        "newFrames",
+        "winInfo",
+        "setWin",
+        "setTotalWin",
+        "updateFreeSpin",
+        "reveal",
+        "updateFrames",
+        "winInfo",
+        "setWin",
+        "setTotalWin",
+        "updateFreeSpin",
+        "reveal",
+        "updateFrames",
+        "setTotalWin",
+        "updateFreeSpin",
+        "reveal",
+        "wildExpand",
+        "updateFrames",
+        "winInfo",
+        "setWin",
+        "setTotalWin",
+        "freeSpinRetrigger",
+        "updateFreeSpin",
+        "reveal",
+        "updateFrames",
+        "winInfo",
+        "setWin",
+        "setTotalWin",
+        "updateFreeSpin",
+        "reveal",
+        "wildExpand",
+        "updateFrames",
+        "winInfo",
+        "setWin",
+        "setTotalWin",
+        "updateFreeSpin",
+        "reveal",
+        "updateFrames",
+        "setTotalWin",
+        "freeSpinRetrigger",
+        "updateFreeSpin",
+        "reveal",
+        "updateFrames",
+        "setTotalWin",
+        "updateFreeSpin",
+        "reveal",
+        "updateFrames",
+        "winInfo",
+        "setWin",
+        "setTotalWin",
+        "freeSpinEnd",
+        "finalWin"
+      ]
+    },
+    "wasFG": true,
+    "elapsed": 66843,
+    "timeline": [
+      {
+        "ms": 653,
+        "game": {
+          "gameType": "basegame",
+          "isTurbo": false,
+          "betMode": "BONUS",
+          "dimmedBy": 0,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "stats": {
+          "rounds": 1,
+          "byMode": {
+            "BONUS": 1
+          },
+          "balance": 99900,
+          "wagered": 100,
+          "won": 0,
+          "rtpSoFar": 0
+        },
+        "text": "14:27|TURF WAR|BALANCE|99,900.00 SC|WIN|0.00 SC|AMOUNT|1.00 SC|PLAY BONUS"
+      },
+      {
+        "ms": 1269,
+        "game": {
+          "gameType": "basegame",
+          "isTurbo": false,
+          "betMode": "BONUS",
+          "dimmedBy": 0,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "stats": {
+          "rounds": 1,
+          "byMode": {
+            "BONUS": 1
+          },
+          "balance": 99900,
+          "wagered": 100,
+          "won": 0,
+          "rtpSoFar": 0
+        },
+        "text": "WILD|14:27|TURF WAR|BALANCE|99,900.00 SC|WIN|0.00 SC|AMOUNT|1.00 SC|PLAY BONUS"
+      },
+      {
+        "ms": 3131,
+        "game": {
+          "gameType": "basegame",
+          "isTurbo": false,
+          "betMode": "BONUS",
+          "dimmedBy": 0,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "stats": {
+          "rounds": 1,
+          "byMode": {
+            "BONUS": 1
+          },
+          "balance": 99900,
+          "wagered": 100,
+          "won": 0,
+          "rtpSoFar": 0
+        },
+        "text": "WILD|14:28|TURF WAR|BALANCE|99,900.00 SC|WIN|0.00 SC|AMOUNT|1.00 SC|PLAY BONUS"
+      },
+      {
+        "ms": 4997,
+        "game": {
+          "gameType": "basegame",
+          "isTurbo": false,
+          "betMode": "BONUS",
+          "dimmedBy": 0,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "stats": {
+          "rounds": 1,
+          "byMode": {
+            "BONUS": 1
+          },
+          "balance": 99900,
+          "wagered": 100,
+          "won": 0,
+          "rtpSoFar": 0
+        },
+        "text": "WILD"
+      },
+      {
+        "ms": 5893,
+        "game": {
+          "gameType": "freegame",
+          "isTurbo": false,
+          "betMode": "BONUS",
+          "dimmedBy": 0,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "stats": {
+          "rounds": 1,
+          "byMode": {
+            "BONUS": 1
+          },
+          "balance": 99900,
+          "wagered": 100,
+          "won": 0,
+          "rtpSoFar": 0
+        },
+        "text": "WILD|PRESS ANYWHERE TO CONTINUE"
+      },
+      {
+        "ms": 6539,
+        "game": {
+          "gameType": "freegame",
+          "isTurbo": false,
+          "betMode": "BONUS",
+          "dimmedBy": 0,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "stats": {
+          "rounds": 1,
+          "byMode": {
+            "BONUS": 1
+          },
+          "balance": 99900,
+          "wagered": 100,
+          "won": 0,
+          "rtpSoFar": 0
+        },
+        "text": "5x|14:28|TURF WAR|BALANCE|99,900.00 SC|WIN|0.00 SC|AMOUNT|1.00 SC|FREE SPINS|1 / 10"
+      },
+      {
+        "ms": 8573,
+        "game": {
+          "gameType": "freegame",
+          "isTurbo": false,
+          "betMode": "BONUS",
+          "dimmedBy": 0,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "stats": {
+          "rounds": 1,
+          "byMode": {
+            "BONUS": 1
+          },
+          "balance": 99900,
+          "wagered": 100,
+          "won": 0,
+          "rtpSoFar": 0
+        },
+        "text": "WILD|WILD|5x|14:28|TURF WAR|BALANCE|99,900.00 SC|WIN|0.00 SC|AMOUNT|1.00 SC|FREE SPINS|2 / 10"
+      },
+      {
+        "ms": 9527,
+        "game": {
+          "gameType": "freegame",
+          "isTurbo": false,
+          "betMode": "BONUS",
+          "dimmedBy": 0,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "stats": {
+          "rounds": 1,
+          "byMode": {
+            "BONUS": 1
+          },
+          "balance": 99900,
+          "wagered": 100,
+          "won": 0,
+          "rtpSoFar": 0
+        },
+        "text": "5x|14:28|TURF WAR|BALANCE|99,900.00 SC|WIN|0.00 SC|AMOUNT|1.00 SC|FREE SPINS|2 / 10"
+      },
+      {
+        "ms": 10787,
+        "game": {
+          "gameType": "freegame",
+          "isTurbo": false,
+          "betMode": "BONUS",
+          "dimmedBy": 0,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "stats": {
+          "rounds": 1,
+          "byMode": {
+            "BONUS": 1
+          },
+          "balance": 99900,
+          "wagered": 100,
+          "won": 0,
+          "rtpSoFar": 0
+        },
+        "text": "WILD|WILD|WILD|WILD|5x|14:28|TURF WAR|BALANCE|99,900.00 SC|WIN|0.00 SC|AMOUNT|1.00 SC|FREE SPINS|2 / 10"
+      },
+      {
+        "ms": 11400,
+        "game": {
+          "gameType": "freegame",
+          "isTurbo": false,
+          "betMode": "BONUS",
+          "dimmedBy": 0,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "stats": {
+          "rounds": 1,
+          "byMode": {
+            "BONUS": 1
+          },
+          "balance": 99900,
+          "wagered": 100,
+          "won": 0,
+          "rtpSoFar": 0
+        },
+        "text": "WILD|WILD|WILD|5x|3x|14:28|TURF WAR|BALANCE|99,900.00 SC|WIN|0.00 SC|AMOUNT|1.00 SC|FREE SPINS|3 / 10"
+      },
+      {
+        "ms": 12058,
+        "game": {
+          "gameType": "freegame",
+          "isTurbo": false,
+          "betMode": "BONUS",
+          "dimmedBy": 0,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "stats": {
+          "rounds": 1,
+          "byMode": {
+            "BONUS": 1
+          },
+          "balance": 99900,
+          "wagered": 100,
+          "won": 0,
+          "rtpSoFar": 0
+        },
+        "text": "WILD|WILD|5x|3x|14:28|TURF WAR|BALANCE|99,900.00 SC|WIN|0.00 SC|AMOUNT|1.00 SC|FREE SPINS|3 / 10"
+      },
+      {
+        "ms": 13924,
+        "game": {
+          "gameType": "freegame",
+          "isTurbo": false,
+          "betMode": "BONUS",
+          "dimmedBy": 0,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "stats": {
+          "rounds": 1,
+          "byMode": {
+            "BONUS": 1
+          },
+          "balance": 99900,
+          "wagered": 100,
+          "won": 0,
+          "rtpSoFar": 0
+        },
+        "text": "WILD|WILD|WILD|WILD|WILD|5x|3x|14:28|TURF WAR|BALANCE|99,900.00 SC|WIN|0.00 SC|AMOUNT|1.00 SC|FREE SPINS|3 / 10"
+      },
+      {
+        "ms": 14566,
+        "game": {
+          "gameType": "freegame",
+          "isTurbo": false,
+          "betMode": "BONUS",
+          "dimmedBy": 0,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "stats": {
+          "rounds": 1,
+          "byMode": {
+            "BONUS": 1
+          },
+          "balance": 99900,
+          "wagered": 100,
+          "won": 0,
+          "rtpSoFar": 0
+        },
+        "text": "WILD|WILD|WILD|WILD|WILD|3x|3x|14:28|TURF WAR|BALANCE|99,900.00 SC|WIN|0.00 SC|AMOUNT|1.00 SC|FREE SPINS|3 / 10"
+      },
+      {
+        "ms": 15226,
+        "game": {
+          "gameType": "freegame",
+          "isTurbo": false,
+          "betMode": "BONUS",
+          "dimmedBy": 1,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "stats": {
+          "rounds": 1,
+          "byMode": {
+            "BONUS": 1
+          },
+          "balance": 99900,
+          "wagered": 100,
+          "won": 0,
+          "rtpSoFar": 0
+        },
+        "text": "WILD|WILD|WILD|WILD|WILD|3x|3x|0.20 SC|14:28|TURF WAR|BALANCE|99,900.00 SC|WIN|0.00 SC|AMOUNT|1.00 SC|FREE SPINS|3 / 10"
+      },
+      {
+        "ms": 15851,
+        "game": {
+          "gameType": "freegame",
+          "isTurbo": false,
+          "betMode": "BONUS",
+          "dimmedBy": 0,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "stats": {
+          "rounds": 1,
+          "byMode": {
+            "BONUS": 1
+          },
+          "balance": 99900,
+          "wagered": 100,
+          "won": 0,
+          "rtpSoFar": 0
+        },
+        "text": "3x|3x|14:28|TURF WAR|BALANCE|99,900.00 SC|WIN|0.15 SC|AMOUNT|1.00 SC|FREE SPINS|4 / 10|0.20 SC"
+      },
+      {
+        "ms": 16583,
+        "game": {
+          "gameType": "freegame",
+          "isTurbo": false,
+          "betMode": "BONUS",
+          "dimmedBy": 0,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "stats": {
+          "rounds": 1,
+          "byMode": {
+            "BONUS": 1
+          },
+          "balance": 99900,
+          "wagered": 100,
+          "won": 0,
+          "rtpSoFar": 0
+        },
+        "text": "3x|3x|14:28|TURF WAR|BALANCE|99,900.00 SC|WIN|0.20 SC|AMOUNT|1.00 SC|FREE SPINS|4 / 10"
+      },
+      {
+        "ms": 17220,
+        "game": {
+          "gameType": "freegame",
+          "isTurbo": false,
+          "betMode": "BONUS",
+          "dimmedBy": 0,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "stats": {
+          "rounds": 1,
+          "byMode": {
+            "BONUS": 1
+          },
+          "balance": 99900,
+          "wagered": 100,
+          "won": 0,
+          "rtpSoFar": 0
+        },
+        "text": "WILD|3x|3x|14:28|TURF WAR|BALANCE|99,900.00 SC|WIN|0.20 SC|AMOUNT|1.00 SC|FREE SPINS|4 / 10"
+      },
+      {
+        "ms": 17850,
+        "game": {
+          "gameType": "freegame",
+          "isTurbo": false,
+          "betMode": "BONUS",
+          "dimmedBy": 0,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "stats": {
+          "rounds": 1,
+          "byMode": {
+            "BONUS": 1
+          },
+          "balance": 99900,
+          "wagered": 100,
+          "won": 0,
+          "rtpSoFar": 0
+        },
+        "text": "WILD|2x|4x|14:28|TURF WAR|BALANCE|99,900.00 SC|WIN|0.20 SC|AMOUNT|1.00 SC|FREE SPINS|5 / 10"
+      },
+      {
+        "ms": 19214,
+        "game": {
+          "gameType": "freegame",
+          "isTurbo": false,
+          "betMode": "BONUS",
+          "dimmedBy": 0,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "stats": {
+          "rounds": 1,
+          "byMode": {
+            "BONUS": 1
+          },
+          "balance": 99900,
+          "wagered": 100,
+          "won": 0,
+          "rtpSoFar": 0
+        },
+        "text": "2x|4x|14:28|TURF WAR|BALANCE|99,900.00 SC|WIN|0.20 SC|AMOUNT|1.00 SC|FREE SPINS|5 / 10"
+      },
+      {
+        "ms": 20455,
+        "game": {
+          "gameType": "freegame",
+          "isTurbo": false,
+          "betMode": "BONUS",
+          "dimmedBy": 0,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "stats": {
+          "rounds": 1,
+          "byMode": {
+            "BONUS": 1
+          },
+          "balance": 99900,
+          "wagered": 100,
+          "won": 0,
+          "rtpSoFar": 0
+        },
+        "text": "3x|5x|3x|14:28|TURF WAR|BALANCE|99,900.00 SC|WIN|0.20 SC|AMOUNT|1.00 SC|FREE SPINS|6 / 10"
+      },
+      {
+        "ms": 21102,
+        "game": {
+          "gameType": "freegame",
+          "isTurbo": false,
+          "betMode": "BONUS",
+          "dimmedBy": 0,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "stats": {
+          "rounds": 1,
+          "byMode": {
+            "BONUS": 1
+          },
+          "balance": 99900,
+          "wagered": 100,
+          "won": 0,
+          "rtpSoFar": 0
+        },
+        "text": "WILD|3x|5x|3x|14:28|TURF WAR|BALANCE|99,900.00 SC|WIN|0.20 SC|AMOUNT|1.00 SC|FREE SPINS|6 / 10"
+      },
+      {
+        "ms": 22354,
+        "game": {
+          "gameType": "freegame",
+          "isTurbo": false,
+          "betMode": "BONUS",
+          "dimmedBy": 1,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "stats": {
+          "rounds": 1,
+          "byMode": {
+            "BONUS": 1
+          },
+          "balance": 99900,
+          "wagered": 100,
+          "won": 0,
+          "rtpSoFar": 0
+        },
+        "text": "WILD|5x|5x|3x|14:28|TURF WAR|BALANCE|99,900.00 SC|WIN|0.20 SC|AMOUNT|1.00 SC|FREE SPINS|6 / 10"
+      },
+      {
+        "ms": 22989,
+        "game": {
+          "gameType": "freegame",
+          "isTurbo": false,
+          "betMode": "BONUS",
+          "dimmedBy": 0,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "stats": {
+          "rounds": 1,
+          "byMode": {
+            "BONUS": 1
+          },
+          "balance": 99900,
+          "wagered": 100,
+          "won": 0,
+          "rtpSoFar": 0
+        },
+        "text": "WILD|5x|5x|3x|14:28|TURF WAR|BALANCE|99,900.00 SC|WIN|0.20 SC|AMOUNT|1.00 SC|FREE SPINS|6 / 10|0.20 SC"
+      },
+      {
+        "ms": 23601,
+        "game": {
+          "gameType": "freegame",
+          "isTurbo": false,
+          "betMode": "BONUS",
+          "dimmedBy": 0,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "stats": {
+          "rounds": 1,
+          "byMode": {
+            "BONUS": 1
+          },
+          "balance": 99900,
+          "wagered": 100,
+          "won": 0,
+          "rtpSoFar": 0
+        },
+        "text": "5x|5x|3x|14:28|TURF WAR|BALANCE|99,900.00 SC|WIN|0.40 SC|AMOUNT|1.00 SC|FREE SPINS|7 / 10"
+      },
+      {
+        "ms": 24225,
+        "game": {
+          "gameType": "freegame",
+          "isTurbo": false,
+          "betMode": "BONUS",
+          "dimmedBy": 0,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "stats": {
+          "rounds": 1,
+          "byMode": {
+            "BONUS": 1
+          },
+          "balance": 99900,
+          "wagered": 100,
+          "won": 0,
+          "rtpSoFar": 0
+        },
+        "text": "WILD|5x|5x|3x|14:28|TURF WAR|BALANCE|99,900.00 SC|WIN|0.40 SC|AMOUNT|1.00 SC|FREE SPINS|7 / 10"
+      },
+      {
+        "ms": 26512,
+        "game": {
+          "gameType": "freegame",
+          "isTurbo": false,
+          "betMode": "BONUS",
+          "dimmedBy": 0,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "stats": {
+          "rounds": 1,
+          "byMode": {
+            "BONUS": 1
+          },
+          "balance": 99900,
+          "wagered": 100,
+          "won": 0,
+          "rtpSoFar": 0
+        },
+        "text": "3x|2x|2x|14:28|TURF WAR|BALANCE|99,900.00 SC|WIN|0.93 SC|AMOUNT|1.00 SC|FREE SPINS|8 / 10|1.00 SC"
+      },
+      {
+        "ms": 27137,
+        "game": {
+          "gameType": "freegame",
+          "isTurbo": false,
+          "betMode": "BONUS",
+          "dimmedBy": 0,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "stats": {
+          "rounds": 1,
+          "byMode": {
+            "BONUS": 1
+          },
+          "balance": 99900,
+          "wagered": 100,
+          "won": 0,
+          "rtpSoFar": 0
+        },
+        "text": "3x|2x|2x|14:28|TURF WAR|BALANCE|99,900.00 SC|WIN|1.40 SC|AMOUNT|1.00 SC|FREE SPINS|8 / 10"
+      },
+      {
+        "ms": 28429,
+        "game": {
+          "gameType": "freegame",
+          "isTurbo": false,
+          "betMode": "BONUS",
+          "dimmedBy": 0,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "stats": {
+          "rounds": 1,
+          "byMode": {
+            "BONUS": 1
+          },
+          "balance": 99900,
+          "wagered": 100,
+          "won": 0,
+          "rtpSoFar": 0
+        },
+        "text": "5x|5x|5x|14:28|TURF WAR|BALANCE|99,900.00 SC|WIN|1.40 SC|AMOUNT|1.00 SC|FREE SPINS|8 / 10"
+      },
+      {
+        "ms": 29047,
+        "game": {
+          "gameType": "freegame",
+          "isTurbo": false,
+          "betMode": "BONUS",
+          "dimmedBy": 0,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "stats": {
+          "rounds": 1,
+          "byMode": {
+            "BONUS": 1
+          },
+          "balance": 99900,
+          "wagered": 100,
+          "won": 0,
+          "rtpSoFar": 0
+        },
+        "text": "WILD|WILD|WILD|5x|5x|5x|14:28|TURF WAR|BALANCE|99,900.00 SC|WIN|1.40 SC|AMOUNT|1.00 SC|FREE SPINS|9 / 10"
+      },
+      {
+        "ms": 29688,
+        "game": {
+          "gameType": "freegame",
+          "isTurbo": false,
+          "betMode": "BONUS",
+          "dimmedBy": 0,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "stats": {
+          "rounds": 1,
+          "byMode": {
+            "BONUS": 1
+          },
+          "balance": 99900,
+          "wagered": 100,
+          "won": 0,
+          "rtpSoFar": 0
+        },
+        "text": "WILD|WILD|5x|5x|5x|14:28|TURF WAR|BALANCE|99,900.00 SC|WIN|1.40 SC|AMOUNT|1.00 SC|FREE SPINS|9 / 10"
+      },
+      {
+        "ms": 31035,
+        "game": {
+          "gameType": "freegame",
+          "isTurbo": false,
+          "betMode": "BONUS",
+          "dimmedBy": 0,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "stats": {
+          "rounds": 1,
+          "byMode": {
+            "BONUS": 1
+          },
+          "balance": 99900,
+          "wagered": 100,
+          "won": 0,
+          "rtpSoFar": 0
+        },
+        "text": "WILD|WILD|WILD|WILD|WILD|WILD|5x|5x|5x|14:28|TURF WAR|BALANCE|99,900.00 SC|WIN|1.40 SC|AMOUNT|1.00 SC|FREE SPINS|9 / 10"
+      },
+      {
+        "ms": 32380,
+        "game": {
+          "gameType": "freegame",
+          "isTurbo": false,
+          "betMode": "BONUS",
+          "dimmedBy": 1,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "stats": {
+          "rounds": 1,
+          "byMode": {
+            "BONUS": 1
+          },
+          "balance": 99900,
+          "wagered": 100,
+          "won": 0,
+          "rtpSoFar": 0
+        },
+        "text": "WILD|WILD|WILD|WILD|WILD|WILD|4x|2x|2x|0.20 SC|16.00 SC|x2|14:28|TURF WAR|BALANCE|99,900.00 SC|WIN|1.40 SC|AMOUNT|1.00 SC|FREE SPINS|9 / 10"
+      },
+      {
+        "ms": 33013,
+        "game": {
+          "gameType": "freegame",
+          "isTurbo": false,
+          "betMode": "BONUS",
+          "dimmedBy": 0,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "stats": {
+          "rounds": 1,
+          "byMode": {
+            "BONUS": 1
+          },
+          "balance": 99900,
+          "wagered": 100,
+          "won": 0,
+          "rtpSoFar": 0
+        },
+        "text": "WILD|WILD|WILD|WILD|WILD|WILD|4x|2x|2x|14:28|TURF WAR|BALANCE|99,900.00 SC|WIN|1.40 SC|AMOUNT|1.00 SC|FREE SPINS|9 / 10|BIG WIN|3.98 SC"
+      },
+      {
+        "ms": 33668,
+        "game": {
+          "gameType": "freegame",
+          "isTurbo": false,
+          "betMode": "BONUS",
+          "dimmedBy": 0,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "stats": {
+          "rounds": 1,
+          "byMode": {
+            "BONUS": 1
+          },
+          "balance": 99900,
+          "wagered": 100,
+          "won": 0,
+          "rtpSoFar": 0
+        },
+        "text": "WILD|WILD|WILD|WILD|WILD|WILD|4x|2x|2x|14:28|TURF WAR|BALANCE|99,900.00 SC|WIN|1.40 SC|AMOUNT|1.00 SC|FREE SPINS|9 / 10|BIG WIN|9.47 SC"
+      },
+      {
+        "ms": 34314,
+        "game": {
+          "gameType": "freegame",
+          "isTurbo": false,
+          "betMode": "BONUS",
+          "dimmedBy": 0,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "stats": {
+          "rounds": 1,
+          "byMode": {
+            "BONUS": 1
+          },
+          "balance": 99900,
+          "wagered": 100,
+          "won": 0,
+          "rtpSoFar": 0
+        },
+        "text": "WILD|WILD|WILD|WILD|WILD|WILD|4x|2x|2x|14:28|TURF WAR|BALANCE|99,900.00 SC|WIN|1.40 SC|AMOUNT|1.00 SC|FREE SPINS|9 / 10|BIG WIN|15.48 SC"
+      },
+      {
+        "ms": 34946,
+        "game": {
+          "gameType": "freegame",
+          "isTurbo": false,
+          "betMode": "BONUS",
+          "dimmedBy": 0,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "stats": {
+          "rounds": 1,
+          "byMode": {
+            "BONUS": 1
+          },
+          "balance": 99900,
+          "wagered": 100,
+          "won": 0,
+          "rtpSoFar": 0
+        },
+        "text": "WILD|WILD|WILD|WILD|WILD|WILD|4x|2x|2x|14:28|TURF WAR|BALANCE|99,900.00 SC|WIN|1.40 SC|AMOUNT|1.00 SC|FREE SPINS|9 / 10|BIG WIN|16.20 SC"
+      },
+      {
+        "ms": 36220,
+        "game": {
+          "gameType": "freegame",
+          "isTurbo": false,
+          "betMode": "BONUS",
+          "dimmedBy": 0,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "stats": {
+          "rounds": 1,
+          "byMode": {
+            "BONUS": 1
+          },
+          "balance": 99900,
+          "wagered": 100,
+          "won": 0,
+          "rtpSoFar": 0
+        },
+        "text": "WILD|WILD|WILD|WILD|WILD|WILD|4x|2x|2x|14:28|TURF WAR|BALANCE|99,900.00 SC|WIN|17.60 SC|AMOUNT|1.00 SC|FREE SPINS|9 / 10"
+      },
+      {
+        "ms": 38054,
+        "game": {
+          "gameType": "freegame",
+          "isTurbo": false,
+          "betMode": "BONUS",
+          "dimmedBy": 0,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "stats": {
+          "rounds": 1,
+          "byMode": {
+            "BONUS": 1
+          },
+          "balance": 99900,
+          "wagered": 100,
+          "won": 0,
+          "rtpSoFar": 0
+        },
+        "text": "WILD|WILD|WILD|WILD|WILD|WILD|4x|2x|2x|14:28|TURF WAR|BALANCE|99,900.00 SC|WIN|17.60 SC|AMOUNT|1.00 SC|FREE SPINS|9 / 10|FREE SPINS|AWARDED"
+      },
+      {
+        "ms": 38684,
+        "game": {
+          "gameType": "freegame",
+          "isTurbo": false,
+          "betMode": "BONUS",
+          "dimmedBy": 0,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "stats": {
+          "rounds": 1,
+          "byMode": {
+            "BONUS": 1
+          },
+          "balance": 99900,
+          "wagered": 100,
+          "won": 0,
+          "rtpSoFar": 0
+        },
+        "text": "WILD|WILD|WILD|WILD|WILD|WILD|4x|2x|2x|14:28|TURF WAR|BALANCE|99,900.00 SC|WIN|17.60 SC|AMOUNT|1.00 SC|FREE SPINS|9 / 10|FREE SPINS|2|AWARDED"
+      },
+      {
+        "ms": 40296,
+        "game": {
+          "gameType": "freegame",
+          "isTurbo": false,
+          "betMode": "BONUS",
+          "dimmedBy": 0,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "stats": {
+          "rounds": 1,
+          "byMode": {
+            "BONUS": 1
+          },
+          "balance": 99900,
+          "wagered": 100,
+          "won": 0,
+          "rtpSoFar": 0
+        },
+        "text": "4x|2x|2x|14:28|TURF WAR|BALANCE|99,900.00 SC|WIN|17.60 SC|AMOUNT|1.00 SC|FREE SPINS|10 / 12|FREE SPINS|2|AWARDED"
+      },
+      {
+        "ms": 40926,
+        "game": {
+          "gameType": "freegame",
+          "isTurbo": false,
+          "betMode": "BONUS",
+          "dimmedBy": 0,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "stats": {
+          "rounds": 1,
+          "byMode": {
+            "BONUS": 1
+          },
+          "balance": 99900,
+          "wagered": 100,
+          "won": 0,
+          "rtpSoFar": 0
+        },
+        "text": "WILD|4x|2x|2x|14:28|TURF WAR|BALANCE|99,900.00 SC|WIN|17.60 SC|AMOUNT|1.00 SC|FREE SPINS|10 / 12"
+      },
+      {
+        "ms": 42267,
+        "game": {
+          "gameType": "freegame",
+          "isTurbo": false,
+          "betMode": "BONUS",
+          "dimmedBy": 0,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "stats": {
+          "rounds": 1,
+          "byMode": {
+            "BONUS": 1
+          },
+          "balance": 99900,
+          "wagered": 100,
+          "won": 0,
+          "rtpSoFar": 0
+        },
+        "text": "WILD|4x|2x|4x|14:28|TURF WAR|BALANCE|99,900.00 SC|WIN|17.60 SC|AMOUNT|1.00 SC|FREE SPINS|10 / 12"
+      },
+      {
+        "ms": 43032,
+        "game": {
+          "gameType": "freegame",
+          "isTurbo": false,
+          "betMode": "BONUS",
+          "dimmedBy": 0,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "stats": {
+          "rounds": 1,
+          "byMode": {
+            "BONUS": 1
+          },
+          "balance": 99900,
+          "wagered": 100,
+          "won": 0,
+          "rtpSoFar": 0
+        },
+        "text": "WILD|4x|2x|4x|14:28|TURF WAR|BALANCE|99,900.00 SC|WIN|17.60 SC|AMOUNT|1.00 SC|FREE SPINS|10 / 12|0.80 SC"
+      },
+      {
+        "ms": 43703,
+        "game": {
+          "gameType": "freegame",
+          "isTurbo": false,
+          "betMode": "BONUS",
+          "dimmedBy": 0,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "stats": {
+          "rounds": 1,
+          "byMode": {
+            "BONUS": 1
+          },
+          "balance": 99900,
+          "wagered": 100,
+          "won": 0,
+          "rtpSoFar": 0
+        },
+        "text": "WILD|4x|2x|4x|14:28|TURF WAR|BALANCE|99,900.00 SC|WIN|18.40 SC|AMOUNT|1.00 SC|FREE SPINS|11 / 12"
+      },
+      {
+        "ms": 44434,
+        "game": {
+          "gameType": "freegame",
+          "isTurbo": false,
+          "betMode": "BONUS",
+          "dimmedBy": 0,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "stats": {
+          "rounds": 1,
+          "byMode": {
+            "BONUS": 1
+          },
+          "balance": 99900,
+          "wagered": 100,
+          "won": 0,
+          "rtpSoFar": 0
+        },
+        "text": "WILD|WILD|4x|2x|4x|14:28|TURF WAR|BALANCE|99,900.00 SC|WIN|18.40 SC|AMOUNT|1.00 SC|FREE SPINS|11 / 12"
+      },
+      {
+        "ms": 45706,
+        "game": {
+          "gameType": "freegame",
+          "isTurbo": false,
+          "betMode": "BONUS",
+          "dimmedBy": 0,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "stats": {
+          "rounds": 1,
+          "byMode": {
+            "BONUS": 1
+          },
+          "balance": 99900,
+          "wagered": 100,
+          "won": 0,
+          "rtpSoFar": 0
+        },
+        "text": "WILD|WILD|WILD|WILD|WILD|WILD|4x|2x|4x|14:28|TURF WAR|BALANCE|99,900.00 SC|WIN|18.40 SC|AMOUNT|1.00 SC|FREE SPINS|11 / 12"
+      },
+      {
+        "ms": 50454,
+        "game": {
+          "gameType": "freegame",
+          "isTurbo": false,
+          "betMode": "BONUS",
+          "dimmedBy": 1,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "stats": {
+          "rounds": 1,
+          "byMode": {
+            "BONUS": 1
+          },
+          "balance": 99900,
+          "wagered": 100,
+          "won": 0,
+          "rtpSoFar": 0
+        },
+        "text": "WILD|WILD|WILD|WILD|WILD|WILD|2x|4x|8x|14:28|TURF WAR|BALANCE|99,900.00 SC|WIN|18.40 SC|AMOUNT|1.00 SC|FREE SPINS|11 / 12"
+      },
+      {
+        "ms": 51149,
+        "game": {
+          "gameType": "freegame",
+          "isTurbo": false,
+          "betMode": "BONUS",
+          "dimmedBy": 0,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "stats": {
+          "rounds": 1,
+          "byMode": {
+            "BONUS": 1
+          },
+          "balance": 99900,
+          "wagered": 100,
+          "won": 0,
+          "rtpSoFar": 0
+        },
+        "text": "2x|4x|8x|14:28|TURF WAR|BALANCE|99,900.00 SC|WIN|28.60 SC|AMOUNT|1.00 SC|FREE SPINS|12 / 12"
+      },
+      {
+        "ms": 51805,
+        "game": {
+          "gameType": "freegame",
+          "isTurbo": false,
+          "betMode": "BONUS",
+          "dimmedBy": 0,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "stats": {
+          "rounds": 1,
+          "byMode": {
+            "BONUS": 1
+          },
+          "balance": 99900,
+          "wagered": 100,
+          "won": 0,
+          "rtpSoFar": 0
+        },
+        "text": "4x|2x|4x|14:28|TURF WAR|BALANCE|99,900.00 SC|WIN|28.60 SC|AMOUNT|1.00 SC|FREE SPINS|12 / 12"
+      },
+      {
+        "ms": 54389,
+        "game": {
+          "gameType": "freegame",
+          "isTurbo": false,
+          "betMode": "BONUS",
+          "dimmedBy": 0,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "stats": {
+          "rounds": 1,
+          "byMode": {
+            "BONUS": 1
+          },
+          "balance": 99900,
+          "wagered": 100,
+          "won": 0,
+          "rtpSoFar": 0
+        },
+        "text": "4x|2x|4x|14:28|TURF WAR|BALANCE|99,900.00 SC|WIN|28.60 SC|AMOUNT|1.00 SC|FREE SPINS|12 / 12|FREE SPINS|2|AWARDED"
+      },
+      {
+        "ms": 56337,
+        "game": {
+          "gameType": "freegame",
+          "isTurbo": false,
+          "betMode": "BONUS",
+          "dimmedBy": 0,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "stats": {
+          "rounds": 1,
+          "byMode": {
+            "BONUS": 1
+          },
+          "balance": 99900,
+          "wagered": 100,
+          "won": 0,
+          "rtpSoFar": 0
+        },
+        "text": "4x|2x|4x|14:28|TURF WAR|BALANCE|99,900.00 SC|WIN|28.60 SC|AMOUNT|1.00 SC|FREE SPINS|13 / 14"
+      },
+      {
+        "ms": 57919,
+        "game": {
+          "gameType": "freegame",
+          "isTurbo": false,
+          "betMode": "BONUS",
+          "dimmedBy": 0,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "stats": {
+          "rounds": 1,
+          "byMode": {
+            "BONUS": 1
+          },
+          "balance": 99900,
+          "wagered": 100,
+          "won": 0,
+          "rtpSoFar": 0
+        },
+        "text": "WILD|4x|2x|4x|14:28|TURF WAR|BALANCE|99,900.00 SC|WIN|28.60 SC|AMOUNT|1.00 SC|FREE SPINS|13 / 14"
+      },
+      {
+        "ms": 58553,
+        "game": {
+          "gameType": "freegame",
+          "isTurbo": false,
+          "betMode": "BONUS",
+          "dimmedBy": 0,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "stats": {
+          "rounds": 1,
+          "byMode": {
+            "BONUS": 1
+          },
+          "balance": 99900,
+          "wagered": 100,
+          "won": 0,
+          "rtpSoFar": 0
+        },
+        "text": "WILD|4x|3x|4x|14:28|TURF WAR|BALANCE|99,900.00 SC|WIN|28.60 SC|AMOUNT|1.00 SC|FREE SPINS|14 / 14"
+      },
+      {
+        "ms": 59182,
+        "game": {
+          "gameType": "freegame",
+          "isTurbo": false,
+          "betMode": "BONUS",
+          "dimmedBy": 0,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "stats": {
+          "rounds": 1,
+          "byMode": {
+            "BONUS": 1
+          },
+          "balance": 99900,
+          "wagered": 100,
+          "won": 0,
+          "rtpSoFar": 0
+        },
+        "text": "WILD|WILD|WILD|4x|3x|4x|14:28|TURF WAR|BALANCE|99,900.00 SC|WIN|28.60 SC|AMOUNT|1.00 SC|FREE SPINS|14 / 14"
+      },
+      {
+        "ms": 60644,
+        "game": {
+          "gameType": "freegame",
+          "isTurbo": false,
+          "betMode": "BONUS",
+          "dimmedBy": 0,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "stats": {
+          "rounds": 1,
+          "byMode": {
+            "BONUS": 1
+          },
+          "balance": 99900,
+          "wagered": 100,
+          "won": 0,
+          "rtpSoFar": 0
+        },
+        "text": "WILD|WILD|3x|2x|2x|14:28|TURF WAR|BALANCE|99,900.00 SC|WIN|28.60 SC|AMOUNT|1.00 SC|FREE SPINS|14 / 14"
+      },
+      {
+        "ms": 61282,
+        "game": {
+          "gameType": "freegame",
+          "isTurbo": false,
+          "betMode": "BONUS",
+          "dimmedBy": 1,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "stats": {
+          "rounds": 1,
+          "byMode": {
+            "BONUS": 1
+          },
+          "balance": 99900,
+          "wagered": 100,
+          "won": 0,
+          "rtpSoFar": 0
+        },
+        "text": "WILD|WILD|3x|2x|2x|1.00 SC|x2|0.20 SC|14:28|TURF WAR|BALANCE|99,900.00 SC|WIN|28.60 SC|AMOUNT|1.00 SC|FREE SPINS|14 / 14"
+      },
+      {
+        "ms": 61912,
+        "game": {
+          "gameType": "freegame",
+          "isTurbo": false,
+          "betMode": "BONUS",
+          "dimmedBy": 0,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "stats": {
+          "rounds": 1,
+          "byMode": {
+            "BONUS": 1
+          },
+          "balance": 99900,
+          "wagered": 100,
+          "won": 0,
+          "rtpSoFar": 0
+        },
+        "text": "WILD|WILD|3x|2x|2x|14:28|TURF WAR|BALANCE|99,900.00 SC|WIN|29.51 SC|AMOUNT|1.00 SC|FREE SPINS|14 / 14|1.20 SC"
+      },
+      {
+        "ms": 62528,
+        "game": {
+          "gameType": "freegame",
+          "isTurbo": false,
+          "betMode": "BONUS",
+          "dimmedBy": 0,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "stats": {
+          "rounds": 1,
+          "byMode": {
+            "BONUS": 1
+          },
+          "balance": 99900,
+          "wagered": 100,
+          "won": 0,
+          "rtpSoFar": 0
+        },
+        "text": "WILD|WILD|FREE SPINS|14 / 14|TOTAL WIN|29.80 SC|PRESS ANYWHERE TO CONTINUE"
+      },
+      {
+        "ms": 63291,
+        "game": {
+          "gameType": "freegame",
+          "isTurbo": false,
+          "betMode": "BONUS",
+          "dimmedBy": 0,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "stats": {
+          "rounds": 1,
+          "byMode": {
+            "BONUS": 1
+          },
+          "balance": 99900,
+          "wagered": 100,
+          "won": 0,
+          "rtpSoFar": 0
+        },
+        "text": "WILD|WILD|14:29|TURF WAR|BALANCE|99,900.00 SC|WIN|29.80 SC|AMOUNT|1.00 SC|PLAY BONUS"
+      },
+      {
+        "ms": 63923,
+        "game": {
+          "gameType": "basegame",
+          "isTurbo": false,
+          "betMode": "BONUS",
+          "dimmedBy": 0,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "stats": {
+          "rounds": 1,
+          "byMode": {
+            "BONUS": 1
+          },
+          "balance": 99929.8,
+          "wagered": 100,
+          "won": 29.8,
+          "rtpSoFar": 0.298
+        },
+        "text": "14:29|TURF WAR|BALANCE|99,925.76 SC|WIN|29.80 SC|AMOUNT|1.00 SC|PLAY BONUS"
+      }
+    ],
+    "scans": [
+      {
+        "social": true,
+        "pixiTexts": 3,
+        "hits": [],
+        "verdict": "PASS"
+      },
+      {
+        "social": true,
+        "pixiTexts": 9,
+        "hits": [],
+        "verdict": "PASS"
+      },
+      {
+        "social": true,
+        "pixiTexts": 9,
+        "hits": [],
+        "verdict": "PASS"
+      },
+      {
+        "social": true,
+        "pixiTexts": 10,
+        "hits": [],
+        "verdict": "PASS"
+      },
+      {
+        "social": true,
+        "pixiTexts": 10,
+        "hits": [],
+        "verdict": "PASS"
+      },
+      {
+        "social": true,
+        "pixiTexts": 10,
+        "hits": [],
+        "verdict": "PASS"
+      },
+      {
+        "social": true,
+        "pixiTexts": 10,
+        "hits": [],
+        "verdict": "PASS"
+      },
+      {
+        "social": true,
+        "pixiTexts": 10,
+        "hits": [],
+        "verdict": "PASS"
+      },
+      {
+        "social": true,
+        "pixiTexts": 10,
+        "hits": [],
+        "verdict": "PASS"
+      },
+      {
+        "social": true,
+        "pixiTexts": 10,
+        "hits": [],
+        "verdict": "PASS"
+      },
+      {
+        "social": true,
+        "pixiTexts": 14,
+        "hits": [],
+        "verdict": "PASS"
+      },
+      {
+        "social": true,
+        "pixiTexts": 11,
+        "hits": [],
+        "verdict": "PASS"
+      },
+      {
+        "social": true,
+        "pixiTexts": 11,
+        "hits": [],
+        "verdict": "PASS"
+      },
+      {
+        "social": true,
+        "pixiTexts": 11,
+        "hits": [],
+        "verdict": "PASS"
+      },
+      {
+        "social": true,
+        "pixiTexts": 11,
+        "hits": [],
+        "verdict": "PASS"
+      },
+      {
+        "social": true,
+        "pixiTexts": 11,
+        "hits": [],
+        "verdict": "PASS"
+      },
+      {
+        "social": true,
+        "pixiTexts": 15,
+        "hits": [],
+        "verdict": "PASS"
+      },
+      {
+        "social": true,
+        "pixiTexts": 15,
+        "hits": [],
+        "verdict": "PASS"
+      },
+      {
+        "social": true,
+        "pixiTexts": 14,
+        "hits": [],
+        "verdict": "PASS"
+      },
+      {
+        "social": true,
+        "pixiTexts": 14,
+        "hits": [],
+        "verdict": "PASS"
+      },
+      {
+        "social": true,
+        "pixiTexts": 14,
+        "hits": [],
+        "verdict": "PASS"
+      },
+      {
+        "social": true,
+        "pixiTexts": 17,
+        "hits": [],
+        "verdict": "PASS"
+      },
+      {
+        "social": true,
+        "pixiTexts": 17,
+        "hits": [],
+        "verdict": "PASS"
+      },
+      {
+        "social": true,
+        "pixiTexts": 18,
+        "hits": [],
+        "verdict": "PASS"
+      },
+      {
+        "social": true,
+        "pixiTexts": 14,
+        "hits": [],
+        "verdict": "PASS"
+      },
+      {
+        "social": true,
+        "pixiTexts": 12,
+        "hits": [],
+        "verdict": "PASS"
+      },
+      {
+        "social": true,
+        "pixiTexts": 13,
+        "hits": [],
+        "verdict": "PASS"
+      },
+      {
+        "social": true,
+        "pixiTexts": 13,
+        "hits": [],
+        "verdict": "PASS"
+      },
+      {
+        "social": true,
+        "pixiTexts": 13,
+        "hits": [],
+        "verdict": "PASS"
+      },
+      {
+        "social": true,
+        "pixiTexts": 12,
+        "hits": [],
+        "verdict": "PASS"
+      },
+      {
+        "social": true,
+        "pixiTexts": 12,
+        "hits": [],
+        "verdict": "PASS"
+      },
+      {
+        "social": true,
+        "pixiTexts": 13,
+        "hits": [],
+        "verdict": "PASS"
+      },
+      {
+        "social": true,
+        "pixiTexts": 14,
+        "hits": [],
+        "verdict": "PASS"
+      },
+      {
+        "social": true,
+        "pixiTexts": 14,
+        "hits": [],
+        "verdict": "PASS"
+      },
+      {
+        "social": true,
+        "pixiTexts": 14,
+        "hits": [],
+        "verdict": "PASS"
+      },
+      {
+        "social": true,
+        "pixiTexts": 15,
+        "hits": [],
+        "verdict": "PASS"
+      },
+      {
+        "social": true,
+        "pixiTexts": 13,
+        "hits": [],
+        "verdict": "PASS"
+      },
+      {
+        "social": true,
+        "pixiTexts": 14,
+        "hits": [],
+        "verdict": "PASS"
+      },
+      {
+        "social": true,
+        "pixiTexts": 14,
+        "hits": [],
+        "verdict": "PASS"
+      },
+      {
+        "social": true,
+        "pixiTexts": 14,
+        "hits": [],
+        "verdict": "PASS"
+      },
+      {
+        "social": true,
+        "pixiTexts": 13,
+        "hits": [],
+        "verdict": "PASS"
+      },
+      {
+        "social": true,
+        "pixiTexts": 13,
+        "hits": [],
+        "verdict": "PASS"
+      },
+      {
+        "social": true,
+        "pixiTexts": 13,
+        "hits": [],
+        "verdict": "PASS"
+      },
+      {
+        "social": true,
+        "pixiTexts": 16,
+        "hits": [],
+        "verdict": "PASS"
+      },
+      {
+        "social": true,
+        "pixiTexts": 15,
+        "hits": [],
+        "verdict": "PASS"
+      },
+      {
+        "social": true,
+        "pixiTexts": 15,
+        "hits": [],
+        "verdict": "PASS"
+      },
+      {
+        "social": true,
+        "pixiTexts": 19,
+        "hits": [],
+        "verdict": "PASS"
+      },
+      {
+        "social": true,
+        "pixiTexts": 19,
+        "hits": [],
+        "verdict": "PASS"
+      },
+      {
+        "social": true,
+        "pixiTexts": 22,
+        "hits": [],
+        "verdict": "PASS"
+      },
+      {
+        "social": true,
+        "pixiTexts": 21,
+        "hits": [],
+        "verdict": "PASS"
+      },
+      {
+        "social": true,
+        "pixiTexts": 21,
+        "hits": [],
+        "verdict": "PASS"
+      },
+      {
+        "social": true,
+        "pixiTexts": 21,
+        "hits": [],
+        "verdict": "PASS"
+      },
+      {
+        "social": true,
+        "pixiTexts": 21,
+        "hits": [],
+        "verdict": "PASS"
+      },
+      {
+        "social": true,
+        "pixiTexts": 21,
+        "hits": [],
+        "verdict": "PASS"
+      },
+      {
+        "social": true,
+        "pixiTexts": 19,
+        "hits": [],
+        "verdict": "PASS"
+      },
+      {
+        "social": true,
+        "pixiTexts": 19,
+        "hits": [],
+        "verdict": "PASS"
+      },
+      {
+        "social": true,
+        "pixiTexts": 19,
+        "hits": [],
+        "verdict": "PASS"
+      },
+      {
+        "social": true,
+        "pixiTexts": 22,
+        "hits": [],
+        "verdict": "PASS"
+      },
+      {
+        "social": true,
+        "pixiTexts": 22,
+        "hits": [],
+        "verdict": "PASS"
+      },
+      {
+        "social": true,
+        "pixiTexts": 22,
+        "hits": [],
+        "verdict": "PASS"
+      },
+      {
+        "social": true,
+        "pixiTexts": 16,
+        "hits": [],
+        "verdict": "PASS"
+      },
+      {
+        "social": true,
+        "pixiTexts": 14,
+        "hits": [],
+        "verdict": "PASS"
+      },
+      {
+        "social": true,
+        "pixiTexts": 14,
+        "hits": [],
+        "verdict": "PASS"
+      },
+      {
+        "social": true,
+        "pixiTexts": 14,
+        "hits": [],
+        "verdict": "PASS"
+      },
+      {
+        "social": true,
+        "pixiTexts": 15,
+        "hits": [],
+        "verdict": "PASS"
+      },
+      {
+        "social": true,
+        "pixiTexts": 14,
+        "hits": [],
+        "verdict": "PASS"
+      },
+      {
+        "social": true,
+        "pixiTexts": 15,
+        "hits": [],
+        "verdict": "PASS"
+      },
+      {
+        "social": true,
+        "pixiTexts": 15,
+        "hits": [],
+        "verdict": "PASS"
+      },
+      {
+        "social": true,
+        "pixiTexts": 19,
+        "hits": [],
+        "verdict": "PASS"
+      },
+      {
+        "social": true,
+        "pixiTexts": 13,
+        "hits": [],
+        "verdict": "PASS"
+      },
+      {
+        "social": true,
+        "pixiTexts": 13,
+        "hits": [],
+        "verdict": "PASS"
+      },
+      {
+        "social": true,
+        "pixiTexts": 13,
+        "hits": [],
+        "verdict": "PASS"
+      },
+      {
+        "social": true,
+        "pixiTexts": 13,
+        "hits": [],
+        "verdict": "PASS"
+      },
+      {
+        "social": true,
+        "pixiTexts": 13,
+        "hits": [],
+        "verdict": "PASS"
+      },
+      {
+        "social": true,
+        "pixiTexts": 13,
+        "hits": [],
+        "verdict": "PASS"
+      },
+      {
+        "social": true,
+        "pixiTexts": 16,
+        "hits": [],
+        "verdict": "PASS"
+      },
+      {
+        "social": true,
+        "pixiTexts": 16,
+        "hits": [],
+        "verdict": "PASS"
+      },
+      {
+        "social": true,
+        "pixiTexts": 16,
+        "hits": [],
+        "verdict": "PASS"
+      },
+      {
+        "social": true,
+        "pixiTexts": 13,
+        "hits": [],
+        "verdict": "PASS"
+      },
+      {
+        "social": true,
+        "pixiTexts": 13,
+        "hits": [],
+        "verdict": "PASS"
+      },
+      {
+        "social": true,
+        "pixiTexts": 14,
+        "hits": [],
+        "verdict": "PASS"
+      },
+      {
+        "social": true,
+        "pixiTexts": 13,
+        "hits": [],
+        "verdict": "PASS"
+      },
+      {
+        "social": true,
+        "pixiTexts": 16,
+        "hits": [],
+        "verdict": "PASS"
+      },
+      {
+        "social": true,
+        "pixiTexts": 15,
+        "hits": [],
+        "verdict": "PASS"
+      },
+      {
+        "social": true,
+        "pixiTexts": 15,
+        "hits": [],
+        "verdict": "PASS"
+      },
+      {
+        "social": true,
+        "pixiTexts": 16,
+        "hits": [],
+        "verdict": "PASS"
+      },
+      {
+        "social": true,
+        "pixiTexts": 16,
+        "hits": [],
+        "verdict": "PASS"
+      },
+      {
+        "social": true,
+        "pixiTexts": 15,
+        "hits": [],
+        "verdict": "PASS"
+      },
+      {
+        "social": true,
+        "pixiTexts": 11,
+        "hits": [],
+        "verdict": "PASS"
+      },
+      {
+        "social": true,
+        "pixiTexts": 9,
+        "hits": [],
+        "verdict": "PASS"
+      }
+    ],
+    "final": {
+      "dom": "",
+      "scene": [
+        {
+          "t": "14:29",
+          "x": 20,
+          "y": 0,
+          "w": 54,
+          "h": 32
+        },
+        {
+          "t": "TURF WAR",
+          "x": 79,
+          "y": 0,
+          "w": 100,
+          "h": 32
+        },
+        {
+          "t": "BALANCE",
+          "x": 148,
+          "y": 500,
+          "w": 56,
+          "h": 21
+        },
+        {
+          "t": "99,929.80 SC",
+          "x": 134,
+          "y": 515,
+          "w": 85,
+          "h": 22
+        },
+        {
+          "t": "WIN",
+          "x": 355,
+          "y": 500,
+          "w": 26,
+          "h": 21
+        },
+        {
+          "t": "29.80 SC",
+          "x": 340,
+          "y": 516,
+          "w": 57,
+          "h": 22
+        },
+        {
+          "t": "AMOUNT",
+          "x": 593,
+          "y": 500,
+          "w": 53,
+          "h": 21
+        },
+        {
+          "t": "1.00 SC",
+          "x": 596,
+          "y": 516,
+          "w": 47,
+          "h": 22
+        },
+        {
+          "t": "PLAY BONUS",
+          "x": 75,
+          "y": 239,
+          "w": 63,
+          "h": 51
+        }
+      ],
+      "game": {
+        "gameType": "basegame",
+        "isTurbo": false,
+        "betMode": "BONUS",
+        "dimmedBy": 0,
+        "anticipation": [
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "requests": [
+        {
+          "url": "https://stub.local/wallet/authenticate",
+          "body": {
+            "sessionID": "playtest",
+            "language": "ja"
+          }
+        },
+        {
+          "url": "https://stub.local/wallet/authenticate",
+          "body": {
+            "sessionID": "playtest",
+            "language": "ja"
+          }
+        },
+        {
+          "url": "https://stub.local/wallet/play",
+          "body": {
+            "mode": "BONUS",
+            "currency": "XSC",
+            "sessionID": "playtest",
+            "amount": 1000000
+          },
+          "payout": 29.8
+        },
+        {
+          "url": "https://stub.local/wallet/play",
+          "body": {
+            "mode": "BONUS",
+            "currency": "XSC",
+            "sessionID": "playtest",
+            "amount": 1000000
+          },
+          "payout": 29.8
+        },
+        {
+          "url": "https://stub.local/bet/event",
+          "body": {
+            "sessionID": "playtest",
+            "event": "0"
+          }
+        },
+        {
+          "url": "https://stub.local/bet/event",
+          "body": {
+            "sessionID": "playtest",
+            "event": "0"
+          }
+        },
+        {
+          "url": "https://stub.local/bet/event",
+          "body": {
+            "sessionID": "playtest",
+            "event": "5"
+          }
+        },
+        {
+          "url": "https://stub.local/bet/event",
+          "body": {
+            "sessionID": "playtest",
+            "event": "5"
+          }
+        },
+        {
+          "url": "https://stub.local/bet/event",
+          "body": {
+            "sessionID": "playtest",
+            "event": "9"
+          }
+        },
+        {
+          "url": "https://stub.local/bet/event",
+          "body": {
+            "sessionID": "playtest",
+            "event": "9"
+          }
+        },
+        {
+          "url": "https://stub.local/bet/event",
+          "body": {
+            "sessionID": "playtest",
+            "event": "14"
+          }
+        },
+        {
+          "url": "https://stub.local/bet/event",
+          "body": {
+            "sessionID": "playtest",
+            "event": "14"
+          }
+        },
+        {
+          "url": "https://stub.local/bet/event",
+          "body": {
+            "sessionID": "playtest",
+            "event": "22"
+          }
+        },
+        {
+          "url": "https://stub.local/bet/event",
+          "body": {
+            "sessionID": "playtest",
+            "event": "22"
+          }
+        },
+        {
+          "url": "https://stub.local/bet/event",
+          "body": {
+            "sessionID": "playtest",
+            "event": "26"
+          }
+        },
+        {
+          "url": "https://stub.local/bet/event",
+          "body": {
+            "sessionID": "playtest",
+            "event": "26"
+          }
+        },
+        {
+          "url": "https://stub.local/bet/event",
+          "body": {
+            "sessionID": "playtest",
+            "event": "30"
+          }
+        },
+        {
+          "url": "https://stub.local/bet/event",
+          "body": {
+            "sessionID": "playtest",
+            "event": "30"
+          }
+        },
+        {
+          "url": "https://stub.local/bet/event",
+          "body": {
+            "sessionID": "playtest",
+            "event": "37"
+          }
+        },
+        {
+          "url": "https://stub.local/bet/event",
+          "body": {
+            "sessionID": "playtest",
+            "event": "37"
+          }
+        },
+        {
+          "url": "https://stub.local/bet/event",
+          "body": {
+            "sessionID": "playtest",
+            "event": "43"
+          }
+        },
+        {
+          "url": "https://stub.local/bet/event",
+          "body": {
+            "sessionID": "playtest",
+            "event": "43"
+          }
+        },
+        {
+          "url": "https://stub.local/bet/event",
+          "body": {
+            "sessionID": "playtest",
+            "event": "47"
+          }
+        },
+        {
+          "url": "https://stub.local/bet/event",
+          "body": {
+            "sessionID": "playtest",
+            "event": "47"
+          }
+        },
+        {
+          "url": "https://stub.local/bet/event",
+          "body": {
+            "sessionID": "playtest",
+            "event": "55"
+          }
+        },
+        {
+          "url": "https://stub.local/bet/event",
+          "body": {
+            "sessionID": "playtest",
+            "event": "55"
+          }
+        },
+        {
+          "url": "https://stub.local/bet/event",
+          "body": {
+            "sessionID": "playtest",
+            "event": "61"
+          }
+        },
+        {
+          "url": "https://stub.local/bet/event",
+          "body": {
+            "sessionID": "playtest",
+            "event": "61"
+          }
+        },
+        {
+          "url": "https://stub.local/bet/event",
+          "body": {
+            "sessionID": "playtest",
+            "event": "68"
+          }
+        },
+        {
+          "url": "https://stub.local/bet/event",
+          "body": {
+            "sessionID": "playtest",
+            "event": "68"
+          }
+        },
+        {
+          "url": "https://stub.local/bet/event",
+          "body": {
+            "sessionID": "playtest",
+            "event": "73"
+          }
+        },
+        {
+          "url": "https://stub.local/bet/event",
+          "body": {
+            "sessionID": "playtest",
+            "event": "73"
+          }
+        },
+        {
+          "url": "https://stub.local/bet/event",
+          "body": {
+            "sessionID": "playtest",
+            "event": "77"
+          }
+        },
+        {
+          "url": "https://stub.local/bet/event",
+          "body": {
+            "sessionID": "playtest",
+            "event": "77"
+          }
+        },
+        {
+          "url": "https://stub.local/wallet/end-round",
+          "body": {
+            "sessionID": "playtest"
+          }
+        },
+        {
+          "url": "https://stub.local/wallet/end-round",
+          "body": {
+            "sessionID": "playtest"
+          }
+        }
+      ],
+      "errors": [],
+      "network": []
+    },
+    "stats": {
+      "rounds": 1,
+      "byMode": {
+        "BONUS": 1
+      },
+      "balance": 99929.8,
+      "wagered": 100,
+      "won": 29.8,
+      "rtpSoFar": 0.298
+    },
+    "textFindings": [],
+    "warnings": [
+      {
+        "type": "warning",
+        "text": "Uncompiled message detected! Message:\n\n> BALANCE\n\nThat means you use raw catalog or your catalog doesn't have a translation for the message and fallback was used.\nICU features such as interpolation and plurals will not work properly for that message. \n\nPlease compile your catalog first. \n"
+      },
+      {
+        "type": "warning",
+        "text": "Uncompiled message detected! Message:\n\n> BALANCE\n\nThat means you use raw catalog or your catalog doesn't have a translation for the message and fallback was used.\nICU features such as interpolation and plurals will not work properly for that message. \n\nPlease compile your catalog first. \n"
+      },
+      {
+        "type": "warning",
+        "text": "    at new lc (http://127.0.0.1:8427/game/?hmdebug=1&rgs_url=stub.local&sessionID=playtest&currency=XSC&lang=ja&social=false&jurisdictionSocial=true&balance=100000:394:42869)\n    at set style (http://127.0.0.1:8427/game/?hmdebug=1&rgs_url=stub.local&sessionID=playtest&currency=XSC&lang=ja&social=false&jurisdictionSocial=true&balance=100000:618:10811)\n    at new Hse (http://127.0.0.1:8427/game/?hmdebug=1&rgs_url=stub.local&sessionID=playtest&currency=XSC&lang=ja&social=false&jurisdictionSocial=true&balance=100000:618:10082)\n    at new jse (http://127.0.0.1:8427/game/?hmdebug=1&rgs_url=stub.local&sessionID=playtest&currency=XSC&lang=ja&social=false&jurisdictionSocial=true&balance=100000:618:12132)\n    at pt (http://127.0.0.1:8427/game/?hmdebug=1&rgs_url=stub.local&sessionID=playtest&currency=XSC&lang=ja&social=false&jurisdictionSocial=true&balance=100000:1306:22946)\n    at children (http://127.0.0.1:8427/game/?hmdebug=1&rgs_url=stub.local&sessionID=playtest&currency=XSC&lang=ja&social=false&jurisdictionSocial=true&balance=100000:1330:20462)\n    at http://127.0.0.1:8427/game/?hmdebug=1&rgs_url=stub.local&sessionID=playtest&currency=XSC&lang=ja&social=false&jurisdictionSocial=true&balance=100000:83:25461\n    at CC (http://127.0.0.1:8427/game/?hmdebug=1&rgs_url=stub.local&sessionID=playtest&currency=XSC&lang=ja&social=false&jurisdictionSocial=true&balance=100000:83:13325)"
+      },
+      {
+        "type": "warning",
+        "text": "Uncompiled message detected! Message:\n\n> WIN\n\nThat means you use raw catalog or your catalog doesn't have a translation for the message and fallback was used.\nICU features such as interpolation and plurals will not work properly for that message. \n\nPlease compile your catalog first. \n"
+      },
+      {
+        "type": "warning",
+        "text": "Uncompiled message detected! Message:\n\n> WIN\n\nThat means you use raw catalog or your catalog doesn't have a translation for the message and fallback was used.\nICU features such as interpolation and plurals will not work properly for that message. \n\nPlease compile your catalog first. \n"
+      },
+      {
+        "type": "warning",
+        "text": "    at Object.c [as draw] (http://127.0.0.1:8427/game/?hmdebug=1&rgs_url=stub.local&sessionID=playtest&currency=XSC&lang=ja&social=false&jurisdictionSocial=true&balance=100000:1330:80114)\n    at http://127.0.0.1:8427/game/?hmdebug=1&rgs_url=stub.local&sessionID=playtest&currency=XSC&lang=ja&social=false&jurisdictionSocial=true&balance=100000:1306:23676\n    at CC (http://127.0.0.1:8427/game/?hmdebug=1&rgs_url=stub.local&sessionID=playtest&currency=XSC&lang=ja&social=false&jurisdictionSocial=true&balance=100000:83:13325)\n    at Hp (http://127.0.0.1:8427/game/?hmdebug=1&rgs_url=stub.local&sessionID=playtest&currency=XSC&lang=ja&social=false&jurisdictionSocial=true&balance=100000:83:14203)\n    at tK (http://127.0.0.1:8427/game/?hmdebug=1&rgs_url=stub.local&sessionID=playtest&currency=XSC&lang=ja&social=false&jurisdictionSocial=true&balance=100000:83:14694)\n    at kC (http://127.0.0.1:8427/game/?hmdebug=1&rgs_url=stub.local&sessionID=playtest&currency=XSC&lang=ja&social=false&jurisdictionSocial=true&balance=100000:83:14559)"
+      },
+      {
+        "type": "warning",
+        "text": "    at Object.c [as draw] (http://127.0.0.1:8427/game/?hmdebug=1&rgs_url=stub.local&sessionID=playtest&currency=XSC&lang=ja&social=false&jurisdictionSocial=true&balance=100000:1330:80151)\n    at http://127.0.0.1:8427/game/?hmdebug=1&rgs_url=stub.local&sessionID=playtest&currency=XSC&lang=ja&social=false&jurisdictionSocial=true&balance=100000:1306:23676\n    at CC (http://127.0.0.1:8427/game/?hmdebug=1&rgs_url=stub.local&sessionID=playtest&currency=XSC&lang=ja&social=false&jurisdictionSocial=true&balance=100000:83:13325)\n    at Hp (http://127.0.0.1:8427/game/?hmdebug=1&rgs_url=stub.local&sessionID=playtest&currency=XSC&lang=ja&social=false&jurisdictionSocial=true&balance=100000:83:14203)\n    at tK (http://127.0.0.1:8427/game/?hmdebug=1&rgs_url=stub.local&sessionID=playtest&currency=XSC&lang=ja&social=false&jurisdictionSocial=true&balance=100000:83:14694)\n    at kC (http://127.0.0.1:8427/game/?hmdebug=1&rgs_url=stub.local&sessionID=playtest&currency=XSC&lang=ja&social=false&jurisdictionSocial=true&balance=100000:83:14559)"
+      },
+      {
+        "type": "warning",
+        "text": "    at Object.c [as draw] (http://127.0.0.1:8427/game/?hmdebug=1&rgs_url=stub.local&sessionID=playtest&currency=XSC&lang=ja&social=false&jurisdictionSocial=true&balance=100000:1330:80193)\n    at http://127.0.0.1:8427/game/?hmdebug=1&rgs_url=stub.local&sessionID=playtest&currency=XSC&lang=ja&social=false&jurisdictionSocial=true&balance=100000:1306:23676\n    at CC (http://127.0.0.1:8427/game/?hmdebug=1&rgs_url=stub.local&sessionID=playtest&currency=XSC&lang=ja&social=false&jurisdictionSocial=true&balance=100000:83:13325)\n    at Hp (http://127.0.0.1:8427/game/?hmdebug=1&rgs_url=stub.local&sessionID=playtest&currency=XSC&lang=ja&social=false&jurisdictionSocial=true&balance=100000:83:14203)\n    at tK (http://127.0.0.1:8427/game/?hmdebug=1&rgs_url=stub.local&sessionID=playtest&currency=XSC&lang=ja&social=false&jurisdictionSocial=true&balance=100000:83:14694)\n    at kC (http://127.0.0.1:8427/game/?hmdebug=1&rgs_url=stub.local&sessionID=playtest&currency=XSC&lang=ja&social=false&jurisdictionSocial=true&balance=100000:83:14559)"
+      },
+      {
+        "type": "warning",
+        "text": "Uncompiled message detected! Message:\n\n> CONFIRM\n\nThat means you use raw catalog or your catalog doesn't have a translation for the message and fallback was used.\nICU features such as interpolation and plurals will not work properly for that message. \n\nPlease compile your catalog first. \n"
+      },
+      {
+        "type": "warning",
+        "text": "Uncompiled message detected! Message:\n\n> CONFIRM\n\nThat means you use raw catalog or your catalog doesn't have a translation for the message and fallback was used.\nICU features such as interpolation and plurals will not work properly for that message. \n\nPlease compile your catalog first. \n"
+      },
+      {
+        "type": "warning",
+        "text": "Uncompiled message detected! Message:\n\n> CONFIRM\n\nThat means you use raw catalog or your catalog doesn't have a translation for the message and fallback was used.\nICU features such as interpolation and plurals will not work properly for that message. \n\nPlease compile your catalog first. \n"
+      },
+      {
+        "type": "warning",
+        "text": "Uncompiled message detected! Message:\n\n> CONFIRM\n\nThat means you use raw catalog or your catalog doesn't have a translation for the message and fallback was used.\nICU features such as interpolation and plurals will not work properly for that message. \n\nPlease compile your catalog first. \n"
+      }
+    ]
+  },
+  {
+    "mode": "BONUS_HITS",
+    "currency": "XSC",
+    "book": {
+      "id": 14249,
+      "payout": 3250,
+      "events": [
+        "reveal",
+        "setTotalWin",
+        "freeSpinTrigger",
+        "bonusTier",
+        "updateFreeSpin",
+        "reveal",
+        "newFrames",
+        "setTotalWin",
+        "updateFreeSpin",
+        "reveal",
+        "updateFrames",
+        "bigScore",
+        "setTotalWin",
+        "updateFreeSpin",
+        "reveal",
+        "updateFrames",
+        "newFrames",
+        "setTotalWin",
+        "updateFreeSpin",
+        "reveal",
+        "updateFrames",
+        "newFrames",
+        "winInfo",
+        "setWin",
+        "setTotalWin",
+        "frameDoubling",
+        "updateFreeSpin",
+        "reveal",
+        "updateFrames",
+        "setTotalWin",
+        "updateFreeSpin",
+        "reveal",
+        "updateFrames",
+        "setTotalWin",
+        "updateFreeSpin",
+        "reveal",
+        "updateFrames",
+        "newFrames",
+        "setTotalWin",
+        "updateFreeSpin",
+        "reveal",
+        "updateFrames",
+        "setTotalWin",
+        "updateFreeSpin",
+        "reveal",
+        "updateFrames",
+        "setTotalWin",
+        "updateFreeSpin",
+        "reveal",
+        "updateFrames",
+        "setTotalWin",
+        "freeSpinEnd",
+        "finalWin"
+      ]
+    },
+    "wasFG": true,
+    "elapsed": 39870,
+    "timeline": [
+      {
+        "ms": 656,
+        "game": {
+          "gameType": "basegame",
+          "isTurbo": false,
+          "betMode": "BONUS_HITS",
+          "dimmedBy": 0,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "stats": {
+          "rounds": 1,
+          "byMode": {
+            "BONUS_HITS": 1
+          },
+          "balance": 99500,
+          "wagered": 500,
+          "won": 0,
+          "rtpSoFar": 0
+        },
+        "text": "WILD|14:29|TURF WAR|BALANCE|99,500.00 SC|WIN|0.00 SC|AMOUNT|1.00 SC|PLAY BONUS"
+      },
+      {
+        "ms": 5507,
+        "game": {
+          "gameType": "basegame",
+          "isTurbo": false,
+          "betMode": "BONUS_HITS",
+          "dimmedBy": 0,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "stats": {
+          "rounds": 1,
+          "byMode": {
+            "BONUS_HITS": 1
+          },
+          "balance": 99500,
+          "wagered": 500,
+          "won": 0,
+          "rtpSoFar": 0
+        },
+        "text": "WILD"
+      },
+      {
+        "ms": 7344,
+        "game": {
+          "gameType": "freegame",
+          "isTurbo": false,
+          "betMode": "BONUS_HITS",
+          "dimmedBy": 0,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "stats": {
+          "rounds": 1,
+          "byMode": {
+            "BONUS_HITS": 1
+          },
+          "balance": 99500,
+          "wagered": 500,
+          "won": 0,
+          "rtpSoFar": 0
+        },
+        "text": "WILD|MUSCLE|TWO STICKY LOOT BAGS TO START. ANY LOOT BAG THAT TAKES PART IN A WIN DOUBLES ITS VALUE BEFORE THE NEXT SPIN.|PRESS ANYWHERE TO CONTINUE"
+      },
+      {
+        "ms": 8928,
+        "game": {
+          "gameType": "freegame",
+          "isTurbo": false,
+          "betMode": "BONUS_HITS",
+          "dimmedBy": 0,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "stats": {
+          "rounds": 1,
+          "byMode": {
+            "BONUS_HITS": 1
+          },
+          "balance": 99500,
+          "wagered": 500,
+          "won": 0,
+          "rtpSoFar": 0
+        },
+        "text": "WILD|WILD|25x|7x|4x|2x|2x|14:29|TURF WAR|BALANCE|99,500.00 SC|WIN|0.00 SC|AMOUNT|1.00 SC|FREE SPINS|1 / 10"
+      },
+      {
+        "ms": 10079,
+        "game": {
+          "gameType": "freegame",
+          "isTurbo": false,
+          "betMode": "BONUS_HITS",
+          "dimmedBy": 0,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "stats": {
+          "rounds": 1,
+          "byMode": {
+            "BONUS_HITS": 1
+          },
+          "balance": 99500,
+          "wagered": 500,
+          "won": 0,
+          "rtpSoFar": 0
+        },
+        "text": "WILD|WILD|WILD|25x|7x|4x|2x|2x|14:29|TURF WAR|BALANCE|99,500.00 SC|WIN|0.00 SC|AMOUNT|1.00 SC|FREE SPINS|1 / 10"
+      },
+      {
+        "ms": 11206,
+        "game": {
+          "gameType": "freegame",
+          "isTurbo": false,
+          "betMode": "BONUS_HITS",
+          "dimmedBy": 0,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "stats": {
+          "rounds": 1,
+          "byMode": {
+            "BONUS_HITS": 1
+          },
+          "balance": 99500,
+          "wagered": 500,
+          "won": 0,
+          "rtpSoFar": 0
+        },
+        "text": "25x|7x|4x|2x|2x|14:29|TURF WAR|BALANCE|99,500.00 SC|WIN|0.00 SC|AMOUNT|1.00 SC|FREE SPINS|2 / 10"
+      },
+      {
+        "ms": 14016,
+        "game": {
+          "gameType": "freegame",
+          "isTurbo": false,
+          "betMode": "BONUS_HITS",
+          "dimmedBy": 0,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "stats": {
+          "rounds": 1,
+          "byMode": {
+            "BONUS_HITS": 1
+          },
+          "balance": 99500,
+          "wagered": 500,
+          "won": 0,
+          "rtpSoFar": 0
+        },
+        "text": "25x|7x|4x|2x|2x|10x|14:29|TURF WAR|BALANCE|99,500.00 SC|WIN|0.00 SC|AMOUNT|1.00 SC|FREE SPINS|3 / 10"
+      },
+      {
+        "ms": 14639,
+        "game": {
+          "gameType": "freegame",
+          "isTurbo": false,
+          "betMode": "BONUS_HITS",
+          "dimmedBy": 0,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "stats": {
+          "rounds": 1,
+          "byMode": {
+            "BONUS_HITS": 1
+          },
+          "balance": 99500,
+          "wagered": 500,
+          "won": 0,
+          "rtpSoFar": 0
+        },
+        "text": "WILD|WILD|25x|7x|4x|2x|2x|10x|14:29|TURF WAR|BALANCE|99,500.00 SC|WIN|0.00 SC|AMOUNT|1.00 SC|FREE SPINS|3 / 10"
+      },
+      {
+        "ms": 15903,
+        "game": {
+          "gameType": "freegame",
+          "isTurbo": false,
+          "betMode": "BONUS_HITS",
+          "dimmedBy": 0,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "stats": {
+          "rounds": 1,
+          "byMode": {
+            "BONUS_HITS": 1
+          },
+          "balance": 99500,
+          "wagered": 500,
+          "won": 0,
+          "rtpSoFar": 0
+        },
+        "text": "WILD|WILD|25x|7x|4x|2x|2x|10x|6x|14:29|TURF WAR|BALANCE|99,500.00 SC|WIN|0.00 SC|AMOUNT|1.00 SC|FREE SPINS|4 / 10"
+      },
+      {
+        "ms": 16530,
+        "game": {
+          "gameType": "freegame",
+          "isTurbo": false,
+          "betMode": "BONUS_HITS",
+          "dimmedBy": 0,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "stats": {
+          "rounds": 1,
+          "byMode": {
+            "BONUS_HITS": 1
+          },
+          "balance": 99500,
+          "wagered": 500,
+          "won": 0,
+          "rtpSoFar": 0
+        },
+        "text": "WILD|WILD|WILD|25x|7x|4x|2x|2x|10x|6x|14:29|TURF WAR|BALANCE|99,500.00 SC|WIN|0.00 SC|AMOUNT|1.00 SC|FREE SPINS|4 / 10"
+      },
+      {
+        "ms": 17135,
+        "game": {
+          "gameType": "freegame",
+          "isTurbo": false,
+          "betMode": "BONUS_HITS",
+          "dimmedBy": 0,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "stats": {
+          "rounds": 1,
+          "byMode": {
+            "BONUS_HITS": 1
+          },
+          "balance": 99500,
+          "wagered": 500,
+          "won": 0,
+          "rtpSoFar": 0
+        },
+        "text": "WILD|WILD|25x|7x|4x|2x|2x|10x|6x|14:29|TURF WAR|BALANCE|99,500.00 SC|WIN|0.00 SC|AMOUNT|1.00 SC|FREE SPINS|4 / 10"
+      },
+      {
+        "ms": 17749,
+        "game": {
+          "gameType": "freegame",
+          "isTurbo": false,
+          "betMode": "BONUS_HITS",
+          "dimmedBy": 1,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "stats": {
+          "rounds": 1,
+          "byMode": {
+            "BONUS_HITS": 1
+          },
+          "balance": 99500,
+          "wagered": 500,
+          "won": 0,
+          "rtpSoFar": 0
+        },
+        "text": "WILD|WILD|25x|7x|4x|2x|2x|10x|6x|0.50 SC|32.00 SC|x32|14:29|TURF WAR|BALANCE|99,500.00 SC|WIN|0.00 SC|AMOUNT|1.00 SC|FREE SPINS|4 / 10"
+      },
+      {
+        "ms": 18365,
+        "game": {
+          "gameType": "freegame",
+          "isTurbo": false,
+          "betMode": "BONUS_HITS",
+          "dimmedBy": 0,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "stats": {
+          "rounds": 1,
+          "byMode": {
+            "BONUS_HITS": 1
+          },
+          "balance": 99500,
+          "wagered": 500,
+          "won": 0,
+          "rtpSoFar": 0
+        },
+        "text": "WILD|WILD|25x|7x|4x|2x|2x|10x|6x|14:29|TURF WAR|BALANCE|99,500.00 SC|WIN|0.00 SC|AMOUNT|1.00 SC|FREE SPINS|4 / 10|BIG WIN|SUPER WIN|2.97 SC"
+      },
+      {
+        "ms": 18997,
+        "game": {
+          "gameType": "freegame",
+          "isTurbo": false,
+          "betMode": "BONUS_HITS",
+          "dimmedBy": 0,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "stats": {
+          "rounds": 1,
+          "byMode": {
+            "BONUS_HITS": 1
+          },
+          "balance": 99500,
+          "wagered": 500,
+          "won": 0,
+          "rtpSoFar": 0
+        },
+        "text": "WILD|WILD|25x|7x|4x|2x|2x|10x|6x|14:29|TURF WAR|BALANCE|99,500.00 SC|WIN|0.00 SC|AMOUNT|1.00 SC|FREE SPINS|4 / 10|BIG WIN|SUPER WIN|8.67 SC"
+      },
+      {
+        "ms": 19654,
+        "game": {
+          "gameType": "freegame",
+          "isTurbo": false,
+          "betMode": "BONUS_HITS",
+          "dimmedBy": 0,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "stats": {
+          "rounds": 1,
+          "byMode": {
+            "BONUS_HITS": 1
+          },
+          "balance": 99500,
+          "wagered": 500,
+          "won": 0,
+          "rtpSoFar": 0
+        },
+        "text": "WILD|WILD|25x|7x|4x|2x|2x|10x|6x|14:29|TURF WAR|BALANCE|99,500.00 SC|WIN|0.00 SC|AMOUNT|1.00 SC|FREE SPINS|4 / 10|BIG WIN|SUPER WIN|14.43 SC"
+      },
+      {
+        "ms": 20275,
+        "game": {
+          "gameType": "freegame",
+          "isTurbo": false,
+          "betMode": "BONUS_HITS",
+          "dimmedBy": 0,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "stats": {
+          "rounds": 1,
+          "byMode": {
+            "BONUS_HITS": 1
+          },
+          "balance": 99500,
+          "wagered": 500,
+          "won": 0,
+          "rtpSoFar": 0
+        },
+        "text": "WILD|WILD|25x|7x|4x|2x|2x|10x|6x|14:29|TURF WAR|BALANCE|99,500.00 SC|WIN|0.00 SC|AMOUNT|1.00 SC|FREE SPINS|4 / 10|BIG WIN|SUPER WIN|20.25 SC"
+      },
+      {
+        "ms": 20933,
+        "game": {
+          "gameType": "freegame",
+          "isTurbo": false,
+          "betMode": "BONUS_HITS",
+          "dimmedBy": 0,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "stats": {
+          "rounds": 1,
+          "byMode": {
+            "BONUS_HITS": 1
+          },
+          "balance": 99500,
+          "wagered": 500,
+          "won": 0,
+          "rtpSoFar": 0
+        },
+        "text": "WILD|WILD|25x|7x|4x|2x|2x|10x|6x|14:29|TURF WAR|BALANCE|99,500.00 SC|WIN|0.00 SC|AMOUNT|1.00 SC|FREE SPINS|4 / 10|BIG WIN|SUPER WIN|25.96 SC"
+      },
+      {
+        "ms": 21579,
+        "game": {
+          "gameType": "freegame",
+          "isTurbo": false,
+          "betMode": "BONUS_HITS",
+          "dimmedBy": 0,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "stats": {
+          "rounds": 1,
+          "byMode": {
+            "BONUS_HITS": 1
+          },
+          "balance": 99500,
+          "wagered": 500,
+          "won": 0,
+          "rtpSoFar": 0
+        },
+        "text": "WILD|WILD|25x|7x|4x|2x|2x|10x|6x|14:29|TURF WAR|BALANCE|99,500.00 SC|WIN|0.00 SC|AMOUNT|1.00 SC|FREE SPINS|4 / 10|BIG WIN|SUPER WIN|31.99 SC"
+      },
+      {
+        "ms": 22228,
+        "game": {
+          "gameType": "freegame",
+          "isTurbo": false,
+          "betMode": "BONUS_HITS",
+          "dimmedBy": 0,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "stats": {
+          "rounds": 1,
+          "byMode": {
+            "BONUS_HITS": 1
+          },
+          "balance": 99500,
+          "wagered": 500,
+          "won": 0,
+          "rtpSoFar": 0
+        },
+        "text": "WILD|WILD|25x|7x|4x|2x|2x|10x|6x|14:29|TURF WAR|BALANCE|99,500.00 SC|WIN|0.00 SC|AMOUNT|1.00 SC|FREE SPINS|4 / 10|BIG WIN|SUPER WIN|32.50 SC"
+      },
+      {
+        "ms": 23536,
+        "game": {
+          "gameType": "freegame",
+          "isTurbo": false,
+          "betMode": "BONUS_HITS",
+          "dimmedBy": 0,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "stats": {
+          "rounds": 1,
+          "byMode": {
+            "BONUS_HITS": 1
+          },
+          "balance": 99500,
+          "wagered": 500,
+          "won": 0,
+          "rtpSoFar": 0
+        },
+        "text": "WILD|WILD|50x|14x|4x|2x|2x|10x|6x|14:29|TURF WAR|BALANCE|99,500.00 SC|WIN|32.50 SC|AMOUNT|1.00 SC|FREE SPINS|5 / 10"
+      },
+      {
+        "ms": 24194,
+        "game": {
+          "gameType": "freegame",
+          "isTurbo": false,
+          "betMode": "BONUS_HITS",
+          "dimmedBy": 0,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "stats": {
+          "rounds": 1,
+          "byMode": {
+            "BONUS_HITS": 1
+          },
+          "balance": 99500,
+          "wagered": 500,
+          "won": 0,
+          "rtpSoFar": 0
+        },
+        "text": "WILD|50x|14x|4x|2x|2x|10x|6x|14:29|TURF WAR|BALANCE|99,500.00 SC|WIN|32.50 SC|AMOUNT|1.00 SC|FREE SPINS|5 / 10"
+      },
+      {
+        "ms": 24831,
+        "game": {
+          "gameType": "freegame",
+          "isTurbo": false,
+          "betMode": "BONUS_HITS",
+          "dimmedBy": 0,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "stats": {
+          "rounds": 1,
+          "byMode": {
+            "BONUS_HITS": 1
+          },
+          "balance": 99500,
+          "wagered": 500,
+          "won": 0,
+          "rtpSoFar": 0
+        },
+        "text": "50x|14x|4x|2x|2x|10x|6x|14:29|TURF WAR|BALANCE|99,500.00 SC|WIN|32.50 SC|AMOUNT|1.00 SC|FREE SPINS|5 / 10"
+      },
+      {
+        "ms": 25448,
+        "game": {
+          "gameType": "freegame",
+          "isTurbo": false,
+          "betMode": "BONUS_HITS",
+          "dimmedBy": 0,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "stats": {
+          "rounds": 1,
+          "byMode": {
+            "BONUS_HITS": 1
+          },
+          "balance": 99500,
+          "wagered": 500,
+          "won": 0,
+          "rtpSoFar": 0
+        },
+        "text": "50x|14x|4x|2x|2x|10x|6x|14:29|TURF WAR|BALANCE|99,500.00 SC|WIN|32.50 SC|AMOUNT|1.00 SC|FREE SPINS|6 / 10"
+      },
+      {
+        "ms": 26074,
+        "game": {
+          "gameType": "freegame",
+          "isTurbo": false,
+          "betMode": "BONUS_HITS",
+          "dimmedBy": 0,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "stats": {
+          "rounds": 1,
+          "byMode": {
+            "BONUS_HITS": 1
+          },
+          "balance": 99500,
+          "wagered": 500,
+          "won": 0,
+          "rtpSoFar": 0
+        },
+        "text": "WILD|WILD|50x|14x|4x|2x|2x|10x|6x|14:29|TURF WAR|BALANCE|99,500.00 SC|WIN|32.50 SC|AMOUNT|1.00 SC|FREE SPINS|6 / 10"
+      },
+      {
+        "ms": 26827,
+        "game": {
+          "gameType": "freegame",
+          "isTurbo": false,
+          "betMode": "BONUS_HITS",
+          "dimmedBy": 0,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "stats": {
+          "rounds": 1,
+          "byMode": {
+            "BONUS_HITS": 1
+          },
+          "balance": 99500,
+          "wagered": 500,
+          "won": 0,
+          "rtpSoFar": 0
+        },
+        "text": "WILD|50x|14x|4x|2x|2x|10x|6x|14:29|TURF WAR|BALANCE|99,500.00 SC|WIN|32.50 SC|AMOUNT|1.00 SC|FREE SPINS|6 / 10"
+      },
+      {
+        "ms": 27453,
+        "game": {
+          "gameType": "freegame",
+          "isTurbo": false,
+          "betMode": "BONUS_HITS",
+          "dimmedBy": 0,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "stats": {
+          "rounds": 1,
+          "byMode": {
+            "BONUS_HITS": 1
+          },
+          "balance": 99500,
+          "wagered": 500,
+          "won": 0,
+          "rtpSoFar": 0
+        },
+        "text": "WILD|50x|14x|4x|2x|2x|10x|6x|3x|14:29|TURF WAR|BALANCE|99,500.00 SC|WIN|32.50 SC|AMOUNT|1.00 SC|FREE SPINS|7 / 10"
+      },
+      {
+        "ms": 28784,
+        "game": {
+          "gameType": "freegame",
+          "isTurbo": false,
+          "betMode": "BONUS_HITS",
+          "dimmedBy": 0,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "stats": {
+          "rounds": 1,
+          "byMode": {
+            "BONUS_HITS": 1
+          },
+          "balance": 99500,
+          "wagered": 500,
+          "won": 0,
+          "rtpSoFar": 0
+        },
+        "text": "50x|14x|4x|2x|2x|10x|6x|3x|14:29|TURF WAR|BALANCE|99,500.00 SC|WIN|32.50 SC|AMOUNT|1.00 SC|FREE SPINS|7 / 10"
+      },
+      {
+        "ms": 29416,
+        "game": {
+          "gameType": "freegame",
+          "isTurbo": false,
+          "betMode": "BONUS_HITS",
+          "dimmedBy": 0,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "stats": {
+          "rounds": 1,
+          "byMode": {
+            "BONUS_HITS": 1
+          },
+          "balance": 99500,
+          "wagered": 500,
+          "won": 0,
+          "rtpSoFar": 0
+        },
+        "text": "WILD|50x|14x|4x|2x|2x|10x|6x|3x|14:29|TURF WAR|BALANCE|99,500.00 SC|WIN|32.50 SC|AMOUNT|1.00 SC|FREE SPINS|8 / 10"
+      },
+      {
+        "ms": 30684,
+        "game": {
+          "gameType": "freegame",
+          "isTurbo": false,
+          "betMode": "BONUS_HITS",
+          "dimmedBy": 0,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "stats": {
+          "rounds": 1,
+          "byMode": {
+            "BONUS_HITS": 1
+          },
+          "balance": 99500,
+          "wagered": 500,
+          "won": 0,
+          "rtpSoFar": 0
+        },
+        "text": "50x|14x|4x|2x|2x|10x|6x|3x|14:29|TURF WAR|BALANCE|99,500.00 SC|WIN|32.50 SC|AMOUNT|1.00 SC|FREE SPINS|8 / 10"
+      },
+      {
+        "ms": 31308,
+        "game": {
+          "gameType": "freegame",
+          "isTurbo": false,
+          "betMode": "BONUS_HITS",
+          "dimmedBy": 0,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "stats": {
+          "rounds": 1,
+          "byMode": {
+            "BONUS_HITS": 1
+          },
+          "balance": 99500,
+          "wagered": 500,
+          "won": 0,
+          "rtpSoFar": 0
+        },
+        "text": "50x|14x|4x|2x|2x|10x|6x|3x|14:29|TURF WAR|BALANCE|99,500.00 SC|WIN|32.50 SC|AMOUNT|1.00 SC|FREE SPINS|9 / 10"
+      },
+      {
+        "ms": 31932,
+        "game": {
+          "gameType": "freegame",
+          "isTurbo": false,
+          "betMode": "BONUS_HITS",
+          "dimmedBy": 0,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "stats": {
+          "rounds": 1,
+          "byMode": {
+            "BONUS_HITS": 1
+          },
+          "balance": 99500,
+          "wagered": 500,
+          "won": 0,
+          "rtpSoFar": 0
+        },
+        "text": "WILD|50x|14x|4x|2x|2x|10x|6x|3x|14:29|TURF WAR|BALANCE|99,500.00 SC|WIN|32.50 SC|AMOUNT|1.00 SC|FREE SPINS|9 / 10"
+      },
+      {
+        "ms": 33195,
+        "game": {
+          "gameType": "freegame",
+          "isTurbo": false,
+          "betMode": "BONUS_HITS",
+          "dimmedBy": 0,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "stats": {
+          "rounds": 1,
+          "byMode": {
+            "BONUS_HITS": 1
+          },
+          "balance": 99500,
+          "wagered": 500,
+          "won": 0,
+          "rtpSoFar": 0
+        },
+        "text": "WILD|50x|14x|4x|2x|2x|10x|6x|3x|14:29|TURF WAR|BALANCE|99,500.00 SC|WIN|32.50 SC|AMOUNT|1.00 SC|FREE SPINS|10 / 10"
+      },
+      {
+        "ms": 33877,
+        "game": {
+          "gameType": "freegame",
+          "isTurbo": false,
+          "betMode": "BONUS_HITS",
+          "dimmedBy": 0,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "stats": {
+          "rounds": 1,
+          "byMode": {
+            "BONUS_HITS": 1
+          },
+          "balance": 99500,
+          "wagered": 500,
+          "won": 0,
+          "rtpSoFar": 0
+        },
+        "text": "50x|14x|4x|2x|2x|10x|6x|3x|14:29|TURF WAR|BALANCE|99,500.00 SC|WIN|32.50 SC|AMOUNT|1.00 SC|FREE SPINS|10 / 10"
+      },
+      {
+        "ms": 35808,
+        "game": {
+          "gameType": "freegame",
+          "isTurbo": false,
+          "betMode": "BONUS_HITS",
+          "dimmedBy": 0,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "stats": {
+          "rounds": 1,
+          "byMode": {
+            "BONUS_HITS": 1
+          },
+          "balance": 99500,
+          "wagered": 500,
+          "won": 0,
+          "rtpSoFar": 0
+        },
+        "text": "FREE SPINS|10 / 10|TOTAL WIN|32.50 SC|PRESS ANYWHERE TO CONTINUE"
+      },
+      {
+        "ms": 36524,
+        "game": {
+          "gameType": "freegame",
+          "isTurbo": false,
+          "betMode": "BONUS_HITS",
+          "dimmedBy": 0,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "stats": {
+          "rounds": 1,
+          "byMode": {
+            "BONUS_HITS": 1
+          },
+          "balance": 99500,
+          "wagered": 500,
+          "won": 0,
+          "rtpSoFar": 0
+        },
+        "text": "14:29|TURF WAR|BALANCE|99,500.00 SC|WIN|32.50 SC|AMOUNT|1.00 SC|PLAY BONUS"
+      },
+      {
+        "ms": 37161,
+        "game": {
+          "gameType": "basegame",
+          "isTurbo": false,
+          "betMode": "BONUS_HITS",
+          "dimmedBy": 0,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "stats": {
+          "rounds": 1,
+          "byMode": {
+            "BONUS_HITS": 1
+          },
+          "balance": 99532.5,
+          "wagered": 500,
+          "won": 32.5,
+          "rtpSoFar": 0.065
+        },
+        "text": "14:29|TURF WAR|BALANCE|99,532.50 SC|WIN|32.50 SC|AMOUNT|1.00 SC|PLAY BONUS"
+      }
+    ],
+    "scans": [
+      {
+        "social": true,
+        "pixiTexts": 3,
+        "hits": [],
+        "verdict": "PASS"
+      },
+      {
+        "social": true,
+        "pixiTexts": 9,
+        "hits": [],
+        "verdict": "PASS"
+      },
+      {
+        "social": true,
+        "pixiTexts": 10,
+        "hits": [],
+        "verdict": "PASS"
+      },
+      {
+        "social": true,
+        "pixiTexts": 10,
+        "hits": [],
+        "verdict": "PASS"
+      },
+      {
+        "social": true,
+        "pixiTexts": 10,
+        "hits": [],
+        "verdict": "PASS"
+      },
+      {
+        "social": true,
+        "pixiTexts": 10,
+        "hits": [],
+        "verdict": "PASS"
+      },
+      {
+        "social": true,
+        "pixiTexts": 10,
+        "hits": [],
+        "verdict": "PASS"
+      },
+      {
+        "social": true,
+        "pixiTexts": 10,
+        "hits": [],
+        "verdict": "PASS"
+      },
+      {
+        "social": true,
+        "pixiTexts": 10,
+        "hits": [],
+        "verdict": "PASS"
+      },
+      {
+        "social": true,
+        "pixiTexts": 10,
+        "hits": [],
+        "verdict": "PASS"
+      },
+      {
+        "social": true,
+        "pixiTexts": 14,
+        "hits": [],
+        "verdict": "PASS"
+      },
+      {
+        "social": true,
+        "pixiTexts": 17,
+        "hits": [],
+        "verdict": "PASS"
+      },
+      {
+        "social": true,
+        "pixiTexts": 18,
+        "hits": [],
+        "verdict": "PASS"
+      },
+      {
+        "social": true,
+        "pixiTexts": 15,
+        "hits": [],
+        "verdict": "PASS"
+      },
+      {
+        "social": true,
+        "pixiTexts": 17,
+        "hits": [],
+        "verdict": "PASS"
+      },
+      {
+        "social": true,
+        "pixiTexts": 16,
+        "hits": [],
+        "verdict": "PASS"
+      },
+      {
+        "social": true,
+        "pixiTexts": 19,
+        "hits": [],
+        "verdict": "PASS"
+      },
+      {
+        "social": true,
+        "pixiTexts": 18,
+        "hits": [],
+        "verdict": "PASS"
+      },
+      {
+        "social": true,
+        "pixiTexts": 19,
+        "hits": [],
+        "verdict": "PASS"
+      },
+      {
+        "social": true,
+        "pixiTexts": 20,
+        "hits": [],
+        "verdict": "PASS"
+      },
+      {
+        "social": true,
+        "pixiTexts": 19,
+        "hits": [],
+        "verdict": "PASS"
+      },
+      {
+        "social": true,
+        "pixiTexts": 22,
+        "hits": [],
+        "verdict": "PASS"
+      },
+      {
+        "social": true,
+        "pixiTexts": 22,
+        "hits": [],
+        "verdict": "PASS"
+      },
+      {
+        "social": true,
+        "pixiTexts": 22,
+        "hits": [],
+        "verdict": "PASS"
+      },
+      {
+        "social": true,
+        "pixiTexts": 22,
+        "hits": [],
+        "verdict": "PASS"
+      },
+      {
+        "social": true,
+        "pixiTexts": 22,
+        "hits": [],
+        "verdict": "PASS"
+      },
+      {
+        "social": true,
+        "pixiTexts": 22,
+        "hits": [],
+        "verdict": "PASS"
+      },
+      {
+        "social": true,
+        "pixiTexts": 22,
+        "hits": [],
+        "verdict": "PASS"
+      },
+      {
+        "social": true,
+        "pixiTexts": 22,
+        "hits": [],
+        "verdict": "PASS"
+      },
+      {
+        "social": true,
+        "pixiTexts": 22,
+        "hits": [],
+        "verdict": "PASS"
+      },
+      {
+        "social": true,
+        "pixiTexts": 19,
+        "hits": [],
+        "verdict": "PASS"
+      },
+      {
+        "social": true,
+        "pixiTexts": 18,
+        "hits": [],
+        "verdict": "PASS"
+      },
+      {
+        "social": true,
+        "pixiTexts": 17,
+        "hits": [],
+        "verdict": "PASS"
+      },
+      {
+        "social": true,
+        "pixiTexts": 17,
+        "hits": [],
+        "verdict": "PASS"
+      },
+      {
+        "social": true,
+        "pixiTexts": 19,
+        "hits": [],
+        "verdict": "PASS"
+      },
+      {
+        "social": true,
+        "pixiTexts": 17,
+        "hits": [],
+        "verdict": "PASS"
+      },
+      {
+        "social": true,
+        "pixiTexts": 19,
+        "hits": [],
+        "verdict": "PASS"
+      },
+      {
+        "social": true,
+        "pixiTexts": 18,
+        "hits": [],
+        "verdict": "PASS"
+      },
+      {
+        "social": true,
+        "pixiTexts": 18,
+        "hits": [],
+        "verdict": "PASS"
+      },
+      {
+        "social": true,
+        "pixiTexts": 19,
+        "hits": [],
+        "verdict": "PASS"
+      },
+      {
+        "social": true,
+        "pixiTexts": 20,
+        "hits": [],
+        "verdict": "PASS"
+      },
+      {
+        "social": true,
+        "pixiTexts": 18,
+        "hits": [],
+        "verdict": "PASS"
+      },
+      {
+        "social": true,
+        "pixiTexts": 18,
+        "hits": [],
+        "verdict": "PASS"
+      },
+      {
+        "social": true,
+        "pixiTexts": 19,
+        "hits": [],
+        "verdict": "PASS"
+      },
+      {
+        "social": true,
+        "pixiTexts": 19,
+        "hits": [],
+        "verdict": "PASS"
+      },
+      {
+        "social": true,
+        "pixiTexts": 19,
+        "hits": [],
+        "verdict": "PASS"
+      },
+      {
+        "social": true,
+        "pixiTexts": 18,
+        "hits": [],
+        "verdict": "PASS"
+      },
+      {
+        "social": true,
+        "pixiTexts": 18,
+        "hits": [],
+        "verdict": "PASS"
+      },
+      {
+        "social": true,
+        "pixiTexts": 18,
+        "hits": [],
+        "verdict": "PASS"
+      },
+      {
+        "social": true,
+        "pixiTexts": 13,
+        "hits": [],
+        "verdict": "PASS"
+      },
+      {
+        "social": true,
+        "pixiTexts": 9,
+        "hits": [],
+        "verdict": "PASS"
+      },
+      {
+        "social": true,
+        "pixiTexts": 9,
+        "hits": [],
+        "verdict": "PASS"
+      }
+    ],
+    "final": {
+      "dom": "",
+      "scene": [
+        {
+          "t": "14:29",
+          "x": 20,
+          "y": 0,
+          "w": 54,
+          "h": 32
+        },
+        {
+          "t": "TURF WAR",
+          "x": 79,
+          "y": 0,
+          "w": 100,
+          "h": 32
+        },
+        {
+          "t": "BALANCE",
+          "x": 148,
+          "y": 500,
+          "w": 56,
+          "h": 21
+        },
+        {
+          "t": "99,532.50 SC",
+          "x": 134,
+          "y": 515,
+          "w": 83,
+          "h": 22
+        },
+        {
+          "t": "WIN",
+          "x": 355,
+          "y": 500,
+          "w": 26,
+          "h": 21
+        },
+        {
+          "t": "32.50 SC",
+          "x": 340,
+          "y": 516,
+          "w": 56,
+          "h": 22
+        },
+        {
+          "t": "AMOUNT",
+          "x": 593,
+          "y": 500,
+          "w": 53,
+          "h": 21
+        },
+        {
+          "t": "1.00 SC",
+          "x": 596,
+          "y": 516,
+          "w": 47,
+          "h": 22
+        },
+        {
+          "t": "PLAY BONUS",
+          "x": 75,
+          "y": 239,
+          "w": 63,
+          "h": 51
+        }
+      ],
+      "game": {
+        "gameType": "basegame",
+        "isTurbo": false,
+        "betMode": "BONUS_HITS",
+        "dimmedBy": 0,
+        "anticipation": [
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "requests": [
+        {
+          "url": "https://stub.local/wallet/authenticate",
+          "body": {
+            "sessionID": "playtest",
+            "language": "ja"
+          }
+        },
+        {
+          "url": "https://stub.local/wallet/authenticate",
+          "body": {
+            "sessionID": "playtest",
+            "language": "ja"
+          }
+        },
+        {
+          "url": "https://stub.local/wallet/play",
+          "body": {
+            "mode": "BONUS_HITS",
+            "currency": "XSC",
+            "sessionID": "playtest",
+            "amount": 1000000
+          },
+          "payout": 32.5
+        },
+        {
+          "url": "https://stub.local/wallet/play",
+          "body": {
+            "mode": "BONUS_HITS",
+            "currency": "XSC",
+            "sessionID": "playtest",
+            "amount": 1000000
+          },
+          "payout": 32.5
+        },
+        {
+          "url": "https://stub.local/bet/event",
+          "body": {
+            "sessionID": "playtest",
+            "event": "0"
+          }
+        },
+        {
+          "url": "https://stub.local/bet/event",
+          "body": {
+            "sessionID": "playtest",
+            "event": "0"
+          }
+        },
+        {
+          "url": "https://stub.local/bet/event",
+          "body": {
+            "sessionID": "playtest",
+            "event": "5"
+          }
+        },
+        {
+          "url": "https://stub.local/bet/event",
+          "body": {
+            "sessionID": "playtest",
+            "event": "5"
+          }
+        },
+        {
+          "url": "https://stub.local/bet/event",
+          "body": {
+            "sessionID": "playtest",
+            "event": "9"
+          }
+        },
+        {
+          "url": "https://stub.local/bet/event",
+          "body": {
+            "sessionID": "playtest",
+            "event": "9"
+          }
+        },
+        {
+          "url": "https://stub.local/bet/event",
+          "body": {
+            "sessionID": "playtest",
+            "event": "14"
+          }
+        },
+        {
+          "url": "https://stub.local/bet/event",
+          "body": {
+            "sessionID": "playtest",
+            "event": "14"
+          }
+        },
+        {
+          "url": "https://stub.local/bet/event",
+          "body": {
+            "sessionID": "playtest",
+            "event": "19"
+          }
+        },
+        {
+          "url": "https://stub.local/bet/event",
+          "body": {
+            "sessionID": "playtest",
+            "event": "19"
+          }
+        },
+        {
+          "url": "https://stub.local/bet/event",
+          "body": {
+            "sessionID": "playtest",
+            "event": "27"
+          }
+        },
+        {
+          "url": "https://stub.local/bet/event",
+          "body": {
+            "sessionID": "playtest",
+            "event": "27"
+          }
+        },
+        {
+          "url": "https://stub.local/bet/event",
+          "body": {
+            "sessionID": "playtest",
+            "event": "31"
+          }
+        },
+        {
+          "url": "https://stub.local/bet/event",
+          "body": {
+            "sessionID": "playtest",
+            "event": "31"
+          }
+        },
+        {
+          "url": "https://stub.local/bet/event",
+          "body": {
+            "sessionID": "playtest",
+            "event": "35"
+          }
+        },
+        {
+          "url": "https://stub.local/bet/event",
+          "body": {
+            "sessionID": "playtest",
+            "event": "35"
+          }
+        },
+        {
+          "url": "https://stub.local/bet/event",
+          "body": {
+            "sessionID": "playtest",
+            "event": "40"
+          }
+        },
+        {
+          "url": "https://stub.local/bet/event",
+          "body": {
+            "sessionID": "playtest",
+            "event": "40"
+          }
+        },
+        {
+          "url": "https://stub.local/bet/event",
+          "body": {
+            "sessionID": "playtest",
+            "event": "44"
+          }
+        },
+        {
+          "url": "https://stub.local/bet/event",
+          "body": {
+            "sessionID": "playtest",
+            "event": "44"
+          }
+        },
+        {
+          "url": "https://stub.local/bet/event",
+          "body": {
+            "sessionID": "playtest",
+            "event": "48"
+          }
+        },
+        {
+          "url": "https://stub.local/bet/event",
+          "body": {
+            "sessionID": "playtest",
+            "event": "48"
+          }
+        },
+        {
+          "url": "https://stub.local/wallet/end-round",
+          "body": {
+            "sessionID": "playtest"
+          }
+        },
+        {
+          "url": "https://stub.local/wallet/end-round",
+          "body": {
+            "sessionID": "playtest"
+          }
+        }
+      ],
+      "errors": [],
+      "network": []
+    },
+    "stats": {
+      "rounds": 1,
+      "byMode": {
+        "BONUS_HITS": 1
+      },
+      "balance": 99532.5,
+      "wagered": 500,
+      "won": 32.5,
+      "rtpSoFar": 0.065
+    },
+    "textFindings": [],
+    "warnings": [
+      {
+        "type": "warning",
+        "text": "Uncompiled message detected! Message:\n\n> BALANCE\n\nThat means you use raw catalog or your catalog doesn't have a translation for the message and fallback was used.\nICU features such as interpolation and plurals will not work properly for that message. \n\nPlease compile your catalog first. \n"
+      },
+      {
+        "type": "warning",
+        "text": "Uncompiled message detected! Message:\n\n> BALANCE\n\nThat means you use raw catalog or your catalog doesn't have a translation for the message and fallback was used.\nICU features such as interpolation and plurals will not work properly for that message. \n\nPlease compile your catalog first. \n"
+      },
+      {
+        "type": "warning",
+        "text": "    at new lc (http://127.0.0.1:8427/game/?hmdebug=1&rgs_url=stub.local&sessionID=playtest&currency=XSC&lang=ja&social=false&jurisdictionSocial=true&balance=100000:394:42869)\n    at set style (http://127.0.0.1:8427/game/?hmdebug=1&rgs_url=stub.local&sessionID=playtest&currency=XSC&lang=ja&social=false&jurisdictionSocial=true&balance=100000:618:10811)\n    at new Hse (http://127.0.0.1:8427/game/?hmdebug=1&rgs_url=stub.local&sessionID=playtest&currency=XSC&lang=ja&social=false&jurisdictionSocial=true&balance=100000:618:10082)\n    at new jse (http://127.0.0.1:8427/game/?hmdebug=1&rgs_url=stub.local&sessionID=playtest&currency=XSC&lang=ja&social=false&jurisdictionSocial=true&balance=100000:618:12132)\n    at pt (http://127.0.0.1:8427/game/?hmdebug=1&rgs_url=stub.local&sessionID=playtest&currency=XSC&lang=ja&social=false&jurisdictionSocial=true&balance=100000:1306:22946)\n    at children (http://127.0.0.1:8427/game/?hmdebug=1&rgs_url=stub.local&sessionID=playtest&currency=XSC&lang=ja&social=false&jurisdictionSocial=true&balance=100000:1330:20462)\n    at http://127.0.0.1:8427/game/?hmdebug=1&rgs_url=stub.local&sessionID=playtest&currency=XSC&lang=ja&social=false&jurisdictionSocial=true&balance=100000:83:25461\n    at CC (http://127.0.0.1:8427/game/?hmdebug=1&rgs_url=stub.local&sessionID=playtest&currency=XSC&lang=ja&social=false&jurisdictionSocial=true&balance=100000:83:13325)"
+      },
+      {
+        "type": "warning",
+        "text": "Uncompiled message detected! Message:\n\n> WIN\n\nThat means you use raw catalog or your catalog doesn't have a translation for the message and fallback was used.\nICU features such as interpolation and plurals will not work properly for that message. \n\nPlease compile your catalog first. \n"
+      },
+      {
+        "type": "warning",
+        "text": "Uncompiled message detected! Message:\n\n> WIN\n\nThat means you use raw catalog or your catalog doesn't have a translation for the message and fallback was used.\nICU features such as interpolation and plurals will not work properly for that message. \n\nPlease compile your catalog first. \n"
+      },
+      {
+        "type": "warning",
+        "text": "    at Object.c [as draw] (http://127.0.0.1:8427/game/?hmdebug=1&rgs_url=stub.local&sessionID=playtest&currency=XSC&lang=ja&social=false&jurisdictionSocial=true&balance=100000:1330:80114)\n    at http://127.0.0.1:8427/game/?hmdebug=1&rgs_url=stub.local&sessionID=playtest&currency=XSC&lang=ja&social=false&jurisdictionSocial=true&balance=100000:1306:23676\n    at CC (http://127.0.0.1:8427/game/?hmdebug=1&rgs_url=stub.local&sessionID=playtest&currency=XSC&lang=ja&social=false&jurisdictionSocial=true&balance=100000:83:13325)\n    at Hp (http://127.0.0.1:8427/game/?hmdebug=1&rgs_url=stub.local&sessionID=playtest&currency=XSC&lang=ja&social=false&jurisdictionSocial=true&balance=100000:83:14203)\n    at tK (http://127.0.0.1:8427/game/?hmdebug=1&rgs_url=stub.local&sessionID=playtest&currency=XSC&lang=ja&social=false&jurisdictionSocial=true&balance=100000:83:14694)\n    at kC (http://127.0.0.1:8427/game/?hmdebug=1&rgs_url=stub.local&sessionID=playtest&currency=XSC&lang=ja&social=false&jurisdictionSocial=true&balance=100000:83:14559)"
+      },
+      {
+        "type": "warning",
+        "text": "    at Object.c [as draw] (http://127.0.0.1:8427/game/?hmdebug=1&rgs_url=stub.local&sessionID=playtest&currency=XSC&lang=ja&social=false&jurisdictionSocial=true&balance=100000:1330:80151)\n    at http://127.0.0.1:8427/game/?hmdebug=1&rgs_url=stub.local&sessionID=playtest&currency=XSC&lang=ja&social=false&jurisdictionSocial=true&balance=100000:1306:23676\n    at CC (http://127.0.0.1:8427/game/?hmdebug=1&rgs_url=stub.local&sessionID=playtest&currency=XSC&lang=ja&social=false&jurisdictionSocial=true&balance=100000:83:13325)\n    at Hp (http://127.0.0.1:8427/game/?hmdebug=1&rgs_url=stub.local&sessionID=playtest&currency=XSC&lang=ja&social=false&jurisdictionSocial=true&balance=100000:83:14203)\n    at tK (http://127.0.0.1:8427/game/?hmdebug=1&rgs_url=stub.local&sessionID=playtest&currency=XSC&lang=ja&social=false&jurisdictionSocial=true&balance=100000:83:14694)\n    at kC (http://127.0.0.1:8427/game/?hmdebug=1&rgs_url=stub.local&sessionID=playtest&currency=XSC&lang=ja&social=false&jurisdictionSocial=true&balance=100000:83:14559)"
+      },
+      {
+        "type": "warning",
+        "text": "    at Object.c [as draw] (http://127.0.0.1:8427/game/?hmdebug=1&rgs_url=stub.local&sessionID=playtest&currency=XSC&lang=ja&social=false&jurisdictionSocial=true&balance=100000:1330:80193)\n    at http://127.0.0.1:8427/game/?hmdebug=1&rgs_url=stub.local&sessionID=playtest&currency=XSC&lang=ja&social=false&jurisdictionSocial=true&balance=100000:1306:23676\n    at CC (http://127.0.0.1:8427/game/?hmdebug=1&rgs_url=stub.local&sessionID=playtest&currency=XSC&lang=ja&social=false&jurisdictionSocial=true&balance=100000:83:13325)\n    at Hp (http://127.0.0.1:8427/game/?hmdebug=1&rgs_url=stub.local&sessionID=playtest&currency=XSC&lang=ja&social=false&jurisdictionSocial=true&balance=100000:83:14203)\n    at tK (http://127.0.0.1:8427/game/?hmdebug=1&rgs_url=stub.local&sessionID=playtest&currency=XSC&lang=ja&social=false&jurisdictionSocial=true&balance=100000:83:14694)\n    at kC (http://127.0.0.1:8427/game/?hmdebug=1&rgs_url=stub.local&sessionID=playtest&currency=XSC&lang=ja&social=false&jurisdictionSocial=true&balance=100000:83:14559)"
+      },
+      {
+        "type": "warning",
+        "text": "Uncompiled message detected! Message:\n\n> CONFIRM\n\nThat means you use raw catalog or your catalog doesn't have a translation for the message and fallback was used.\nICU features such as interpolation and plurals will not work properly for that message. \n\nPlease compile your catalog first. \n"
+      },
+      {
+        "type": "warning",
+        "text": "Uncompiled message detected! Message:\n\n> CONFIRM\n\nThat means you use raw catalog or your catalog doesn't have a translation for the message and fallback was used.\nICU features such as interpolation and plurals will not work properly for that message. \n\nPlease compile your catalog first. \n"
+      },
+      {
+        "type": "warning",
+        "text": "Uncompiled message detected! Message:\n\n> CONFIRM\n\nThat means you use raw catalog or your catalog doesn't have a translation for the message and fallback was used.\nICU features such as interpolation and plurals will not work properly for that message. \n\nPlease compile your catalog first. \n"
+      },
+      {
+        "type": "warning",
+        "text": "Uncompiled message detected! Message:\n\n> CONFIRM\n\nThat means you use raw catalog or your catalog doesn't have a translation for the message and fallback was used.\nICU features such as interpolation and plurals will not work properly for that message. \n\nPlease compile your catalog first. \n"
+      },
+      {
+        "type": "warning",
+        "text": "Calling [RenderPassEncoder (unlabeled)].Draw with an index count of 0 is unusual."
+      }
+    ]
+  },
+  {
+    "mode": "BONUS_EPIC",
+    "currency": "XGC",
+    "book": {
+      "id": 62,
+      "payout": 2000000,
+      "events": [
+        "reveal",
+        "setTotalWin",
+        "freeSpinTrigger",
+        "bonusTier",
+        "updateFreeSpin",
+        "reveal",
+        "wildExpand",
+        "stickyWilds",
+        "newFrames",
+        "winInfo",
+        "setWin",
+        "setTotalWin",
+        "frameDoubling",
+        "updateFreeSpin",
+        "reveal",
+        "stickyWilds",
+        "updateFrames",
+        "setTotalWin",
+        "updateFreeSpin",
+        "reveal",
+        "stickyWilds",
+        "updateFrames",
+        "newFrames",
+        "winInfo",
+        "setWin",
+        "setTotalWin",
+        "frameDoubling",
+        "updateFreeSpin",
+        "reveal",
+        "stickyWilds",
+        "updateFrames",
+        "setTotalWin",
+        "updateFreeSpin",
+        "reveal",
+        "wildExpand",
+        "stickyWilds",
+        "updateFrames",
+        "winInfo",
+        "setWin",
+        "setTotalWin",
+        "frameDoubling",
+        "updateFreeSpin",
+        "reveal",
+        "wildExpand",
+        "stickyWilds",
+        "updateFrames",
+        "newFrames",
+        "winInfo",
+        "wincap",
+        "setTotalWin",
+        "frameDoubling",
+        "freeSpinEnd",
+        "finalWin"
+      ]
+    },
+    "wasFG": true,
+    "elapsed": 45939,
+    "timeline": [
+      {
+        "ms": 675,
+        "game": {
+          "gameType": "basegame",
+          "isTurbo": false,
+          "betMode": "BONUS_EPIC",
+          "dimmedBy": 0,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "stats": {
+          "rounds": 1,
+          "byMode": {
+            "BONUS_EPIC": 1
+          },
+          "balance": 99000,
+          "wagered": 1000,
+          "won": 0,
+          "rtpSoFar": 0
+        },
+        "text": "WILD|14:30||PLAY BONUS|BALANCE|99,000.00 GC|WIN|0.00 GC|AMOUNT|1.00 GC"
+      },
+      {
+        "ms": 1330,
+        "game": {
+          "gameType": "basegame",
+          "isTurbo": false,
+          "betMode": "BONUS_EPIC",
+          "dimmedBy": 0,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "stats": {
+          "rounds": 1,
+          "byMode": {
+            "BONUS_EPIC": 1
+          },
+          "balance": 99000,
+          "wagered": 1000,
+          "won": 0,
+          "rtpSoFar": 0
+        },
+        "text": "14:30||PLAY BONUS|BALANCE|99,000.00 GC|WIN|0.00 GC|AMOUNT|1.00 GC"
+      },
+      {
+        "ms": 5123,
+        "game": {
+          "gameType": "basegame",
+          "isTurbo": false,
+          "betMode": "BONUS_EPIC",
+          "dimmedBy": 0,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "stats": {
+          "rounds": 1,
+          "byMode": {
+            "BONUS_EPIC": 1
+          },
+          "balance": 99000,
+          "wagered": 1000,
+          "won": 0,
+          "rtpSoFar": 0
+        },
+        "text": ""
+      },
+      {
+        "ms": 5940,
+        "game": {
+          "gameType": "freegame",
+          "isTurbo": false,
+          "betMode": "BONUS_EPIC",
+          "dimmedBy": 0,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "stats": {
+          "rounds": 1,
+          "byMode": {
+            "BONUS_EPIC": 1
+          },
+          "balance": 99000,
+          "wagered": 1000,
+          "won": 0,
+          "rtpSoFar": 0
+        },
+        "text": "PRESS ANYWHERE TO CONTINUE"
+      },
+      {
+        "ms": 6612,
+        "game": {
+          "gameType": "freegame",
+          "isTurbo": false,
+          "betMode": "BONUS_EPIC",
+          "dimmedBy": 0,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "stats": {
+          "rounds": 1,
+          "byMode": {
+            "BONUS_EPIC": 1
+          },
+          "balance": 99000,
+          "wagered": 1000,
+          "won": 0,
+          "rtpSoFar": 0
+        },
+        "text": "14:30||BALANCE|99,000.00 GC|WIN|0.00 GC|AMOUNT|1.00 GC|↓|FREE SPINS|1 / 10"
+      },
+      {
+        "ms": 7565,
+        "game": {
+          "gameType": "freegame",
+          "isTurbo": false,
+          "betMode": "BONUS_EPIC",
+          "dimmedBy": 0,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "stats": {
+          "rounds": 1,
+          "byMode": {
+            "BONUS_EPIC": 1
+          },
+          "balance": 99000,
+          "wagered": 1000,
+          "won": 0,
+          "rtpSoFar": 0
+        },
+        "text": "3x|14:30||BALANCE|99,000.00 GC|WIN|0.00 GC|AMOUNT|1.00 GC|↓|FREE SPINS|1 / 10"
+      },
+      {
+        "ms": 9414,
+        "game": {
+          "gameType": "freegame",
+          "isTurbo": false,
+          "betMode": "BONUS_EPIC",
+          "dimmedBy": 0,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "stats": {
+          "rounds": 1,
+          "byMode": {
+            "BONUS_EPIC": 1
+          },
+          "balance": 99000,
+          "wagered": 1000,
+          "won": 0,
+          "rtpSoFar": 0
+        },
+        "text": "WILD|WILD|WILD|WILD|WILD|3x|14:30||BALANCE|99,000.00 GC|WIN|0.00 GC|AMOUNT|1.00 GC|↓|FREE SPINS|1 / 10"
+      },
+      {
+        "ms": 10720,
+        "game": {
+          "gameType": "freegame",
+          "isTurbo": false,
+          "betMode": "BONUS_EPIC",
+          "dimmedBy": 0,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "stats": {
+          "rounds": 1,
+          "byMode": {
+            "BONUS_EPIC": 1
+          },
+          "balance": 99000,
+          "wagered": 1000,
+          "won": 0,
+          "rtpSoFar": 0
+        },
+        "text": "WILD|WILD|WILD|WILD|WILD|3x|14:30||BALANCE|99,000.00 GC|WIN|0.00 GC|AMOUNT|1.00 GC|↓|FREE SPINS|1 / 10|1.80 GC"
+      },
+      {
+        "ms": 11471,
+        "game": {
+          "gameType": "freegame",
+          "isTurbo": false,
+          "betMode": "BONUS_EPIC",
+          "dimmedBy": 0,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "stats": {
+          "rounds": 1,
+          "byMode": {
+            "BONUS_EPIC": 1
+          },
+          "balance": 99000,
+          "wagered": 1000,
+          "won": 0,
+          "rtpSoFar": 0
+        },
+        "text": "WILD|WILD|WILD|WILD|6x|14:30||BALANCE|99,000.00 GC|WIN|1.80 GC|AMOUNT|1.00 GC|↓|FREE SPINS|2 / 10"
+      },
+      {
+        "ms": 12122,
+        "game": {
+          "gameType": "freegame",
+          "isTurbo": false,
+          "betMode": "BONUS_EPIC",
+          "dimmedBy": 0,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "stats": {
+          "rounds": 1,
+          "byMode": {
+            "BONUS_EPIC": 1
+          },
+          "balance": 99000,
+          "wagered": 1000,
+          "won": 0,
+          "rtpSoFar": 0
+        },
+        "text": "WILD|WILD|WILD|WILD|WILD|WILD|6x|14:30||BALANCE|99,000.00 GC|WIN|1.80 GC|AMOUNT|1.00 GC|↓|FREE SPINS|2 / 10"
+      },
+      {
+        "ms": 12755,
+        "game": {
+          "gameType": "freegame",
+          "isTurbo": false,
+          "betMode": "BONUS_EPIC",
+          "dimmedBy": 0,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "stats": {
+          "rounds": 1,
+          "byMode": {
+            "BONUS_EPIC": 1
+          },
+          "balance": 99000,
+          "wagered": 1000,
+          "won": 0,
+          "rtpSoFar": 0
+        },
+        "text": "WILD|WILD|WILD|WILD|6x|14:30||BALANCE|99,000.00 GC|WIN|1.80 GC|AMOUNT|1.00 GC|↓|FREE SPINS|2 / 10"
+      },
+      {
+        "ms": 13371,
+        "game": {
+          "gameType": "freegame",
+          "isTurbo": false,
+          "betMode": "BONUS_EPIC",
+          "dimmedBy": 0,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "stats": {
+          "rounds": 1,
+          "byMode": {
+            "BONUS_EPIC": 1
+          },
+          "balance": 99000,
+          "wagered": 1000,
+          "won": 0,
+          "rtpSoFar": 0
+        },
+        "text": "WILD|WILD|WILD|6x|10x|14:30||BALANCE|99,000.00 GC|WIN|1.80 GC|AMOUNT|1.00 GC|↓|FREE SPINS|3 / 10"
+      },
+      {
+        "ms": 13994,
+        "game": {
+          "gameType": "freegame",
+          "isTurbo": false,
+          "betMode": "BONUS_EPIC",
+          "dimmedBy": 0,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "stats": {
+          "rounds": 1,
+          "byMode": {
+            "BONUS_EPIC": 1
+          },
+          "balance": 99000,
+          "wagered": 1000,
+          "won": 0,
+          "rtpSoFar": 0
+        },
+        "text": "WILD|WILD|WILD|WILD|WILD|6x|10x|14:30||BALANCE|99,000.00 GC|WIN|1.80 GC|AMOUNT|1.00 GC|↓|FREE SPINS|3 / 10"
+      },
+      {
+        "ms": 14626,
+        "game": {
+          "gameType": "freegame",
+          "isTurbo": false,
+          "betMode": "BONUS_EPIC",
+          "dimmedBy": 0,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "stats": {
+          "rounds": 1,
+          "byMode": {
+            "BONUS_EPIC": 1
+          },
+          "balance": 99000,
+          "wagered": 1000,
+          "won": 0,
+          "rtpSoFar": 0
+        },
+        "text": "WILD|WILD|WILD|WILD|6x|10x|14:30||BALANCE|99,000.00 GC|WIN|1.80 GC|AMOUNT|1.00 GC|↓|FREE SPINS|3 / 10"
+      },
+      {
+        "ms": 15994,
+        "game": {
+          "gameType": "freegame",
+          "isTurbo": false,
+          "betMode": "BONUS_EPIC",
+          "dimmedBy": 0,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "stats": {
+          "rounds": 1,
+          "byMode": {
+            "BONUS_EPIC": 1
+          },
+          "balance": 99000,
+          "wagered": 1000,
+          "won": 0,
+          "rtpSoFar": 0
+        },
+        "text": "WILD|WILD|WILD|WILD|6x|10x|14:30||BALANCE|99,000.00 GC|WIN|1.80 GC|AMOUNT|1.00 GC|↓|FREE SPINS|3 / 10|BIG WIN|0.00 GC"
+      },
+      {
+        "ms": 16624,
+        "game": {
+          "gameType": "freegame",
+          "isTurbo": false,
+          "betMode": "BONUS_EPIC",
+          "dimmedBy": 0,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "stats": {
+          "rounds": 1,
+          "byMode": {
+            "BONUS_EPIC": 1
+          },
+          "balance": 99000,
+          "wagered": 1000,
+          "won": 0,
+          "rtpSoFar": 0
+        },
+        "text": "WILD|WILD|WILD|WILD|6x|10x|14:30||BALANCE|99,000.00 GC|WIN|1.80 GC|AMOUNT|1.00 GC|↓|FREE SPINS|3 / 10|BIG WIN|7.34 GC"
+      },
+      {
+        "ms": 17237,
+        "game": {
+          "gameType": "freegame",
+          "isTurbo": false,
+          "betMode": "BONUS_EPIC",
+          "dimmedBy": 0,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "stats": {
+          "rounds": 1,
+          "byMode": {
+            "BONUS_EPIC": 1
+          },
+          "balance": 99000,
+          "wagered": 1000,
+          "won": 0,
+          "rtpSoFar": 0
+        },
+        "text": "WILD|WILD|WILD|WILD|6x|10x|14:30||BALANCE|99,000.00 GC|WIN|1.80 GC|AMOUNT|1.00 GC|↓|FREE SPINS|3 / 10|BIG WIN|14.38 GC"
+      },
+      {
+        "ms": 17855,
+        "game": {
+          "gameType": "freegame",
+          "isTurbo": false,
+          "betMode": "BONUS_EPIC",
+          "dimmedBy": 0,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "stats": {
+          "rounds": 1,
+          "byMode": {
+            "BONUS_EPIC": 1
+          },
+          "balance": 99000,
+          "wagered": 1000,
+          "won": 0,
+          "rtpSoFar": 0
+        },
+        "text": "WILD|WILD|WILD|WILD|6x|10x|14:30||BALANCE|99,000.00 GC|WIN|1.80 GC|AMOUNT|1.00 GC|↓|FREE SPINS|3 / 10|BIG WIN|20.00 GC"
+      },
+      {
+        "ms": 19131,
+        "game": {
+          "gameType": "freegame",
+          "isTurbo": false,
+          "betMode": "BONUS_EPIC",
+          "dimmedBy": 0,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "stats": {
+          "rounds": 1,
+          "byMode": {
+            "BONUS_EPIC": 1
+          },
+          "balance": 99000,
+          "wagered": 1000,
+          "won": 0,
+          "rtpSoFar": 0
+        },
+        "text": "WILD|WILD|WILD|WILD|6x|10x|14:30||BALANCE|99,000.00 GC|WIN|4.35 GC|AMOUNT|1.00 GC|↓|FREE SPINS|3 / 10|20.00 GC"
+      },
+      {
+        "ms": 19750,
+        "game": {
+          "gameType": "freegame",
+          "isTurbo": false,
+          "betMode": "BONUS_EPIC",
+          "dimmedBy": 0,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "stats": {
+          "rounds": 1,
+          "byMode": {
+            "BONUS_EPIC": 1
+          },
+          "balance": 99000,
+          "wagered": 1000,
+          "won": 0,
+          "rtpSoFar": 0
+        },
+        "text": "WILD|12x|20x|14:30||BALANCE|99,000.00 GC|WIN|21.80 GC|AMOUNT|1.00 GC|↓|FREE SPINS|4 / 10"
+      },
+      {
+        "ms": 20369,
+        "game": {
+          "gameType": "freegame",
+          "isTurbo": false,
+          "betMode": "BONUS_EPIC",
+          "dimmedBy": 0,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "stats": {
+          "rounds": 1,
+          "byMode": {
+            "BONUS_EPIC": 1
+          },
+          "balance": 99000,
+          "wagered": 1000,
+          "won": 0,
+          "rtpSoFar": 0
+        },
+        "text": "WILD|WILD|WILD|WILD|12x|20x|14:30||BALANCE|99,000.00 GC|WIN|21.80 GC|AMOUNT|1.00 GC|↓|FREE SPINS|4 / 10"
+      },
+      {
+        "ms": 21636,
+        "game": {
+          "gameType": "freegame",
+          "isTurbo": false,
+          "betMode": "BONUS_EPIC",
+          "dimmedBy": 0,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "stats": {
+          "rounds": 1,
+          "byMode": {
+            "BONUS_EPIC": 1
+          },
+          "balance": 99000,
+          "wagered": 1000,
+          "won": 0,
+          "rtpSoFar": 0
+        },
+        "text": "WILD|WILD|WILD|12x|20x|14:30||BALANCE|99,000.00 GC|WIN|21.80 GC|AMOUNT|1.00 GC|↓|FREE SPINS|5 / 10"
+      },
+      {
+        "ms": 22303,
+        "game": {
+          "gameType": "freegame",
+          "isTurbo": false,
+          "betMode": "BONUS_EPIC",
+          "dimmedBy": 0,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "stats": {
+          "rounds": 1,
+          "byMode": {
+            "BONUS_EPIC": 1
+          },
+          "balance": 99000,
+          "wagered": 1000,
+          "won": 0,
+          "rtpSoFar": 0
+        },
+        "text": "WILD|WILD|WILD|WILD|WILD|12x|20x|14:30||BALANCE|99,000.00 GC|WIN|21.80 GC|AMOUNT|1.00 GC|↓|FREE SPINS|5 / 10"
+      },
+      {
+        "ms": 23618,
+        "game": {
+          "gameType": "freegame",
+          "isTurbo": false,
+          "betMode": "BONUS_EPIC",
+          "dimmedBy": 0,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "stats": {
+          "rounds": 1,
+          "byMode": {
+            "BONUS_EPIC": 1
+          },
+          "balance": 99000,
+          "wagered": 1000,
+          "won": 0,
+          "rtpSoFar": 0
+        },
+        "text": "WILD|WILD|WILD|WILD|WILD|WILD|12x|20x|14:30||BALANCE|99,000.00 GC|WIN|21.80 GC|AMOUNT|1.00 GC|↓|FREE SPINS|5 / 10"
+      },
+      {
+        "ms": 24271,
+        "game": {
+          "gameType": "freegame",
+          "isTurbo": false,
+          "betMode": "BONUS_EPIC",
+          "dimmedBy": 0,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "stats": {
+          "rounds": 1,
+          "byMode": {
+            "BONUS_EPIC": 1
+          },
+          "balance": 99000,
+          "wagered": 1000,
+          "won": 0,
+          "rtpSoFar": 0
+        },
+        "text": "WILD|WILD|WILD|WILD|WILD|WILD|WILD|WILD|12x|20x|14:30||BALANCE|99,000.00 GC|WIN|21.80 GC|AMOUNT|1.00 GC|↓|FREE SPINS|5 / 10"
+      },
+      {
+        "ms": 25189,
+        "game": {
+          "gameType": "freegame",
+          "isTurbo": false,
+          "betMode": "BONUS_EPIC",
+          "dimmedBy": 1,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "stats": {
+          "rounds": 1,
+          "byMode": {
+            "BONUS_EPIC": 1
+          },
+          "balance": 99000,
+          "wagered": 1000,
+          "won": 0,
+          "rtpSoFar": 0
+        },
+        "text": "WILD|WILD|WILD|WILD|WILD|WILD|WILD|WILD|12x|20x|0.20 GC|20.00 GC|x20|12.00 GC|x24|12.00 GC|x24|10.00 GC|x20|6.00 GC|x12|24.00 GC|x24|6.40 GC|x32|20.00 GC|x20|6.00 GC|x12|32.00 GC|x32|12.00 GC|x24|14:30||BALANCE|99,000.00 GC|WIN|21.80 GC|AMOUNT|1.00 GC|↓|FREE SPINS|5 / 10"
+      },
+      {
+        "ms": 26105,
+        "game": {
+          "gameType": "freegame",
+          "isTurbo": false,
+          "betMode": "BONUS_EPIC",
+          "dimmedBy": 0,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "stats": {
+          "rounds": 1,
+          "byMode": {
+            "BONUS_EPIC": 1
+          },
+          "balance": 99000,
+          "wagered": 1000,
+          "won": 0,
+          "rtpSoFar": 0
+        },
+        "text": "WILD|WILD|WILD|WILD|WILD|WILD|WILD|WILD|12x|20x|14:30||BALANCE|99,000.00 GC|WIN|21.80 GC|AMOUNT|1.00 GC|↓|FREE SPINS|5 / 10|BIG WIN|SUPER WIN|MEGA WIN|EPIC WIN|14.32 GC"
+      },
+      {
+        "ms": 26907,
+        "game": {
+          "gameType": "freegame",
+          "isTurbo": false,
+          "betMode": "BONUS_EPIC",
+          "dimmedBy": 0,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "stats": {
+          "rounds": 1,
+          "byMode": {
+            "BONUS_EPIC": 1
+          },
+          "balance": 99000,
+          "wagered": 1000,
+          "won": 0,
+          "rtpSoFar": 0
+        },
+        "text": "WILD|WILD|WILD|WILD|WILD|WILD|WILD|WILD|12x|20x|14:30||BALANCE|99,000.00 GC|WIN|21.80 GC|AMOUNT|1.00 GC|↓|FREE SPINS|5 / 10|BIG WIN|SUPER WIN|MEGA WIN|EPIC WIN|33.54 GC"
+      },
+      {
+        "ms": 27723,
+        "game": {
+          "gameType": "freegame",
+          "isTurbo": false,
+          "betMode": "BONUS_EPIC",
+          "dimmedBy": 0,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "stats": {
+          "rounds": 1,
+          "byMode": {
+            "BONUS_EPIC": 1
+          },
+          "balance": 99000,
+          "wagered": 1000,
+          "won": 0,
+          "rtpSoFar": 0
+        },
+        "text": "WILD|WILD|WILD|WILD|WILD|WILD|WILD|WILD|12x|20x|14:30||BALANCE|99,000.00 GC|WIN|21.80 GC|AMOUNT|1.00 GC|↓|FREE SPINS|5 / 10|BIG WIN|SUPER WIN|MEGA WIN|EPIC WIN|54.12 GC"
+      },
+      {
+        "ms": 28438,
+        "game": {
+          "gameType": "freegame",
+          "isTurbo": false,
+          "betMode": "BONUS_EPIC",
+          "dimmedBy": 0,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "stats": {
+          "rounds": 1,
+          "byMode": {
+            "BONUS_EPIC": 1
+          },
+          "balance": 99000,
+          "wagered": 1000,
+          "won": 0,
+          "rtpSoFar": 0
+        },
+        "text": "WILD|WILD|WILD|WILD|WILD|WILD|WILD|WILD|12x|20x|14:30||BALANCE|99,000.00 GC|WIN|21.80 GC|AMOUNT|1.00 GC|↓|FREE SPINS|5 / 10|BIG WIN|SUPER WIN|MEGA WIN|EPIC WIN|74.12 GC"
+      },
+      {
+        "ms": 29276,
+        "game": {
+          "gameType": "freegame",
+          "isTurbo": false,
+          "betMode": "BONUS_EPIC",
+          "dimmedBy": 0,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "stats": {
+          "rounds": 1,
+          "byMode": {
+            "BONUS_EPIC": 1
+          },
+          "balance": 99000,
+          "wagered": 1000,
+          "won": 0,
+          "rtpSoFar": 0
+        },
+        "text": "WILD|WILD|WILD|WILD|WILD|WILD|WILD|WILD|12x|20x|14:30||BALANCE|99,000.00 GC|WIN|21.80 GC|AMOUNT|1.00 GC|↓|FREE SPINS|5 / 10|BIG WIN|SUPER WIN|MEGA WIN|EPIC WIN|91.27 GC"
+      },
+      {
+        "ms": 29942,
+        "game": {
+          "gameType": "freegame",
+          "isTurbo": false,
+          "betMode": "BONUS_EPIC",
+          "dimmedBy": 0,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "stats": {
+          "rounds": 1,
+          "byMode": {
+            "BONUS_EPIC": 1
+          },
+          "balance": 99000,
+          "wagered": 1000,
+          "won": 0,
+          "rtpSoFar": 0
+        },
+        "text": "WILD|WILD|WILD|WILD|WILD|WILD|WILD|WILD|12x|20x|14:30||BALANCE|99,000.00 GC|WIN|21.80 GC|AMOUNT|1.00 GC|↓|FREE SPINS|5 / 10|BIG WIN|SUPER WIN|MEGA WIN|EPIC WIN|111.41 GC"
+      },
+      {
+        "ms": 30600,
+        "game": {
+          "gameType": "freegame",
+          "isTurbo": false,
+          "betMode": "BONUS_EPIC",
+          "dimmedBy": 0,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "stats": {
+          "rounds": 1,
+          "byMode": {
+            "BONUS_EPIC": 1
+          },
+          "balance": 99000,
+          "wagered": 1000,
+          "won": 0,
+          "rtpSoFar": 0
+        },
+        "text": "WILD|WILD|WILD|WILD|WILD|WILD|WILD|WILD|12x|20x|14:30||BALANCE|99,000.00 GC|WIN|21.80 GC|AMOUNT|1.00 GC|↓|FREE SPINS|5 / 10|BIG WIN|SUPER WIN|MEGA WIN|EPIC WIN|128.38 GC"
+      },
+      {
+        "ms": 31218,
+        "game": {
+          "gameType": "freegame",
+          "isTurbo": false,
+          "betMode": "BONUS_EPIC",
+          "dimmedBy": 0,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "stats": {
+          "rounds": 1,
+          "byMode": {
+            "BONUS_EPIC": 1
+          },
+          "balance": 99000,
+          "wagered": 1000,
+          "won": 0,
+          "rtpSoFar": 0
+        },
+        "text": "WILD|WILD|WILD|WILD|WILD|WILD|WILD|WILD|12x|20x|14:30||BALANCE|99,000.00 GC|WIN|21.80 GC|AMOUNT|1.00 GC|↓|FREE SPINS|5 / 10|BIG WIN|SUPER WIN|MEGA WIN|EPIC WIN|144.52 GC"
+      },
+      {
+        "ms": 31848,
+        "game": {
+          "gameType": "freegame",
+          "isTurbo": false,
+          "betMode": "BONUS_EPIC",
+          "dimmedBy": 0,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "stats": {
+          "rounds": 1,
+          "byMode": {
+            "BONUS_EPIC": 1
+          },
+          "balance": 99000,
+          "wagered": 1000,
+          "won": 0,
+          "rtpSoFar": 0
+        },
+        "text": "WILD|WILD|WILD|WILD|WILD|WILD|WILD|WILD|12x|20x|14:30||BALANCE|99,000.00 GC|WIN|21.80 GC|AMOUNT|1.00 GC|↓|FREE SPINS|5 / 10|BIG WIN|SUPER WIN|MEGA WIN|EPIC WIN|160.05 GC"
+      },
+      {
+        "ms": 32554,
+        "game": {
+          "gameType": "freegame",
+          "isTurbo": false,
+          "betMode": "BONUS_EPIC",
+          "dimmedBy": 0,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "stats": {
+          "rounds": 1,
+          "byMode": {
+            "BONUS_EPIC": 1
+          },
+          "balance": 99000,
+          "wagered": 1000,
+          "won": 0,
+          "rtpSoFar": 0
+        },
+        "text": "WILD|WILD|WILD|WILD|WILD|WILD|WILD|WILD|12x|20x|14:30||BALANCE|99,000.00 GC|WIN|21.80 GC|AMOUNT|1.00 GC|↓|FREE SPINS|5 / 10|BIG WIN|SUPER WIN|MEGA WIN|EPIC WIN|176.21 GC"
+      },
+      {
+        "ms": 33167,
+        "game": {
+          "gameType": "freegame",
+          "isTurbo": false,
+          "betMode": "BONUS_EPIC",
+          "dimmedBy": 0,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "stats": {
+          "rounds": 1,
+          "byMode": {
+            "BONUS_EPIC": 1
+          },
+          "balance": 99000,
+          "wagered": 1000,
+          "won": 0,
+          "rtpSoFar": 0
+        },
+        "text": "WILD|WILD|WILD|WILD|WILD|WILD|WILD|WILD|12x|20x|14:30||BALANCE|99,000.00 GC|WIN|21.80 GC|AMOUNT|1.00 GC|↓|FREE SPINS|5 / 10|BIG WIN|SUPER WIN|MEGA WIN|EPIC WIN|176.60 GC"
+      },
+      {
+        "ms": 34556,
+        "game": {
+          "gameType": "freegame",
+          "isTurbo": false,
+          "betMode": "BONUS_EPIC",
+          "dimmedBy": 0,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "stats": {
+          "rounds": 1,
+          "byMode": {
+            "BONUS_EPIC": 1
+          },
+          "balance": 99000,
+          "wagered": 1000,
+          "won": 0,
+          "rtpSoFar": 0
+        },
+        "text": "WILD|WILD|WILD|WILD|WILD|WILD|24x|40x|2x|14:30||BALANCE|99,000.00 GC|WIN|198.40 GC|AMOUNT|1.00 GC|↓|FREE SPINS|6 / 10"
+      },
+      {
+        "ms": 35169,
+        "game": {
+          "gameType": "freegame",
+          "isTurbo": false,
+          "betMode": "BONUS_EPIC",
+          "dimmedBy": 0,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "stats": {
+          "rounds": 1,
+          "byMode": {
+            "BONUS_EPIC": 1
+          },
+          "balance": 99000,
+          "wagered": 1000,
+          "won": 0,
+          "rtpSoFar": 0
+        },
+        "text": "WILD|WILD|WILD|WILD|WILD|24x|40x|2x|14:30||BALANCE|99,000.00 GC|WIN|198.40 GC|AMOUNT|1.00 GC|↓|FREE SPINS|6 / 10"
+      },
+      {
+        "ms": 35785,
+        "game": {
+          "gameType": "freegame",
+          "isTurbo": false,
+          "betMode": "BONUS_EPIC",
+          "dimmedBy": 0,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "stats": {
+          "rounds": 1,
+          "byMode": {
+            "BONUS_EPIC": 1
+          },
+          "balance": 99000,
+          "wagered": 1000,
+          "won": 0,
+          "rtpSoFar": 0
+        },
+        "text": "WILD|WILD|WILD|WILD|WILD|WILD|WILD|WILD|WILD|WILD|24x|40x|2x|14:30||BALANCE|99,000.00 GC|WIN|198.40 GC|AMOUNT|1.00 GC|↓|FREE SPINS|6 / 10"
+      },
+      {
+        "ms": 37019,
+        "game": {
+          "gameType": "freegame",
+          "isTurbo": false,
+          "betMode": "BONUS_EPIC",
+          "dimmedBy": 0,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "stats": {
+          "rounds": 1,
+          "byMode": {
+            "BONUS_EPIC": 1
+          },
+          "balance": 99000,
+          "wagered": 1000,
+          "won": 0,
+          "rtpSoFar": 0
+        },
+        "text": "WILD|WILD|WILD|WILD|WILD|WILD|WILD|WILD|WILD|WILD|WILD|WILD|WILD|WILD|24x|40x|2x|14:30||BALANCE|99,000.00 GC|WIN|198.40 GC|AMOUNT|1.00 GC|↓|FREE SPINS|6 / 10"
+      },
+      {
+        "ms": 39112,
+        "game": {
+          "gameType": "freegame",
+          "isTurbo": false,
+          "betMode": "BONUS_EPIC",
+          "dimmedBy": 0,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "stats": {
+          "rounds": 1,
+          "byMode": {
+            "BONUS_EPIC": 1
+          },
+          "balance": 99000,
+          "wagered": 1000,
+          "won": 0,
+          "rtpSoFar": 0
+        },
+        "text": "WILD|WILD|WILD|WILD|WILD|WILD|WILD|WILD|WILD|WILD|WILD|WILD|WILD|WILD|48x|80x|4x|14:30||BALANCE|99,000.00 GC|WIN|20,000.00 GC|AMOUNT|1.00 GC|↓|FREE SPINS|6 / 10"
+      },
+      {
+        "ms": 39781,
+        "game": {
+          "gameType": "freegame",
+          "isTurbo": false,
+          "betMode": "BONUS_EPIC",
+          "dimmedBy": 0,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "stats": {
+          "rounds": 1,
+          "byMode": {
+            "BONUS_EPIC": 1
+          },
+          "balance": 99000,
+          "wagered": 1000,
+          "won": 0,
+          "rtpSoFar": 0
+        },
+        "text": "WILD|WILD|WILD|WILD|WILD|WILD|WILD|WILD|WILD|WILD|WILD|WILD|WILD|WILD|FREE SPINS|6 / 10|TOTAL WIN|632.00 GC|PRESS ANYWHERE TO CONTINUE"
+      },
+      {
+        "ms": 40726,
+        "game": {
+          "gameType": "freegame",
+          "isTurbo": false,
+          "betMode": "BONUS_EPIC",
+          "dimmedBy": 0,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "stats": {
+          "rounds": 1,
+          "byMode": {
+            "BONUS_EPIC": 1
+          },
+          "balance": 99000,
+          "wagered": 1000,
+          "won": 0,
+          "rtpSoFar": 0
+        },
+        "text": "WILD|WILD|WILD|WILD|WILD|WILD|WILD|WILD|WILD|WILD|WILD|WILD|WILD|WILD|FREE SPINS|6 / 10|TOTAL WIN|20,000.00 GC|PRESS ANYWHERE TO CONTINUE"
+      },
+      {
+        "ms": 41447,
+        "game": {
+          "gameType": "freegame",
+          "isTurbo": false,
+          "betMode": "BONUS_EPIC",
+          "dimmedBy": 0,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "stats": {
+          "rounds": 1,
+          "byMode": {
+            "BONUS_EPIC": 1
+          },
+          "balance": 99000,
+          "wagered": 1000,
+          "won": 0,
+          "rtpSoFar": 0
+        },
+        "text": "WILD|WILD|WILD|WILD|WILD|WILD|WILD|WILD|WILD|WILD|WILD|WILD|WILD|WILD|14:30||BALANCE|99,000.00 GC|PLAY BONUS|WIN|20,000.00 GC|AMOUNT|1.00 GC|↓"
+      },
+      {
+        "ms": 42080,
+        "game": {
+          "gameType": "basegame",
+          "isTurbo": false,
+          "betMode": "BONUS_EPIC",
+          "dimmedBy": 0,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "stats": {
+          "rounds": 1,
+          "byMode": {
+            "BONUS_EPIC": 1
+          },
+          "balance": 99000,
+          "wagered": 1000,
+          "won": 0,
+          "rtpSoFar": 0
+        },
+        "text": "14:30||BALANCE|99,000.00 GC|PLAY BONUS|WIN|20,000.00 GC|AMOUNT|1.00 GC|↓"
+      },
+      {
+        "ms": 42783,
+        "game": {
+          "gameType": "basegame",
+          "isTurbo": false,
+          "betMode": "BONUS_EPIC",
+          "dimmedBy": 0,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "stats": {
+          "rounds": 1,
+          "byMode": {
+            "BONUS_EPIC": 1
+          },
+          "balance": 119000,
+          "wagered": 1000,
+          "won": 20000,
+          "rtpSoFar": 20
+        },
+        "text": "14:30||BALANCE|119,000.00 GC|PLAY BONUS|WIN|20,000.00 GC|AMOUNT|1.00 GC"
+      }
+    ],
+    "scans": [
+      {
+        "social": true,
+        "pixiTexts": 3,
+        "hits": [],
+        "verdict": "PASS"
+      },
+      {
+        "social": true,
+        "pixiTexts": 9,
+        "hits": [],
+        "verdict": "PASS"
+      },
+      {
+        "social": true,
+        "pixiTexts": 10,
+        "hits": [],
+        "verdict": "PASS"
+      },
+      {
+        "social": true,
+        "pixiTexts": 9,
+        "hits": [],
+        "verdict": "PASS"
+      },
+      {
+        "social": true,
+        "pixiTexts": 9,
+        "hits": [],
+        "verdict": "PASS"
+      },
+      {
+        "social": true,
+        "pixiTexts": 9,
+        "hits": [],
+        "verdict": "PASS"
+      },
+      {
+        "social": true,
+        "pixiTexts": 9,
+        "hits": [],
+        "verdict": "PASS"
+      },
+      {
+        "social": true,
+        "pixiTexts": 9,
+        "hits": [],
+        "verdict": "PASS"
+      },
+      {
+        "social": true,
+        "pixiTexts": 9,
+        "hits": [],
+        "verdict": "PASS"
+      },
+      {
+        "social": true,
+        "pixiTexts": 9,
+        "hits": [],
+        "verdict": "PASS"
+      },
+      {
+        "social": true,
+        "pixiTexts": 13,
+        "hits": [],
+        "verdict": "PASS"
+      },
+      {
+        "social": true,
+        "pixiTexts": 10,
+        "hits": [],
+        "verdict": "PASS"
+      },
+      {
+        "social": true,
+        "pixiTexts": 11,
+        "hits": [],
+        "verdict": "PASS"
+      },
+      {
+        "social": true,
+        "pixiTexts": 12,
+        "hits": [],
+        "verdict": "PASS"
+      },
+      {
+        "social": true,
+        "pixiTexts": 16,
+        "hits": [],
+        "verdict": "PASS"
+      },
+      {
+        "social": true,
+        "pixiTexts": 16,
+        "hits": [],
+        "verdict": "PASS"
+      },
+      {
+        "social": true,
+        "pixiTexts": 17,
+        "hits": [],
+        "verdict": "PASS"
+      },
+      {
+        "social": true,
+        "pixiTexts": 15,
+        "hits": [],
+        "verdict": "PASS"
+      },
+      {
+        "social": true,
+        "pixiTexts": 17,
+        "hits": [],
+        "verdict": "PASS"
+      },
+      {
+        "social": true,
+        "pixiTexts": 15,
+        "hits": [],
+        "verdict": "PASS"
+      },
+      {
+        "social": true,
+        "pixiTexts": 15,
+        "hits": [],
+        "verdict": "PASS"
+      },
+      {
+        "social": true,
+        "pixiTexts": 17,
+        "hits": [],
+        "verdict": "PASS"
+      },
+      {
+        "social": true,
+        "pixiTexts": 16,
+        "hits": [],
+        "verdict": "PASS"
+      },
+      {
+        "social": true,
+        "pixiTexts": 16,
+        "hits": [],
+        "verdict": "PASS"
+      },
+      {
+        "social": true,
+        "pixiTexts": 18,
+        "hits": [],
+        "verdict": "PASS"
+      },
+      {
+        "social": true,
+        "pixiTexts": 18,
+        "hits": [],
+        "verdict": "PASS"
+      },
+      {
+        "social": true,
+        "pixiTexts": 18,
+        "hits": [],
+        "verdict": "PASS"
+      },
+      {
+        "social": true,
+        "pixiTexts": 18,
+        "hits": [],
+        "verdict": "PASS"
+      },
+      {
+        "social": true,
+        "pixiTexts": 18,
+        "hits": [],
+        "verdict": "PASS"
+      },
+      {
+        "social": true,
+        "pixiTexts": 17,
+        "hits": [],
+        "verdict": "PASS"
+      },
+      {
+        "social": true,
+        "pixiTexts": 13,
+        "hits": [],
+        "verdict": "PASS"
+      },
+      {
+        "social": true,
+        "pixiTexts": 16,
+        "hits": [],
+        "verdict": "PASS"
+      },
+      {
+        "social": true,
+        "pixiTexts": 16,
+        "hits": [],
+        "verdict": "PASS"
+      },
+      {
+        "social": true,
+        "pixiTexts": 15,
+        "hits": [],
+        "verdict": "PASS"
+      },
+      {
+        "social": true,
+        "pixiTexts": 18,
+        "hits": [],
+        "verdict": "PASS"
+      },
+      {
+        "social": true,
+        "pixiTexts": 17,
+        "hits": [],
+        "verdict": "PASS"
+      },
+      {
+        "social": true,
+        "pixiTexts": 18,
+        "hits": [],
+        "verdict": "PASS"
+      },
+      {
+        "social": true,
+        "pixiTexts": 20,
+        "hits": [],
+        "verdict": "PASS"
+      },
+      {
+        "social": true,
+        "pixiTexts": 47,
+        "hits": [],
+        "verdict": "PASS"
+      },
+      {
+        "social": true,
+        "pixiTexts": 25,
+        "hits": [],
+        "verdict": "PASS"
+      },
+      {
+        "social": true,
+        "pixiTexts": 25,
+        "hits": [],
+        "verdict": "PASS"
+      },
+      {
+        "social": true,
+        "pixiTexts": 25,
+        "hits": [],
+        "verdict": "PASS"
+      },
+      {
+        "social": true,
+        "pixiTexts": 25,
+        "hits": [],
+        "verdict": "PASS"
+      },
+      {
+        "social": true,
+        "pixiTexts": 25,
+        "hits": [],
+        "verdict": "PASS"
+      },
+      {
+        "social": true,
+        "pixiTexts": 25,
+        "hits": [],
+        "verdict": "PASS"
+      },
+      {
+        "social": true,
+        "pixiTexts": 25,
+        "hits": [],
+        "verdict": "PASS"
+      },
+      {
+        "social": true,
+        "pixiTexts": 25,
+        "hits": [],
+        "verdict": "PASS"
+      },
+      {
+        "social": true,
+        "pixiTexts": 25,
+        "hits": [],
+        "verdict": "PASS"
+      },
+      {
+        "social": true,
+        "pixiTexts": 25,
+        "hits": [],
+        "verdict": "PASS"
+      },
+      {
+        "social": true,
+        "pixiTexts": 25,
+        "hits": [],
+        "verdict": "PASS"
+      },
+      {
+        "social": true,
+        "pixiTexts": 25,
+        "hits": [],
+        "verdict": "PASS"
+      },
+      {
+        "social": true,
+        "pixiTexts": 17,
+        "hits": [],
+        "verdict": "PASS"
+      },
+      {
+        "social": true,
+        "pixiTexts": 18,
+        "hits": [],
+        "verdict": "PASS"
+      },
+      {
+        "social": true,
+        "pixiTexts": 23,
+        "hits": [],
+        "verdict": "PASS"
+      },
+      {
+        "social": true,
+        "pixiTexts": 23,
+        "hits": [],
+        "verdict": "PASS"
+      },
+      {
+        "social": true,
+        "pixiTexts": 27,
+        "hits": [],
+        "verdict": "PASS"
+      },
+      {
+        "social": true,
+        "pixiTexts": 27,
+        "hits": [],
+        "verdict": "PASS"
+      },
+      {
+        "social": true,
+        "pixiTexts": 27,
+        "hits": [],
+        "verdict": "PASS"
+      },
+      {
+        "social": true,
+        "pixiTexts": 27,
+        "hits": [],
+        "verdict": "PASS"
+      },
+      {
+        "social": true,
+        "pixiTexts": 27,
+        "hits": [],
+        "verdict": "PASS"
+      },
+      {
+        "social": true,
+        "pixiTexts": 27,
+        "hits": [],
+        "verdict": "PASS"
+      },
+      {
+        "social": true,
+        "pixiTexts": 23,
+        "hits": [],
+        "verdict": "PASS"
+      },
+      {
+        "social": true,
+        "pixiTexts": 9,
+        "hits": [],
+        "verdict": "PASS"
+      },
+      {
+        "social": true,
+        "pixiTexts": 9,
+        "hits": [],
+        "verdict": "PASS"
+      }
+    ],
+    "final": {
+      "dom": "",
+      "scene": [
+        {
+          "t": "14:30",
+          "x": 20,
+          "y": 0,
+          "w": 54,
+          "h": 32
+        },
+        {
+          "t": "",
+          "x": 79,
+          "y": 0,
+          "w": 0,
+          "h": 32
+        },
+        {
+          "t": "BALANCE",
+          "x": 188,
+          "y": 718,
+          "w": 49,
+          "h": 19
+        },
+        {
+          "t": "119,000.00 GC",
+          "x": 172,
+          "y": 731,
+          "w": 80,
+          "h": 19
+        },
+        {
+          "t": "PLAY BONUS",
+          "x": 369,
+          "y": 641,
+          "w": 34,
+          "h": 28
+        },
+        {
+          "t": "WIN",
+          "x": 201,
+          "y": 548,
+          "w": 23,
+          "h": 19
+        },
+        {
+          "t": "20,000.00 GC",
+          "x": 174,
+          "y": 562,
+          "w": 76,
+          "h": 19
+        },
+        {
+          "t": "AMOUNT",
+          "x": 189,
+          "y": 761,
+          "w": 46,
+          "h": 19
+        },
+        {
+          "t": "1.00 GC",
+          "x": 191,
+          "y": 775,
+          "w": 43,
+          "h": 19
+        }
+      ],
+      "game": {
+        "gameType": "basegame",
+        "isTurbo": false,
+        "betMode": "BONUS_EPIC",
+        "dimmedBy": 0,
+        "anticipation": [
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "requests": [
+        {
+          "url": "https://stub.local/wallet/authenticate",
+          "body": {
+            "sessionID": "playtest",
+            "language": "ja"
+          }
+        },
+        {
+          "url": "https://stub.local/wallet/authenticate",
+          "body": {
+            "sessionID": "playtest",
+            "language": "ja"
+          }
+        },
+        {
+          "url": "https://stub.local/wallet/play",
+          "body": {
+            "mode": "BONUS_EPIC",
+            "currency": "XGC",
+            "sessionID": "playtest",
+            "amount": 1000000
+          },
+          "payout": 20000
+        },
+        {
+          "url": "https://stub.local/wallet/play",
+          "body": {
+            "mode": "BONUS_EPIC",
+            "currency": "XGC",
+            "sessionID": "playtest",
+            "amount": 1000000
+          },
+          "payout": 20000
+        },
+        {
+          "url": "https://stub.local/bet/event",
+          "body": {
+            "sessionID": "playtest",
+            "event": "0"
+          }
+        },
+        {
+          "url": "https://stub.local/bet/event",
+          "body": {
+            "sessionID": "playtest",
+            "event": "0"
+          }
+        },
+        {
+          "url": "https://stub.local/bet/event",
+          "body": {
+            "sessionID": "playtest",
+            "event": "5"
+          }
+        },
+        {
+          "url": "https://stub.local/bet/event",
+          "body": {
+            "sessionID": "playtest",
+            "event": "5"
+          }
+        },
+        {
+          "url": "https://stub.local/bet/event",
+          "body": {
+            "sessionID": "playtest",
+            "event": "14"
+          }
+        },
+        {
+          "url": "https://stub.local/bet/event",
+          "body": {
+            "sessionID": "playtest",
+            "event": "14"
+          }
+        },
+        {
+          "url": "https://stub.local/bet/event",
+          "body": {
+            "sessionID": "playtest",
+            "event": "19"
+          }
+        },
+        {
+          "url": "https://stub.local/bet/event",
+          "body": {
+            "sessionID": "playtest",
+            "event": "19"
+          }
+        },
+        {
+          "url": "https://stub.local/bet/event",
+          "body": {
+            "sessionID": "playtest",
+            "event": "28"
+          }
+        },
+        {
+          "url": "https://stub.local/bet/event",
+          "body": {
+            "sessionID": "playtest",
+            "event": "28"
+          }
+        },
+        {
+          "url": "https://stub.local/bet/event",
+          "body": {
+            "sessionID": "playtest",
+            "event": "33"
+          }
+        },
+        {
+          "url": "https://stub.local/bet/event",
+          "body": {
+            "sessionID": "playtest",
+            "event": "33"
+          }
+        },
+        {
+          "url": "https://stub.local/bet/event",
+          "body": {
+            "sessionID": "playtest",
+            "event": "42"
+          }
+        },
+        {
+          "url": "https://stub.local/bet/event",
+          "body": {
+            "sessionID": "playtest",
+            "event": "42"
+          }
+        },
+        {
+          "url": "https://stub.local/wallet/end-round",
+          "body": {
+            "sessionID": "playtest"
+          }
+        },
+        {
+          "url": "https://stub.local/wallet/end-round",
+          "body": {
+            "sessionID": "playtest"
+          }
+        }
+      ],
+      "errors": [],
+      "network": []
+    },
+    "stats": {
+      "rounds": 1,
+      "byMode": {
+        "BONUS_EPIC": 1
+      },
+      "balance": 119000,
+      "wagered": 1000,
+      "won": 20000,
+      "rtpSoFar": 20
+    },
+    "textFindings": [],
+    "warnings": [
+      {
+        "type": "warning",
+        "text": "Uncompiled message detected! Message:\n\n> BALANCE\n\nThat means you use raw catalog or your catalog doesn't have a translation for the message and fallback was used.\nICU features such as interpolation and plurals will not work properly for that message. \n\nPlease compile your catalog first. \n"
+      },
+      {
+        "type": "warning",
+        "text": "Uncompiled message detected! Message:\n\n> BALANCE\n\nThat means you use raw catalog or your catalog doesn't have a translation for the message and fallback was used.\nICU features such as interpolation and plurals will not work properly for that message. \n\nPlease compile your catalog first. \n"
+      },
+      {
+        "type": "warning",
+        "text": "Uncompiled message detected! Message:\n\n> WIN\n\nThat means you use raw catalog or your catalog doesn't have a translation for the message and fallback was used.\nICU features such as interpolation and plurals will not work properly for that message. \n\nPlease compile your catalog first. \n"
+      },
+      {
+        "type": "warning",
+        "text": "Uncompiled message detected! Message:\n\n> WIN\n\nThat means you use raw catalog or your catalog doesn't have a translation for the message and fallback was used.\nICU features such as interpolation and plurals will not work properly for that message. \n\nPlease compile your catalog first. \n"
+      },
+      {
+        "type": "warning",
+        "text": "Uncompiled message detected! Message:\n\n> BALANCE\n\nThat means you use raw catalog or your catalog doesn't have a translation for the message and fallback was used.\nICU features such as interpolation and plurals will not work properly for that message. \n\nPlease compile your catalog first. \n"
+      },
+      {
+        "type": "warning",
+        "text": "Uncompiled message detected! Message:\n\n> BALANCE\n\nThat means you use raw catalog or your catalog doesn't have a translation for the message and fallback was used.\nICU features such as interpolation and plurals will not work properly for that message. \n\nPlease compile your catalog first. \n"
+      },
+      {
+        "type": "warning",
+        "text": "    at new lc (http://127.0.0.1:8427/game/?hmdebug=1&rgs_url=stub.local&sessionID=playtest&currency=XGC&lang=ja&social=false&jurisdictionSocial=true&balance=100000:394:42869)\n    at set style (http://127.0.0.1:8427/game/?hmdebug=1&rgs_url=stub.local&sessionID=playtest&currency=XGC&lang=ja&social=false&jurisdictionSocial=true&balance=100000:618:10811)\n    at new Hse (http://127.0.0.1:8427/game/?hmdebug=1&rgs_url=stub.local&sessionID=playtest&currency=XGC&lang=ja&social=false&jurisdictionSocial=true&balance=100000:618:10082)\n    at new jse (http://127.0.0.1:8427/game/?hmdebug=1&rgs_url=stub.local&sessionID=playtest&currency=XGC&lang=ja&social=false&jurisdictionSocial=true&balance=100000:618:12132)\n    at pt (http://127.0.0.1:8427/game/?hmdebug=1&rgs_url=stub.local&sessionID=playtest&currency=XGC&lang=ja&social=false&jurisdictionSocial=true&balance=100000:1306:22946)\n    at children (http://127.0.0.1:8427/game/?hmdebug=1&rgs_url=stub.local&sessionID=playtest&currency=XGC&lang=ja&social=false&jurisdictionSocial=true&balance=100000:1330:20462)\n    at http://127.0.0.1:8427/game/?hmdebug=1&rgs_url=stub.local&sessionID=playtest&currency=XGC&lang=ja&social=false&jurisdictionSocial=true&balance=100000:83:25461\n    at CC (http://127.0.0.1:8427/game/?hmdebug=1&rgs_url=stub.local&sessionID=playtest&currency=XGC&lang=ja&social=false&jurisdictionSocial=true&balance=100000:83:13325)"
+      },
+      {
+        "type": "warning",
+        "text": "Uncompiled message detected! Message:\n\n> WIN\n\nThat means you use raw catalog or your catalog doesn't have a translation for the message and fallback was used.\nICU features such as interpolation and plurals will not work properly for that message. \n\nPlease compile your catalog first. \n"
+      },
+      {
+        "type": "warning",
+        "text": "Uncompiled message detected! Message:\n\n> WIN\n\nThat means you use raw catalog or your catalog doesn't have a translation for the message and fallback was used.\nICU features such as interpolation and plurals will not work properly for that message. \n\nPlease compile your catalog first. \n"
+      },
+      {
+        "type": "warning",
+        "text": "    at Object.c [as draw] (http://127.0.0.1:8427/game/?hmdebug=1&rgs_url=stub.local&sessionID=playtest&currency=XGC&lang=ja&social=false&jurisdictionSocial=true&balance=100000:1330:80114)\n    at http://127.0.0.1:8427/game/?hmdebug=1&rgs_url=stub.local&sessionID=playtest&currency=XGC&lang=ja&social=false&jurisdictionSocial=true&balance=100000:1306:23676\n    at CC (http://127.0.0.1:8427/game/?hmdebug=1&rgs_url=stub.local&sessionID=playtest&currency=XGC&lang=ja&social=false&jurisdictionSocial=true&balance=100000:83:13325)\n    at Hp (http://127.0.0.1:8427/game/?hmdebug=1&rgs_url=stub.local&sessionID=playtest&currency=XGC&lang=ja&social=false&jurisdictionSocial=true&balance=100000:83:14203)\n    at tK (http://127.0.0.1:8427/game/?hmdebug=1&rgs_url=stub.local&sessionID=playtest&currency=XGC&lang=ja&social=false&jurisdictionSocial=true&balance=100000:83:14694)\n    at kC (http://127.0.0.1:8427/game/?hmdebug=1&rgs_url=stub.local&sessionID=playtest&currency=XGC&lang=ja&social=false&jurisdictionSocial=true&balance=100000:83:14559)"
+      },
+      {
+        "type": "warning",
+        "text": "    at Object.c [as draw] (http://127.0.0.1:8427/game/?hmdebug=1&rgs_url=stub.local&sessionID=playtest&currency=XGC&lang=ja&social=false&jurisdictionSocial=true&balance=100000:1330:80151)\n    at http://127.0.0.1:8427/game/?hmdebug=1&rgs_url=stub.local&sessionID=playtest&currency=XGC&lang=ja&social=false&jurisdictionSocial=true&balance=100000:1306:23676\n    at CC (http://127.0.0.1:8427/game/?hmdebug=1&rgs_url=stub.local&sessionID=playtest&currency=XGC&lang=ja&social=false&jurisdictionSocial=true&balance=100000:83:13325)\n    at Hp (http://127.0.0.1:8427/game/?hmdebug=1&rgs_url=stub.local&sessionID=playtest&currency=XGC&lang=ja&social=false&jurisdictionSocial=true&balance=100000:83:14203)\n    at tK (http://127.0.0.1:8427/game/?hmdebug=1&rgs_url=stub.local&sessionID=playtest&currency=XGC&lang=ja&social=false&jurisdictionSocial=true&balance=100000:83:14694)\n    at kC (http://127.0.0.1:8427/game/?hmdebug=1&rgs_url=stub.local&sessionID=playtest&currency=XGC&lang=ja&social=false&jurisdictionSocial=true&balance=100000:83:14559)"
+      },
+      {
+        "type": "warning",
+        "text": "    at Object.c [as draw] (http://127.0.0.1:8427/game/?hmdebug=1&rgs_url=stub.local&sessionID=playtest&currency=XGC&lang=ja&social=false&jurisdictionSocial=true&balance=100000:1330:80193)\n    at http://127.0.0.1:8427/game/?hmdebug=1&rgs_url=stub.local&sessionID=playtest&currency=XGC&lang=ja&social=false&jurisdictionSocial=true&balance=100000:1306:23676\n    at CC (http://127.0.0.1:8427/game/?hmdebug=1&rgs_url=stub.local&sessionID=playtest&currency=XGC&lang=ja&social=false&jurisdictionSocial=true&balance=100000:83:13325)\n    at Hp (http://127.0.0.1:8427/game/?hmdebug=1&rgs_url=stub.local&sessionID=playtest&currency=XGC&lang=ja&social=false&jurisdictionSocial=true&balance=100000:83:14203)\n    at tK (http://127.0.0.1:8427/game/?hmdebug=1&rgs_url=stub.local&sessionID=playtest&currency=XGC&lang=ja&social=false&jurisdictionSocial=true&balance=100000:83:14694)\n    at kC (http://127.0.0.1:8427/game/?hmdebug=1&rgs_url=stub.local&sessionID=playtest&currency=XGC&lang=ja&social=false&jurisdictionSocial=true&balance=100000:83:14559)"
+      },
+      {
+        "type": "warning",
+        "text": "Uncompiled message detected! Message:\n\n> CONFIRM\n\nThat means you use raw catalog or your catalog doesn't have a translation for the message and fallback was used.\nICU features such as interpolation and plurals will not work properly for that message. \n\nPlease compile your catalog first. \n"
+      },
+      {
+        "type": "warning",
+        "text": "Uncompiled message detected! Message:\n\n> CONFIRM\n\nThat means you use raw catalog or your catalog doesn't have a translation for the message and fallback was used.\nICU features such as interpolation and plurals will not work properly for that message. \n\nPlease compile your catalog first. \n"
+      },
+      {
+        "type": "warning",
+        "text": "Uncompiled message detected! Message:\n\n> CONFIRM\n\nThat means you use raw catalog or your catalog doesn't have a translation for the message and fallback was used.\nICU features such as interpolation and plurals will not work properly for that message. \n\nPlease compile your catalog first. \n"
+      },
+      {
+        "type": "warning",
+        "text": "Uncompiled message detected! Message:\n\n> CONFIRM\n\nThat means you use raw catalog or your catalog doesn't have a translation for the message and fallback was used.\nICU features such as interpolation and plurals will not work properly for that message. \n\nPlease compile your catalog first. \n"
+      }
+    ]
+  }
+]

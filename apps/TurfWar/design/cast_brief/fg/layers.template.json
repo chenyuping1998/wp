@@ -1,0 +1,99 @@
+{
+ "version": 1,
+ "archetype": "miami_boss",
+ "size": [
+  1024,
+  2048
+ ],
+ "feet_y": 1674,
+ "top_y": 176,
+ "sides": "anatomical",
+ "mirrored": false,
+ "order": [
+  "arm_l",
+  "body",
+  "head",
+  "prop_cigar",
+  "dangle_smoke",
+  "arm_r"
+ ],
+ "joints": {
+  "head_top": [
+   540,
+   176
+  ],
+  "neck": [
+   540,
+   410
+  ],
+  "chest": [
+   540,
+   540
+  ],
+  "waist": [
+   540,
+   840
+  ],
+  "hips": [
+   540,
+   930
+  ],
+  "shoulder_r": [
+   385,
+   450
+  ],
+  "elbow_r": [
+   330,
+   700
+  ],
+  "wrist_r": [
+   300,
+   945
+  ],
+  "shoulder_l": [
+   695,
+   450
+  ],
+  "elbow_l": [
+   750,
+   700
+  ],
+  "wrist_l": [
+   780,
+   945
+  ],
+  "prop_cigar": [
+   600,
+   345
+  ],
+  "dangle_smoke": [
+   630,
+   330
+  ]
+ },
+ "anchors": {
+  "prop_cigar": [
+   490,
+   298
+  ],
+  "dangle_smoke": [
+   440,
+   315
+  ]
+ },
+ "arms": {
+  "r": "hanging",
+  "l": "hanging"
+ },
+ "variants": [
+  "base"
+ ],
+ "style": {
+  "kind": "render",
+  "source": "../../../ART_BRIEF.md",
+  "frames": [
+   "style_frame/full.png"
+  ]
+ },
+ "note": "2026-10-10: joints re-set to this game's main cast proportions (see README addendum); pose_guide.archetype.png is the raw archetype scaling."
+}

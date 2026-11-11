@@ -14,6 +14,7 @@
 	import { stateBet } from 'state-shared';
 
 	import { getContext } from '../game/context';
+	import { canvasToMain, portraitBand, portraitLeftSlot } from '../game/cornerLogo';
 	import { SYMBOL_SIZE } from '../game/constants';
 	import { gameText } from '../game/i18nText';
 	import GoldText from './GoldText.svelte';
@@ -36,8 +37,18 @@
 	);
 	const panelSizes = $derived({ width: panelWidth, height: panelWidth / PANEL_RATIO });
 	const isPortrait = $derived(context.stateLayoutDerived.layoutType() === 'portrait');
+	// Portrait with a strip above the housing: the logo's slot in its left half
+	// (the logo stands down while this shows, Game.svelte), the cast on the
+	// right. Centred above the board it sat across both of them.
+	const band = $derived(portraitBand(context));
+	const slotPosition = $derived.by(() => {
+		if (!band) return null;
+		const slot = portraitLeftSlot(band);
+		const centre = canvasToMain(context, slot.x, slot.y);
+		return { x: centre.x - panelSizes.width * 0.5, y: centre.y - panelSizes.height * 0.5 };
+	});
 	const position = $derived(
-		isPortrait
+		slotPosition ?? (isPortrait
 			? {
 					// portrait: centered above the board (no room at the side)
 					x: context.stateGameDerived.boardLayout().x - panelSizes.width * 0.5,
@@ -53,12 +64,20 @@
 						housingHalfWidth -
 						panelSizes.width -
 						SYMBOL_SIZE * 0.1,
-					// Pinned near the top of the screen rather than to the board's top
-					// edge. With the side-rail UI the Buy Bonus button is centred in
-					// the left rail, and the board now fills 94% of the height — the
-					// old board-relative position put this plaque straight through it.
-					y: context.stateLayoutDerived.mainLayout().height * 0.05,
-				},
+					// Down at the housing's bottom edge (2026-10-21): the warden now
+					// stands in the left band, and up at the top this plaque sat on his
+					// head (user: 頭被擋住). Buy Bonus, which lives low in this band,
+					// is hidden during free spins, so the plaque takes its place over
+					// his legs.
+					y:
+						context.stateGameDerived.boardLayout().y +
+						context.stateGameDerived.boardLayout().height *
+							context.stateGameDerived.boardLayout().scale *
+							FRAME_SCALE *
+							0.5 -
+						panelSizes.height -
+						SYMBOL_SIZE * 0.25,
+				}),
 	);
 
 	let show = $state(false);
@@ -118,8 +137,7 @@
 				fontWeight: TITLE_FONT_WEIGHT,
 				letterSpacing: 2,
 				fill: [0xd6d8d8, 0xb8ad95, 0x76513b],
-				stroke: 0x1a1206,
-				strokeThickness: 4,
+				stroke: { color: 0x1a1206, width: 4 },
 				wordWrap: false,
 			}}
 		/>

@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { GAME_FONT, GAME_FONT_WEIGHT } from '../game/fonts';
+	import type { TextStyleFontWeight } from 'pixi.js';
 	import { Container, Text } from 'pixi-svelte';
 
 
@@ -39,7 +40,7 @@
 		// but a big-win amount is a display callout, not a readout, and it is
 		// exactly the kind of place fonts.ts reserves for the display face.
 		fontFamily?: string;
-		fontWeight?: string;
+		fontWeight?: TextStyleFontWeight;
 	};
 
 	const props: Props = $props();
@@ -79,8 +80,7 @@
 		style={{
 			...base,
 			fill: props.stroke ?? 0x14100D,
-			stroke: props.stroke ?? 0x14100D,
-			strokeThickness: Math.max(2, props.fontSize * 0.13),
+			stroke: { color: props.stroke ?? 0x14100D, width: Math.max(2, props.fontSize * 0.13) },
 		}}
 		alpha={0.85}
 	/>
@@ -92,12 +92,8 @@
 		style={{
 			...base,
 			fill: props.fill ?? [0xE8D48B, 0xC9A227, 0x8A6D1F],
-			stroke: props.stroke ?? 0x1a1206,
-			strokeThickness: Math.max(2, props.fontSize * 0.1),
-			dropShadow: true,
-			dropShadowColor: 0x000000,
-			dropShadowBlur: Math.max(4, props.fontSize * 0.12),
-			dropShadowDistance: Math.max(1.5, props.fontSize * 0.045),
+			stroke: { color: props.stroke ?? 0x1a1206, width: Math.max(2, props.fontSize * 0.1) },
+			dropShadow: { color: 0x000000, blur: Math.max(4, props.fontSize * 0.12), distance: Math.max(1.5, props.fontSize * 0.045), angle: Math.PI / 6, alpha: 1 },
 		}}
 	/>
 
@@ -108,8 +104,7 @@
 		style={{
 			...base,
 			fill: [0xffffff, 0xfff3bd, 0xfff3bd],
-			stroke: 0x000000,
-			strokeThickness: 0,
+			stroke: { color: 0x000000, width: 0 },
 		}}
 		alpha={0.3}
 	/>

@@ -146,7 +146,7 @@
 		x={pose.x + entryOffset}
 		y={pose.y}
 		tint={props.color}
-		blendMode="add"
+		blendMode="normal"
 		width={size * 1.9}
 		height={size * 1.9}
 		alpha={alpha * 0.5}
@@ -158,12 +158,12 @@
 		a reel symbol flying down the payline, and it takes the line's own colour.
 	-->
 	<Sprite
-		key="fxStar"
+		key="fxGlow"
 		anchor={0.5}
 		x={pose.x + entryOffset}
 		y={pose.y}
 		tint={props.color}
-		blendMode="add"
+		blendMode="normal"
 		{rotation}
 		width={size}
 		height={size}

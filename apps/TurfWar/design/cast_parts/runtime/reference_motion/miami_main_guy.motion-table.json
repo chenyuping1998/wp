@@ -1,0 +1,116 @@
+{
+ "archetype": "miami_main_guy",
+ "provenance": "timings, amplitudes and ratios measured from a research-only motion pack; no keyframes, vertices or weights. Do not ship the pack itself (rig/PROVENANCE.md).",
+ "angle_convention": "degrees, y-down renderer: + turns clockwise on screen",
+ "sides": "anatomical",
+ "mirrored": false,
+ "idle": {
+  "anim": "full_screen/idle",
+  "loop_ms": 8000,
+  "bones": {
+   "arm_r": [
+    5.105,
+    0,
+    8000,
+    0.0
+   ],
+   "fore_r": [
+    2.611,
+    3450,
+    8000,
+    0.0
+   ],
+   "arm_l": [
+    1.785,
+    733,
+    2000,
+    0.0
+   ],
+   "fore_l": [
+    4.978,
+    3300,
+    8000,
+    0.0
+   ],
+   "dangle_mask": [
+    6.69,
+    533,
+    2000,
+    0.0
+   ]
+  }
+ },
+ "reaction": {
+  "anim": "full_screen/reaction",
+  "duration_ms": 1000,
+  "bones": {
+   "neck": [
+    -10.58,
+    33
+   ],
+   "arm_r": [
+    10.28,
+    400
+   ],
+   "fore_r": [
+    -16.69,
+    0
+   ],
+   "fore_l": [
+    13.37,
+    0
+   ]
+  },
+  "snap": 0.241,
+  "hold": 0.465,
+  "rise": 0.0,
+  "lean": 0.0,
+  "parallax": {
+   "body_perspective": [
+    -0.0826,
+    0.0461,
+    0.217
+   ],
+   "body_back_persp": [
+    0.0537,
+    -0.03,
+    0.217
+   ],
+   "body_front_persp": [
+    -0.0743,
+    0.03,
+    0.217
+   ]
+  },
+  "shape": {
+   "fore_r": [
+    1.063,
+    0.797
+   ],
+   "arm_l": [
+    1.0,
+    1.23
+   ]
+  },
+  "muscles": {
+   "biceps_l": {
+    "role": "arm_l",
+    "peak": [
+     1.399,
+     1.484
+    ],
+    "hold_wobble": 0.07,
+    "hold_turns": 3
+   },
+   "biceps_r": {
+    "role": "arm_r",
+    "peak": [
+     1.521,
+     1.921
+    ],
+    "hold_wobble": 0.09,
+    "hold_turns": 3
+   }
+  }
+ }
+}

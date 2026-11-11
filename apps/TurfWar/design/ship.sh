@@ -32,11 +32,19 @@ mkdir -p "$REPO/upload/$NAME/math"
 rm -f "$REPO/upload/$NAME/math/"*
 cp "$REPO/math-sdk/games/$GAME/library/publish_files/"* "$REPO/upload/$NAME/math/"
 
-echo "== 3. check math bundle =="
-"$PY" design/check_math_bundle.py "$REPO/upload/$NAME/math"
+# SKIP_MATH_CHECKS=1 when the math has not changed (verify with
+# `diff -rq math-sdk/games/turf_war/library/publish_files upload/TurfWar/math`):
+# check_mechanics.py decompresses whole book files into memory, which on this
+# 8 GB machine is the heaviest step of the run (2026-10-12).
+if [ -n "${SKIP_MATH_CHECKS:-}" ]; then
+  echo "== 3-4. math checks SKIPPED (SKIP_MATH_CHECKS set — math unchanged) =="
+else
+  echo "== 3. check math bundle =="
+  "$PY" design/check_math_bundle.py "$REPO/upload/$NAME/math"
 
-echo "== 4. check mechanics vs Game Info =="
-"$PY" design/check_mechanics.py
+  echo "== 4. check mechanics vs Game Info =="
+  "$PY" design/check_mechanics.py
+fi
 
 echo "== 5. frontend build + guards =="
 pnpm run build
@@ -54,6 +62,13 @@ if grep -qoE "localhost:[0-9]+|stub\.local" "$NAME/frontend/index.html"; then
   echo "  !! localhost/stub ref in index.html"; fail=1; fi
 if ls "$NAME/frontend" | grep -qiE "stub|playtest"; then
   echo "  !! stub/playtest file in frontend root"; fail=1; fi
+# Cast folders the bundle never loads must not ship (10-27: six old cast versions
+# rode along in static/ and nearly went up as 79 dead files).
+for d in "$NAME/frontend/assets/castLayers/turf"/*/; do
+  v=$(basename "$d")
+  if ! grep -rqs "castLayers/turf/$v/" "$NAME/frontend/_app" "$NAME/frontend/index.html"; then
+    echo "  !! unreferenced cast folder ships: castLayers/turf/$v"; fail=1; fi
+done
 [ "$fail" = 0 ] && echo "  ok: no old-name / playtest contamination"
 [ "$fail" = 0 ] || { echo "ABORT: sanity checks failed"; exit 1; }
 

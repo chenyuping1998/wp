@@ -1,0 +1,2 @@
+wp/apps/TurfWar/design/_incoming/fg/full.png: colors95=139 soft=59.1% chroma=11.4 fit=79.0% PASS
+wp/apps/TurfWar/design/cast_brief/fg/style_frame/full.png: colors95=140 soft=61.4% chroma=9.6 fit=82.1% PASS

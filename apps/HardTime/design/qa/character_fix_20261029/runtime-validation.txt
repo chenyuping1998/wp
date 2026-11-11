@@ -1,0 +1,13 @@
+
+> hard-time@0.0.0 check:cast-spine /Users/stone/stake-engine/wp/apps/HardTime
+> /Applications/anaconda3/envs/math-sdk/bin/python design/check_cast_spine_holes.py && /Applications/anaconda3/envs/math-sdk/bin/python design/check_cast_spine_v2.py --runtime
+
+prisoner: intentional painted sleeve 4515 RGB px; removed/replaced silhouette 286 px
+prisoner: holes 0 px, repainted 1136 px (0.22% of the figure)  PASS
+warden: intentional painted sleeve 0 RGB px; removed/replaced silhouette 0 px
+warden: holes 0 px, repainted 1898 px (0.32% of the figure)  PASS
+old 493px holes / fragmented towel regression: rejected
+prisoner 15 meshes; 4 leg IK; blink; layer order; weights; source hash: PASS
+  production runtime: 1936 frames, no folds, planted ankles: PASS
+warden 20 meshes; 4 leg IK; blink; layer order; weights; source hash: PASS
+  production runtime: 1936 frames, no folds, planted ankles: PASS

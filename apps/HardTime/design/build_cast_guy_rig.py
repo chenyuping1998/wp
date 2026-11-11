@@ -57,7 +57,8 @@ import numpy as np
 from PIL import Image, ImageDraw
 
 ROOT = Path(__file__).resolve().parent.parent
-RIG_DIR = ROOT / 'static/assets/meshRigs/cast_guy'
+# design/, not static/: the game never loads the rig, only the gates do (2026-10-10).
+RIG_DIR = ROOT / 'design/cast_rigs'
 TEXTURE = ROOT / 'static/assets/sprites/hardTimeCast/prisoner.png'
 RIG_SIZE = (512, 1024)
 LAYOUT_BOX = [134, 86, 403, 887]

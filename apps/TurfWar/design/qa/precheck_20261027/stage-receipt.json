@@ -1,0 +1,58 @@
+{
+  "date": "2026-10-27",
+  "platform_updated": true,
+  "platform_observed_before_work": {
+    "front": 27,
+    "math": 7,
+    "approval_open": false,
+    "approval_locked": true
+  },
+  "math_changed": false,
+  "thumbnail_cover_changed": false,
+  "counts": {
+    "frontend": 152,
+    "math": 9,
+    "thumbnail": 3,
+    "cover": 2
+  },
+  "pruned_unused_runtime": [
+    "frontend/assets/castLayers/turf/base",
+    "frontend/assets/castLayers/turf/feature",
+    "frontend/assets/castLayers/turf/fg",
+    "frontend/assets/castLayers/turf/kingpin",
+    "frontend/assets/castLayers/turf/v3",
+    "frontend/assets/castLayers/turf/v4"
+  ],
+  "backup": "/Users/stone/stake-engine/_upload_backups/TurfWar-precheck-20261027",
+  "source_build_stage_rig_hashes_equal": true,
+  "manifest_sha256": "02e446eec1d39a1654e4e21e8f1a758e2ae1613282191dd5702056b79965fecd",
+  "checks": {
+    "full_turf_build": "PASS",
+    "typecheck": "0 errors, 0 warnings",
+    "all_14_vite_builds": "PASS",
+    "full_app_guards": "13 PASS; HotMiami existing source-art guard FAIL, Vite PASS",
+    "visible_cast_poses": 6862,
+    "rendered_motion_frames": 321,
+    "source_runtime_composition_rgba_error": 0,
+    "features": "Lookout/Muscle/Kingpin complete, Kingpin 20,000x cap",
+    "replays": "BASE/BONUS/BONUS_HITS/BONUS_EPIC complete, zero wallet calls",
+    "social_rgs_only": "9 screens and 3 features, zero restricted words",
+    "live_mute": "WebAudio and HTMLAudio PASS",
+    "mobile_touch": "1 round, 0 page errors"
+  },
+  "remaining": [
+    "Studio store artwork and actual RGS session smoke test",
+    "Physical older iOS/Android verification",
+    "Full-platform title/trademark uniqueness",
+    "Producer approval of theme, character age, originality and final visual rating"
+  ],
+  "qa_report": "/Users/stone/stake-engine/wp/apps/TurfWar/design/qa/precheck_20261027/TurfWar-fixes-20261027.html",
+  "historical_receipts": "LOCAL-SPINE-UPDATE-20261023.json and older RELEASE files describe older revisions only.",
+  "test_services_stopped": true,
+  "published": {
+    "front": 28,
+    "math": 7,
+    "receipt": "/Users/stone/stake-engine/upload/TurfWar/RELEASE-RECEIPT-20261027.json",
+    "approval_version_updated": false
+  }
+}

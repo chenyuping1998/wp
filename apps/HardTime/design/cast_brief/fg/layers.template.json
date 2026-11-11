@@ -1,0 +1,109 @@
+{
+ "version": 1,
+ "archetype": "miami_main_guy",
+ "size": [
+  1024,
+  2048
+ ],
+ "feet_y": 1875,
+ "top_y": 72,
+ "sides": "anatomical",
+ "mirrored": false,
+ "order": [
+  "arm_r",
+  "prop_bat",
+  "body",
+  "arm_l",
+  "dangle_chain",
+  "head",
+  "dangle_mask",
+  "fingers_r"
+ ],
+ "joints": {
+  "head_top": [
+   525,
+   72
+  ],
+  "neck": [
+   525,
+   400
+  ],
+  "chest": [
+   525,
+   560
+  ],
+  "waist": [
+   525,
+   900
+  ],
+  "hips": [
+   525,
+   1040
+  ],
+  "shoulder_r": [
+   360,
+   470
+  ],
+  "elbow_r": [
+   250,
+   740
+  ],
+  "wrist_r": [
+   225,
+   520
+  ],
+  "shoulder_l": [
+   690,
+   470
+  ],
+  "elbow_l": [
+   790,
+   750
+  ],
+  "wrist_l": [
+   770,
+   1010
+  ],
+  "prop_bat": [
+   220,
+   455
+  ],
+  "dangle_chain": [
+   560,
+   450
+  ],
+  "dangle_mask": [
+   610,
+   290
+  ]
+ },
+ "anchors": {
+  "prop_bat": [
+   166,
+   442
+  ],
+  "dangle_chain": [
+   615,
+   417
+  ],
+  "dangle_mask": [
+   543,
+   213
+  ]
+ },
+ "arms": {
+  "r": "raised_prop",
+  "l": "hanging"
+ },
+ "variants": [
+  "base"
+ ],
+ "style": {
+  "kind": "render",
+  "source": "../../../ART_AUDIO_BRIEF.md",
+  "frames": [
+   "style_frame/full.png"
+  ]
+ },
+ "note": "2026-10-10: joints re-set to this game's main cast proportions (see README addendum); pose_guide.archetype.png is the raw archetype scaling."
+}

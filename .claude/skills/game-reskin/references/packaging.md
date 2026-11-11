@@ -101,6 +101,42 @@ game's `design/export_upload_art.mjs` or equivalent) rather than copying from
 `build/`. Tell-tale that you got this wrong: `cmp` reports every PNG in
 `assets/<game>/` as changed when you only touched code.
 
+## 6b. Cover art — every game ships one
+
+The game's Stake Engine page shows a wide **cover art** banner ("Change cover
+art" in the dashboard). It is separate from the square thumbnail and every game
+needs its own (user, 2026-10-04 — it used to be whatever image was at hand).
+The docs give no size; make it **1920×1080**, delivered as TWO layers like the
+thumbnail: `<Game>-Cover-BG.png` (opaque backdrop) and `<Game>-Cover-FG.png`
+(cast + props on transparency, no title — the page sets the name). Keep clear
+what the page draws over it:
+
+- top-right ~16% × 14%: the star-rating pill
+- bottom-left ~24% × 34%: the square game thumbnail tile
+
+Compose it from the game's own finished art (backdrop, BOTH cast figures,
+a feature symbol, the title in the game's display face) and separate the figures from the
+backdrop with a hard ink offset shadow — NOT a pale spotlight panel, which the
+user rejected on Go Banandit as a white slab behind the character. Reference implementation:
+`wp-banandit/apps/GoBanandit/design/build_cover_art.py` (writes
+`design/cover/<Game>-Cover-BG.png`, `-FG.png` + `_preview_overlays.png` with the
+two overlays drawn on — check that preview). Stage both as `upload/<Game>/cover/`.
+
+**Not dark — thumbnail or cover.** Before staging, run
+
+```bash
+python3 wp/.claude/skills/game-reskin/scripts/check_thumbnail.py --upload upload/<Game>
+```
+
+It measures every `thumbnail/*-BG.png` and `cover/*-BG.png` at 200 px high and
+FAILS on mean luma < 80 or > 30% of pixels below 32 (WARN under mean 100).
+A dark upload is not rejected, it is silently rewritten: Turf War's first cover
+(mean 18, a night plate pushed further toward black behind the cast) came back
+"automatically lightened by 35%" (2026-10-11). Night-themed games still need a
+bright backdrop here — lift the plate (gamma + pale haze, strongest behind the
+cast) instead of darkening it; a lit backdrop also separates a dark figure
+better than a black one.
+
 ## 7. Sanity checks BEFORE zipping — these are the actual gate, not the zip step
 
 ```bash

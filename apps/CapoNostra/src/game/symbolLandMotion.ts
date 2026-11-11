@@ -102,10 +102,10 @@ const rest = (over: Partial<SymbolLandFrame> = {}): SymbolLandFrame => ({
 /** Matches the win table's sheen colours — the same four chips catching light. */
 const SHEEN = {
 	// Kept in step with symbolWinMotion.ts — see the note there.
-	L1: 0xcfd6dc, // Spade  — silver
-	L2: 0xc9484f, // Heart  — wine
-	L3: 0xd8705f, // Diamond — warm copper-red
-	L4: 0xa9b2b9, // Club   — dimmer silver
+	L1: 0xd8d4cc, // Spade  — silver
+	L2: 0x6f6f6f, // Heart  — wine
+	L3: 0x8d8d8d, // Diamond — warm copper-red
+	L4: 0xb0b0b0, // Club   — dimmer silver
 } as const;
 
 /**
@@ -131,7 +131,7 @@ const dust = (u: number, width: number, strength: number): SymbolLandOverlay[] =
 				height: 0.24,
 				rotation: 0,
 				alpha: strength * hump(u / width, 1),
-				tint: 0xffd9a8,
+				tint: 0xe2dfd6,
 				behind: true,
 			}));
 
@@ -179,7 +179,7 @@ const BASE_LAND_MOTION: Record<string, SymbolLandMotion> = {
 				// is late, well after the impact. Gone before the landing ends, so
 				// nothing snaps when the symbol goes static.
 				bloomAlpha: 0.6 * hump(u, 0.92),
-				bloomTint: 0xe8d48b,
+				bloomTint: 0xf7f4ec,
 			});
 		},
 	},
@@ -213,7 +213,7 @@ const BASE_LAND_MOTION: Record<string, SymbolLandMotion> = {
 				scaleX: 1 + 0.02 * plant,
 				dy: 0.045 * plant,
 				bloomAlpha: 0.85 * lights,
-				bloomTint: 0xffc46b,
+				bloomTint: 0xcfcbc3,
 			});
 		},
 	},
@@ -428,7 +428,7 @@ const BASE_LAND_MOTION: Record<string, SymbolLandMotion> = {
 				dx: 0.05 * rock,
 				scaleX: 1 - 0.02 * Math.abs(rock),
 				bloomAlpha: 0.55 * Math.abs(rock),
-				bloomTint: 0xffd166,
+				bloomTint: 0xd6d2ca,
 				overlays: [
 					{
 						key: 'fxStreak',
@@ -438,7 +438,7 @@ const BASE_LAND_MOTION: Record<string, SymbolLandMotion> = {
 						height: 0.09,
 						rotation: 0,
 						alpha: 0.45 * Math.abs(rock),
-						tint: 0xffd166,
+						tint: 0xd6d2ca,
 						behind: false,
 					},
 				],
@@ -465,7 +465,7 @@ const BASE_LAND_MOTION: Record<string, SymbolLandMotion> = {
 				scaleX: 1 + 0.07 * spin,
 				scaleY: 1 + 0.07 * spin,
 				bloomAlpha: 0.3 * spin,
-				bloomTint: 0xffb347,
+				bloomTint: 0xbdbdbd,
 				overlays: [
 					{
 						key: 'fxStreak',
@@ -475,7 +475,7 @@ const BASE_LAND_MOTION: Record<string, SymbolLandMotion> = {
 						height: 0.07,
 						rotation: 1.9 * spin,
 						alpha: 0.5 * spin,
-						tint: 0xe3d9c6,
+						tint: 0xdddad1,
 						behind: true,
 					},
 				],
@@ -519,7 +519,7 @@ const BASE_LAND_MOTION: Record<string, SymbolLandMotion> = {
 									// Fades in on the kick and is gone by the time the symbol
 									// settles, rather than starting bright and decaying.
 									alpha: 0.9 * hump(spread, 1),
-									tint: 0xc1272d,
+									tint: 0x565656,
 									behind: true,
 								};
 							}),

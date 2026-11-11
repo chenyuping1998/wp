@@ -6,10 +6,11 @@
 </script>
 
 <script lang="ts">
-	import { GAME_FONT, GAME_FONT_WEIGHT } from '../game/fonts';
+	import { DISPLAY_FONT, DISPLAY_FONT_WEIGHT } from '../game/fonts';
+	import { PLATE_INSET, PLATE_KEY } from '../game/plate';
 	import { MainContainer } from 'components-layout';
 	import { FadeContainer } from 'components-pixi';
-	import { Graphics, Sprite, Text } from 'pixi-svelte';
+	import { Graphics, Sprite } from 'pixi-svelte';
 	import type { Graphics as PixiGraphics } from 'pixi.js';
 	import { stateBet } from 'state-shared';
 
@@ -35,6 +36,14 @@
 			0.5,
 	);
 	const panelSizes = $derived({ width: panelWidth, height: panelWidth / PANEL_RATIO });
+	// The painted brass plate (game/plate.ts) drawn over the old panel box: its
+	// body spans the box width, and its visible part (crest top 0.116 → body foot
+	// 0.781 of the square) is centred on the box, which puts the dark inset's
+	// centre 0.0715 of the side below the box centre.
+	const plateSide = $derived(panelWidth / 0.964);
+	const plateY = $derived(panelSizes.height * 0.5 + plateSide * 0.0515);
+	const insetY = $derived(plateY + plateSide * PLATE_INSET.centerY);
+	const insetH = $derived(plateSide * PLATE_INSET.height);
 	const isPortrait = $derived(context.stateLayoutDerived.layoutType() === 'portrait');
 	const position = $derived(
 		isPortrait
@@ -101,31 +110,33 @@
 
 <MainContainer>
 	<FadeContainer {show} {...position}>
-		<Sprite key="hmFsPanel" {...panelSizes} />
-
-		<!-- title on the upper plank area, auto-shrunk for long locales -->
-		<Text
+		<Sprite
+			key={PLATE_KEY}
 			anchor={0.5}
 			x={panelSizes.width * 0.5}
-			y={panelSizes.height * 0.33}
+			y={plateY}
+			width={plateSide}
+			height={plateSide}
+		/>
+
+		<!-- title across the top of the inset, auto-shrunk for long locales -->
+		<GoldText
+			x={panelSizes.width * 0.5}
+			y={insetY - insetH * 0.25}
 			text={title}
-			style={{
-				fontFamily: GAME_FONT,
-				fontSize: Math.min(panelSizes.width * 0.115, (panelSizes.width * 1.35) / Math.max(1, title.length)),
-				fontWeight: GAME_FONT_WEIGHT,
-				letterSpacing: 2,
-				fill: [0xf7e9c6, 0xddbc77, 0xa58145],
-				stroke: 0x101f1b,
-				strokeThickness: 4,
-				wordWrap: false,
-			}}
+			fill={0xe9cf95}
+			fontSize={insetH * 0.24}
+			maxWidth={plateSide * PLATE_INSET.width * 0.86}
+			letterSpacing={2}
+			fontFamily={DISPLAY_FONT}
+			fontWeight={DISPLAY_FONT_WEIGHT}
 		/>
 
 		{#if isSuperspin}
 			<!-- big remaining-respins number (the hold'n'spin heartbeat) -->
 			<GoldText
 				x={panelSizes.width * 0.5}
-				y={panelSizes.height * 0.55}
+				y={insetY + insetH * 0.14}
 				text={remaining}
 				fontSize={panelSizes.width * 0.3}
 			/>
@@ -134,10 +145,10 @@
 			<!-- free game: current spin of total -->
 			<GoldText
 				x={panelSizes.width * 0.5}
-				y={panelSizes.height * 0.58}
+				y={insetY + insetH * 0.17}
 				text={`${Math.min(current, total)} / ${total}`}
-				fontSize={panelSizes.width * 0.19}
-				maxWidth={panelSizes.width * 0.72}
+				fontSize={insetH * 0.42}
+				maxWidth={plateSide * PLATE_INSET.width * 0.86}
 			/>
 		{/if}
 	</FadeContainer>

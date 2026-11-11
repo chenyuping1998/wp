@@ -14,6 +14,7 @@ export type SoundEffectName =
 	| 'sfx_anticipation'
 	| 'sfx_anticipation_start'
 	| 'sfx_bigwin_coinloop'
+	| 'sfx_big_score_buildup'
 	| 'sfx_btn_general'
 	| 'sfx_btn_spin'
 	| 'sfx_fs_respins'
@@ -65,6 +66,6 @@ export type SoundEffectName =
 
 export type SoundName = MusicName | SoundEffectName;
 
-const sound = createSound<SoundName>();
+const sound = createSound<SoundName>({ allowHtmlAudioFallback: true });
 
 export { sound };

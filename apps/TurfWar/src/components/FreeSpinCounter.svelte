@@ -14,6 +14,7 @@
 	import { stateBet } from 'state-shared';
 
 	import { getContext } from '../game/context';
+	import { canvasToMain, portraitBand, portraitLeftSlot } from '../game/cornerLogo';
 	import { SYMBOL_SIZE } from '../game/constants';
 	import { gameText } from '../game/i18nText';
 	import GoldText from './GoldText.svelte';
@@ -36,8 +37,18 @@
 	);
 	const panelSizes = $derived({ width: panelWidth, height: panelWidth / PANEL_RATIO });
 	const isPortrait = $derived(context.stateLayoutDerived.layoutType() === 'portrait');
+	// Portrait with a strip above the housing: the logo's slot in its left half
+	// (the logo stands down while this shows, Game.svelte), the cast on the
+	// right. Centred above the board it sat across both of them.
+	const band = $derived(portraitBand(context));
+	const slotPosition = $derived.by(() => {
+		if (!band) return null;
+		const slot = portraitLeftSlot(band);
+		const centre = canvasToMain(context, slot.x, slot.y);
+		return { x: centre.x - panelSizes.width * 0.5, y: centre.y - panelSizes.height * 0.5 };
+	});
 	const position = $derived(
-		isPortrait
+		slotPosition ?? (isPortrait
 			? {
 					// portrait: centered above the board (no room at the side)
 					x: context.stateGameDerived.boardLayout().x - panelSizes.width * 0.5,
@@ -58,7 +69,7 @@
 					// the left rail, and the board now fills 94% of the height — the
 					// old board-relative position put this plaque straight through it.
 					y: context.stateLayoutDerived.mainLayout().height * 0.05,
-				},
+				}),
 	);
 
 	let show = $state(false);
@@ -117,9 +128,8 @@
 				fontSize: Math.min(panelSizes.width * 0.115, (panelSizes.width * 1.35) / Math.max(1, title.length)),
 				fontWeight: TITLE_FONT_WEIGHT,
 				letterSpacing: 2,
-				fill: [0xffe98a, 0xffc38a, 0xc9862a],
-				stroke: 0x0e0f11,
-				strokeThickness: 4,
+				fill: 0xffc38a,
+				stroke: { color: 0x0e0f11, width: 4 },
 				wordWrap: false,
 			}}
 		/>

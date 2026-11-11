@@ -19,7 +19,23 @@
 // Every one of those passed thirteen existing gates, because no gate compared a
 // colour against anything.
 //
-// WHAT IT CHECKS
+// 2026-10-04 — ART DECO B VERSION. ART_BRIEF §0.3 is now black, greys and paper
+// with ONE red reserved for the vault multipliers. The two rules below were
+// rewritten for that; the colour-version rules they replace are kept in
+// design/_legacy_assets/check_ui_palette_v1_20261004.mjs and in the history
+// notes that follow.
+//
+//   1. No red on a UI surface. Red means "a multiplier is here" and lives in the
+//      frame art and components/NeonFrames.svelte, neither of which is a UI
+//      surface. The one exception is palette.ts, where the multiplier reds are
+//      DEFINED: an `export const RED…` line there may hold a red, nothing else
+//      may.
+//   2. No hue at all. Any colour above MIN_SATURATION is a finding, whatever its
+//      hue: the old two-hue budget (gold, wine, gunmetal) is gone with the
+//      colour version. Paper (#ECE8DF, saturation 0.06) stays under the floor.
+//
+// HISTORY OF THE COLOUR-VERSION RULES (kept because the incidents still explain
+// why the gate scans what it scans):
 //
 //   1. The reserved signal red #C1272D does not appear on a UI surface at all.
 //      ART_BRIEF §0 gives it to the Tommy Gun wild alone so that red on screen
@@ -72,14 +88,6 @@ const SIGNAL_RED = [0xc1, 0x27, 0x2d];
 // what matters, but a hand-typed near-miss (#c2272d) is the same violation
 const RED_TOLERANCE = 12;
 
-// Hue bands that ART_BRIEF §0 excludes, in degrees. Everything in the game's own
-// table lands outside them: the golds sit at 47-51, the wines at 356-357, the
-// gunmetals at 210-214.
-const BANNED_HUES = [
-	{ name: 'green', from: 75, to: 165 },
-	{ name: 'cyan', from: 165, to: 195 },
-	{ name: 'violet/magenta', from: 240, to: 340 },
-];
 // Below this saturation a colour is a neutral and carries no hue worth policing —
 // a 4%-alpha white overlay is not a magenta just because it rounds that way.
 //
@@ -141,22 +149,24 @@ for (const rel of FILES) {
 			const { h, s, v } = hsv(hit.rgb);
 			seen.push({ rel, line: i + 1, ...hit, h, s, v });
 
-			const dRed = Math.hypot(...hit.rgb.map((c, k) => c - SIGNAL_RED[k]));
-			if (dRed <= RED_TOLERANCE)
-				findings.push(
-					`${rel}:${i + 1}  ${hit.text} is the reserved Tommy Gun signal red ` +
-						`(#C1272D, distance ${dRed.toFixed(0)}). ART_BRIEF §0 gives that colour to ` +
-						`one mechanic; it must not appear on a UI surface.`,
-				);
-
 			if (s < MIN_SATURATION || v < MIN_VALUE) continue;
-			const band = BANNED_HUES.find((b) => h >= b.from && h < b.to);
-			if (band)
+			const isRed = h >= 340 || h < 20;
+			// palette.ts DEFINES the multiplier reds; that is the only place a red
+			// may be written down outside the frame component.
+			if (isRed && rel.endsWith('palette.ts') && /export const RED\w* =/.test(line)) continue;
+			const dRed = Math.hypot(...hit.rgb.map((c, k) => c - SIGNAL_RED[k]));
+			if (isRed)
 				findings.push(
-					`${rel}:${i + 1}  ${hit.text} is ${band.name} (hue ${h.toFixed(0)}°, ` +
-						`sat ${s.toFixed(2)}). ART_BRIEF §0 allows a warm base plus ONE accent ` +
-						`(gold or wine), with gunmetal as the cool corrective — no ${band.name}. ` +
-						`Use a constant from src/game/palette.ts.`,
+					`${rel}:${i + 1}  ${hit.text} is red (hue ${h.toFixed(0)}°` +
+						(dRed <= RED_TOLERANCE ? ', the multiplier red itself' : '') +
+						`). ART_BRIEF §0.3 gives red to the vault multipliers only; ` +
+						`it must not appear on a UI surface.`,
+				);
+			else
+				findings.push(
+					`${rel}:${i + 1}  ${hit.text} has a hue (${h.toFixed(0)}°, sat ${s.toFixed(2)}). ` +
+						`ART_BRIEF §0.3 is black, greys and paper — use a constant from ` +
+						`src/game/palette.ts.`,
 				);
 		}
 	});

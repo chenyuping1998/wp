@@ -1,0 +1,91 @@
+{
+ "version": 1,
+ "archetype": "miami_main_guy",
+ "size": [
+  1024,
+  2048
+ ],
+ "feet_y": 1674,
+ "top_y": 176,
+ "sides": "anatomical",
+ "mirrored": false,
+ "order": [
+  "arm_r",
+  "prop_bat",
+  "body",
+  "arm_l",
+  "dangle_chain",
+  "head",
+  "dangle_mask",
+  "fingers_r"
+ ],
+ "joints": {
+  "neck": [
+   623,
+   413
+  ],
+  "chest": [
+   568,
+   612
+  ],
+  "waist": [
+   534,
+   875
+  ],
+  "hips": [
+   537,
+   895
+  ],
+  "head_top": [
+   599,
+   176
+  ],
+  "shoulder_r": [
+   492,
+   488
+  ],
+  "elbow_r": [
+   339,
+   714
+  ],
+  "wrist_r": [
+   252,
+   537
+  ],
+  "shoulder_l": [
+   783,
+   453
+  ],
+  "elbow_l": [
+   859,
+   687
+  ],
+  "wrist_l": [
+   820,
+   940
+  ]
+ },
+ "anchors": {
+  "prop_bat": [
+   250,
+   483
+  ],
+  "dangle_chain": [
+   623,
+   462
+  ],
+  "dangle_mask": [
+   563,
+   293
+  ]
+ },
+ "arms": {
+  "r": "raised_prop",
+  "l": "hanging"
+ },
+ "variants": [
+  "base",
+  "feature",
+  "kingpin"
+ ]
+}

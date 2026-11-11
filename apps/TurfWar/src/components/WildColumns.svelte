@@ -4,8 +4,7 @@
 		| { type: 'wildColumnClear' }
 		// Kingpin: the full cumulative set of held Wild columns for this feature.
 		| { type: 'stickyWildsHold'; cells: { reel: number; row: number }[]; reels: number[] }
-		| { type: 'stickyWildsClear' }
-		| { type: 'bigScorePlay'; mult: number };
+		| { type: 'stickyWildsClear' };
 </script>
 
 <script lang="ts">
@@ -36,11 +35,12 @@
 	 * which is not.
 	 *
 	 * The dedicated comic-print beam, muzzle flash, shells and impact texture are
-	 * authored under sprites/capoFx and share the Bruiser's signal-red accent.
+	 * authored under sprites/turfFx and share the Bruiser's signal-red accent.
 	 */
 	import { Tween } from 'svelte/motion';
-	import { backOut, cubicOut } from 'svelte/easing';
-	import { Container, Sprite } from 'pixi-svelte';
+	import { backOut, cubicOut, linear } from 'svelte/easing';
+	import { Container, Sprite, Graphics } from 'pixi-svelte';
+	import type { Graphics as PixiGraphics } from 'pixi.js';
 	import { waitForTimeout } from 'utils-shared/wait';
 
 	import { getContext } from '../game/context';
@@ -63,7 +63,7 @@
 	const columnHeight = SYMBOL_SIZE * ROWS;
 	const columnCentreY = ((1 + ROWS) / 2 - 0.5) * SYMBOL_SIZE;
 	/** How long the fill takes to travel the reel, top to bottom. */
-	const SWEEP_MS = 260;
+	const SWEEP_MS = 360;
 
 	/**
 	 * Ceiling on the muzzle flash, in cells.
@@ -127,6 +127,32 @@
 	// A slow breathing pulse on the chain overlay so a held column reads as
 	// active rather than as a static decal. One shared clock for all of them.
 	let holdPulse = new Tween(0, { duration: 0 });
+
+	// Held = taped to the wall: a red keyline round the column and a strip of red
+	// tape across each end (see the template note).
+	const drawHeld = (g: PixiGraphics) => {
+		g.clear();
+		const width = SYMBOL_SIZE * 0.96;
+		const pulse = holdPulse.current;
+		g.roundRect(-width / 2, 2, width, columnHeight - 4, width * 0.08);
+		g.stroke({ color: SIGNAL_RED, width: 5 + 2 * pulse, alpha: 0.8 + 0.2 * pulse });
+		const strip = (cy: number, rot: number) => {
+			const len = width * 0.62;
+			const thick = width * 0.15;
+			const cos = Math.cos(rot);
+			const sin = Math.sin(rot);
+			const outline = [
+				[-len / 2, -thick / 2], [len / 2, -thick / 2], [len / 2 - thick * 0.12, -thick / 6], [len / 2, thick / 6],
+				[len / 2, thick / 2], [-len / 2, thick / 2], [-len / 2 + thick * 0.12, thick / 6], [-len / 2, -thick / 6],
+			];
+			g.poly(outline.flatMap(([x, y]) => [x * cos - y * sin, cy + x * sin + y * cos]));
+			g.fill({ color: SIGNAL_RED });
+			g.stroke({ color: 0x121212, width: 2.5 });
+		};
+		strip(width * 0.04, -0.12);
+		strip(columnHeight - width * 0.04, 0.1);
+	};
+
 	let holdPulseRunning = false;
 	const runHoldPulse = async () => {
 		if (holdPulseRunning) return;
@@ -165,12 +191,13 @@
 					// turns Wild as the leading edge reaches it, so the fill is
 					// something the player watches happen rather than a board that
 					// was already different by the time the effect finished.
-					const beam = column.sweep.set(1, { duration: scaled(SWEEP_MS), easing: cubicOut });
 					for (let paddedRow = 1; paddedRow <= ROWS; paddedRow += 1) {
-						await waitForTimeout(scaled(SWEEP_MS / ROWS));
+						await column.sweep.set(paddedRow / ROWS, {
+							duration: scaled(SWEEP_MS / ROWS),
+							easing: linear,
+						});
 						turnWild(column.reel, paddedRow);
 					}
-					await beam;
 
 					await waitForTimeout(scaled(380));
 					await column.lit.set(0, { duration: scaled(260), easing: cubicOut });
@@ -188,125 +215,38 @@
 		stickyWildsClear: async () => {
 			heldReels = [];
 		},
-		// The Big Score's own beat lives elsewhere; this consumer only exists so
-		// the broadcastAsync in the handler resolves.
-		bigScorePlay: async () => {},
 	});
 </script>
 
 <BoardContainer>
-	<!--
-		Held Wild columns (Kingpin). A standing chain overlay down each held reel,
-		breathing slowly so it reads as locked-and-live rather than a static decal.
-		Drawn first so the transient expand beat, when a column is first taken,
-		sits on top of it.
-	-->
-	{#each heldReels as reel (reel)}
-		{@const x = getSymbolX(reel)}
-		{@const pulse = holdPulse.current}
-		<Container {x}>
-			<!-- a light red column bed behind the chain art. The chain sprite
-			     itself now carries most of the red (bolder art, 2026-09-07), so
-			     this is just a slow breathing wash, not the main event. -->
-			<Sprite
-				key="capoSwBeam"
-				anchor={{ x: 0.5, y: 0.5 }}
-				y={columnCentreY}
-				tint={SIGNAL_RED}
-				blendMode="screen"
-				width={SYMBOL_SIZE * 1.02}
-				height={columnHeight}
-				alpha={0.1 + 0.14 * pulse}
-			/>
-			<Sprite
-				key="turfWildLocked"
-				anchor={{ x: 0.5, y: 0.5 }}
-				y={columnCentreY}
-				width={SYMBOL_SIZE}
-				height={columnHeight}
-				alpha={1}
-			/>
-		</Container>
-	{/each}
-
-	{#each columns as column (column.reel)}
-		{@const x = getSymbolX(column.reel)}
-		{@const lit = column.lit.current}
-		{@const sweep = column.sweep.current}
-		<Container {x}>
-			<!--
-				The filled part of the reel. Height is driven by `sweep`, and the
-				container is anchored at the TOP of the column so it grows downward
-				instead of growing from its own centre in both directions.
-			-->
-			{#if lit > 0.01 && sweep > 0.001}
-				<Sprite
-					key="capoSwBeam"
-					anchor={{ x: 0.5, y: 0 }}
-					y={columnCentreY - columnHeight / 2}
-					tint={SIGNAL_RED}
-					blendMode="screen"
-					width={SYMBOL_SIZE * 1.02}
-					height={columnHeight * sweep}
-					alpha={0.72 * lit}
-				/>
-				<Sprite
-					key="capoSwBulletHoles"
-					anchor={{ x: 0.5, y: 0 }}
-					y={columnCentreY - columnHeight / 2}
-					width={SYMBOL_SIZE}
-					height={columnHeight}
-					alpha={0.28 * lit * sweep}
-				/>
-				<!-- the leading edge of the fill, brighter than what it leaves behind -->
-				<Sprite
-					key="fxStreak"
-					anchor={{ x: 0.5, y: 0.5 }}
-					y={columnCentreY - columnHeight / 2 + columnHeight * sweep}
-					rotation={Math.PI / 2}
-					tint={HOT}
-					blendMode="add"
-					width={SYMBOL_SIZE * 0.55}
-					height={SYMBOL_SIZE * 1.6}
-					alpha={0.85 * lit * Math.sin(Math.PI * Math.min(1, sweep))}
-				/>
-			{/if}
-
-			<!-- muzzle flash, at the cell the gun itself landed on -->
-			{#if column.flash.current > 0.01}
-				<Sprite
-					key="capoSwMuzzle"
-					anchor={{ x: 0.5, y: 0.5 }}
-					y={rowCenterY(column.row)}
-					tint={HOT}
-					blendMode="screen"
-					width={SYMBOL_SIZE * (0.9 + (FLASH_MAX - 0.9) * column.flash.current)}
-					height={SYMBOL_SIZE * (0.9 + (FLASH_MAX - 0.9) * column.flash.current)}
-					alpha={column.flash.current}
-				/>
-				<Sprite
-					key="capoSwMuzzle"
-					anchor={{ x: 0.5, y: 0.5 }}
-					y={rowCenterY(column.row)}
-					tint={0xffffff}
-					blendMode="add"
-					width={SYMBOL_SIZE * (0.6 + (FLASH_CORE_MAX - 0.6) * column.flash.current)}
-					height={SYMBOL_SIZE * (0.6 + (FLASH_CORE_MAX - 0.6) * column.flash.current)}
-					alpha={0.9 * column.flash.current}
-				/>
-				{#each [-1, 0, 1] as shellIndex}
-					<Sprite
-						key="capoSwShell"
-						anchor={0.5}
-						x={SYMBOL_SIZE * (0.24 + shellIndex * 0.12)}
-						y={rowCenterY(column.row) + SYMBOL_SIZE * (0.06 + Math.abs(shellIndex) * 0.1)}
-						rotation={shellIndex * 0.8 + column.flash.current * 2.4}
-						width={SYMBOL_SIZE * 0.22}
-						height={SYMBOL_SIZE * 0.22}
-						alpha={column.flash.current}
-					/>
-				{/each}
-			{/if}
-		</Container>
-	{/each}
+ {#each heldReels as reel (reel)}
+  <Container x={getSymbolX(reel)}>
+   <!-- Held = taped to the wall: a red keyline round the column and a strip of red
+        tape across each end. It used to be sw_locked.png, a stack of red X's over
+        the Wilds, which reads as "crossed out" — the opposite of "stays Wild". -->
+   <Graphics draw={drawHeld} />
+  </Container>
+ {/each}
+ {#each columns as column (column.reel)}
+  {@const sweep=column.sweep.current}
+  {@const lit=column.lit.current}
+  <Container x={getSymbolX(column.reel)}>
+   <Graphics draw={(g)=>{
+    g.clear();
+    const w=SYMBOL_SIZE; const end=columnHeight*sweep;
+    if(end<=0 || lit<=.01) return;
+    g.rect(-w*.47,0,w*.94,end);g.fill({color:SIGNAL_RED,alpha:.17*lit});
+    for(let i=0;i<6;i++){
+     const x=-w*.43+i*w*.16, length=Math.max(0,end-(i%3)*w*.13);
+     g.roundRect(x,0,w*.08,length,w*.04);g.fill({color:SIGNAL_RED,alpha:.7*lit});
+    }
+    // Paint-can nozzle follows the conversion front, with hard spray marks.
+    if(sweep<1){
+     g.roundRect(w*.15,end-w*.28,w*.24,w*.40,4);g.fill({color:0xf7f5f0});g.stroke({color:0x121212,width:2});
+     g.rect(w*.20,end-w*.34,w*.12,w*.08);g.fill({color:SIGNAL_RED});
+     for(let j=0;j<4;j++){g.moveTo(-w*.35,end+(j-2)*7);g.lineTo(w*.05,end+(j-2)*3);g.stroke({color:SIGNAL_RED,width:3});}
+    }
+   }} />
+  </Container>
+ {/each}
 </BoardContainer>

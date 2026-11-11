@@ -1,0 +1,33 @@
+{
+  "game": "turf-war",
+  "team": "silver-stars",
+  "published": true,
+  "front_version": 32,
+  "math_version": 7,
+  "upload_actions": 8,
+  "uploaded_bytes": 3510645,
+  "post_upload_remaining_actions": 0,
+  "build": "PASS",
+  "types": "0 errors, 0 warnings",
+  "known_failures_fixed": [
+    "Bruiser occurrence claim in rules and16 intro languages",
+    "Replay start contrast and keyboard focus"
+  ],
+  "approval": {
+    "open": false,
+    "locked": true,
+    "updated": false
+  },
+  "remaining_audit_risks": "See original51-item report; publication is not a claim that all human/device/currency checks passed.",
+  "platform_store_art_changed": false,
+  "source_sha256": {
+    "src/game/rulesText.ts": "15f84049a112f58ba8e964b1d283fecb4c4b72bdba4fc93d1ac9482725156600",
+    "src/game/i18nText.ts": "f6d754a42a1a974f5b099cbfc2d469be5d43fd881d72af1c2c729db5bb18a091",
+    "src/components/ui/IntroFeatures.svelte": "70b289d12664a31066147f065ffa779954fea210dbab17108046d80c2d47548f",
+    "src/components/ui/ReplayIntro.svelte": "85b30b8e97acd222930aa951be0019453e47f6675e4fdc1a5e737ca7797e1fe3",
+    "src/components/StreetLife.svelte": "771b4a7e855a65c7b85c648e254b9350efcfead7a9d2761f35a1bd73ff0124f1",
+    "src/components/Background.svelte": "4198810f4200ca9dd76deef82467931cc2267eb110d9f0474ab30b6d6db17b2d",
+    "src/components/SymbolSprite.svelte": "b8c5805395fcb2ae642057bed5db86a81b62b989a4ddc36d323135b3e717c88f",
+    "src/game/symbolIdleMotion.ts": "e5afa9716a4478653de8edfb383de4fa81d402237eaa0e7140b023c3bdf97225"
+  }
+}

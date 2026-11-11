@@ -6,10 +6,10 @@
 
 <script lang="ts">
 	/**
-	 * The Tommy Gun filling its reel with Wilds.
+	 * The Violin Case filling its reel with Wilds.
 	 *
 	 * This owns BOTH the beat and the substitution, and the substitution is not
-	 * optional. `reveal` carries the board as DEALT — the gun still sitting in
+	 * optional. `reveal` carries the board as DEALT — the case still sitting in
 	 * its cell and the rest of the reel untouched — while the maths evaluated
 	 * the spin against a reel that was already all Wild. Nothing else in the
 	 * stream ever restates that board, so without the swap below the player
@@ -17,22 +17,24 @@
 	 *
 	 * Splitting it this way is deliberate rather than a workaround: emitting the
 	 * post-expansion board from `reveal` instead would fix the mismatch and
-	 * throw away the feature, because the gun would never be seen landing.
+	 * throw away the feature, because the case would never be seen landing.
 	 *
 	 * Three beats, in order:
 	 *
-	 *   1. muzzle flash at the gun's own cell            (~90ms)
+	 *   1. the case opens at its own cell, light behind it (~90ms)
 	 *   2. a beam sweeping down the reel, turning each
 	 *      cell Wild as it passes                        (~260ms)
 	 *   3. the column holding lit, then fading           (~380ms)
 	 *
-	 * The sweep runs top-to-bottom from the gun rather than outward from it in
+	 * The sweep runs top-to-bottom from the case rather than outward from it in
 	 * both directions: a single direction reads as the column being *filled*,
 	 * which is what happened, while a symmetric bloom reads as an explosion,
 	 * which is not.
 	 *
-	 * The dedicated comic-print beam, muzzle flash, shells and impact texture are
-	 * authored under sprites/capoFx and share the Tommy Gun's signal-red accent.
+	 * Art Deco B version (2026-10-04): the Tommy Gun's muzzle flash, shells,
+	 * bullet holes and red beam are gone. The case opening is its own art
+	 * (capoFx/sw_case_open.png) and the column is a paper-white stepped beam
+	 * (design/build_sw_beam.py). No red: red belongs to the multiplier frames.
 	 */
 	import { Tween } from 'svelte/motion';
 	import { backOut, cubicOut } from 'svelte/easing';
@@ -43,15 +45,14 @@
 	import { SYMBOL_SIZE, BOARD_DIMENSIONS } from '../game/constants';
 	import { featureScaled } from '../game/timeScale';
 	import { getSymbolX } from '../game/utils';
+	import { BONE } from '../game/palette';
 	import BoardContainer from './BoardContainer.svelte';
 
 	const context = getContext();
 
-	// The one saturated red in the game. ART_BRIEF.md reserves #C1272D for this
-	// mechanic and nothing else, so a red flash on the board can only ever mean
-	// the Tommy Gun.
-	const SIGNAL_RED = 0xc1272d;
-	const HOT = 0xffb08a;
+	// Paper white (ART_BRIEF §0.3). The special wild is told apart by light, not
+	// by colour: red is the multiplier frames' and nothing else's.
+	const PAPER = BONE;
 
 	// Rows are padded by one on the wire, so the drawn column spans the four
 	// playable rows starting at padded row 1 — centres at (r - 0.5) * SYMBOL_SIZE.
@@ -62,14 +63,14 @@
 	const SWEEP_MS = 260;
 
 	/**
-	 * Ceiling on the muzzle flash, in cells.
+	 * Ceiling on the opening flash, in cells.
 	 *
 	 * WildColumns is a SIBLING of Board, not a child of it — that is deliberate,
 	 * because additive light drawn inside BoardMask would have nothing to add to
 	 * and would vanish. The cost of sitting outside the mask is that nothing
 	 * clips this sprite, so its size is the only thing keeping it on the board.
 	 *
-	 * The gun can land on the top or the bottom row, and from either of those
+	 * The case can land on the top or the bottom row, and from either of those
 	 * cell centres the board edge is half a cell away. A sprite of k cells
 	 * centred there spills (k / 2 - 0.5) cells past the edge, so k = 3.0 — what
 	 * this was — threw the explosion a full cell past the board and onto the bet
@@ -104,7 +105,7 @@
 		sweep: Tween<number>;
 		/** overall column brightness, held after the sweep then faded */
 		lit: Tween<number>;
-		/** the muzzle flash at the gun's own cell */
+		/** the case opening, at its own cell */
 		flash: Tween<number>;
 	};
 
@@ -122,7 +123,7 @@
 		wildColumnExpand: async ({ wilds }) => {
 			columns = wilds.map(makeColumn);
 
-			// Guns on separate reels fire together rather than in sequence. Two
+			// Cases on separate reels open together rather than in sequence. Two
 			// columns is already the good outcome; staggering them would make the
 			// second one read as a consolation rather than as a doubling.
 			await Promise.all(
@@ -170,19 +171,11 @@
 					key="capoSwBeam"
 					anchor={{ x: 0.5, y: 0 }}
 					y={columnCentreY - columnHeight / 2}
-					tint={SIGNAL_RED}
-					blendMode="screen"
+					tint={PAPER}
+					blendMode="add"
 					width={SYMBOL_SIZE * 1.02}
 					height={columnHeight * sweep}
-					alpha={0.72 * lit}
-				/>
-				<Sprite
-					key="capoSwBulletHoles"
-					anchor={{ x: 0.5, y: 0 }}
-					y={columnCentreY - columnHeight / 2}
-					width={SYMBOL_SIZE}
-					height={columnHeight}
-					alpha={0.28 * lit * sweep}
+					alpha={0.5 * lit}
 				/>
 				<!-- the leading edge of the fill, brighter than what it leaves behind -->
 				<Sprite
@@ -190,7 +183,7 @@
 					anchor={{ x: 0.5, y: 0.5 }}
 					y={columnCentreY - columnHeight / 2 + columnHeight * sweep}
 					rotation={Math.PI / 2}
-					tint={HOT}
+					tint={PAPER}
 					blendMode="add"
 					width={SYMBOL_SIZE * 0.55}
 					height={SYMBOL_SIZE * 1.6}
@@ -198,40 +191,31 @@
 				/>
 			{/if}
 
-			<!-- muzzle flash, at the cell the gun itself landed on -->
+			<!-- the case opening, at the cell it landed on: a paper-white flash
+			     behind it, and the open-lid art over the closed case. The open case
+			     stays up while the column is lit; only its pop in size follows the
+			     flash. -->
 			{#if column.flash.current > 0.01}
 				<Sprite
-					key="capoSwMuzzle"
+					key="fxGlow"
 					anchor={{ x: 0.5, y: 0.5 }}
 					y={rowCenterY(column.row)}
-					tint={HOT}
-					blendMode="screen"
+					tint={PAPER}
+					blendMode="add"
 					width={SYMBOL_SIZE * (0.9 + (FLASH_MAX - 0.9) * column.flash.current)}
 					height={SYMBOL_SIZE * (0.9 + (FLASH_MAX - 0.9) * column.flash.current)}
-					alpha={column.flash.current}
+					alpha={0.8 * column.flash.current}
 				/>
+			{/if}
+			{#if column.flash.current > 0.01 || column.lit.current > 0.01}
 				<Sprite
-					key="capoSwMuzzle"
+					key="capoSwCaseOpen"
 					anchor={{ x: 0.5, y: 0.5 }}
 					y={rowCenterY(column.row)}
-					tint={0xffffff}
-					blendMode="add"
-					width={SYMBOL_SIZE * (0.6 + (FLASH_CORE_MAX - 0.6) * column.flash.current)}
-					height={SYMBOL_SIZE * (0.6 + (FLASH_CORE_MAX - 0.6) * column.flash.current)}
-					alpha={0.9 * column.flash.current}
+					width={SYMBOL_SIZE * (0.9 + (FLASH_CORE_MAX - 0.9) * column.flash.current)}
+					height={SYMBOL_SIZE * (0.9 + (FLASH_CORE_MAX - 0.9) * column.flash.current)}
+					alpha={Math.max(column.flash.current, column.lit.current)}
 				/>
-				{#each [-1, 0, 1] as shellIndex}
-					<Sprite
-						key="capoSwShell"
-						anchor={0.5}
-						x={SYMBOL_SIZE * (0.24 + shellIndex * 0.12)}
-						y={rowCenterY(column.row) + SYMBOL_SIZE * (0.06 + Math.abs(shellIndex) * 0.1)}
-						rotation={shellIndex * 0.8 + column.flash.current * 2.4}
-						width={SYMBOL_SIZE * 0.22}
-						height={SYMBOL_SIZE * 0.22}
-						alpha={column.flash.current}
-					/>
-				{/each}
 			{/if}
 		</Container>
 	{/each}

@@ -47,6 +47,15 @@ export const uiTheme = $state({
 	valueFontFamily: null as string | null,
 	valueFontWeight: null as FontWeight | null,
 	labelFontWeight: null as FontWeight | null,
+	// The STACKED readouts (portrait: Win / Balance / Bet on their own plates).
+	// A game whose caption face is a display face can set a plainer one here —
+	// Capo Nostra's Limelight "BET" read as "RFT" at portrait size — and whose
+	// plate art has a deep frame can shrink both lines and centre them on the
+	// plate (its text ran over the plate's top and bottom borders). null / 1
+	// render exactly what every game rendered before (2026-10-12).
+	stackedLabelFontFamily: null as string | null,
+	stackedLabelFontWeight: null as FontWeight | null,
+	stackedTextScale: 1,
 
 	// buttons
 	buttonFill: 0x1d0b28,
@@ -232,6 +241,7 @@ export const uiTheme = $state({
 	// pale slab with bright text on it - louder than the enabled state it is
 	// meant to be quieter than.
 	buyBonusDisabledStyle: 'grey' as 'grey' | 'dim',
+	// (buyBonusDisabledFill is defined above.)
 
 	buyBonusPlateScale: 1,
 
@@ -371,11 +381,29 @@ export const uiTheme = $state({
 	// starts to look like a loading spinner, which says "wait" rather than "press".
 	buyBonusHoverSpin: 0,
 	buyBonusHoverSpinRays: 12,
+	// Spokes / Inner / Knob below come from the capo-turf-hardtime branch's dial
+	// version of BuyBonusHoverSpin. This checkout keeps the RAYS version (Treasure
+	// Monkey uses it; every capo-branch game sets buyBonusHoverSpin 0), so these
+	// three are accepted but not drawn.
+	//
+	// Spokes. Pick it from the ART the dial is quoting rather than by eye — and
+	// then pick the SPEED from it too: spokes x degrees-per-second = 360 gives a
+	// visual revolution of exactly one second, which is the cleanest thing a
+	// repeating radial pattern can do.
+	buyBonusHoverSpinSpokes: 8,
 	buyBonusHoverSpinColor: 0xffd98a,
-	// Ring radius as a multiple of the plate's half-DIAGONAL, so it clears the
-	// corners of a rectangular plate rather than only its edges. Below 1 the rays
-	// hide behind the plate entirely and nothing shows.
+	// Outer and inner radius, as multiples of the plate's half-MINIMUM-side.
+	//
+	// ⚠ `inner` is not decoration. The dial is drawn UNDER the caption, so an
+	// inner radius that does not clear the text has spokes running through the
+	// words. Set it against the label's actual block, and shrink
+	// buyBonusLabelSizeRatio if there is no room — making that room is the point.
+	// Rays version: ring radius as a multiple of the plate's half-DIAGONAL, so it
+	// clears the corners of a rectangular plate. Below 1 the rays hide behind it.
 	buyBonusHoverSpinRadius: 1.12,
+	buyBonusHoverSpinInner: 0.52,
+	// Knob at each spoke's outer end, as a fraction of the outer radius.
+	buyBonusHoverSpinKnob: 0.1,
 
 	// What colour that glow is.
 	//
@@ -485,12 +513,33 @@ export const uiTheme = $state({
 	// for turbo exactly as before.
 	turboButtonScale: undefined as number | undefined,
 
+	// Corner radius of the round controls, as a fraction of their width. 0.5 is
+	// a circle, which is what the flat drawn button is. A game whose `button`
+	// plate art is a rounded SQUARE sets its measured radius here, so the ON
+	// ring, the pressed shadow and the hover lift follow the plate's outline —
+	// otherwise a circle is stroked over a square plate (Hard Time turbo,
+	// 2026-09-25: 「又有圓形又有方形」).
+	buttonCornerRadius: 0.5,
+
 	// Size of the turbo BOLT relative to its button (UiButton draws it as a
 	// vector, not a sprite). The component's own value is 0.72, tuned for a flat
 	// circle where the whole face is usable. On plate art with a rim, 0.72 puts
 	// the bolt's tips at ~0.80 of the button's radius — past a recess that
 	// typically ends near 0.64. Unset = 0.72 for every game, as before.
 	turboIconScale: undefined as number | undefined,
+
+	// Nudge for the stacked caption + value readouts on the bar (Balance, Win,
+	// Bet), in bar units; negative lifts. pixi centres the text BOX, measured on
+	// '|ÉqÅM', so capitals sit ~8-12% of the font size below its middle and a
+	// stack reads low on the strip: Pickle Panic sat 4px low (2026-10-16).
+	// Unset = previous behaviour, for every game.
+	barReadoutOffsetY: undefined as number | undefined,
+	smallViewportReadouts: false,
+	alignReadoutInk: false,
+	externalFreeSpinCounter: false,
+	// The same nudge for a stacked caption + value drawn on its own tile (the
+	// portrait Balance / Win / Bet plates), in the label's units. Unset = as before.
+	stackedTileTextOffsetY: undefined as number | undefined,
 
 	// Per-icon sprite scale, checked BEFORE UiButton's own per-icon map and the
 	// buttonIconScale fallback. Exists because one fallback cannot fit every
@@ -515,6 +564,11 @@ export const uiTheme = $state({
 	//              readout centres between them.
 	// Default 'stacked' — every game that names nothing is unchanged.
 	stepperLayout: 'stacked' as 'stacked' | 'flank',
+	// 'flank' only — the capo-turf-hardtime branch's flank geometry: Balance and
+	// Win cells widen to 360 each, the − BET + group fills DIV_3 → the spin pod,
+	// replay sits at the left of that group, and barMessage is not drawn. Set by
+	// Capo Nostra / Turf War / Hard Time. Default false: main's flank.
+	flankWideCells: false,
 	// Hide Buy Bonus while a free-spin feature runs (stateUi.freeSpinCounterShow).
 	// It cannot be pressed then anyway, and drawn beside the feature it reads as
 	// an offer. Default off.
@@ -575,8 +629,8 @@ export const uiTheme = $state({
 	// Portrait spin row: menu and Buy Bonus sit this far either side of centre
 	// (main-layout units). 470 was sized for the original round buttons; a larger
 	// menu disc or a plate drawn past its box (buyBonusPlateScale) runs off the
-	// screen edge at that distance. Buy Bonus cannot simply come in - turbo is
-	// next to it - so its portrait scale is separate. Defaults preserve every game.
+	// screen edge at that distance. Buy Bonus cannot simply come in — turbo is
+	// next to it — so its portrait scale is separate. Defaults preserve every game.
 	portraitSideButtonX: 470,
 	portraitBuyBonusScale: 1,
 	// Portrait spin row: scale of the bet -/+ pair either side of the spin
@@ -585,6 +639,15 @@ export const uiTheme = $state({
 	// clears both the spin button and the autospin/turbo pair at ±285. Default
 	// preserves every game.
 	portraitStepButtonScale: 0.5,
+
+	// Portrait spin row sizing. Defaults are the values LayoutPortrait always
+	// hard-coded: menu disc at 1, the +/- pair at 0.5 each 170 out from the spin
+	// button, autospin/turbo at 285. A game raising the stepper moves the side
+	// pair out with it, or the plates touch.
+	portraitMenuScale: 1,
+	portraitStepScale: 0.5,
+	portraitStepX: 170,
+	portraitSideClusterX: 285,
 
 	// ── Platform UX conventions ──────────────────────────────────────────────
 	//
@@ -755,6 +818,11 @@ export const uiTheme = $state({
 	barFrameBottom: 12,
 	spinScale: 0.78,
 
+	// compactBottom only — centre of the right-most (turbo) button in from the
+	// strip's inner right edge; autoplay, spin and the bet group follow it.
+	// Undefined keeps the original 33.
+	barTurboInset: undefined as number | undefined,
+
 	// compactBottom only — keep the oversized Buy Bonus where the side-rail layout
 	// put it (left of the board, vertically centred) instead of dropping it into
 	// the strip. Buying the feature is a deliberate, occasional action; it does not
@@ -772,8 +840,14 @@ export const uiTheme = $state({
 	// sideRail only.
 	railPanelScale: 0.62,
 	buyBonusRailScale: 2.4,
+
+	// compactBottom only: vertical centre of the off-strip Buy Bonus plate, as a
+	// fraction of the standard box height. A game with a cast member standing in
+	// the left band moves it down over the figure's legs instead of its chest.
+	buyBonusYFraction: 0.46,
 });
 
 export type UiTheme = typeof uiTheme;
 
-export const setUiTheme = (partial: Partial<UiTheme>) => Object.assign(uiTheme, partial);
+export const setUiTheme = (partial: Partial<UiTheme>) =>
+	Object.assign(uiTheme, partial);

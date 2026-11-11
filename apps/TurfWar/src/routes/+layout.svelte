@@ -2,6 +2,7 @@
 	import { type Snippet } from 'svelte';
 	import { GlobalStyle } from 'components-ui-html';
 	import { Authenticate, LoadI18n } from 'components-shared';
+	import { stateModal } from 'state-shared';
 	import Game from '../components/Game.svelte';
 	import IntroFeatures from '../components/ui/IntroFeatures.svelte';
 	import { setContext } from '../game/context';
@@ -25,6 +26,11 @@
 	<Authenticate>
 		<LoadI18n {messagesMap}>
 			<Game />
+			<!-- Resolve the RGS jurisdiction before freezing intro copy/locale.
+			     An authentication error must remain above the opening, too. -->
+			{#if showIntro && stateModal.modal?.name !== 'error'}
+				<IntroFeatures onclose={() => (showIntro = false)} />
+			{/if}
 		</LoadI18n>
 	</Authenticate>
 </GlobalStyle>
@@ -39,8 +45,4 @@
 	build/ and is still served. Keeping it "so restoring it is one line" is
 	precisely what that line forbids (approval-guidelines.md, PreChecks).
 -->
-{#if showIntro}
-	<IntroFeatures onclose={() => (showIntro = false)} />
-{/if}
-
 {@render props.children()}

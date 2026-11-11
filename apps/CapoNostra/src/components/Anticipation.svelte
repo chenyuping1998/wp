@@ -102,16 +102,15 @@
 		draw={(g) => {
 			const h = BOARD_SIZES.height;
 			g.clear();
-			g.beginFill(0xC9A227, (0.1 + 0.12 * pulse) * intensity);
-			g.drawRoundedRect(LEFT + 3, 3, SYMBOL_SIZE - 6, h - 6, 12);
-			g.endFill();
+			g.roundRect(LEFT + 3, 3, SYMBOL_SIZE - 6, h - 6, 12);
+			g.fill({ color: 0xd4d0c6, alpha: (0.1 + 0.12 * pulse) * intensity });
 
 			// full-height frame: nested strokes so the edge reads as a lit tube
 			// Pixi 8 strokes: build path, then stroke. v7's lineStyle renders nothing.
 			g.roundRect(LEFT + 2, 2, SYMBOL_SIZE - 4, h - 4, 13);
-			g.stroke({ width: 7, color: 0xC9A227, alpha: (0.3 + 0.34 * pulse) * intensity });
+			g.stroke({ width: 7, color: 0xd4d0c6, alpha: (0.3 + 0.34 * pulse) * intensity });
 			g.roundRect(LEFT + 6, 6, SYMBOL_SIZE - 12, h - 12, 10);
-			g.stroke({ width: 3, color: 0xE8D48B, alpha: (0.45 + 0.4 * pulse) * intensity });
+			g.stroke({ width: 3, color: 0xf7f4ec, alpha: (0.45 + 0.4 * pulse) * intensity });
 			if (fullTier) {
 				// white core — the tier-2 tell that the trigger count is already met
 				g.roundRect(LEFT + 10, 10, SYMBOL_SIZE - 20, h - 20, 8);
@@ -124,7 +123,7 @@
 				g.moveTo(LEFT + 14, y);
 				g.lineTo(LEFT + SYMBOL_SIZE - 14, y);
 			}
-			g.stroke({ width: 1.5, color: 0xE8D48B, alpha: (0.16 + 0.2 * pulse) * intensity });
+			g.stroke({ width: 1.5, color: 0xf7f4ec, alpha: (0.16 + 0.2 * pulse) * intensity });
 
 			// chevrons converging on the column from above and below — full tier only
 			if (fullTier) {
@@ -135,7 +134,7 @@
 				g.moveTo(x - SYMBOL_SIZE * 0.12, h + chev + 10);
 				g.lineTo(x, h + chev);
 				g.lineTo(x + SYMBOL_SIZE * 0.12, h + chev + 10);
-				g.stroke({ width: 4, color: 0xE8D48B, alpha: 0.5 + 0.4 * pulse });
+				g.stroke({ width: 4, color: 0xf7f4ec, alpha: 0.5 + 0.4 * pulse });
 			}
 		}}
 	/>
@@ -157,7 +156,7 @@
 			y={beam.y * BOARD_SIZES.height}
 			width={SYMBOL_SIZE * 0.92}
 			height={SYMBOL_SIZE * beam.height * 3}
-			tint={fullTier ? 0xffffff : 0xffdf9e}
+			tint={fullTier ? 0xffffff : 0xe5e1d8}
 			blendMode="add"
 			alpha={beam.alpha}
 		/>
@@ -172,7 +171,7 @@
 			y={railY}
 			width={SYMBOL_SIZE * (fullTier ? 1.35 : 1.05)}
 			height={SYMBOL_SIZE * (fullTier ? 0.7 : 0.5)}
-			tint={0xC9A227}
+			tint={0xd4d0c6}
 			blendMode="add"
 			alpha={(0.22 + 0.3 * pulse) * intensity}
 		/>

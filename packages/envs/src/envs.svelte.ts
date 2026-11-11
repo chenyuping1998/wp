@@ -1,8 +1,15 @@
 import * as envStaticPublic from '$env/static/public';
 
-export let PUBLIC_SITE_MODE = envStaticPublic.PUBLIC_SITE_MODE;
-export let PUBLIC_SENTRY_DSN = envStaticPublic.PUBLIC_SENTRY_DSN;
-export let PUBLIC_CHROMATIC = envStaticPublic.PUBLIC_CHROMATIC === 'true';
+// Each app's generated module only declares the variables configured for it.
+// Optional public settings remain undefined when an app does not set them.
+const publicSettings = envStaticPublic as {
+	PUBLIC_SITE_MODE?: string;
+	PUBLIC_SENTRY_DSN?: string;
+	PUBLIC_CHROMATIC?: string;
+};
+export let PUBLIC_SITE_MODE = publicSettings.PUBLIC_SITE_MODE;
+export let PUBLIC_SENTRY_DSN = publicSettings.PUBLIC_SENTRY_DSN;
+export let PUBLIC_CHROMATIC = publicSettings.PUBLIC_CHROMATIC === 'true';
 
 // ==============================================================================================================================
 // $env/dynamic/private

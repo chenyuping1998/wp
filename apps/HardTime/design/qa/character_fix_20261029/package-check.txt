@@ -1,0 +1,13 @@
+[36m==> 7. sanity checks (the actual gate, not the zip)[39m
+  base        books= 40000 lut= 40000 payout mismatches=0      RTP=0.9605 max=12,000x  ok
+  bonus       books= 20000 lut= 20000 payout mismatches=0      RTP=0.9606 max=12,000x  ok
+  bonus_epic  books= 20000 lut= 20000 payout mismatches=0      RTP=0.9609 max=12,000x  ok
+  bonus_hits  books= 20000 lut= 20000 payout mismatches=0      RTP=0.9607 max=12,000x  ok
+  RTP spread across modes: 0.0004 (limit 0.005)
+OK: math bundle is internally consistent
+OK: 177 staged frontend/art hashes match
+cover BG /Users/stone/stake-engine/upload/HardTime/cover/HardTime-Cover-BG.png: mean=134.1 p10=90.9 dark<32=0.6% PASS
+cover FG transparent=68.6%; COMPOSITE mean=116.4 p10=43.4 dark<32=5.7% (visual inspection still required)
+thumbnail BG /Users/stone/stake-engine/upload/HardTime/thumbnail/HardTime-BG.png: mean=137.5 p10=66.9 dark<32=1.9% PASS
+thumbnail FG transparent=76.9%; COMPOSITE mean=131.0 p10=57.3 dark<32=3.5% (visual inspection still required)
+  all clean

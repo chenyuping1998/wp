@@ -30,7 +30,10 @@ import { fileURLToPath } from 'url';
 import { FOLD_FLOOR, STRETCH_CAP, loadCastMesh } from './lib/castMesh.mjs';
 
 const appRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
-const motion = await import(path.join(appRoot, 'src/game/castMotion.ts'));
+// --motion=<file> points the rules at another table so they can be PROVEN to
+// fire (e.g. the pre-2026-09-23 transcription must fail rule 6).
+const motionArg = process.argv.find((a) => a.startsWith('--motion='))?.slice(9);
+const motion = await import(path.resolve(motionArg ?? path.join(appRoot, 'src/game/castMotion.ts')));
 const { IDLE, TIERS, MOTION_SCALE, idleAngle, reactionEnvelope, LOOP_MS } = motion;
 
 const REPORT = process.argv.includes('--report');
@@ -254,44 +257,38 @@ for (const tierName of TIER_ORDER) {
 	}
 }
 
-// ── rule 6: the arms act through their SHAPE, not only their angle ───────────
+// ── rule 6: an arm may BULGE, it may not STRETCH ────────────────────────────
 //
-// This rule used to say "the free end carries multiples of the body" and
-// measured it as ROTATION: fore_l at least 2x the chest. That number came from
-// Miami Mayhem's raw Spine rigs, where an arm is its own attachment and can turn
-// 18-20 degrees fighting nothing. On one continuous mesh an arm cannot, and the
-// tables written to satisfy the ratio pushed the gesture into a forearm swinging
-// 6.7 degrees — a flat limb flapping, and on this drawing past where his hand
-// stays a hand.
+// History: until 2026-09-23 this rule demanded the transcription's arm shape —
+// a driving arm lengthening 1.23x. That made the arms read 「很像沒骨頭一樣」:
+// on a 16x40 lattice a whole arm scaled along itself cannot move as one piece
+// and bows. On 2026-09-23 it was reversed to "no arm squash at all". On
+// 2026-09-24 the Miami motion pack showed the 1.23 was never a stretch: Spine's
+// scaleX is ALONG a bone and scaleY ACROSS, and the reference's arm_r is
+// 1.00 x 1.23 — the upper arm bulges and keeps its length; its bracing forearm
+// is 1.063 x 0.799. None of the four Miami characters with a reaction
+// lengthens an arm more than 6%.
 //
-// The transcription keeps the principle and moves it to the channel a mesh can
-// carry: its arms barely rotate; the driving arm lengthens 1.23x and thickens,
-// the bracing arm compresses along its bone and bulges across. So every tier's
-// shape must have a driving arm that LENGTHENS and a bracing arm on the other
-// side that COMPRESSES, and the lengthening must survive the tier's k.
-const MIN_VISIBLE_STRETCH = 0.02; // 2% along the bone, after k
-const SIDE = { arm_l: 'l', fore_l: 'l', arm_r: 'r', fore_r: 'r' };
+// So: no arm bone may scale ALONG itself by more than the reference's 6%
+// either way, and the gesture must still have a driving arm that bulges across.
+const ARM_SIDE = { arm_l: 'l', fore_l: 'l', arm_r: 'r', fore_r: 'r' };
+const MAX_ALONG = 0.065;
+const MIN_BULGE = 0.02; // across, after k
 for (const tierName of TIER_ORDER) {
 	const tier = TIERS[tierName];
 	if (!tier) continue;
 	const shape = tier.scale?.shape ?? {};
 	const k = tier.scale?.k ?? 0;
-	const drivers = Object.entries(shape).filter(([b, [along]]) => SIDE[b] && along > 1);
-	const bracers = Object.entries(shape).filter(([b, [along]]) => SIDE[b] && along < 1);
-	const driverSides = new Set(drivers.map(([b]) => SIDE[b]));
-	const braceSides = new Set(bracers.map(([b]) => SIDE[b]));
-	if (!drivers.length) {
-		fail(`${tierName}: no arm lengthens — the gesture has no driving arm, so the limbs can only rotate`);
-		continue;
+	for (const [bone, [along]] of Object.entries(shape)) {
+		if (ARM_SIDE[bone] && Math.abs(along - 1) > MAX_ALONG) {
+			fail(`${tierName}: ${bone} scales ${along}x ALONG the bone — the reference's arms keep their length (at most 1.063); a stretched arm with a pinned hand bows like rubber`);
+		}
 	}
-	if (![...braceSides].some((side) => !driverSides.has(side))) {
-		fail(`${tierName}: no arm on the OTHER side compresses — the reference's gesture is one arm throwing out while the other braces`);
+	const bulge = Math.max(0, ...Object.entries(shape).filter(([b]) => ARM_SIDE[b]).map(([, [, across]]) => (across - 1) * k));
+	if (bulge < MIN_BULGE) {
+		fail(`${tierName}: no arm bulges across by ${MIN_BULGE * 100}% after k — the reference's force reads as the upper arm swelling, not the limb turning`);
 	}
-	const bestStretch = Math.max(...drivers.map(([, [along]]) => (along - 1) * k));
-	if (bestStretch < MIN_VISIBLE_STRETCH) {
-		fail(`${tierName}: the driving arm lengthens only ${(bestStretch * 100).toFixed(1)}% after k — under ${MIN_VISIBLE_STRETCH * 100}% the shape channel is present in name only`);
-	}
-	note(`${tierName.padEnd(7)} driving ${drivers.map(([b]) => b).join('+')} +${(bestStretch * 100).toFixed(1)}%, bracing ${bracers.map(([b]) => b).join('+')}`);
+	note(`${tierName.padEnd(7)} arm bulge +${(bulge * 100).toFixed(1)}% across, none stretched along`);
 }
 
 // ── rule 6b: the spine may not act bigger than the transcription does ────────

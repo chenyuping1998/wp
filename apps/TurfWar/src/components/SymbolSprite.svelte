@@ -8,8 +8,9 @@
 	import { stateGame } from '../game/stateGame.svelte';
 	import { SYMBOL_SIZE } from '../game/constants';
 	import { getSymbolLandMotion, LAND_MS } from '../game/symbolLandMotion';
-	import { idlePhase, idleScale } from '../game/idleBreathe';
+	import { idlePhase } from '../game/idleBreathe';
 	import { idleClock, useIdleClock } from '../game/idleClock.svelte';
+	import { symbolIdleFrame } from '../game/symbolIdleMotion';
 
 	type Props = {
 		x?: number;
@@ -17,10 +18,8 @@
 		symbolInfo: ReturnType<typeof getSymbolInfo>;
 		/** which symbol this is — selects its landing motion */
 		symbolName?: string;
-		// How fast the reel is travelling, 0..1, driving a cheap motion blur
-		// (vertical stretch + ghosts). Continuous rather than a boolean so the
-		// blur eases off through the bounce instead of snapping away the instant
-		// the reel changes state.
+		// Moving-reel marker: suppress idle acts. ReelMotion owns the measured
+		// velocity blur for the entire strip, as in Go Bananeon.
 		blur?: number;
 		// symbol just landed: impact squash before settling to static
 		landing?: boolean;
@@ -107,23 +106,13 @@
 	const blur = $derived(Math.max(0, Math.min(1, props.blur ?? 0)));
 	const focusScale = $derived(props.focus?.scale ?? 1);
 
-	// ── idle breath ────────────────────────────────────────────────────────────
-	//
-	// A settled board was the one state nothing animated: every symbol a still
-	// PNG, which is exactly the diagnosis review gave a sibling game in this repo
-	// ("nothing moving on a settled board, which is what a player looks at most
-	// of the time"). About 1% of scale, each cell on its own phase. See
-	// game/idleBreathe.ts for why the variation is in the phase and not in the
-	// shape.
-	//
-	// Not while the reel is moving (the strip is blurred and travelling, and a
-	// breath would fight the motion blur), and not while landing (the landing
-	// motion owns the symbol for those 240ms).
+	// Quiet settled board: sparse, cell-scheduled accents; no constant scaling.
 	const idling = $derived(!props.landing && blur <= 0.01);
-	const breath = $derived(
-		idling && props.cell
-			? idleScale(idleClock.t, idlePhase(props.cell.reel, props.cell.row))
-			: 1,
+	const breath = 1;
+	const idle = $derived(
+		idling && props.cell && !props.dim && !props.focus
+			? symbolIdleFrame(props.symbolName ?? '', idleClock.t, idlePhase(props.cell.reel, props.cell.row))
+			: null,
 	);
 
 	$effect(() => {
@@ -206,30 +195,8 @@
 	});
 </script>
 
-{#if blur > 0.01}
-	<!-- ghost trail: same art, offset and faded, sells the motion blur. Offset,
-	     opacity and stretch all scale with speed, so the trail shortens and fades
-	     as the reel brakes rather than vanishing in one frame. -->
-	<Sprite
-		x={props.x}
-		y={(props.y ?? 0) - height * 0.42 * blur}
-		anchor={0.5}
-		key={props.symbolInfo.assetKey}
-		width={width * 0.96 * focusScale}
-		height={height * (1 + 0.18 * blur) * focusScale}
-		alpha={0.22 * blur}
-	/>
-	<Sprite
-		x={props.x}
-		y={(props.y ?? 0) + height * 0.42 * blur}
-		anchor={0.5}
-		key={props.symbolInfo.assetKey}
-		width={width * 0.96 * focusScale}
-		height={height * (1 + 0.18 * blur) * focusScale}
-		alpha={0.22 * blur}
-	/>
-{/if}
-
+<!-- Neon applies velocity-based blur once to the reel, without stretching,
+     fading or duplicating the symbol artwork. blur only suppresses idle acts. -->
 {#if landing && blur <= 0.01}
 	<!--
 		Landing. Wrapped in a Container so the symbol can rotate and offset about
@@ -253,7 +220,7 @@
 				rotation={overlay.rotation}
 				alpha={overlay.alpha * Math.min(1, weight)}
 				tint={overlay.tint}
-				blendMode="add"
+				blendMode="normal"
 			/>
 		{/each}
 		<!--
@@ -300,7 +267,7 @@
 				rotation={overlay.rotation}
 				alpha={overlay.alpha * Math.min(1, weight)}
 				tint={overlay.tint}
-				blendMode="add"
+				blendMode="normal"
 			/>
 		{/each}
 	</Container>
@@ -315,21 +282,25 @@
 		two it drew.
 	-->
 	<Container
-		x={props.x}
-		y={props.y}
+		x={(props.x ?? 0) + (idle ? idle.dx * SYMBOL_SIZE : 0)}
+		y={(props.y ?? 0) + (idle ? idle.dy * SYMBOL_SIZE : 0)}
+		rotation={idle?.rotation ?? 0}
 		scale={{
-			x: focusScale * breath,
-			y: focusScale * breath * (blur > 0.01 ? 1 + 0.3 * blur : 1),
+			x: focusScale * breath * (idle?.scaleX ?? 1),
+			y: focusScale * breath * (idle?.scaleY ?? 1),
 		}}
-		alpha={(1 - 0.15 * blur) * dimAlpha}
+		alpha={dimAlpha * (idle?.alpha ?? 1)}
 		tint={dimTint}
 	>
 		<SymbolArt
 			symbolInfo={props.symbolInfo}
 			symbolName={props.symbolName}
-			mode="none"
+			mode={idle ? 'idle' : 'none'}
 			cell={blur > 0.01 ? undefined : props.cell}
 			swayT={idling ? idleClock.t : undefined}
+			idleAct={idle?.act}
+			idleU={idle?.actU}
+			idleLoop={idle?.loopU}
 		/>
 	</Container>
 	<!-- focus bloom: additive copy of the same art, so the teased reel reads as
@@ -341,10 +312,10 @@
 			anchor={0.5}
 			key={props.symbolInfo.assetKey}
 			width={width * focusScale}
-			height={(blur > 0.01 ? height * (1 + 0.3 * blur) : height) * focusScale}
+			height={height * focusScale}
 			tint={0xd9d6ce}
 			alpha={focusBloom}
-			blendMode="add"
+			blendMode="normal"
 		/>
 	{/if}
 {/if}

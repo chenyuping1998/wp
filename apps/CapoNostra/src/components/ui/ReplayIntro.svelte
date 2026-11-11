@@ -84,6 +84,21 @@
 	);
 
 	const fmtMult = (value: number) => `${Number(value.toFixed(4))}x`;
+
+	// The same six rows, handed to the bottom bar so they are still on screen
+	// after the card is dismissed and after every run (stateReplay.summary).
+	// Stake review of Deadwood Express, 2026-10-04: the replay's end bar lacked
+	// the card's information. Ported from Deadwood's ReplayIntro (2026-10-14).
+	$effect(() => {
+		stateReplay.summary = [
+			{ label: L.mode, value: modeLabel },
+			{ label: L.baseBet, value: numberToCurrencyString(baseBet) },
+			{ label: L.costMultiplier, value: fmtMult(costMultiplier) },
+			{ label: L.totalCost, value: numberToCurrencyString(totalCost) },
+			{ label: L.payoutMultiplier, value: fmtMult(payoutMultiplier), tone: 'win' },
+			{ label: L.totalWin, value: numberToCurrencyString(totalWin, WIN_MAX_FRACTION_DIGITS), tone: 'win' },
+		];
+	});
 </script>
 
 <!-- above the paytable/info layer: the round must not start behind an open panel -->
@@ -176,10 +191,10 @@
 		box-sizing: border-box;
 		padding: 1.25rem;
 		border-radius: 14px;
-		background: linear-gradient(180deg, rgba(34, 27, 20, 0.98) 0%, rgba(14, 11, 8, 0.99) 100%);
-		border: 1px solid rgba(232, 212, 139, 0.4);
+		background: linear-gradient(180deg, rgba(28, 28, 28, 0.98) 0%, rgba(14, 11, 8, 0.99) 100%);
+		border: 1px solid rgba(247, 244, 236, 0.4);
 		box-shadow: 0 14px 44px rgba(0, 0, 0, 0.8);
-		color: #fff;
+		color: #ffffff;
 		font-family: var(--gb-body-font, sans-serif);
 		text-align: center;
 	}
@@ -188,8 +203,8 @@
 		display: inline-block;
 		padding: 0.2rem 0.7rem;
 		border-radius: 999px;
-		background: #C9A227;
-		color: #150f06;
+		background: #d4d0c6;
+		color: #101010;
 		font-weight: 800;
 		font-size: 0.7rem;
 		letter-spacing: 0.08em;
@@ -230,7 +245,7 @@
 		margin-top: 0.15rem;
 		padding: 0.45rem 0.55rem;
 		border-radius: 8px;
-		background: rgba(232, 212, 139, 0.09);
+		background: rgba(247, 244, 236, 0.09);
 	}
 
 	dt {
@@ -243,10 +258,10 @@
 	}
 
 	.accent {
-		color: #C9A227;
+		color: #d4d0c6;
 	}
 	.win {
-		color: #FFF3D0;
+		color: #f7f2e9;
 	}
 	.big {
 		font-size: 1.05rem;
@@ -262,8 +277,8 @@
 		padding: 0.8rem 1rem;
 		border: none;
 		border-radius: 10px;
-		background: linear-gradient(180deg, #E8D48B 0%, #C9A227 100%);
-		color: #150f06;
+		background: linear-gradient(180deg, #f7f4ec 0%, #d4d0c6 100%);
+		color: #101010;
 		font-family: var(--hm-title-font, serif);
 		font-size: 1.05rem;
 		font-weight: 700;

@@ -1,0 +1,134 @@
+[
+  {
+    "file": "static/assets/sprites/turfSymbols/fs.png",
+    "size": [
+      512,
+      512
+    ],
+    "alpha": [
+      0,
+      255
+    ]
+  },
+  {
+    "file": "static/assets/sprites/turfSymbols/h1.png",
+    "size": [
+      512,
+      512
+    ],
+    "alpha": [
+      0,
+      255
+    ]
+  },
+  {
+    "file": "static/assets/sprites/turfSymbols/h2.png",
+    "size": [
+      512,
+      512
+    ],
+    "alpha": [
+      0,
+      255
+    ]
+  },
+  {
+    "file": "static/assets/sprites/turfSymbols/h3.png",
+    "size": [
+      512,
+      512
+    ],
+    "alpha": [
+      0,
+      255
+    ]
+  },
+  {
+    "file": "static/assets/sprites/turfSymbols/h4.png",
+    "size": [
+      512,
+      512
+    ],
+    "alpha": [
+      0,
+      255
+    ]
+  },
+  {
+    "file": "static/assets/sprites/turfSymbols/h5.png",
+    "size": [
+      512,
+      512
+    ],
+    "alpha": [
+      0,
+      255
+    ]
+  },
+  {
+    "file": "static/assets/sprites/turfSymbols/l1.png",
+    "size": [
+      512,
+      512
+    ],
+    "alpha": [
+      0,
+      255
+    ]
+  },
+  {
+    "file": "static/assets/sprites/turfSymbols/l2.png",
+    "size": [
+      512,
+      512
+    ],
+    "alpha": [
+      0,
+      255
+    ]
+  },
+  {
+    "file": "static/assets/sprites/turfSymbols/l3.png",
+    "size": [
+      512,
+      512
+    ],
+    "alpha": [
+      0,
+      255
+    ]
+  },
+  {
+    "file": "static/assets/sprites/turfSymbols/l4.png",
+    "size": [
+      512,
+      512
+    ],
+    "alpha": [
+      0,
+      255
+    ]
+  },
+  {
+    "file": "static/assets/sprites/turfSymbols/sw.png",
+    "size": [
+      512,
+      512
+    ],
+    "alpha": [
+      0,
+      255
+    ]
+  },
+  {
+    "file": "static/assets/sprites/turfSymbols/w.png",
+    "size": [
+      512,
+      512
+    ],
+    "alpha": [
+      0,
+      255
+    ]
+  }
+]

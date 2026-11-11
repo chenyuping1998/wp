@@ -84,6 +84,21 @@
 	);
 
 	const fmtMult = (value: number) => `${Number(value.toFixed(4))}x`;
+
+	// The same six rows, handed to the bottom bar so they are still on screen
+	// after the card is dismissed and after every run (stateReplay.summary).
+	// Stake review of Deadwood Express, 2026-10-04: the replay's end bar lacked
+	// the card's information. Ported from Deadwood's ReplayIntro (2026-10-14).
+	$effect(() => {
+		stateReplay.summary = [
+			{ label: L.mode, value: modeLabel },
+			{ label: L.baseBet, value: numberToCurrencyString(baseBet) },
+			{ label: L.costMultiplier, value: fmtMult(costMultiplier) },
+			{ label: L.totalCost, value: numberToCurrencyString(totalCost) },
+			{ label: L.payoutMultiplier, value: fmtMult(payoutMultiplier), tone: 'win' },
+			{ label: L.totalWin, value: numberToCurrencyString(totalWin, WIN_MAX_FRACTION_DIGITS), tone: 'win' },
+		];
+	});
 </script>
 
 <!-- above the paytable/info layer: the round must not start behind an open panel -->
@@ -180,10 +195,10 @@
 		box-sizing: border-box;
 		padding: 1.25rem;
 		border-radius: 14px;
-		background: linear-gradient(180deg, rgba(23, 25, 28, 0.98) 0%, rgba(14, 15, 17, 0.99) 100%);
+		background: #3a3d42;
 		border: 1px solid rgba(217, 214, 206, 0.4);
 		box-shadow: 0 14px 44px rgba(0, 0, 0, 0.8);
-		color: #d9d6ce;
+		color: #f7f5f0;
 		font-family: var(--gb-body-font, sans-serif);
 		text-align: center;
 	}
@@ -193,7 +208,7 @@
 		padding: 0.2rem 0.7rem;
 		border-radius: 999px;
 		background: #f5893d;
-		color: #0e0f11;
+		color: #121212;
 		font-weight: 800;
 		font-size: 0.7rem;
 		letter-spacing: 0.08em;
@@ -255,7 +270,7 @@
 		color: #f5893d;
 	}
 	.win {
-		color: #d9d6ce;
+		color: #f7f5f0;
 	}
 	.big {
 		font-size: 1.05rem;
@@ -271,8 +286,8 @@
 		padding: 0.8rem 1rem;
 		border: none;
 		border-radius: 10px;
-		background: linear-gradient(180deg, #d9d6ce 0%, #f5893d 100%);
-		color: #0e0f11;
+		background: #f5893d;
+		color: #121212;
 		font-family: var(--hm-title-font, 'Arial Narrow', sans-serif);
 		font-size: 1.05rem;
 		font-weight: 700;
@@ -290,6 +305,11 @@
 		width: auto;
 		fill: currentColor;
 		flex: none;
+	}
+
+	.replay-start:focus-visible {
+		outline: 3px solid #f7f5f0;
+		outline-offset: 3px;
 	}
 
 	.replay-start:hover {
