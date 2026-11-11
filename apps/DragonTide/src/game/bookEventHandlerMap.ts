@@ -153,6 +153,13 @@ export const bookEventHandlerMap: BookEventHandlerMap<BookEvent, BookEventContex
 			},
 			paddingBoard: config.paddingReels[bookEvent.gameType] as RawSymbol[][],
 		});
+		// Stone 11-11: an x100+ pearl shakes the board; the hand waits for the board to be still,
+		// and when the pearls pay nothing (no win follows this board) it holds so the pearl can be
+		// read before the next spin takes the board away.
+		if (pearls > 0) {
+			const next = bookEvents[bookEvents.indexOf(bookEvent) + 1];
+			await eventEmitter.broadcastAsync({ type: 'hypnoWatchSettle', pace: currentPace(), wasted: next?.type !== 'winInfo' });
+		}
 
 	},
 
@@ -210,6 +217,8 @@ export const bookEventHandlerMap: BookEventHandlerMap<BookEvent, BookEventContex
 			watches: [],
 			pace: currentPace(),
 		});
+		// a pearl that fell in with the refill may be an x100+: let the board come to rest first
+		await eventEmitter.broadcastAsync({ type: 'hypnoWatchSettle', pace: currentPace(), wasted: false });
 	},
 
 	/**

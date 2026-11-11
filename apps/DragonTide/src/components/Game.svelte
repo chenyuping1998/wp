@@ -32,6 +32,7 @@
 	import ScatterWins from './ScatterWins.svelte';
 	import MedusaThrow from './MedusaThrow.svelte';
 	import Medusa from './Medusa.svelte';
+	import { boardShake } from '../game/boardShake.svelte';
 	import Win from './Win.svelte';
 	import FreeSpinIntro from './FreeSpinIntro.svelte';
 	import FreeSpinCounter from './FreeSpinCounter.svelte';
@@ -43,6 +44,11 @@
 	// local art QA only: lets a browser console raise a panel or a banner and hold it (stripped from builds)
 	if (import.meta.env.DEV) (globalThis as typeof globalThis & { __dragonEmit?: unknown }).__dragonEmit = context.eventEmitter;
 
+
+	// x100 pearl: the whole picture is knocked once (boardShake.joltScene, ATG 戰神賽特 red ball)
+	$effect(() => {
+		context.stateApp.pixiApplication?.stage.position.set(boardShake.stageX, boardShake.stageY);
+	});
 
 	onMount(() => (context.stateLayout.showLoadingScreen = true));
 

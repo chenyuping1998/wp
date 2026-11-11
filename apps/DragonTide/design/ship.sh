@@ -38,11 +38,11 @@ checks() {
     || { print "  FAIL: the dictated disclaimer line is missing or reworded"; fail=1; }
   grep -rqE "2e4|20000" $OUT/frontend/_app 2>/dev/null \
     || { print "  FAIL: 20,000x cap not present in the shipped bundle"; fail=1; }
-  # the shipped cast is the packed r12 revision (AGENTS.md: same final revision everywhere)
+  # the shipped cast is the packed r13 revision (AGENTS.md: same final revision everywhere)
   for k in mg fg; do
     local want=$(python3 -c "import json;print(json.load(open('$APP/design/cast_dragon/runtime-manifest.json'))['$k']['atlasSha256'])")
     local got=$(shasum -a 256 $OUT/frontend/assets/sprites/dragonCast/$k-atlas.png | cut -d' ' -f1)
-    [[ "$want" != "$got" ]] && { print "  FAIL: shipped $k cast atlas is not the packed r12 one"; fail=1; }
+    [[ "$want" != "$got" ]] && { print "  FAIL: shipped $k cast atlas is not the packed r13 one"; fail=1; }
   done
   diff -rq $ROOT/math-sdk/games/$GAME/library/publish_files/ $OUT/math >/dev/null \
     || { print "  FAIL: staged math differs from the math library"; fail=1; }

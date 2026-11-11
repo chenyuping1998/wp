@@ -4,7 +4,7 @@
  * the background and the UI stay still, so the shake reads as an impact on the
  * board, not a camera wobble. Offsets are in board units.
  */
-export const boardShake = $state({ x: 0, y: 0, scale: 1, zoom: 1, focusX: 0, focusY: 0 });
+export const boardShake = $state({ x: 0, y: 0, scale: 1, zoom: 1, focusX: 0, focusY: 0, stageX: 0, stageY: 0 });
 
 let run = 0;
 const reduced = () => typeof matchMedia === 'function' && matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -61,6 +61,49 @@ export const zoomBoard = (focus: { x: number; y: number }, amount = 0.14, ms = 1
 		// in over the first 12%, hold to 45%, ease out
 		const k = t < 0.12 ? 1 - (1 - t / 0.12) ** 3 : t < 0.45 ? 1 : (1 - (t - 0.45) / 0.55) ** 2;
 		boardShake.zoom = 1 + amount * k;
+		requestAnimationFrame(step);
+	};
+	requestAnimationFrame(step);
+};
+
+let joltRun = 0;
+
+/**
+ * The x100 red ball of ATG 戰神賽特 (Stone's clip 11-11, youtu.be/2MAv0nhwCDg at 2:01, measured
+ * frame by frame at 24 fps): the WHOLE picture — board, frame, cast and bet bar — is knocked once
+ * and is still again 0.17–0.2 s later. No zoom, no long rumble. Offsets as a fraction of the
+ * screen height: right, then right-and-down (held), then a rebound up-left, then rest.
+ * Game.svelte moves the stage by stageX/stageY; the backdrop counters it so the canvas edge
+ * never shows. `height` is the canvas height in px.
+ */
+const JOLT: [number, number, number][] = [
+	[0, 0, 0],
+	[0.042, 0.019, 0.003],
+	[0.083, 0.024, 0.033],
+	[0.125, 0.024, 0.033],
+	[0.167, -0.012, -0.028],
+	[0.208, 0, 0],
+];
+export const JOLT_MS = 208;
+export const joltScene = (height: number, strength = 1) => {
+	if (reduced()) return;
+	const id = ++joltRun;
+	const start = performance.now();
+	const step = (now: number) => {
+		if (id !== joltRun) return;
+		const t = (now - start) / 1000;
+		const last = JOLT[JOLT.length - 1];
+		if (t >= last[0]) {
+			boardShake.stageX = 0;
+			boardShake.stageY = 0;
+			return;
+		}
+		let i = 1;
+		while (JOLT[i][0] < t) i++;
+		const [fromT, fromX, fromY] = JOLT[i - 1], [toT, toX, toY] = JOLT[i];
+		const k = (t - fromT) / (toT - fromT);
+		boardShake.stageX = (fromX + (toX - fromX) * k) * height * strength;
+		boardShake.stageY = (fromY + (toY - fromY) * k) * height * strength;
 		requestAnimationFrame(step);
 	};
 	requestAnimationFrame(step);

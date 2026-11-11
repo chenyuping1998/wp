@@ -63,7 +63,7 @@
    "height": 171,
    "cropX": 245,
    "cropY": 262,
-   "sourceSha256": "2c7fe3ba59de7b6733f39e7fa51249b00aed43bbf789d0da33099b0a9a91a5aa"
+   "sourceSha256": "b0b1f0eebc2d554d789404d382e00f9b368ea8cb7b3d1ad185cc742430ebdad7"
   },
   "hair_back_2": {
    "x": 258,
@@ -72,7 +72,7 @@
    "height": 202,
    "cropX": 133,
    "cropY": 339,
-   "sourceSha256": "729ae595810e67fe61cc0571b67150c6f239011dd28daf5fe80e2f9ad639b58b"
+   "sourceSha256": "acab9cb5a18f4331fd45e5948d54d68822445d026eb0f28625e5c67f80211eaa"
   },
   "hair_back_3": {
    "x": 1310,
@@ -84,8 +84,8 @@
    "sourceSha256": "c536d27157858e9721eadb20c965854e4f77946e2cdf0e70691d386d1aed81f4"
   },
   "hand_l_hip": {
-   "x": 1156,
-   "y": 1404,
+   "x": 833,
+   "y": 1415,
    "width": 145,
    "height": 90,
    "cropX": 388,
@@ -93,7 +93,7 @@
    "sourceSha256": "75ea83d755aa26d435a964da66357294aeeb4a21b1f12b7f3dc81b9e8e81d5be"
   },
   "hand_r_open": {
-   "x": 833,
+   "x": 982,
    "y": 1415,
    "width": 128,
    "height": 84,
@@ -174,13 +174,13 @@
    "sourceSha256": "00a004dd54cf2a458497913f315ea5931722740499ff28bafed244a8ae2109f5"
   },
   "neck": {
-   "x": 1966,
-   "y": 858,
-   "width": 80,
-   "height": 156,
-   "cropX": 487,
-   "cropY": 294,
-   "sourceSha256": "376a01f16489355d7bd8634141017b1daca0c13d6e2e33717819046d1c3f498c"
+   "x": 1861,
+   "y": 1378,
+   "width": 100,
+   "height": 166,
+   "cropX": 477,
+   "cropY": 284,
+   "sourceSha256": "0dccf833b71554b55de8cd8a705de159e32773caafb6bef5a5de8550383829ba"
   },
   "pelvis": {
    "x": 350,
@@ -192,8 +192,8 @@
    "sourceSha256": "e51b1cb582a587e7e3284c477bcc3fef990efa7e54d574edaae193b8d3c1db45"
   },
   "prop": {
-   "x": 1969,
-   "y": 1175,
+   "x": 1966,
+   "y": 1015,
    "width": 65,
    "height": 60,
    "cropX": 759,
@@ -300,8 +300,8 @@
    "sourceSha256": "04cf56dec23560f4b5400c80ecfcbb0f8929252954549cd4c742ef1d0a73dc48"
   },
   "tassel_1": {
-   "x": 1861,
-   "y": 1378,
+   "x": 1156,
+   "y": 1404,
    "width": 104,
    "height": 135,
    "cropX": 558,
@@ -310,7 +310,7 @@
   },
   "tassel_2": {
    "x": 1966,
-   "y": 1018,
+   "y": 858,
    "width": 74,
    "height": 153,
    "cropX": 591,

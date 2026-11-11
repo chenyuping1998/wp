@@ -1,7 +1,7 @@
-"""Pack the r12 Dragon King / Dragon Princess layers for the app-owned 4.3 renderer.
+"""Pack the r13 Dragon King / Dragon Princess layers for the app-owned 4.3 renderer.
 
-Source of truth: new-games/sea-dragon/art/cast-layers-1105/r12/{mg,fg}/layers (built by
-build_r12.sh) and the Spine 4.3 exports in r12/spine/{mg,fg}. Every Spine image must be the
+Source of truth: new-games/sea-dragon/art/cast-layers-1105/r13/{mg,fg}/layers (built by
+build_r13.sh) and the Spine 4.3 exports in r13/spine/{mg,fg}. Every Spine image must be the
 same bytes as its source layer, so the game never draws an older revision than the rig.
 
 Each 1024x1536 layer is cropped to its alpha box and packed (skyline, full resolution) into
@@ -14,7 +14,7 @@ from PIL import Image
 
 HERE = Path(__file__).resolve().parent
 APP = HERE.parents[1]
-R11 = Path('/Users/stone/stake-engine/new-games/sea-dragon/art/cast-layers-1105/r12')  # r12: in-game QA repairs, see r12/報告.md
+R11 = Path('/Users/stone/stake-engine/new-games/sea-dragon/art/cast-layers-1105/r13')  # r13 = r12 + 11-11 idle arm / ribbon / neck fixes, see r13/報告.md
 PAGE = 2048
 CAST = {
     'mg': ('dragon_king', 'dragonKing'),

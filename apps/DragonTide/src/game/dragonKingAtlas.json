@@ -3,8 +3,8 @@
  "height": 2048,
  "parts": {
   "arm_l_lower": {
-   "x": 836,
-   "y": 1818,
+   "x": 644,
+   "y": 1928,
    "width": 129,
    "height": 116,
    "cropX": 239,
@@ -12,8 +12,8 @@
    "sourceSha256": "09d41b18eec94ce1511ef39c7a490c388335f4040adc9976d61098cad6fdd48a"
   },
   "arm_l_upper": {
-   "x": 1936,
-   "y": 658,
+   "x": 1660,
+   "y": 1531,
    "width": 77,
    "height": 287,
    "cropX": 253,
@@ -21,8 +21,8 @@
    "sourceSha256": "b10d3926cfefce6cf9e846fed1df4f9a0dc840a279fbba4615ca15498d0404da"
   },
   "arm_r_lower": {
-   "x": 1952,
-   "y": 1294,
+   "x": 1660,
+   "y": 1822,
    "width": 77,
    "height": 143,
    "cropX": 747,
@@ -30,8 +30,8 @@
    "sourceSha256": "1cbb03b0900f15bdf60327131136b1494c55626777a1109cdf4da7e4da5a30ee"
   },
   "arm_r_upper": {
-   "x": 1952,
-   "y": 1128,
+   "x": 557,
+   "y": 1806,
    "width": 83,
    "height": 162,
    "cropX": 662,
@@ -39,8 +39,8 @@
    "sourceSha256": "2bd16f16037452fd91299b1e25452bf8bda05436ca00a10cd582973b834a87fa"
   },
   "beard_1": {
-   "x": 317,
-   "y": 1678,
+   "x": 467,
+   "y": 1588,
    "width": 173,
    "height": 214,
    "cropX": 362,
@@ -48,8 +48,8 @@
    "sourceSha256": "a6ac8ee2ae29c5af7cb24b76123199778798cf70b9a14b087d4b1c89a6ec1a70"
   },
   "beard_2": {
-   "x": 1469,
-   "y": 1579,
+   "x": 1917,
+   "y": 1531,
    "width": 128,
    "height": 258,
    "cropX": 402,
@@ -57,8 +57,8 @@
    "sourceSha256": "5ec5839498df39eef2521156181a21bafabad14b1f2a021dbc6927e3b7789b34"
   },
   "foot_l": {
-   "x": 1626,
-   "y": 1531,
+   "x": 2,
+   "y": 1304,
    "width": 146,
    "height": 287,
    "cropX": 188,
@@ -66,7 +66,7 @@
    "sourceSha256": "e2498ac63538e39f2f95e51e3b012a305a176d5753a8bb0d7ec009ec4ae3dab7"
   },
   "foot_r": {
-   "x": 1776,
+   "x": 1741,
    "y": 1531,
    "width": 172,
    "height": 286,
@@ -75,8 +75,8 @@
    "sourceSha256": "bfb469e8d59fb897658f91f1d145a8446539e4bbe48b8b04a35a2137f0bf3888"
   },
   "hand_l_hip": {
-   "x": 317,
-   "y": 1896,
+   "x": 1029,
+   "y": 1928,
    "width": 143,
    "height": 80,
    "cropX": 298,
@@ -84,8 +84,8 @@
    "sourceSha256": "7fa12a1edb99a2635c622c76ad96813a96823feb55413cd5c8e4f271560a4094"
   },
   "hand_r_grip": {
-   "x": 1952,
-   "y": 949,
+   "x": 467,
+   "y": 1806,
    "width": 86,
    "height": 175,
    "cropX": 757,
@@ -102,8 +102,8 @@
    "sourceSha256": "7a07dbc110d1d4a85edb1aa75f0ed6286554dc6a2e06ce4339d83baee0d0cfde"
   },
   "head_focus": {
-   "x": 2,
-   "y": 1307,
+   "x": 193,
+   "y": 1239,
    "width": 485,
    "height": 345,
    "cropX": 216,
@@ -111,8 +111,8 @@
    "sourceSha256": "037faffc7d12f9b97b213ccc3d0497faefe22cfc8945686297acab35354c0f78"
   },
   "head_grin": {
-   "x": 491,
-   "y": 1329,
+   "x": 682,
+   "y": 1579,
    "width": 485,
    "height": 345,
    "cropX": 216,
@@ -120,7 +120,7 @@
    "sourceSha256": "db15926f28df6f6d435a9c3cee842fff830de7b83dc1558537366db4e8829db0"
   },
   "head_idle": {
-   "x": 980,
+   "x": 1171,
    "y": 1579,
    "width": 485,
    "height": 345,
@@ -130,7 +130,7 @@
   },
   "leg_l_lower": {
    "x": 325,
-   "y": 905,
+   "y": 837,
    "width": 174,
    "height": 394,
    "cropX": 221,
@@ -148,7 +148,7 @@
   },
   "leg_r_lower": {
    "x": 193,
-   "y": 905,
+   "y": 837,
    "width": 128,
    "height": 398,
    "cropX": 575,
@@ -165,8 +165,8 @@
    "sourceSha256": "a90ed65672cd07ca314981dd83203cb8e75236c13bc33030e007009278d06c10"
   },
   "neck": {
-   "x": 606,
-   "y": 1678,
+   "x": 1917,
+   "y": 1793,
    "width": 108,
    "height": 188,
    "cropX": 461,
@@ -174,8 +174,8 @@
    "sourceSha256": "3cd37eedeb07812da58f4d9b051df41b15bc5faeb243810de9a40fe6c3d76629"
   },
   "pelvis": {
-   "x": 1601,
-   "y": 1822,
+   "x": 120,
+   "y": 1836,
    "width": 305,
    "height": 129,
    "cropX": 356,
@@ -192,8 +192,8 @@
    "sourceSha256": "709b8ba69bc7d2b9afc1a2d717c1c7a4e3d2f2b3d113dac642f821da7e4ae30e"
   },
   "ribbon_hair_1": {
-   "x": 718,
-   "y": 1678,
+   "x": 2,
+   "y": 1797,
    "width": 114,
    "height": 180,
    "cropX": 562,
@@ -201,13 +201,13 @@
    "sourceSha256": "7bc195ab46cc92661bf20dbd6987dd55914643ababfbfb181b0f6ae3de346156"
   },
   "ribbon_hair_2": {
-   "x": 836,
-   "y": 1678,
+   "x": 1741,
+   "y": 1821,
    "width": 96,
-   "height": 136,
+   "height": 157,
    "cropX": 580,
    "cropY": 308,
-   "sourceSha256": "17f241808061395904f1ff15dbd32af522b6bddef4864059bc41120e2f03ee5e"
+   "sourceSha256": "a6cc3833e8d9b7b36a01a16bd4a048e3a5162202a5971daf460f8ec9f7b665b5"
   },
   "robe_front": {
    "x": 1150,
@@ -222,10 +222,10 @@
    "x": 193,
    "y": 2,
    "width": 611,
-   "height": 899,
+   "height": 831,
    "cropX": 118,
-   "cropY": 457,
-   "sourceSha256": "377c76c14195a7f3cce4e6dcaef51423d5f19b03307daa274036038388bb3964"
+   "cropY": 525,
+   "sourceSha256": "1c505ba3fbca926e2f09a1d7478983e369b666690d5ee7cfc2b63c14e13ba178"
   },
   "robe_r": {
    "x": 808,
@@ -237,7 +237,7 @@
    "sourceSha256": "ce966775fb4935efcc1cfa1978e3cbdebe111ad8c9756ac73e36f19384a5f0fd"
   },
   "sash_l_1": {
-   "x": 1626,
+   "x": 1660,
    "y": 1230,
    "width": 306,
    "height": 297,
@@ -246,8 +246,8 @@
    "sourceSha256": "c2f876df4a01aba605e49d550fee3d3b9befefdf9cf8d337968a01d954db362e"
   },
   "sash_l_2": {
-   "x": 2,
-   "y": 1656,
+   "x": 152,
+   "y": 1588,
    "width": 311,
    "height": 244,
    "cropX": 117,
@@ -255,8 +255,8 @@
    "sourceSha256": "186a61a3da437a6030de94ac63fec40a93a9fe26fad0381b83492349452b451d"
   },
   "sash_l_3": {
-   "x": 494,
-   "y": 1678,
+   "x": 2,
+   "y": 1595,
    "width": 108,
    "height": 198,
    "cropX": 94,
@@ -270,7 +270,7 @@
    "height": 568,
    "cropX": 67,
    "cropY": 431,
-   "sourceSha256": "d3c1845402fd6c719dd7bf6101ce362299672df351fe8e7b5c81ee9959f2ea14"
+   "sourceSha256": "077e1d5be10c229e220f5c284d99c8c0f8f11fa5512a57a5dffdeb64595ae99d"
   },
   "sleeve_r": {
    "x": 808,
@@ -288,11 +288,11 @@
    "height": 652,
    "cropX": 196,
    "cropY": 298,
-   "sourceSha256": "e86febbfa58cb8d3207a65f7b741732b01e9154e2b786fbc612538dce7dbe59f"
+   "sourceSha256": "115c1874e4542063aba7691e70e3fa35597fd1607f52c6aa677ce7a7476f97d1"
   },
   "whisker_l": {
-   "x": 2,
-   "y": 1904,
+   "x": 1176,
+   "y": 1928,
    "width": 213,
    "height": 77,
    "cropX": 224,
@@ -300,8 +300,8 @@
    "sourceSha256": "6325193017e59e8188a106bdad370d19c1cceff9da87508c6511d6fbf46aa16b"
   },
   "whisker_r": {
-   "x": 494,
-   "y": 1880,
+   "x": 777,
+   "y": 1928,
    "width": 248,
    "height": 85,
    "cropX": 443,

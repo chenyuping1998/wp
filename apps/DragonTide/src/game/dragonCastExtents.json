@@ -2,7 +2,7 @@
  "mg": {
   "idle": {
    "minX": -469,
-   "maxX": 493,
+   "maxX": 459,
    "minY": -1377,
    "maxY": 5,
    "leftmost": [
@@ -11,18 +11,18 @@
     "sash_l_2:-431"
    ],
    "rightmost": [
-    "sleeve_r:493",
-    "prop:475",
-    "hand_r:347"
+    "sleeve_r:459",
+    "prop:404",
+    "hand_r:344"
    ]
   },
   "cast": {
-   "minX": -456,
+   "minX": -457,
    "maxX": 877,
    "minY": -1646,
    "maxY": 14,
    "leftmost": [
-    "sleeve_l:-456",
+    "sleeve_l:-457",
     "robe_l:-438",
     "sash_l_3:-427"
    ],
@@ -33,12 +33,12 @@
    ]
   },
   "cast_empty": {
-   "minX": -456,
+   "minX": -457,
    "maxX": 877,
    "minY": -1646,
    "maxY": 14,
    "leftmost": [
-    "sleeve_l:-456",
+    "sleeve_l:-457",
     "robe_l:-438",
     "sash_l_3:-427"
    ],
@@ -104,7 +104,7 @@
    "leftmost": [
     "sleeve_l:-462",
     "sash_l_3:-431",
-    "robe_l:-415"
+    "robe_l:-410"
    ],
    "rightmost": [
     "prop:720",
@@ -120,7 +120,7 @@
    "leftmost": [
     "sleeve_l:-460",
     "sash_l_3:-430",
-    "robe_l:-412"
+    "robe_l:-408"
    ],
    "rightmost": [
     "prop:704",
@@ -136,7 +136,7 @@
    "leftmost": [
     "sleeve_l:-460",
     "sash_l_3:-423",
-    "robe_l:-412"
+    "robe_l:-408"
    ],
    "rightmost": [
     "prop:695",
@@ -148,7 +148,7 @@
  "fg": {
   "idle": {
    "minX": -450,
-   "maxX": 484,
+   "maxX": 470,
    "minY": -1377,
    "maxY": 6,
    "leftmost": [
@@ -157,9 +157,9 @@
     "ribbon_l_1:-435"
    ],
    "rightmost": [
-    "ribbon_r_2:484",
-    "ribbon_r_1:467",
-    "ribbon_r_3:466"
+    "ribbon_r_2:470",
+    "ribbon_r_1:456",
+    "ribbon_r_3:446"
    ]
   },
   "cast": {

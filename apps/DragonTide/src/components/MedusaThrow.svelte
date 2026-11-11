@@ -28,6 +28,7 @@
 				drops: WatchDrop[];
 		  }
 		| { type: 'hypnoWatchReveal'; pace: WinPace; count: number; top?: number }
+		| { type: 'hypnoWatchSettle'; pace: WinPace; wasted: boolean }
 		| { type: 'hypnoWatchClear' }
 		| { type: 'medusaTotalShow' }
 		| { type: 'medusaTotalHide' };
@@ -55,7 +56,7 @@
 	} from '../game/constants';
 	import { watchCollectTiming } from '../game/hypnoWatchTiming';
 	import { gravityProgress } from '../game/symbolMotion';
-	import { shakeBoard, zoomBoard } from '../game/boardShake.svelte';
+	import { shakeBoard, joltScene, JOLT_MS } from '../game/boardShake.svelte';
 	import { getSymbolX, getSymbolY } from '../game/utils';
 	import MultiplierFx from './MultiplierFx.svelte';
 	import type { MultiplierFxController } from '../game/multiplierFxScene';
@@ -258,33 +259,42 @@
 	};
 
 	/**
-	 * x100+ impact: thunderclap, flash, rings, a heavy board shake and the quake sound (also on a
-	 * wasted pearl). Stone 11-10: 「丟百倍球音效跟盤面再震撼一點，盤面震動＋震動音效」 — the shake is
-	 * about half again as strong and long as before, x250+ kicks a second time (the aftershock,
-	 * sfx_quake_top's second thump at 0.38 s), and the board stays dimmed while the rumble rings.
+	 * x100+ impact (also on a wasted pearl). Stone 11-11: 「百倍球震動有點太大，而且震完馬上接下一手，
+	 * 玩家會看不懂這手在幹嘛」, reference = ATG 戰神賽特's red x100 ball (his clip of
+	 * youtu.be/2MAv0nhwCDg at 2:01, measured frame by frame, new-games/sea-dragon/qa-1111/):
+	 *   flash on the ball 0.17 s -> the WHOLE picture is knocked once, 0.17-0.2 s, up to ~3 % of the
+	 *   screen height, no zoom and no rumble -> the board is still, the "100x" stands on it, and
+	 *   nothing else happens for ~0.75 s (then the win frames come up).
+	 * So: one joltScene per hit (x250+ a little harder, plus a small second knock on
+	 * sfx_quake_top's second thump at 0.38 s); the sound carries the weight; then hypnoWatchSettle
+	 * holds the still board (SETTLE) before a win is shown or the round ends.
 	 */
-	type Quake = { shake: number; ms: number; aftershock?: number; afterMs?: number };
-	const QUAKE: Record<'heavy' | 'top' | 'max', Quake> = {
-		heavy: { shake: 2.6, ms: 1000 },
-		top: { shake: 3.4, ms: 1250, aftershock: 1.8, afterMs: 380 },
-		max: { shake: 4.0, ms: 1400, aftershock: 2.2, afterMs: 380 },
-	};
+	const JOLT_STRENGTH = { heavy: 1, top: 1.15, max: 1.3, second: 0.45, secondAtMs: 380 };
+	// the reference is a landscape screen; on a portrait phone the knock is sized off the width,
+	// or it would throw the narrow picture sideways by a twentieth of the screen
+	const canvasHeight = () => { const { width, height } = context.stateLayoutDerived.canvasSizes(); return Math.min(height, width * 0.6); };
+	// the board is still again at this time (performance.now clock)
+	let quakeUntil = 0;
+	const quakeFor = (ms: number) => (quakeUntil = Math.max(quakeUntil, performance.now() + ms));
+	// after the knock the still board is held this long before a win is shown (reference ~0.75 s);
+	// pearls that pay nothing ring once, and with the round's own 0.6 s tail the board stays still
+	// for about a second before the next spin can take it away
+	const SETTLE = { holdMs: 650, wastedHoldMs: 400, turbo: 0.5 };
 	const strike = (x: number, y: number, value: number, fast: boolean) => {
 		const color = orbColor(value);
 		const k = fast ? 0.55 : 1;
-		const q = value >= 1000 ? QUAKE.max : value >= 250 ? QUAKE.top : QUAKE.heavy;
+		const q = value >= 1000 ? JOLT_STRENGTH.max : value >= 250 ? JOLT_STRENGTH.top : JOLT_STRENGTH.heavy;
 		// a handful lands at once: the board takes one big hit (massShock), each x100+ keeps its flash
 		if (!mass) {
 			broadcast({ type: 'soundMedusa', cue: 'quake', value });
-			// ATG 戰神賽特: the camera lunges at the impact while the board shakes
-			zoomBoard({ x, y }, value >= 250 ? 0.2 : 0.15, fast ? 520 : 1050);
-			shakeBoard(q.shake, q.ms * k);
-			const { aftershock, afterMs = 0 } = q;
-			if (aftershock) void wait(afterMs * k).then(() => shakeBoard(aftershock, q.ms * 0.7 * k));
+			joltScene(canvasHeight(), q);
+			if (value >= 250) void wait(JOLT_STRENGTH.secondAtMs * k).then(() => joltScene(canvasHeight(), JOLT_STRENGTH.second));
+			quakeFor(value >= 250 ? JOLT_STRENGTH.secondAtMs * k + JOLT_MS : JOLT_MS);
 		}
 		fx?.impact({ x, y }, value, 'orb');
-		const dimTo = value >= 250 ? 0.85 : 0.6;
-		return tween(fast ? 450 : 900, (t) => {
+		// reference: smoke on the ball only, the board is not darkened for long
+		const dimTo = value >= 250 ? 0.4 : 0.3;
+		return tween(fast ? 300 : 450, (t) => {
 			heavy = {
 				x, y, color, seed: heavy?.seed ?? Math.random() * 100,
 				bolt: Math.max(0, 1 - t * 3.4),
@@ -311,9 +321,9 @@
 	const massShock = (fast: boolean) => {
 		massHit = true;
 		broadcast({ type: 'soundMedusa', cue: 'quake', value: 250 });
-		zoomBoard({ x: BOARD_SIZES.width / 2, y: BOARD_SIZES.height / 2 }, 0.12, fast ? 700 : 1400);
-		shakeBoard(3.4, fast ? 700 : 1400);
-		void wait(fast ? 210 : 380).then(() => shakeBoard(1.8, fast ? 480 : 900));
+		joltScene(canvasHeight(), JOLT_STRENGTH.top);
+		void wait(fast ? 210 : JOLT_STRENGTH.secondAtMs).then(() => joltScene(canvasHeight(), JOLT_STRENGTH.second));
+		quakeFor((fast ? 210 : JOLT_STRENGTH.secondAtMs) + JOLT_MS);
 	};
 	let beams = $state<{ id: number; x: number; y: number; color: number; beam: number; flash: number; smoke: number }[]>([]);
 	let nextRevealAt = 0;
@@ -539,10 +549,12 @@
 			watchesLanded = new Promise<void>((resolve) => {
 				const ids = new Map<string, number>();
 				const impacts = new Set<string>();
+				const shown = new Set<string>();
 				const started = performance.now();
 				const follow = () => {
 					if (!alive) { resolve(); return; }
 					let landed = 0;
+					const allStopped = context.stateGame.board.every((reel) => reel.reelState.motion === 'stopped');
 					context.stateGame.board.forEach((reel, reelIndex) => {
 						reel.reelState.symbols.forEach((symbol, slot) => {
 							const value = symbol.rawSymbol.watchValue;
@@ -558,11 +570,17 @@
 							// reference FX1: the strike is timed off the pearl's own cell (it lands into
 							// its bounce here), not off the whole column coming to rest
 							if (reel.reelState.motion === 'stopped' || y >= getSymbolY(slot - 1) - SYMBOL_SIZE * 0.2) {
+								if (!shown.has(key)) {
+									shown.add(key);
+									broadcast({ type: 'soundMedusa', cue: 'pearlShow', value, speed: fast ? 1.25 : 1 });
+								}
+								// an x100+ pearl is struck once the WHOLE board has landed (ATG red ball:
+								// the knock comes on a finished board, not while the other reels still fall)
+								if (value >= HEAVY && !allStopped) return;
 								landed++;
 								if (!impacts.has(key)) {
 									impacts.add(key);
-									broadcast({ type: 'soundMedusa', cue: 'pearlShow', value, speed: fast ? 1.25 : 1 });
-									reveals.push(revealWatch(id, getSymbolX(reelIndex), y, value, fast, freegame, STRIKE_DELAY_MS));
+									reveals.push(revealWatch(id, getSymbolX(reelIndex), y, value, fast, freegame, value >= HEAVY ? 0 : STRIKE_DELAY_MS));
 								}
 							}
 						});
@@ -572,6 +590,25 @@
 				};
 				requestAnimationFrame(follow);
 			});
+		},
+		// After the board has stopped: nothing moves on until an x100+ hit has finished shaking.
+		// When the pearls pay nothing (no win on this board) the still board is then held, the
+		// x100+ pearls ring once, and only after that does the round end / the next spin start.
+		hypnoWatchSettle: async ({ pace, wasted }) => {
+			const fast = pace === 'turbo' || pace === 'turboFreegame';
+			await watchesLanded;
+			const big = orbs.filter((orb) => orb.cell && orb.value >= HEAVY);
+			if (!big.length) return;
+			const k = fast ? SETTLE.turbo : 1;
+			const left = quakeUntil - performance.now();
+			// a pearl that struck in an earlier pass of this round has had its hold already
+			if (left <= -SETTLE.holdMs * k && !wasted) return;
+			if (left > 0) await wait(left);
+			if (wasted) void tween(320 * k, (t) => {
+				const pulse = 1 + 0.14 * Math.sin(Math.PI * t);
+				for (const orb of big) update(orb.id, { sx: pulse, sy: pulse });
+			}).then(() => { for (const orb of big) update(orb.id, { sx: 1, sy: 1 }); });
+			await wait(Math.max(0, (wasted ? SETTLE.wastedHoldMs : SETTLE.holdMs) * k - Math.max(0, -left)));
 		},
 		hypnoWatchDrop: (event) => {
 			watchesLanded = dropWatches(event);
@@ -605,6 +642,8 @@
 			if (multipliers.length === 0) return;
 			const fast = pace === 'turbo' || pace === 'turboFreegame';
 			await watchesLanded;
+			// never collect on a board that is still shaking
+			if (quakeUntil > performance.now()) await wait(quakeUntil - performance.now());
 			if (applied && orbs.some((orb) => orb.cell)) {
 				await collectWatches({ mult, baseWin, totalWin, toTotal, fast, bigWin });
 				return;

@@ -5,6 +5,7 @@
 	import { getContext } from '../game/context';
 	import { BACKGROUND_KEYS } from '../game/backgroundMotion';
 	import { createBackgroundScene, PROP_KEYS } from '../game/backgroundScene';
+	import { boardShake } from '../game/boardShake.svelte';
 	const context = getContext();
 	const parent = getContextParent();
 	let scene = $state.raw<ReturnType<typeof createBackgroundScene>>();
@@ -33,6 +34,13 @@
 	$effect(() => {
 		const {width,height}=context.stateLayoutDerived.canvasSizes();
 		scene?.setBounds(width,height);
+	});
+	// the x100 jolt moves the whole stage (boardShake.joltScene); the backdrop stays where it is,
+	// so the canvas edge is never uncovered
+	$effect(() => {
+		const { stageX, stageY } = boardShake;
+		context.stateLayoutDerived.canvasSizes();
+		if (scene) scene.root.pivot.set(stageX / (scene.root.scale.x || 1), stageY / (scene.root.scale.y || 1));
 	});
 	$effect(() => scene?.setNight(context.stateGame.gameType === 'freegame'));
 	$effect(() => scene?.setReducedMotion(reduced));
