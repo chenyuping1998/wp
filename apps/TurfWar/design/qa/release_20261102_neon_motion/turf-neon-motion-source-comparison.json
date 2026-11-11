@@ -1,0 +1,19 @@
+{
+  "src/game/reelMotion.ts": {
+    "identical_to_neon": true,
+    "sha256": "9c6f96c50a685a01fabca66b5678eff146f97363e2cef44567b4934ac74d348e"
+  },
+  "design/check_reel_motion.mjs": {
+    "identical_to_neon": true,
+    "sha256": "d318b0ff0c90a06a8877bab27df9ef926a3a98d313b65f9e073e5e9c1adba2c1"
+  },
+  "packages/utils-slots/src/createReelForSpinning.svelte.ts": {
+    "identical_to_neon_shared_engine": true
+  },
+  "packages/utils-slots/src/createEnhanceBoardSpin.ts": {
+    "identical_to_neon_shared_engine": true
+  },
+  "packages/utils-slots/src/createEnhanceBoardPreSpin.ts": {
+    "identical_to_neon_shared_engine": true
+  }
+}

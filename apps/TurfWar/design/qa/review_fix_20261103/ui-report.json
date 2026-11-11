@@ -1,0 +1,187 @@
+{
+  "betMenu": "BET MENU\nSELECT YOUR BET\n$1.00\n0.10\n0.20\n0.50\n1.00\n2.00\n5.00\n10.00\n20.00\n50.00\nMAX\nCONFIRM\n×\nBET MENU\nSELECT YOUR BET\n$1.00\n0.10\n0.20\n0.50\n1.00\n2.00\n5.00\n10.00\n20.00\n50.00\nMAX\nCONFIRM",
+  "touchSpin": {
+    "rounds": 1,
+    "byMode": {
+      "BASE": 1
+    },
+    "balance": 99999.4,
+    "wagered": 2,
+    "won": 1.4,
+    "rtpSoFar": 0.7
+  },
+  "settings": "SETTINGS\nMASTER VOLUME\nON\n75\nMUSIC VOLUME\nON\n75\nSOUND EFFECT VOLUME\nON\n75\n×\nSETTINGS\nMASTER VOLUME\nON\n75\nMUSIC VOLUME\nON\n75\nSOUND EFFECT VOLUME\nON\n75",
+  "fullVolumeMix": {
+    "peak": 0.5579167604446411,
+    "rmsMax": 0.26454571850258407,
+    "clipped": 0,
+    "samples": 163840
+  },
+  "mutedMix": {
+    "peak": 0,
+    "rmsMax": 0,
+    "clipped": 0,
+    "samples": 34816
+  },
+  "mutedAudio": {
+    "context": "running",
+    "filtered": true,
+    "hz": 20000,
+    "cues": [
+      {
+        "name": "btn",
+        "at": 2.0956009070294783,
+        "volume": 0.39375
+      },
+      {
+        "name": "btn",
+        "at": 2.6760997732426306,
+        "volume": 0.39375
+      },
+      {
+        "name": "spin",
+        "at": 3.4597732426303853,
+        "volume": 0.50625
+      },
+      {
+        "name": "reel_stop",
+        "at": 4.725260770975057,
+        "volume": 0.21375
+      },
+      {
+        "name": "reel_stop",
+        "at": 4.922630385487528,
+        "volume": 0.21375
+      },
+      {
+        "name": "pluck_low",
+        "at": 4.922630385487528,
+        "volume": 0.5625
+      },
+      {
+        "name": "reel_stop",
+        "at": 5.125804988662131,
+        "volume": 0.21375
+      },
+      {
+        "name": "pluck_low",
+        "at": 5.125804988662131,
+        "volume": 0.5625
+      },
+      {
+        "name": "reel_stop",
+        "at": 5.3231746031746034,
+        "volume": 0.21375
+      },
+      {
+        "name": "pluck_low",
+        "at": 5.3231746031746034,
+        "volume": 0.5625
+      },
+      {
+        "name": "reel_stop",
+        "at": 5.526349206349207,
+        "volume": 0.21375
+      },
+      {
+        "name": "scatter_1",
+        "at": 5.526349206349207,
+        "volume": 0.5625
+      },
+      {
+        "name": "scatter_2",
+        "at": 5.526349206349207,
+        "volume": 0.5625
+      },
+      {
+        "name": "pluck_low",
+        "at": 5.607619047619048,
+        "volume": 0.5625
+      },
+      {
+        "name": "win_line_tick",
+        "at": 5.607619047619048,
+        "volume": 0.40499999999999997
+      },
+      {
+        "name": "win_step_1",
+        "at": 6.6525170068027215,
+        "volume": 0.40499999999999997
+      },
+      {
+        "name": "btn",
+        "at": 9.009342403628118,
+        "volume": 0.39375
+      },
+      {
+        "name": "btn",
+        "at": 9.659501133786849,
+        "volume": 0.39375
+      },
+      {
+        "name": "scatter_3",
+        "at": 10.425759637188209,
+        "volume": 1
+      },
+      {
+        "name": "pluck_low",
+        "at": 10.425759637188209,
+        "volume": 1
+      },
+      {
+        "name": "win_tier_big",
+        "at": 10.425759637188209,
+        "volume": 0.86
+      },
+      {
+        "name": "mult_update",
+        "at": 10.425759637188209,
+        "volume": 1
+      },
+      {
+        "name": "wild_expand",
+        "at": 10.425759637188209,
+        "volume": 1
+      }
+    ],
+    "fallback": [],
+    "mixReductionDb": -0.1993466317653656,
+    "music": [
+      {
+        "src": "http://localhost:8021/assets/audio/turf/bgm_base.m4a",
+        "level": 1,
+        "volume": 0,
+        "paused": false
+      }
+    ]
+  },
+  "320x568": {
+    "w": 320,
+    "h": 568,
+    "scrollX": 0,
+    "scrollY": 0,
+    "errors": []
+  },
+  "390x844": {
+    "w": 390,
+    "h": 844,
+    "scrollX": 0,
+    "scrollY": 0,
+    "errors": []
+  },
+  "1280x720": {
+    "w": 1280,
+    "h": 720,
+    "scrollX": 0,
+    "scrollY": 0,
+    "errors": []
+  },
+  "640x420": {
+    "w": 640,
+    "h": 420,
+    "scrollX": 0,
+    "scrollY": 0,
+    "errors": []
+  },
+  "socialBetMenu": "PLAY MENU\nSELECT YOUR AMOUNT\n1.00 GC\n0.10\n0.20\n0.50\n1.00\n2.00\n5.00\n10.00\n20.00\n50.00\nMAX\nCONFIRM\n×\nPLAY MENU\nSELECT YOUR AMOUNT\n1.00 GC\n0.10\n0.20\n0.50\n1.00\n2.00\n5.00\n10.00\n20.00\n50.00\nMAX\nCONFIRM"
+}

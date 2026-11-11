@@ -1,0 +1,104 @@
+<!doctype html><html lang="zh-Hant"><meta charset="utf-8"><title>Turf War 改善與驗證</title><style>body{background:#17191c;color:#f7f5f0;font:16px/1.6 system-ui;margin:30px auto;max-width:1120px;padding:0 20px}h1,h2{color:#ffc38a}img{max-width:100%}video{max-width:100%;max-height:650px}table{border-collapse:collapse;width:100%}td,th{padding:7px;border-bottom:1px solid #555}a{color:#ffc38a}pre{white-space:pre-wrap;background:#2b2e33;padding:18px}</style>
+<h1>Turf War｜審查回饋改善</h1><p>2026-11-03。改善版已上傳並發布 front v35／math v7；未重新送審，角色素材與商店圖不變。發布收據：publish/RELEASE-RECEIPT.json。</p>
+<h2>修改內容</h2><ul><li>手機改為整合操作區，餘額／贏分並列，下注與主要旋轉靠近；整塊下注區可觸控開選單。桌機與 replay 沿用原有版面。</li><li>四顆低賠符號保留原註冊與輪廓，改用多層原生筆觸；四款按鈕加入刻線與明暗邊緣。來源：design/build_review_glyphs.py。</li><li>音響 Scatter 金色通用星芒換為左右喇叭波紋與音量條；Frame 動態與靜態使用相同尺寸權重，等待其實際到位。</li><li>更新／加倍音效移到數字換值的落點。BGM 換曲交叉淡化 360ms；聽牌循環加入80ms起音、100ms收音，移除舊播放器無效的淡入呼叫。</li><li>Wild 同時落地的相同和弦去重，所有 Turf 音源共用壓縮與餘裕；重疊不再未經控制地加到輸出。</li></ul>
+<h2>手機前後比較</h2><img src="mobile-before-after.png" alt="相同初始盤面的前後比較">
+<h2>實播驗證</h2><p>真實 fixture books，正常手機與桌機 Turbo；包含一般中獎、Bruiser、Big Score、Lookout、Muscle、Kingpin 完整進出。這不是平台真實玩家連線或實體手機驗證。</p><table><tr><th>Viewport</th><th>Book</th><th>時間</th><th>結束</th></tr><tr><td>390×844</td><td>64</td><td>3.5s</td><td>PASS</td></tr><tr><td>390×844</td><td>1</td><td>3.5s</td><td>PASS</td></tr><tr><td>390×844</td><td>1546</td><td>4.0s</td><td>PASS</td></tr><tr><td>390×844</td><td>11</td><td>48.7s</td><td>PASS</td></tr><tr><td>390×844</td><td>29</td><td>63.8s</td><td>PASS</td></tr><tr><td>390×844</td><td>50</td><td>94.1s</td><td>PASS</td></tr><tr><td>1280×720</td><td>64</td><td>2.5s</td><td>PASS</td></tr><tr><td>1280×720</td><td>1</td><td>2.5s</td><td>PASS</td></tr><tr><td>1280×720</td><td>1546</td><td>2.5s</td><td>PASS</td></tr><tr><td>1280×720</td><td>11</td><td>45.2s</td><td>PASS</td></tr><tr><td>1280×720</td><td>29</td><td>60.0s</td><td>PASS</td></tr><tr><td>1280×720</td><td>50</td><td>90.8s</td><td>PASS</td></tr></table>
+<h2>量測</h2><pre>{
+  &quot;platform_updated&quot;: false,
+  &quot;upload_package_updated&quot;: false,
+  &quot;math_changed&quot;: false,
+  &quot;scope&quot;: [
+    &quot;Turf app-local portrait console&quot;,
+    &quot;4 native stencil glyphs +4 native control plates&quot;,
+    &quot;boombox scatter waves&quot;,
+    &quot;frame entry weighting and value-impact audio&quot;,
+    &quot;BGM crossfade and shared mix dynamics&quot;
+  ],
+  &quot;full_volume_stress&quot;: {
+    &quot;peak&quot;: 0.5579167604446411,
+    &quot;rmsMax&quot;: 0.26454571850258407,
+    &quot;clipped&quot;: 0,
+    &quot;samples&quot;: 163840
+  },
+  &quot;mute&quot;: {
+    &quot;peak&quot;: 0,
+    &quot;rmsMax&quot;: 0,
+    &quot;clipped&quot;: 0,
+    &quot;samples&quot;: 34816
+  },
+  &quot;replay&quot;: {
+    &quot;book&quot;: 64,
+    &quot;complete&quot;: true,
+    &quot;wallet_rounds&quot;: 0
+  },
+  &quot;multiplier_sync&quot;: [
+    {
+      &quot;type&quot;: &quot;framesUpdate&quot;,
+      &quot;first_value_ms&quot;: 172.39999997615814,
+      &quot;first_cue_ms&quot;: 172.39999997615814
+    },
+    {
+      &quot;type&quot;: &quot;framesDoubled&quot;,
+      &quot;first_value_ms&quot;: 214.19999992847443,
+      &quot;first_cue_ms&quot;: 214.19999992847443
+    }
+  ],
+  &quot;gameplay&quot;: [
+    {
+      &quot;viewport&quot;: {
+        &quot;w&quot;: 390,
+        &quot;h&quot;: 844
+      },
+      &quot;books&quot;: [
+        64,
+        1,
+        1546,
+        11,
+        29,
+        50
+      ],
+      &quot;complete&quot;: true,
+      &quot;mix&quot;: {
+        &quot;peak&quot;: 0.592757523059845,
+        &quot;rmsMax&quot;: 0.2790720858849373,
+        &quot;clipped&quot;: 0,
+        &quot;samples&quot;: 14905344
+      },
+      &quot;errors&quot;: [],
+      &quot;network_errors&quot;: []
+    },
+    {
+      &quot;viewport&quot;: {
+        &quot;w&quot;: 1280,
+        &quot;h&quot;: 720
+      },
+      &quot;books&quot;: [
+        64,
+        1,
+        1546,
+        11,
+        29,
+        50
+      ],
+      &quot;complete&quot;: true,
+      &quot;mix&quot;: {
+        &quot;peak&quot;: 0.58343905210495,
+        &quot;rmsMax&quot;: 0.28340014051202034,
+        &quot;clipped&quot;: 0,
+        &quot;samples&quot;: 13993984
+      },
+      &quot;errors&quot;: [],
+      &quot;network_errors&quot;: []
+    }
+  ],
+  &quot;limits&quot;: [
+    &quot;Local published-book fixtures, not a live player RGS session&quot;,
+    &quot;Chrome touch/viewport emulation, not physical iOS/Android hardware&quot;,
+    &quot;No claim of reviewer approval or subjective audio acceptance&quot;,
+    &quot;4 intentional flat-fill warnings retained: board ground, typography logo, sticky marker, spin plate&quot;
+  ]
+}</pre>
+<p>型別 0 errors / 0 warnings；完整 build 與 guard 通過。320×568、390×844、640×420、1280×720 無頁面捲動與執行例外；觸控選 $2 並以 $2 開局；社交模式金額選單無 BET 用語。靜音測得0輸出。倍數換值與聲音在同一個8ms取樣窗。手機 replay book64 完成至 finalWin，wallet rounds=0。</p>
+<p>素材掃描仍有4個低色數警告，分別是盤面底色、文字Logo、sticky記號、spin plate；保留清楚的底色與形狀，沒有加雜訊去消除警告。這項檢查不代表人工審核結果。</p>
+<h2>最終回放影音</h2><video src="after-390-gameplay.webm" controls></video><video src="after-1280-gameplay.webm" controls></video><p><a href="before-390-gameplay.webm">原版同盤面中獎／Lookout</a> · <a href="mix-full-volume-and-mute.webm">滿音量重疊與即時靜音</a></p>
+<p>完整資料：ui-report.json、multiplier-sync.json、after-390-report.json、after-1280-report.json、final-source-sha256.json、final-build-sha256.json。preview 的正式資產逐檔與 build 比對相同；stub 只注入 dist 的 index。</p></html>

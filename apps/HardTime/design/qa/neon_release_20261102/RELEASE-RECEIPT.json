@@ -1,0 +1,45 @@
+{
+  "released_at": "2026-11-02T23:31:23.708863+08:00",
+  "team": "silver-stars",
+  "game": "hard-time",
+  "platform_updated": true,
+  "published": true,
+  "front_version": 21,
+  "math_version": 3,
+  "upload": {
+    "actions": 4,
+    "plan_id": "d735c31bc7438f953417d16b0e5ef0fac13ef49254fdfa558b035300d47e75aa",
+    "success": true,
+    "uploaded_bytes": 3190990
+  },
+  "publish_result": {
+    "published": true,
+    "result": {
+      "changed": true,
+      "code": "",
+      "message": "",
+      "version": 21
+    }
+  },
+  "front_pending_actions": 0,
+  "math_pending_actions": 0,
+  "approval": {
+    "column": "new",
+    "locked": true,
+    "open": false
+  },
+  "approval_version_updated": false,
+  "new_review_submitted": false,
+  "store_art_changed": false,
+  "thumbnail_and_cover_retained": true,
+  "change": "Neon normal-spin cadence and measured per-reel vertical blur; removed per-symbol stretch/ghosts/fade.",
+  "validation": "Full build and per-reel behavioral blur check passed;3 complete normal spins and desktop/portrait base play verified. Prior gaps and existing type baselines remain documented.",
+  "self_check_counts": {
+    "PASS": 25,
+    "AT RISK": 13,
+    "NEEDS A HUMAN": 2,
+    "N/A": 1
+  },
+  "published_cdn_bytes_independently_verified": false,
+  "evidence_directory": "/Users/stone/stake-engine/wp/apps/HardTime/design/qa/neon_release_20261102"
+}

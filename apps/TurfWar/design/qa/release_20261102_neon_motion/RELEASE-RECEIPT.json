@@ -1,0 +1,50 @@
+{
+  "date": "2026-11-02T21:47:37.883098+08:00",
+  "team": "silver-stars",
+  "game": "turf-war",
+  "platform_updated": true,
+  "published": true,
+  "front_version": 34,
+  "math_version": 7,
+  "supersedes_front": 33,
+  "change": "Neon velocity-based per-reel blur port; removed per-symbol ghosts, vertical stretching and alpha reduction; preserved normal cadence and Turf landing acts.",
+  "upload": {
+    "actions": 4,
+    "plan_id": "e8b0c111271910e7a9f9b1175bff182774a279be9b4bd4665c15ff9afebb4321",
+    "success": true,
+    "uploaded_bytes": 3428406
+  },
+  "publication": {
+    "published": true,
+    "result": {
+      "changed": true,
+      "code": "",
+      "message": "",
+      "version": 34
+    }
+  },
+  "pending_upload_actions": 0,
+  "pending_math_actions": 0,
+  "source_sha256": {
+    "src/components/BoardBase.svelte": "6a0c21160f1c6abcf4298d032239791eacb6eac8354f28d540aaf2d17c4c7cbc",
+    "src/components/ReelMotion.svelte": "a2b3c5a1ef8b4b48db119cb7d95ee068242d602a2b263792e52bf27301486ce8",
+    "src/components/SymbolSprite.svelte": "eaf43ffbfec1dda423a066baa73b84074c79b6c9e46b3322330c521de7782b38",
+    "src/game/reelMotion.ts": "9c6f96c50a685a01fabca66b5678eff146f97363e2cef44567b4934ac74d348e",
+    "src/game/constants.ts": "37827cbd78e53146ca56fe9b10929599223def0e250ad446018b2846b7df79ca",
+    "design/check_reel_motion.mjs": "d318b0ff0c90a06a8877bab27df9ef926a3a98d313b65f9e073e5e9c1adba2c1",
+    "package.json": "6e8aaf9723d79bdb6cb1c09ac174e6317c8fa46802955a0051abcd2d12f8931c"
+  },
+  "build": "PASS",
+  "types": "0 errors,0 warnings",
+  "runtime": "3 desktop normal rounds +1 portrait round;321 active-filter samples, no active filter on fully stopped board; caught window errors empty.",
+  "approval": {
+    "column": "new",
+    "locked": true,
+    "open": false
+  },
+  "approval_version_updated": false,
+  "platform_store_art_changed": false,
+  "thumbnail_and_cover_retained_in_staging": true,
+  "published_cdn_bytes_independently_verified": false,
+  "evidence_directory": "/Users/stone/stake-engine/wp/apps/TurfWar/design/qa/release_20261102_neon_motion"
+}

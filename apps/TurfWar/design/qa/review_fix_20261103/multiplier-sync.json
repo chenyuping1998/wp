@@ -1,0 +1,810 @@
+[
+  {
+    "type": "framesUpdate",
+    "samples": [
+      {
+        "ms": 9.099999904632568,
+        "shown": false,
+        "cueCount": 0
+      },
+      {
+        "ms": 17.399999976158142,
+        "shown": false,
+        "cueCount": 0
+      },
+      {
+        "ms": 25.09999990463257,
+        "shown": false,
+        "cueCount": 0
+      },
+      {
+        "ms": 32.89999997615814,
+        "shown": false,
+        "cueCount": 0
+      },
+      {
+        "ms": 40.5,
+        "shown": false,
+        "cueCount": 0
+      },
+      {
+        "ms": 49.59999990463257,
+        "shown": false,
+        "cueCount": 0
+      },
+      {
+        "ms": 56.89999997615814,
+        "shown": false,
+        "cueCount": 0
+      },
+      {
+        "ms": 65.59999990463257,
+        "shown": false,
+        "cueCount": 0
+      },
+      {
+        "ms": 73.5,
+        "shown": false,
+        "cueCount": 0
+      },
+      {
+        "ms": 81.09999990463257,
+        "shown": false,
+        "cueCount": 0
+      },
+      {
+        "ms": 89.59999990463257,
+        "shown": false,
+        "cueCount": 0
+      },
+      {
+        "ms": 98.39999997615814,
+        "shown": false,
+        "cueCount": 0
+      },
+      {
+        "ms": 107.29999995231628,
+        "shown": false,
+        "cueCount": 0
+      },
+      {
+        "ms": 112.69999992847443,
+        "shown": false,
+        "cueCount": 0
+      },
+      {
+        "ms": 122.59999990463257,
+        "shown": false,
+        "cueCount": 0
+      },
+      {
+        "ms": 130.19999992847443,
+        "shown": false,
+        "cueCount": 0
+      },
+      {
+        "ms": 138.29999995231628,
+        "shown": false,
+        "cueCount": 0
+      },
+      {
+        "ms": 145.59999990463257,
+        "shown": false,
+        "cueCount": 0
+      },
+      {
+        "ms": 155.09999990463257,
+        "shown": false,
+        "cueCount": 0
+      },
+      {
+        "ms": 161.39999997615814,
+        "shown": false,
+        "cueCount": 0
+      },
+      {
+        "ms": 172.39999997615814,
+        "shown": true,
+        "cueCount": 1
+      },
+      {
+        "ms": 177.5,
+        "shown": true,
+        "cueCount": 1
+      },
+      {
+        "ms": 189.79999995231628,
+        "shown": true,
+        "cueCount": 1
+      },
+      {
+        "ms": 193.69999992847443,
+        "shown": true,
+        "cueCount": 1
+      },
+      {
+        "ms": 206.79999995231628,
+        "shown": true,
+        "cueCount": 1
+      },
+      {
+        "ms": 209.29999995231628,
+        "shown": true,
+        "cueCount": 1
+      },
+      {
+        "ms": 221.29999995231628,
+        "shown": true,
+        "cueCount": 1
+      },
+      {
+        "ms": 224.69999992847443,
+        "shown": true,
+        "cueCount": 1
+      },
+      {
+        "ms": 233.09999990463257,
+        "shown": true,
+        "cueCount": 1
+      },
+      {
+        "ms": 240,
+        "shown": true,
+        "cueCount": 1
+      },
+      {
+        "ms": 250.09999990463257,
+        "shown": true,
+        "cueCount": 1
+      },
+      {
+        "ms": 256.7999999523163,
+        "shown": true,
+        "cueCount": 1
+      },
+      {
+        "ms": 266.5,
+        "shown": true,
+        "cueCount": 1
+      },
+      {
+        "ms": 272.39999997615814,
+        "shown": true,
+        "cueCount": 1
+      },
+      {
+        "ms": 282.5,
+        "shown": true,
+        "cueCount": 1
+      },
+      {
+        "ms": 289.39999997615814,
+        "shown": true,
+        "cueCount": 1
+      },
+      {
+        "ms": 297,
+        "shown": true,
+        "cueCount": 1
+      },
+      {
+        "ms": 305,
+        "shown": true,
+        "cueCount": 1
+      },
+      {
+        "ms": 313.7999999523163,
+        "shown": true,
+        "cueCount": 1
+      },
+      {
+        "ms": 322.2999999523163,
+        "shown": true,
+        "cueCount": 1
+      },
+      {
+        "ms": 329.89999997615814,
+        "shown": true,
+        "cueCount": 1
+      },
+      {
+        "ms": 339.2999999523163,
+        "shown": true,
+        "cueCount": 1
+      },
+      {
+        "ms": 345.7999999523163,
+        "shown": true,
+        "cueCount": 1
+      },
+      {
+        "ms": 355.7999999523163,
+        "shown": true,
+        "cueCount": 1
+      },
+      {
+        "ms": 360.89999997615814,
+        "shown": true,
+        "cueCount": 1
+      },
+      {
+        "ms": 373.59999990463257,
+        "shown": true,
+        "cueCount": 1
+      },
+      {
+        "ms": 377,
+        "shown": true,
+        "cueCount": 1
+      },
+      {
+        "ms": 388.09999990463257,
+        "shown": true,
+        "cueCount": 1
+      },
+      {
+        "ms": 393.09999990463257,
+        "shown": true,
+        "cueCount": 1
+      },
+      {
+        "ms": 406.7999999523163,
+        "shown": true,
+        "cueCount": 1
+      },
+      {
+        "ms": 408.7999999523163,
+        "shown": true,
+        "cueCount": 1
+      },
+      {
+        "ms": 417.6999999284744,
+        "shown": true,
+        "cueCount": 1
+      },
+      {
+        "ms": 425.2999999523163,
+        "shown": true,
+        "cueCount": 1
+      },
+      {
+        "ms": 438,
+        "shown": true,
+        "cueCount": 1
+      },
+      {
+        "ms": 440.5,
+        "shown": true,
+        "cueCount": 1
+      },
+      {
+        "ms": 449.39999997615814,
+        "shown": true,
+        "cueCount": 1
+      },
+      {
+        "ms": 457,
+        "shown": true,
+        "cueCount": 1
+      },
+      {
+        "ms": 465.39999997615814,
+        "shown": true,
+        "cueCount": 1
+      },
+      {
+        "ms": 472.89999997615814,
+        "shown": true,
+        "cueCount": 1
+      },
+      {
+        "ms": 481.7999999523163,
+        "shown": true,
+        "cueCount": 1
+      },
+      {
+        "ms": 488.09999990463257,
+        "shown": true,
+        "cueCount": 1
+      },
+      {
+        "ms": 498.1999999284744,
+        "shown": true,
+        "cueCount": 1
+      },
+      {
+        "ms": 505.09999990463257,
+        "shown": true,
+        "cueCount": 1
+      },
+      {
+        "ms": 514,
+        "shown": true,
+        "cueCount": 1
+      },
+      {
+        "ms": 522.5999999046326,
+        "shown": true,
+        "cueCount": 1
+      },
+      {
+        "ms": 529.1999999284744,
+        "shown": true,
+        "cueCount": 1
+      },
+      {
+        "ms": 538.5,
+        "shown": true,
+        "cueCount": 1
+      },
+      {
+        "ms": 546.0999999046326,
+        "shown": true,
+        "cueCount": 1
+      },
+      {
+        "ms": 554.8999999761581,
+        "shown": true,
+        "cueCount": 1
+      },
+      {
+        "ms": 561.2999999523163,
+        "shown": true,
+        "cueCount": 1
+      },
+      {
+        "ms": 573.0999999046326,
+        "shown": true,
+        "cueCount": 1
+      },
+      {
+        "ms": 576.8999999761581,
+        "shown": true,
+        "cueCount": 1
+      },
+      {
+        "ms": 588.1999999284744,
+        "shown": true,
+        "cueCount": 1
+      },
+      {
+        "ms": 593.0999999046326,
+        "shown": true,
+        "cueCount": 1
+      },
+      {
+        "ms": 601.8999999761581,
+        "shown": true,
+        "cueCount": 1
+      },
+      {
+        "ms": 609.1999999284744,
+        "shown": true,
+        "cueCount": 1
+      },
+      {
+        "ms": 616.1999999284744,
+        "shown": true,
+        "cueCount": 1
+      },
+      {
+        "ms": 625,
+        "shown": true,
+        "cueCount": 1
+      }
+    ],
+    "cues": [
+      {
+        "name": "mult_update",
+        "at": 2.8502494331065757,
+        "volume": 0.5625
+      }
+    ],
+    "firstShown": 172.39999997615814,
+    "firstCue": 172.39999997615814
+  },
+  {
+    "type": "framesDoubled",
+    "samples": [
+      {
+        "ms": 11.299999952316284,
+        "shown": false,
+        "cueCount": 0
+      },
+      {
+        "ms": 17.59999990463257,
+        "shown": false,
+        "cueCount": 0
+      },
+      {
+        "ms": 28.199999928474426,
+        "shown": false,
+        "cueCount": 0
+      },
+      {
+        "ms": 33.39999997615814,
+        "shown": false,
+        "cueCount": 0
+      },
+      {
+        "ms": 44.39999997615814,
+        "shown": false,
+        "cueCount": 0
+      },
+      {
+        "ms": 49.799999952316284,
+        "shown": false,
+        "cueCount": 0
+      },
+      {
+        "ms": 61.59999990463257,
+        "shown": false,
+        "cueCount": 0
+      },
+      {
+        "ms": 65.19999992847443,
+        "shown": false,
+        "cueCount": 0
+      },
+      {
+        "ms": 74.09999990463257,
+        "shown": false,
+        "cueCount": 0
+      },
+      {
+        "ms": 80.79999995231628,
+        "shown": false,
+        "cueCount": 0
+      },
+      {
+        "ms": 88.5,
+        "shown": false,
+        "cueCount": 0
+      },
+      {
+        "ms": 96.19999992847443,
+        "shown": false,
+        "cueCount": 0
+      },
+      {
+        "ms": 105.89999997615814,
+        "shown": false,
+        "cueCount": 0
+      },
+      {
+        "ms": 113.59999990463257,
+        "shown": false,
+        "cueCount": 0
+      },
+      {
+        "ms": 122.29999995231628,
+        "shown": false,
+        "cueCount": 0
+      },
+      {
+        "ms": 129.79999995231628,
+        "shown": false,
+        "cueCount": 0
+      },
+      {
+        "ms": 138.59999990463257,
+        "shown": false,
+        "cueCount": 0
+      },
+      {
+        "ms": 145.19999992847443,
+        "shown": false,
+        "cueCount": 0
+      },
+      {
+        "ms": 154.39999997615814,
+        "shown": false,
+        "cueCount": 0
+      },
+      {
+        "ms": 162.19999992847443,
+        "shown": false,
+        "cueCount": 0
+      },
+      {
+        "ms": 169.69999992847443,
+        "shown": false,
+        "cueCount": 0
+      },
+      {
+        "ms": 179.39999997615814,
+        "shown": false,
+        "cueCount": 0
+      },
+      {
+        "ms": 185.69999992847443,
+        "shown": false,
+        "cueCount": 0
+      },
+      {
+        "ms": 195.89999997615814,
+        "shown": false,
+        "cueCount": 0
+      },
+      {
+        "ms": 202.19999992847443,
+        "shown": false,
+        "cueCount": 0
+      },
+      {
+        "ms": 214.19999992847443,
+        "shown": true,
+        "cueCount": 1
+      },
+      {
+        "ms": 216.89999997615814,
+        "shown": true,
+        "cueCount": 1
+      },
+      {
+        "ms": 231.59999990463257,
+        "shown": true,
+        "cueCount": 1
+      },
+      {
+        "ms": 232.89999997615814,
+        "shown": true,
+        "cueCount": 1
+      },
+      {
+        "ms": 246.79999995231628,
+        "shown": true,
+        "cueCount": 1
+      },
+      {
+        "ms": 249.39999997615814,
+        "shown": true,
+        "cueCount": 1
+      },
+      {
+        "ms": 261.39999997615814,
+        "shown": true,
+        "cueCount": 1
+      },
+      {
+        "ms": 265.2999999523163,
+        "shown": true,
+        "cueCount": 1
+      },
+      {
+        "ms": 274.1999999284744,
+        "shown": true,
+        "cueCount": 1
+      },
+      {
+        "ms": 280.89999997615814,
+        "shown": true,
+        "cueCount": 1
+      },
+      {
+        "ms": 290.89999997615814,
+        "shown": true,
+        "cueCount": 1
+      },
+      {
+        "ms": 297,
+        "shown": true,
+        "cueCount": 1
+      },
+      {
+        "ms": 305.7999999523163,
+        "shown": true,
+        "cueCount": 1
+      },
+      {
+        "ms": 312.5,
+        "shown": true,
+        "cueCount": 1
+      },
+      {
+        "ms": 322.59999990463257,
+        "shown": true,
+        "cueCount": 1
+      },
+      {
+        "ms": 329.6999999284744,
+        "shown": true,
+        "cueCount": 1
+      },
+      {
+        "ms": 337.6999999284744,
+        "shown": true,
+        "cueCount": 1
+      },
+      {
+        "ms": 345.6999999284744,
+        "shown": true,
+        "cueCount": 1
+      },
+      {
+        "ms": 354.5,
+        "shown": true,
+        "cueCount": 1
+      },
+      {
+        "ms": 362.89999997615814,
+        "shown": true,
+        "cueCount": 1
+      },
+      {
+        "ms": 369.2999999523163,
+        "shown": true,
+        "cueCount": 1
+      },
+      {
+        "ms": 378.7999999523163,
+        "shown": true,
+        "cueCount": 1
+      },
+      {
+        "ms": 386.39999997615814,
+        "shown": true,
+        "cueCount": 1
+      },
+      {
+        "ms": 395.09999990463257,
+        "shown": true,
+        "cueCount": 1
+      },
+      {
+        "ms": 401.7999999523163,
+        "shown": true,
+        "cueCount": 1
+      },
+      {
+        "ms": 413.09999990463257,
+        "shown": true,
+        "cueCount": 1
+      },
+      {
+        "ms": 417,
+        "shown": true,
+        "cueCount": 1
+      },
+      {
+        "ms": 425.1999999284744,
+        "shown": true,
+        "cueCount": 1
+      },
+      {
+        "ms": 432.59999990463257,
+        "shown": true,
+        "cueCount": 1
+      },
+      {
+        "ms": 446.1999999284744,
+        "shown": true,
+        "cueCount": 1
+      },
+      {
+        "ms": 448.7999999523163,
+        "shown": true,
+        "cueCount": 1
+      },
+      {
+        "ms": 462.59999990463257,
+        "shown": true,
+        "cueCount": 1
+      },
+      {
+        "ms": 465.2999999523163,
+        "shown": true,
+        "cueCount": 1
+      },
+      {
+        "ms": 474,
+        "shown": true,
+        "cueCount": 1
+      },
+      {
+        "ms": 481.09999990463257,
+        "shown": true,
+        "cueCount": 1
+      },
+      {
+        "ms": 489,
+        "shown": true,
+        "cueCount": 1
+      },
+      {
+        "ms": 496.5,
+        "shown": true,
+        "cueCount": 1
+      },
+      {
+        "ms": 506.39999997615814,
+        "shown": true,
+        "cueCount": 1
+      },
+      {
+        "ms": 513.8999999761581,
+        "shown": true,
+        "cueCount": 1
+      },
+      {
+        "ms": 522,
+        "shown": true,
+        "cueCount": 1
+      },
+      {
+        "ms": 528.0999999046326,
+        "shown": true,
+        "cueCount": 1
+      },
+      {
+        "ms": 538.1999999284744,
+        "shown": true,
+        "cueCount": 1
+      },
+      {
+        "ms": 547.5999999046326,
+        "shown": true,
+        "cueCount": 1
+      },
+      {
+        "ms": 553.8999999761581,
+        "shown": true,
+        "cueCount": 1
+      },
+      {
+        "ms": 562.5999999046326,
+        "shown": true,
+        "cueCount": 1
+      },
+      {
+        "ms": 570.0999999046326,
+        "shown": true,
+        "cueCount": 1
+      },
+      {
+        "ms": 579.5,
+        "shown": true,
+        "cueCount": 1
+      },
+      {
+        "ms": 585.7999999523163,
+        "shown": true,
+        "cueCount": 1
+      },
+      {
+        "ms": 596.2999999523163,
+        "shown": true,
+        "cueCount": 1
+      },
+      {
+        "ms": 601.3999999761581,
+        "shown": true,
+        "cueCount": 1
+      },
+      {
+        "ms": 612.5,
+        "shown": true,
+        "cueCount": 1
+      },
+      {
+        "ms": 616.6999999284744,
+        "shown": true,
+        "cueCount": 1
+      },
+      {
+        "ms": 630.1999999284744,
+        "shown": true,
+        "cueCount": 1
+      }
+    ],
+    "cues": [
+      {
+        "name": "mult_update",
+        "at": 3.517823129251701,
+        "volume": 0.5625
+      }
+    ],
+    "firstShown": 214.19999992847443,
+    "firstCue": 214.19999992847443
+  }
+]

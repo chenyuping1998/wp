@@ -1,0 +1,98 @@
+{
+  "platform_updated": true,
+  "upload_package_updated": true,
+  "math_changed": false,
+  "scope": [
+    "Turf app-local portrait console",
+    "4 native stencil glyphs +4 native control plates",
+    "boombox scatter waves",
+    "frame entry weighting and value-impact audio",
+    "BGM crossfade and shared mix dynamics"
+  ],
+  "full_volume_stress": {
+    "peak": 0.5579167604446411,
+    "rmsMax": 0.26454571850258407,
+    "clipped": 0,
+    "samples": 163840
+  },
+  "mute": {
+    "peak": 0,
+    "rmsMax": 0,
+    "clipped": 0,
+    "samples": 34816
+  },
+  "replay": {
+    "book": 64,
+    "complete": true,
+    "wallet_rounds": 0
+  },
+  "multiplier_sync": [
+    {
+      "type": "framesUpdate",
+      "first_value_ms": 172.39999997615814,
+      "first_cue_ms": 172.39999997615814
+    },
+    {
+      "type": "framesDoubled",
+      "first_value_ms": 214.19999992847443,
+      "first_cue_ms": 214.19999992847443
+    }
+  ],
+  "gameplay": [
+    {
+      "viewport": {
+        "w": 390,
+        "h": 844
+      },
+      "books": [
+        64,
+        1,
+        1546,
+        11,
+        29,
+        50
+      ],
+      "complete": true,
+      "mix": {
+        "peak": 0.592757523059845,
+        "rmsMax": 0.2790720858849373,
+        "clipped": 0,
+        "samples": 14905344
+      },
+      "errors": [],
+      "network_errors": []
+    },
+    {
+      "viewport": {
+        "w": 1280,
+        "h": 720
+      },
+      "books": [
+        64,
+        1,
+        1546,
+        11,
+        29,
+        50
+      ],
+      "complete": true,
+      "mix": {
+        "peak": 0.58343905210495,
+        "rmsMax": 0.28340014051202034,
+        "clipped": 0,
+        "samples": 13993984
+      },
+      "errors": [],
+      "network_errors": []
+    }
+  ],
+  "limits": [
+    "Local published-book fixtures, not a live player RGS session",
+    "Chrome touch/viewport emulation, not physical iOS/Android hardware",
+    "No claim of reviewer approval or subjective audio acceptance",
+    "4 intentional flat-fill warnings retained: board ground, typography logo, sticky marker, spin plate"
+  ],
+  "published_front_version": 35,
+  "math_version": 7,
+  "release_receipt": "publish/RELEASE-RECEIPT.json"
+}

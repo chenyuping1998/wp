@@ -1,0 +1,256 @@
+{
+  "counts": {
+    "PASS": 25,
+    "AT RISK": 13,
+    "NEEDS A HUMAN": 2,
+    "N/A": 1
+  },
+  "checks": [
+    {
+      "id": "181",
+      "title": "RGS authenticate",
+      "verdict": "PASS",
+      "evidence": "Inherited prior evidence (not all paths rerun): packages/rgs-requests/src/rgs-requests.ts:6–17; components-shared/.../Authenticate.svelte:16. 靜態 host/session 引數；本機 authenticate 已實測。真實 RGS 未測。"
+    },
+    {
+      "id": "274",
+      "title": "Invalid rgs_url",
+      "verdict": "AT RISK",
+      "evidence": "Inherited prior evidence (not all paths rerun): packages/state-shared/src/stateUrl.svelte.ts:52 只取 URL；本次未做失效 host 的端到端試驗。"
+    },
+    {
+      "id": "183",
+      "title": "Play request",
+      "verdict": "PASS",
+      "evidence": "Inherited prior evidence (not all paths rerun): packages/utils-xstate/src/createPrimaryMachines.ts:9–18；本次 stub MG/FG 實測，回放真實 math books；無實金下注。"
+    },
+    {
+      "id": "275",
+      "title": "No Stake loader",
+      "verdict": "PASS",
+      "evidence": "Inherited prior evidence (not all paths rerun): src/components/LoadingScreen.svelte；character_fix_20261029 遊戲實測為 HARD TIME / SILVERSTARS STUDIO，非 Stake loader。"
+    },
+    {
+      "id": "213",
+      "title": "Title restrictions",
+      "verdict": "PASS",
+      "evidence": "Inherited prior evidence (not all paths rerun): src/app.html；實際畫面 HARD TIME；沒有受限標題詞。"
+    },
+    {
+      "id": "217",
+      "title": "Content",
+      "verdict": "PASS",
+      "evidence": "Inherited prior evidence (not all paths rerun): character_fix_20261029 的 source sheets、桌機／手機與 intro：成年囚犯／典獄長，沒有未成年人、裸露或血腥素材。"
+    },
+    {
+      "id": "253",
+      "title": "Distinct title",
+      "verdict": "NEEDS A HUMAN",
+      "evidence": "Inherited prior evidence (not all paths rerun): 既有平台 rating=60；本次保留原角色及主題，原創性／相似度仍需平台人員判定。"
+    },
+    {
+      "id": "242",
+      "title": "Dynamic bet config",
+      "verdict": "PASS",
+      "evidence": "Inherited prior evidence (not all paths rerun): packages/components-shared/src/components/Authenticate.svelte:66–95 讀 authenticate config/default；非本次改動。靜態判定，未重測全部幣別。"
+    },
+    {
+      "id": "187",
+      "title": "Active round stake",
+      "verdict": "PASS",
+      "evidence": "Inherited prior evidence (not all paths rerun): packages/components-shared/src/components/Authenticate.svelte:120–121 讀 round.amount；本次未做真實 RGS 中斷。"
+    },
+    {
+      "id": "219",
+      "title": "Currency display",
+      "verdict": "AT RISK",
+      "evidence": "Inherited prior evidence (not all paths rerun): packages/utils-shared/amount.ts:20–25：既有 10/14 審查要求 balance/bet 固定兩位，JPY 與此 self-check 的零小數範例不同。保留既有更具體審查要求；未逐幣別重測。"
+    },
+    {
+      "id": "273",
+      "title": "Sub-cent wins",
+      "verdict": "PASS",
+      "evidence": "Inherited prior evidence (not all paths rerun): packages/utils-shared/amount.ts:118 起保留小額 win 精度，餘額與下注兩位；靜態。"
+    },
+    {
+      "id": "221",
+      "title": "Zero-win end-round",
+      "verdict": "PASS",
+      "evidence": "Inherited prior evidence (not all paths rerun): packages/utils-xstate/src/createPrimaryMachines.ts:92–139：noWin 不 end-round，正賠付才 singleRoundWin/bonusWin。"
+    },
+    {
+      "id": "222",
+      "title": "Insufficient balance",
+      "verdict": "AT RISK",
+      "evidence": "Inherited prior evidence (not all paths rerun): packages/state-shared/src/stateBet.svelte.ts:91；src/components/ui/ModalBuyBonus.svelte:106。靜態 affordability 有 gate；20 秒空白鍵與介於 ladder 的餘額本次未重測。"
+    },
+    {
+      "id": "228",
+      "title": "Space shortcut",
+      "verdict": "PASS",
+      "evidence": "Inherited prior evidence (not all paths rerun): packages/components-ui-pixi/src/components/ButtonBet.svelte:127；EnableShortcuts.svelte:129–133 window listener/preventDefault。"
+    },
+    {
+      "id": "227",
+      "title": "No scrolling",
+      "verdict": "PASS",
+      "evidence": "Inherited prior evidence (not all paths rerun): src/app.html:67–99 viewport、overflow hidden、touch-action；1280×720/390×844 實測。"
+    },
+    {
+      "id": "104",
+      "title": "Autoplay confirmation",
+      "verdict": "PASS",
+      "evidence": "Inherited prior evidence (not all paths rerun): packages/components-ui-pixi/src/components/ButtonAutoSpin.svelte:34 先開 autoSpin modal。靜態。"
+    },
+    {
+      "id": "31",
+      "title": "High-cost confirmation",
+      "verdict": "PASS",
+      "evidence": "Inherited prior evidence (not all paths rerun): src/components/ui/ModalBuyBonus.svelte；本次桌機與手機 RIOT BUY 300× 後仍須 CONFIRM，沒有單擊下注。"
+    },
+    {
+      "id": "107",
+      "title": "All audio mute",
+      "verdict": "NEEDS A HUMAN",
+      "evidence": "Inherited prior evidence (not all paths rerun): src/components/Sound.svelte:600–620 同步 music/effect settings；尚需用耳確認全部音源在所有節點靜音。"
+    },
+    {
+      "id": "25",
+      "title": "RTP/max win",
+      "verdict": "PASS",
+      "evidence": "src/game/config.ts:4 per-mode RTP/cost and caps matched current staged math CLI compliance; no math upload actions. Rules use generated config. {'base': {'rtp': 0.9605, 'cost': 1.0, 'max_win': 12000.0}, 'bonus': {'rtp': 0.9606, 'cost': 100.0, 'max_win': 12000.0}, 'bonus_hits': {'rtp': 0.9607, 'cost': 300.0, 'max_win': 12000.0}, 'bonus_epic': {'rtp': 0.9609, 'cost': 600.0, 'max_win': 12000.0}}"
+    },
+    {
+      "id": "24",
+      "title": "Symbol payouts",
+      "verdict": "PASS",
+      "evidence": "Inherited prior evidence (not all paths rerun): src/components/ui/ModalPayTable.svelte:105–108 從 config.symbols.paytable 產生；前次 100,000 books 全線獎比對已通過（optimization_20261029）。"
+    },
+    {
+      "id": "26",
+      "title": "Win combinations",
+      "verdict": "PASS",
+      "evidence": "Inherited prior evidence (not all paths rerun): src/game/rulesText.ts:39–42：lights from own position down、multipliers >1 added、overlap doubled；既有線獎完整重算通過。"
+    },
+    {
+      "id": "27",
+      "title": "Modes/costs",
+      "verdict": "PASS",
+      "evidence": "Inherited prior evidence (not all paths rerun): src/components/ui/ModalGameRules.svelte:125；upload math/index.json 成本1/100/300/600；本次 buy modal 正確。"
+    },
+    {
+      "id": "29",
+      "title": "Free spins/retrigger",
+      "verdict": "PASS",
+      "evidence": "Inherited prior evidence (not all paths rerun): src/game/rulesText.ts:45 起；rulesCommon.ts:187：There is no limit to the number of free spins that can be won；實測8手及結算。"
+    },
+    {
+      "id": "235",
+      "title": "Controls guide",
+      "verdict": "PASS",
+      "evidence": "Inherited prior evidence (not all paths rerun): src/components/ui/ModalGameRules.svelte:48–69；src/game/rulesCommon.ts:72–84 列 spin/stepper/amount/buy/auto/turbo/menu/info/settings/paytable/sound。靜態。"
+    },
+    {
+      "id": "185",
+      "title": "Disclaimer",
+      "verdict": "PASS",
+      "evidence": "Inherited prior evidence (not all paths rerun): src/game/rulesCommon.ts:194；socialTerms.ts:82–83；正式 bundle 檢查有 TM and © 2026 Engine.。"
+    },
+    {
+      "id": "266",
+      "title": "Mystery odds",
+      "verdict": "N/A",
+      "evidence": "Inherited prior evidence (not all paths rerun): upload math/index.json 只有 base/bonus/bonus_hits/bonus_epic，沒有 Mystery Mode 或顯示抽選機率。"
+    },
+    {
+      "id": "193",
+      "title": "Laptop1024×576",
+      "verdict": "AT RISK",
+      "evidence": "Inherited prior evidence (not all paths rerun): 本次角色驗收是1280×720，未把1024×576當已測；需另看此尺寸文字與操作。"
+    },
+    {
+      "id": "195",
+      "title": "Popout400×225/800×450",
+      "verdict": "AT RISK",
+      "evidence": "Inherited prior evidence (not all paths rerun): 本次未重錄這兩個確切尺寸；保留既有 responsive 實作，無宣稱新 PASS。"
+    },
+    {
+      "id": "194",
+      "title": "Mobile425×812",
+      "verdict": "AT RISK",
+      "evidence": "Inherited prior evidence (not all paths rerun): 本次390×844 MG/FG/entry/outro通過；425×812及真實touch裝置未重測。"
+    },
+    {
+      "id": "223",
+      "title": "No doubletap zoom",
+      "verdict": "PASS",
+      "evidence": "Inherited prior evidence (not all paths rerun): src/app.html:67 maximum-scale=1,user-scalable=no，:99 touch-action manipulation。"
+    },
+    {
+      "id": "239",
+      "title": "English",
+      "verdict": "PASS",
+      "evidence": "Inherited prior evidence (not all paths rerun): 本次桌機／手機 MG、buy/confirm、RIOT entry/outro 都為英文，無key/undefined/NaN；character_fix_20261029截圖。"
+    },
+    {
+      "id": "240",
+      "title": "Invalid language fallback",
+      "verdict": "PASS",
+      "evidence": "Inherited prior evidence (not all paths rerun): packages/state-shared/src/stateUrl.svelte.ts:34–47 unknown code回en；src/game/rulesCommon.ts:41–43 規則頁也回en。靜態。"
+    },
+    {
+      "id": "77",
+      "title": "Social words",
+      "verdict": "AT RISK",
+      "evidence": "Inherited prior evidence (not all paths rerun): src/game/socialTerms.ts:22–23 使用social pick；完整build social guard已通過。未重掃所有live畫面，不宣稱 runtime 全覆蓋。"
+    },
+    {
+      "id": "78",
+      "title": "SC/GC formatting",
+      "verdict": "PASS",
+      "evidence": "Inherited prior evidence (not all paths rerun): packages/utils-shared/amount.ts:79–83 XGC→GC、XSC/XEC→SC，symbolAfter。靜態，非全部social畫面已重測。"
+    },
+    {
+      "id": "225",
+      "title": "Social mode names",
+      "verdict": "PASS",
+      "evidence": "Inherited prior evidence (not all paths rerun): src/game/rulesText.ts:47起 Lockdown/Riot/Breakout，均無受限詞；socialTerms.ts控制buy稱呼。"
+    },
+    {
+      "id": "188",
+      "title": "Social replay",
+      "verdict": "AT RISK",
+      "evidence": "Inherited prior evidence (not all paths rerun): 本次未跑 social replay 全流程；需平台 replay URL 或真實 books fixture。"
+    },
+    {
+      "id": "171",
+      "title": "Replay end to end",
+      "verdict": "AT RISK",
+      "evidence": "Inherited prior evidence (not all paths rerun): packages/components-shared/.../Authenticate.svelte:138–181 分離replay/auth；createPrimaryMachines.ts:44 跳過end-round。靜態正向，未做平台重播。"
+    },
+    {
+      "id": "172",
+      "title": "Replay optional params",
+      "verdict": "AT RISK",
+      "evidence": "Inherited prior evidence (not all paths rerun): src/components/ui/ReplayIntro.svelte:78 起顯示amount/cost；未逐 EUR/fr/amount 路徑重測。"
+    },
+    {
+      "id": "173",
+      "title": "Replay again",
+      "verdict": "AT RISK",
+      "evidence": "Inherited prior evidence (not all paths rerun): 本次沒有重跑 replay finished→again。"
+    },
+    {
+      "id": "174",
+      "title": "Replay costs",
+      "verdict": "AT RISK",
+      "evidence": "Inherited prior evidence (not all paths rerun): src/components/ui/ReplayIntro.svelte:78 起有base/costMultiplier；未做平台各mode重播比較。"
+    },
+    {
+      "id": "243",
+      "title": "Replay small popout",
+      "verdict": "AT RISK",
+      "evidence": "Inherited prior evidence (not all paths rerun): 本次未重測400×225重播。"
+    }
+  ]
+}

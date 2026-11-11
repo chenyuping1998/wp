@@ -1,0 +1,317 @@
+{
+  "scope": "Incremental full-checklist revalidation against final v32 audited source; only constants.ts differs. Prior runtime gaps retained, not represented as freshly tested.",
+  "counts": {
+    "AT RISK": 19,
+    "PASS": 26,
+    "NEEDS A HUMAN": 5,
+    "N/A": 1
+  },
+  "checks": [
+    {
+      "id": "181",
+      "title": "Authenticates with the RGS on launch",
+      "verdict": "AT RISK",
+      "evidence": "Inherited evidence (2026-10-31; matching audited source): RGS client and actor source inspected; this run used real-book replay fixtures, not a live authenticated wallet session. Authenticate.svelte:16; game/actor.ts:24. Confirm live authenticate/play status and payloads. Current candidate: 5 normal local mock rounds completed; no claim of real RGS session testing."
+    },
+    {
+      "id": "274",
+      "title": "Fails correctly with an invalid rgs_url",
+      "verdict": "AT RISK",
+      "evidence": "Inherited evidence (2026-10-31; matching audited source): Authenticate.svelte:131 error modal and rgsFetcher.ts:36 URL-only host; invalid-host runtime path not captured in this audit."
+    },
+    {
+      "id": "183",
+      "title": "Pressing bet sends a successful play request",
+      "verdict": "AT RISK",
+      "evidence": "Inherited evidence (2026-10-31; matching audited source): RGS client and actor source inspected; this run used real-book replay fixtures, not a live authenticated wallet session. Authenticate.svelte:16; game/actor.ts:24. Confirm live authenticate/play status and payloads. Current candidate: 5 normal local mock rounds completed; no claim of real RGS session testing."
+    },
+    {
+      "id": "275",
+      "title": "No Stake Engine loader",
+      "verdict": "PASS",
+      "evidence": "Inherited evidence (2026-10-31; matching audited source): Production build guards and observed loading/replay use Turf artwork; build.log."
+    },
+    {
+      "id": "213",
+      "title": "Title is unique and avoids restricted terms",
+      "verdict": "AT RISK",
+      "evidence": "Inherited evidence (2026-10-31; matching audited source): Turf War has no listed restricted title term. Web search cannot establish uniqueness; compare platform catalogue and obtain reviewer confirmation."
+    },
+    {
+      "id": "217",
+      "title": "No offensive or inappropriate content",
+      "verdict": "NEEDS A HUMAN",
+      "evidence": "Inherited evidence (2026-10-31; matching audited source): Viewed thumbnail/cover and runtime adult cast; full asset content and similarity judgement still needs final art review."
+    },
+    {
+      "id": "253",
+      "title": "Distinct from existing titles",
+      "verdict": "NEEDS A HUMAN",
+      "evidence": "Inherited evidence (2026-10-31; matching audited source): Viewed thumbnail/cover and runtime adult cast; full asset content and similarity judgement still needs final art review."
+    },
+    {
+      "id": "242",
+      "title": "Uses every bet parameter from authenticate",
+      "verdict": "PASS",
+      "evidence": "Inherited evidence (2026-10-31; matching audited source): packages/components-shared/src/components/Authenticate.svelte:71–95 consumes min/max/step/default/levels from authenticate. Static evidence; dynamic response mutation not repeated."
+    },
+    {
+      "id": "187",
+      "title": "An active round restores its bet amount",
+      "verdict": "PASS",
+      "evidence": "Inherited evidence (2026-10-31; matching audited source): Authenticate.svelte:118–124 restores round.amount; createPrimaryMachines.ts:165–178 resume handling. Static verification only."
+    },
+    {
+      "id": "219",
+      "title": "Supports and displays currencies correctly",
+      "verdict": "AT RISK",
+      "evidence": "Inherited evidence (2026-10-31; matching audited source): packages/utils-shared/amount.ts:128–135 forces 2 decimals including JPY. Comment cites 2026-10-14 reviewer requirement; current self-check says JPY 0 decimals. Resolve conflicting requirements before editing shared formatter; full seven-currency runtime matrix incomplete."
+    },
+    {
+      "id": "273",
+      "title": "Sub-cent payouts display correctly",
+      "verdict": "PASS",
+      "evidence": "Inherited evidence (2026-10-31; matching audited source): amount.ts:118 decimalsNeeded plus WIN_MAX_FRACTION_DIGITS=4, bookEventAmountToCurrencyString; sub-cent formatting retained."
+    },
+    {
+      "id": "221",
+      "title": "Zero-win rounds send no end-round",
+      "verdict": "PASS",
+      "evidence": "Inherited evidence (2026-10-31; matching audited source): createPrimaryMachines.ts:125–137 conditions round closure on winning/active round; replay end-round is suppressed at line43. Source check."
+    },
+    {
+      "id": "222",
+      "title": "Insufficient balance sends no play request",
+      "verdict": "PASS",
+      "evidence": "Inherited evidence (2026-10-31; matching audited source): game/actor.ts:24–30 checks affordability before request and stops auto; ModalBuyBonus.svelte:108–110 uses mode cost; ButtonBet.svelte:46–49 explains insufficient balance. Source check; 20s space-hold wallet test pending."
+    },
+    {
+      "id": "228",
+      "title": "Space bar places a bet",
+      "verdict": "PASS",
+      "evidence": "Inherited evidence (2026-10-31; matching audited source): EnableHotkey.svelte:9,19,34 uses window keydown + preventDefault; ButtonBet.svelte:127 disables during modals. Source check."
+    },
+    {
+      "id": "227",
+      "title": "Main frame doesn't scroll",
+      "verdict": "AT RISK",
+      "evidence": "Inherited evidence (2026-10-31; matching audited source): 1024×576 and 400×225 reports show viewport=scroll dimensions. app.html:62 overflow hidden. 800×450 and portrait runtime not completed this audit."
+    },
+    {
+      "id": "104",
+      "title": "Autoplay needs a confirmation step",
+      "verdict": "PASS",
+      "evidence": "Inherited evidence (2026-10-31; matching audited source): ButtonAutoSpin.svelte:34 opens settings; AutoSpinsStartButton.svelte:25–39 starts only after confirmation."
+    },
+    {
+      "id": "31",
+      "title": "High-cost modes need confirmation",
+      "verdict": "PASS",
+      "evidence": "Inherited evidence (2026-10-31; matching audited source): ModalBuyBonus.svelte:112–116 opens buyBonusConfirm; costs shown at184–185; all modes cost1/100/500/1000 in math index."
+    },
+    {
+      "id": "107",
+      "title": "Sound can be turned off",
+      "verdict": "NEEDS A HUMAN",
+      "evidence": "Inherited evidence (2026-10-31; matching audited source): Sound.svelte:559,574–597 routes BGM/effects through volume settings; listen to mute during base, feature, big-win and ambient paths."
+    },
+    {
+      "id": "25",
+      "title": "RTP and max win are stated",
+      "verdict": "PASS",
+      "evidence": "Inherited evidence (2026-10-31; matching audited source): game/config.ts RTP 96.01/96.02/96.03/96.05%; all max20,000x. math.log recomputed all100,000 LUT/book entries; rules derive config."
+    },
+    {
+      "id": "24",
+      "title": "Every symbol's payout is shown",
+      "verdict": "PASS",
+      "evidence": "Inherited evidence (2026-10-31; matching audited source): ModalPayTable.svelte:41,76–88 lists12 symbols and config payouts; wins.log recomputed12,501 wins across800 winning rounds."
+    },
+    {
+      "id": "26",
+      "title": "Win combinations are explained",
+      "verdict": "PASS",
+      "evidence": "rulesText.ts:39 and IntroFeatures/i18nText hashes match final published v32 fixes in precheck_20261031/publish/RELEASE-RECEIPT.json; removed incorrect one-Bruiser-per-spin claim. No math changes."
+    },
+    {
+      "id": "27",
+      "title": "Every mode has a description and cost",
+      "verdict": "PASS",
+      "evidence": "Inherited evidence (2026-10-31; matching audited source): betModeMeta.ts:45–61 descriptions derive config cost. Lookout100x, Muscle500x, Kingpin1000x match math/index.json."
+    },
+    {
+      "id": "29",
+      "title": "Free games and re-triggers are explained",
+      "verdict": "PASS",
+      "evidence": "Inherited evidence (2026-10-31; matching audited source): rulesText.ts:48–52 and ModalGameRules trigger/retrigger tables match game_config.py:252,279. 12/10-spin feature paths observed locally."
+    },
+    {
+      "id": "235",
+      "title": "Every control is explained",
+      "verdict": "PASS",
+      "evidence": "Inherited evidence (2026-10-31; matching audited source): ModalGameRules.svelte:66 control guide lists11 controls including autoplay/turbo/menu/sound/feature."
+    },
+    {
+      "id": "185",
+      "title": "General disclaimer is present",
+      "verdict": "PASS",
+      "evidence": "Inherited evidence (2026-10-31; matching audited source): rulesCommon.ts:194 includes malfunction, connection, resume, expected return, illustrative display and RGS settlement; ModalGameRules.svelte:355 TM ©2026 Engine."
+    },
+    {
+      "id": "266",
+      "title": "Mystery Mode chances are accurate",
+      "verdict": "N/A",
+      "evidence": "Inherited evidence (2026-10-31; matching audited source): Four listed modes are Base/Lookout/Muscle/Kingpin; no Mystery Mode or displayed probability feature in rules/meta/index."
+    },
+    {
+      "id": "193",
+      "title": "Laptop 1024×576",
+      "verdict": "AT RISK",
+      "evidence": "Inherited evidence (2026-10-31; matching audited source): Desktop base + Lookout replay completed, no errors. replay-low-contrast.png proves Start Replay contrast only1.718:1; UI defect remains. Replay contrast was fixed in final v32; ReplayIntro.svelte hash still matches its final receipt. Full device matrix not repeated on this candidate."
+    },
+    {
+      "id": "195",
+      "title": "Popout S/L",
+      "verdict": "AT RISK",
+      "evidence": "Inherited evidence (2026-10-31; matching audited source): Muscle400×225 played through10 spins, total2.90GC; screenshot and JSON saved. 800×450 not completed; replay start contrast defect applies. Replay contrast was fixed in final v32; ReplayIntro.svelte hash still matches its final receipt. Full device matrix not repeated on this candidate."
+    },
+    {
+      "id": "194",
+      "title": "Mobile 425×812",
+      "verdict": "NEEDS A HUMAN",
+      "evidence": "Inherited evidence (2026-10-31; matching audited source): Final candidate requires425×812 gameplay/cut-ins and actual touch verification. Desktop iframe is not a physical mobile test. This candidate completed normal play at390×844 with screenshot; physical425×812 touch/cut-ins remain unverified."
+    },
+    {
+      "id": "223",
+      "title": "Double-tap zoom is disabled on mobile",
+      "verdict": "PASS",
+      "evidence": "Inherited evidence (2026-10-31; matching audited source): src/app.html:58 maximum-scale=1,user-scalable=no; line71 touch-action:manipulation."
+    },
+    {
+      "id": "239",
+      "title": "English is supported",
+      "verdict": "PASS",
+      "evidence": "Inherited evidence (2026-10-31; matching audited source): English runtime screens and rules source reviewed; observed replay reports contain no placeholder/errors; static build guards passed."
+    },
+    {
+      "id": "240",
+      "title": "Invalid languages don't break the display",
+      "verdict": "PASS",
+      "evidence": "Inherited evidence (2026-10-31; matching audited source): packages/state-shared/src/stateUrl.svelte.ts:31–44 falls back to English for unknown language; source verified."
+    },
+    {
+      "id": "77",
+      "title": "All text uses social wording",
+      "verdict": "AT RISK",
+      "evidence": "Inherited evidence (2026-10-31; matching audited source): Static social guard passes, LookoutXSC and MuscleXGC runtime scans return no restricted words. All settings/advanced autoplay/error/modals not fully swept in this run."
+    },
+    {
+      "id": "78",
+      "title": "SC and GC currencies, no \"$\"",
+      "verdict": "AT RISK",
+      "evidence": "Inherited evidence (2026-10-31; matching audited source): Observed XSC1.00SC/100.00SC and XGC1.00GC/500.00GC, no $. Normal wallet play paths not repeated for both."
+    },
+    {
+      "id": "225",
+      "title": "Mode names use social wording",
+      "verdict": "PASS",
+      "evidence": "Inherited evidence (2026-10-31; matching audited source): Lookout/Muscle/Kingpin labels consistent with betModeMeta and replay; no restricted mode names."
+    },
+    {
+      "id": "188",
+      "title": "The replay has no restricted words",
+      "verdict": "PASS",
+      "evidence": "Inherited evidence (2026-10-31; matching audited source): bonus-XSC-1024x576-2.json and bonus_hits-XGC reports: social=true, zero restricted-word hits in replay/feature flow."
+    },
+    {
+      "id": "171",
+      "title": "Replay URLs load and play the event",
+      "verdict": "AT RISK",
+      "evidence": "Inherited evidence (2026-10-31; matching audited source): Base, Lookout, Muscle real-book local replay GET200, no wallet calls/errors. Kingpin/max-win/loss/fetch-error full replay matrix pending."
+    },
+    {
+      "id": "172",
+      "title": "Optional parameters are applied",
+      "verdict": "AT RISK",
+      "evidence": "Inherited evidence (2026-10-31; matching audited source): USD/XSC/XGC and amount1000000 correctly applied in observed cards. EUR/non-default amount/missing-invalid parameters runtime not fully tested."
+    },
+    {
+      "id": "173",
+      "title": "The replay can be watched again",
+      "verdict": "PASS",
+      "evidence": "Inherited evidence (2026-10-31; matching audited source): Base book64 replayed a second time with0.70 result; base-USD-1024x576-2.json. No new wallet requests."
+    },
+    {
+      "id": "174",
+      "title": "Bet cost and multiplier are shown",
+      "verdict": "PASS",
+      "evidence": "Inherited evidence (2026-10-31; matching audited source): Observed Lookout1SC ×100=100SC, Muscle1GC ×500=500GC; result multiplier/win shown. ReplayIntro source covers same field mapping for other modes."
+    },
+    {
+      "id": "243",
+      "title": "Replays work at popout S (400×225)",
+      "verdict": "AT RISK",
+      "evidence": "Inherited evidence (2026-10-31; matching audited source): Muscle400×225 replay runs and fits; Start Replay low contrast remains a usability defect. muscle-small.png. Replay contrast was fixed in final v32; ReplayIntro.svelte hash still matches its final receipt. Full device matrix not repeated on this candidate."
+    },
+    {
+      "id": "tile",
+      "title": "Thumbnail artwork",
+      "verdict": "PASS",
+      "evidence": "Inherited evidence (2026-10-31; matching audited source): thumbnail.log + thumbnail.png/cover.png: BG opaque, FG transparency, exposure checks pass; adult subject and no lettering observed. Build artwork guard passes."
+    },
+    {
+      "id": "social-en",
+      "title": "Social English only",
+      "verdict": "PASS",
+      "evidence": "Inherited evidence (2026-10-31; matching audited source): stateUrl.svelte.ts:31–44 forces English when social; runtime XSC/XGC observed English."
+    },
+    {
+      "id": "five-wins",
+      "title": "5 wins per mode",
+      "verdict": "PASS",
+      "evidence": "Inherited evidence (2026-10-31; matching audited source): wins.log:200 winning rounds per mode; 12,501 line wins recomputed, zero mismatch. This does not clear Bruiser occurrence-description defect. Bruiser rules claim corrected in final v32 source; all math hashes unchanged."
+    },
+    {
+      "id": "final-1",
+      "title": "Bet-level templates",
+      "verdict": "AT RISK",
+      "evidence": "game-before.json: platform front32/math7, approval closed+locked. Publication requested, not a new approval submission; Studio-only process checks not reverified."
+    },
+    {
+      "id": "final-2",
+      "title": "Provably Fair + Replay enabled",
+      "verdict": "AT RISK",
+      "evidence": "game-before.json: platform front32/math7, approval closed+locked. Publication requested, not a new approval submission; Studio-only process checks not reverified."
+    },
+    {
+      "id": "final-3",
+      "title": "Front / Math approvals",
+      "verdict": "AT RISK",
+      "evidence": "game-before.json: platform front32/math7, approval closed+locked. Publication requested, not a new approval submission; Studio-only process checks not reverified."
+    },
+    {
+      "id": "final-4",
+      "title": "Approved channel posting",
+      "verdict": "AT RISK",
+      "evidence": "game-before.json: platform front32/math7, approval closed+locked. Publication requested, not a new approval submission; Studio-only process checks not reverified."
+    },
+    {
+      "id": "final-5",
+      "title": "Older Android / iOS",
+      "verdict": "NEEDS A HUMAN",
+      "evidence": "Inherited evidence (2026-10-31; matching audited source): Test current build on older Android Chrome and iOS Safari: launch, touch, sound, feature, recovery, orientation and memory."
+    },
+    {
+      "id": "final-6",
+      "title": "Approval closed + notification",
+      "verdict": "AT RISK",
+      "evidence": "game-before.json: platform front32/math7, approval closed+locked. Publication requested, not a new approval submission; Studio-only process checks not reverified."
+    },
+    {
+      "id": "final-7",
+      "title": "Game released",
+      "verdict": "AT RISK",
+      "evidence": "game-before.json: platform front32/math7, approval closed+locked. Publication requested, not a new approval submission; Studio-only process checks not reverified."
+    }
+  ]
+}

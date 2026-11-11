@@ -1,0 +1,9 @@
+{
+  "src/components/BoardBase.svelte": "6a0c21160f1c6abcf4298d032239791eacb6eac8354f28d540aaf2d17c4c7cbc",
+  "src/components/ReelMotion.svelte": "ad1c8feaaba47aab0557c46ad207625c17026becfbd9d32dff41a34e410ca261",
+  "src/components/SymbolSprite.svelte": "1be186de06187a585439b1edae70d2c81840ac17d8f9c70e8fb449197830e424",
+  "src/game/constants.ts": "b6de9a5b15a48fc307cef570f2bf11fec4632ca1f4110e73ac3987fdff0f1ea6",
+  "src/game/reelMotion.ts": "9c6f96c50a685a01fabca66b5678eff146f97363e2cef44567b4934ac74d348e",
+  "design/check_reel_motion.mjs": "d318b0ff0c90a06a8877bab27df9ef926a3a98d313b65f9e073e5e9c1adba2c1",
+  "package.json": "d183b406190b97fe0ee453bf8a898c93283c9f361807e87cfd61c589e6f52dd0"
+}

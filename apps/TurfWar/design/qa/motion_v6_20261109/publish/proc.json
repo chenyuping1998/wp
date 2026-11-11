@@ -1,0 +1,91 @@
+{
+ "process": {
+  "account_id": "019e0176-748a-767b-a8ff-ae863a8088bc",
+  "attempt": 1,
+  "completed_actions": 24,
+  "confirmed_bytes": 4820082,
+  "desired": "running",
+  "files": [
+   {
+    "active_parts": 0,
+    "completed_parts": 1,
+    "confirmed": 1699342,
+    "confirming_parts": 0,
+    "last_activity": "2026-11-09T20:37:54.222161+08:00",
+    "name": "/front/_app/immutable/bundle.DhBnenya.js",
+    "retries": 0,
+    "sent": 1699342,
+    "size": 1699342,
+    "status": "complete",
+    "total_parts": 1
+   },
+   {
+    "active_parts": 0,
+    "completed_parts": 1,
+    "confirmed": 27,
+    "confirming_parts": 0,
+    "last_activity": "2026-11-09T20:37:50.89295+08:00",
+    "name": "/front/_app/version.json",
+    "retries": 0,
+    "sent": 27,
+    "size": 27,
+    "status": "complete",
+    "total_parts": 1
+   },
+   {
+    "active_parts": 0,
+    "completed_parts": 1,
+    "confirmed": 728175,
+    "confirming_parts": 0,
+    "last_activity": "2026-11-09T20:37:52.808624+08:00",
+    "name": "/front/assets/castLayers/turf/v6/base/cast.spine.json",
+    "retries": 0,
+    "sent": 728175,
+    "size": 728175,
+    "status": "complete",
+    "total_parts": 1
+   },
+   {
+    "active_parts": 0,
+    "completed_parts": 1,
+    "confirmed": 640384,
+    "confirming_parts": 0,
+    "last_activity": "2026-11-09T20:37:52.541728+08:00",
+    "name": "/front/assets/castLayers/turf/v6/fg/cast.spine.json",
+    "retries": 0,
+    "sent": 640384,
+    "size": 640384,
+    "status": "complete",
+    "total_parts": 1
+   },
+   {
+    "active_parts": 0,
+    "completed_parts": 1,
+    "confirmed": 1752154,
+    "confirming_parts": 0,
+    "last_activity": "2026-11-09T20:37:54.987116+08:00",
+    "name": "/front/index.html",
+    "retries": 0,
+    "sent": 1752154,
+    "size": 1752154,
+    "status": "complete",
+    "total_parts": 1
+   }
+  ],
+  "finished_at": "2026-11-09T12:37:58.276939Z",
+  "game": "turf-war",
+  "id": "e5d2bdf32bf035554dad96a88e8d4eb7",
+  "path": "/Users/stone/stake-engine/upload/TurfWar/frontend",
+  "pid": 70221,
+  "plan_id": "a0d47481bbc4ed03188870bf4e93f3e56b1872247485068a9d51fde891b7086e",
+  "sent_bytes": 4820082,
+  "source": "mcp",
+  "started_at": "2026-11-09T12:37:48.871172Z",
+  "status": "completed",
+  "team": "silver-stars",
+  "total_actions": 24,
+  "total_bytes": 4820082,
+  "type": "front",
+  "updated_at": "2026-11-09T12:37:58.276939Z"
+ }
+}

@@ -1,0 +1,45 @@
+{
+  "date": "2026-11-03T22:48:31.453985+08:00",
+  "team": "silver-stars",
+  "game": "turf-war",
+  "platform_updated": true,
+  "published": true,
+  "front_version": 35,
+  "math_version": 7,
+  "supersedes_front": 34,
+  "change": "Portrait console, native stencil/control art, boombox scatter signal, multiplier impact audio, BGM crossfade and shared mix headroom.",
+  "upload": {
+    "actions": 12,
+    "plan_id": "cfa385993173790408752056b5fb8534a8457fe1779f34706d2e9d2f0a36e657",
+    "success": true,
+    "uploaded_bytes": 3803102
+  },
+  "publication": {
+    "published": true,
+    "result": {
+      "changed": true,
+      "code": "",
+      "message": "",
+      "version": 35
+    }
+  },
+  "pending_upload_actions": 0,
+  "pending_math_actions": 0,
+  "staged_frontend_files": 152,
+  "source_and_build_match_verified_QA": true,
+  "math_unchanged": true,
+  "platform_store_art_changed": false,
+  "thumbnail_and_cover_retained_in_staging": true,
+  "approval": {
+    "column": "new",
+    "locked": true,
+    "open": false
+  },
+  "approval_version_updated": false,
+  "new_approval_submission": false,
+  "build": "PASS",
+  "types": "0 errors/0 warnings",
+  "runtime": "12 complete real-book local fixture rounds (6 portrait normal +6 desktop Turbo), 4 viewport checks, touch $2 play, base64 replay, mute, source/build/stage exact match.",
+  "published_cdn_bytes_independently_verified": false,
+  "evidence_directory": "/Users/stone/stake-engine/wp/apps/TurfWar/design/qa/review_fix_20261103"
+}

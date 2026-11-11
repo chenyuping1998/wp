@@ -1,0 +1,9265 @@
+{
+  "rows": [
+    {
+      "spin": 0,
+      "game": "basegame",
+      "turbo": false,
+      "type": "normal",
+      "at": [
+        917,
+        1117,
+        1316,
+        1516,
+        1716
+      ],
+      "settled": [
+        1000,
+        1200,
+        1400,
+        1600,
+        1800
+      ],
+      "landing": [
+        933,
+        1134,
+        1333,
+        1533,
+        1733
+      ]
+    },
+    {
+      "spin": 1,
+      "game": "basegame",
+      "turbo": false,
+      "type": "normal",
+      "at": [
+        918,
+        1117,
+        1317,
+        1517,
+        1719
+      ],
+      "settled": [
+        1001,
+        1201,
+        1400,
+        1607,
+        1802
+      ],
+      "landing": [
+        936,
+        1134,
+        1334,
+        1533,
+        1736
+      ]
+    },
+    {
+      "spin": 2,
+      "game": "basegame",
+      "turbo": false,
+      "type": "normal",
+      "at": [
+        917,
+        1116,
+        1317,
+        1517,
+        1717
+      ],
+      "settled": [
+        1000,
+        1200,
+        1400,
+        1599,
+        1800
+      ],
+      "landing": [
+        934,
+        1134,
+        1333,
+        1534,
+        1733
+      ]
+    }
+  ],
+  "filters": [
+    {
+      "t": 14846.399999976158,
+      "motions": [
+        "spinning",
+        "stopped",
+        "stopped",
+        "stopped",
+        "stopped"
+      ],
+      "filters": [
+        {
+          "y": 4.136122713944696,
+          "x": 0,
+          "children": 4
+        }
+      ]
+    },
+    {
+      "t": 14864,
+      "motions": [
+        "spinning",
+        "stopped",
+        "stopped",
+        "stopped",
+        "stopped"
+      ],
+      "filters": [
+        {
+          "y": 7.594435414227736,
+          "x": 0,
+          "children": 4
+        }
+      ]
+    },
+    {
+      "t": 14880.100000023842,
+      "motions": [
+        "spinning",
+        "stopped",
+        "stopped",
+        "stopped",
+        "stopped"
+      ],
+      "filters": [
+        {
+          "y": 10.147810318917012,
+          "x": 0,
+          "children": 4
+        }
+      ]
+    },
+    {
+      "t": 14896.5,
+      "motions": [
+        "spinning",
+        "stopped",
+        "stopped",
+        "stopped",
+        "stopped"
+      ],
+      "filters": [
+        {
+          "y": 11.468480826276448,
+          "x": 0,
+          "children": 4
+        }
+      ]
+    },
+    {
+      "t": 14925.299999952316,
+      "motions": [
+        "spinning",
+        "stopped",
+        "stopped",
+        "stopped",
+        "stopped"
+      ],
+      "filters": [
+        {
+          "y": 9.35311396822844,
+          "x": 0,
+          "children": 4
+        }
+      ]
+    },
+    {
+      "t": 14934.799999952316,
+      "motions": [
+        "spinning",
+        "spinning",
+        "stopped",
+        "stopped",
+        "stopped"
+      ],
+      "filters": [
+        {
+          "y": 10.426339101217419,
+          "x": 0,
+          "children": 4
+        }
+      ]
+    },
+    {
+      "t": 14946.5,
+      "motions": [
+        "spinning",
+        "spinning",
+        "stopped",
+        "stopped",
+        "stopped"
+      ],
+      "filters": [
+        {
+          "y": 10.33477307824648,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 1.502866360110975,
+          "x": 0,
+          "children": 4
+        }
+      ]
+    },
+    {
+      "t": 14962.799999952316,
+      "motions": [
+        "spinning",
+        "spinning",
+        "stopped",
+        "stopped",
+        "stopped"
+      ],
+      "filters": [
+        {
+          "y": 10.47434669821027,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 4.326212189653663,
+          "x": 0,
+          "children": 4
+        }
+      ]
+    },
+    {
+      "t": 14980.100000023842,
+      "motions": [
+        "spinning",
+        "spinning",
+        "stopped",
+        "stopped",
+        "stopped"
+      ],
+      "filters": [
+        {
+          "y": 11.640138804099372,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 7.472874347333873,
+          "x": 0,
+          "children": 4
+        }
+      ]
+    },
+    {
+      "t": 14995.899999976158,
+      "motions": [
+        "spinning",
+        "spinning",
+        "stopped",
+        "stopped",
+        "stopped"
+      ],
+      "filters": [
+        {
+          "y": 13.004132928633844,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 10.096731168050109,
+          "x": 0,
+          "children": 4
+        }
+      ]
+    },
+    {
+      "t": 15013.600000023842,
+      "motions": [
+        "spinning",
+        "spinning",
+        "stopped",
+        "stopped",
+        "stopped"
+      ],
+      "filters": [
+        {
+          "y": 13.230068068266064,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 11.241808204180206,
+          "x": 0,
+          "children": 4
+        }
+      ]
+    },
+    {
+      "t": 15030.100000023842,
+      "motions": [
+        "spinning",
+        "spinning",
+        "spinning",
+        "stopped",
+        "stopped"
+      ],
+      "filters": [
+        {
+          "y": 14.016438662636098,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 12.647649561643428,
+          "x": 0,
+          "children": 4
+        }
+      ]
+    },
+    {
+      "t": 15047.299999952316,
+      "motions": [
+        "spinning",
+        "spinning",
+        "spinning",
+        "stopped",
+        "stopped"
+      ],
+      "filters": [
+        {
+          "y": 14.016438662636098,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 13.133521700077281,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 3.7728146194865286,
+          "x": 0,
+          "children": 4
+        }
+      ]
+    },
+    {
+      "t": 15062.899999976158,
+      "motions": [
+        "spinning",
+        "spinning",
+        "spinning",
+        "stopped",
+        "stopped"
+      ],
+      "filters": [
+        {
+          "y": 14.135935929912891,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 13.916651715379954,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 7.443701806804992,
+          "x": 0,
+          "children": 4
+        }
+      ]
+    },
+    {
+      "t": 15080.699999928474,
+      "motions": [
+        "spinning",
+        "spinning",
+        "spinning",
+        "stopped",
+        "stopped"
+      ],
+      "filters": [
+        {
+          "y": 14.164321679190396,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.01302274755919,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 9.546899147391777,
+          "x": 0,
+          "children": 4
+        }
+      ]
+    },
+    {
+      "t": 15096.199999928474,
+      "motions": [
+        "spinning",
+        "spinning",
+        "spinning",
+        "stopped",
+        "stopped"
+      ],
+      "filters": [
+        {
+          "y": 14.853930477102306,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.749539165478978,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 11.668060033624695,
+          "x": 0,
+          "children": 4
+        }
+      ]
+    },
+    {
+      "t": 15113.600000023842,
+      "motions": [
+        "spinning",
+        "spinning",
+        "spinning",
+        "stopped",
+        "stopped"
+      ],
+      "filters": [
+        {
+          "y": 14.450878442223068,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.399039251181907,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 12.41121383276548,
+          "x": 0,
+          "children": 4
+        }
+      ]
+    },
+    {
+      "t": 15129.399999976158,
+      "motions": [
+        "spinning",
+        "spinning",
+        "spinning",
+        "spinning",
+        "stopped"
+      ],
+      "filters": [
+        {
+          "y": 14.854212462983021,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.818205872052864,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 13.437497276028681,
+          "x": 0,
+          "children": 4
+        }
+      ]
+    },
+    {
+      "t": 15146.799999952316,
+      "motions": [
+        "spinning",
+        "spinning",
+        "spinning",
+        "spinning",
+        "stopped"
+      ],
+      "filters": [
+        {
+          "y": 14.31428977314799,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.296334772428107,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 13.542833622184707,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 3.51762373659797,
+          "x": 0,
+          "children": 4
+        }
+      ]
+    },
+    {
+      "t": 15163.5,
+      "motions": [
+        "spinning",
+        "spinning",
+        "spinning",
+        "spinning",
+        "stopped"
+      ],
+      "filters": [
+        {
+          "y": 14.706144722772864,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.296334772428107,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.17386522422856,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 7.246379405546826,
+          "x": 0,
+          "children": 4
+        }
+      ]
+    },
+    {
+      "t": 15179.799999952316,
+      "motions": [
+        "spinning",
+        "spinning",
+        "spinning",
+        "spinning",
+        "stopped"
+      ],
+      "filters": [
+        {
+          "y": 14.781088261237864,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 13.85552118901947,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.413832826867088,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 9.650052230577083,
+          "x": 0,
+          "children": 4
+        }
+      ]
+    },
+    {
+      "t": 15196.5,
+      "motions": [
+        "spinning",
+        "spinning",
+        "spinning",
+        "spinning",
+        "stopped"
+      ],
+      "filters": [
+        {
+          "y": 14.804879227577038,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.166268236590241,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.551484996160955,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 11.264632277698402,
+          "x": 0,
+          "children": 4
+        }
+      ]
+    },
+    {
+      "t": 15213.5,
+      "motions": [
+        "spinning",
+        "spinning",
+        "spinning",
+        "spinning",
+        "stopped"
+      ],
+      "filters": [
+        {
+          "y": 14.848825002411091,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.4072240720397,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.646460456034895,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 12.378639647356385,
+          "x": 0,
+          "children": 4
+        }
+      ]
+    },
+    {
+      "t": 15229.799999952316,
+      "motions": [
+        "spinning",
+        "spinning",
+        "spinning",
+        "spinning",
+        "spinning"
+      ],
+      "filters": [
+        {
+          "y": 14.848825002411091,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.4072240720397,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.646460456034895,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 12.378639647356385,
+          "x": 0,
+          "children": 4
+        }
+      ]
+    },
+    {
+      "t": 15246.100000023842,
+      "motions": [
+        "spinning",
+        "spinning",
+        "spinning",
+        "spinning",
+        "spinning"
+      ],
+      "filters": [
+        {
+          "y": 11.15148885781882,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 10.931280700981647,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 11.05057801116545,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 9.919709378492769,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 2.31716482466538,
+          "x": 0,
+          "children": 4
+        }
+      ]
+    },
+    {
+      "t": 15263.699999928474,
+      "motions": [
+        "spinning",
+        "spinning",
+        "spinning",
+        "spinning",
+        "spinning"
+      ],
+      "filters": [
+        {
+          "y": 12.179413322565042,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 12.028486441424208,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 12.110250764840472,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 11.335172865089874,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 6.124519659850224,
+          "x": 0,
+          "children": 4
+        }
+      ]
+    },
+    {
+      "t": 15280.199999928474,
+      "motions": [
+        "spinning",
+        "spinning",
+        "spinning",
+        "spinning",
+        "spinning"
+      ],
+      "filters": [
+        {
+          "y": 13.336618189954683,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 13.232019730661108,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 13.288685728062465,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 12.751525259804012,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 9.140330931389322,
+          "x": 0,
+          "children": 4
+        }
+      ]
+    },
+    {
+      "t": 15297.100000023842,
+      "motions": [
+        "spinning",
+        "spinning",
+        "spinning",
+        "spinning",
+        "spinning"
+      ],
+      "filters": [
+        {
+          "y": 13.808242148146364,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 13.736072634180136,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 13.775170318013016,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 13.40454717329453,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 10.912941261701985,
+          "x": 0,
+          "children": 4
+        }
+      ]
+    },
+    {
+      "t": 15312.899999976158,
+      "motions": [
+        "spinning",
+        "spinning",
+        "spinning",
+        "spinning",
+        "spinning"
+      ],
+      "filters": [
+        {
+          "y": 14.271435356467723,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.221529975943811,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.24856611186953,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 13.992279377324058,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 12.269328309761118,
+          "x": 0,
+          "children": 4
+        }
+      ]
+    },
+    {
+      "t": 15329.699999928474,
+      "motions": [
+        "spinning",
+        "spinning",
+        "spinning",
+        "spinning",
+        "spinning"
+      ],
+      "filters": [
+        {
+          "y": 14.284319933149037,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.249810250758754,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.268505799296069,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.091282948429935,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 12.899858426837367,
+          "x": 0,
+          "children": 4
+        }
+      ]
+    },
+    {
+      "t": 15346.199999928474,
+      "motions": [
+        "spinning",
+        "spinning",
+        "spinning",
+        "spinning",
+        "spinning"
+      ],
+      "filters": [
+        {
+          "y": 14.573795925841605,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.549985374309044,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.562884690994803,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.440606723450141,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 13.618562792482948,
+          "x": 0,
+          "children": 4
+        }
+      ]
+    },
+    {
+      "t": 15363,
+      "motions": [
+        "spinning",
+        "spinning",
+        "spinning",
+        "spinning",
+        "spinning"
+      ],
+      "filters": [
+        {
+          "y": 14.661083600186172,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.64461855048011,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.626408217092122,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.542040421211599,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 13.974857011433718,
+          "x": 0,
+          "children": 4
+        }
+      ]
+    },
+    {
+      "t": 15379.699999928474,
+      "motions": [
+        "spinning",
+        "spinning",
+        "spinning",
+        "spinning",
+        "spinning"
+      ],
+      "filters": [
+        {
+          "y": 14.83323034881704,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.821844730073503,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.836653467872253,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.778183158299854,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.385102016284648,
+          "x": 0,
+          "children": 4
+        }
+      ]
+    },
+    {
+      "t": 15396.199999928474,
+      "motions": [
+        "spinning",
+        "spinning",
+        "spinning",
+        "spinning",
+        "spinning"
+      ],
+      "filters": [
+        {
+          "y": 14.869115762462613,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.861277495862264,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.871472359882903,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.831219310403789,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.560608212659343,
+          "x": 0,
+          "children": 4
+        }
+      ]
+    },
+    {
+      "t": 15412.799999952316,
+      "motions": [
+        "spinning",
+        "spinning",
+        "spinning",
+        "spinning",
+        "spinning"
+      ],
+      "filters": [
+        {
+          "y": 14.893244710135619,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.88782453122849,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.8948743025291,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.867039228671704,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.679911048575569,
+          "x": 0,
+          "children": 4
+        }
+      ]
+    },
+    {
+      "t": 15429.699999928474,
+      "motions": [
+        "spinning",
+        "spinning",
+        "spinning",
+        "spinning",
+        "spinning"
+      ],
+      "filters": [
+        {
+          "y": 14.965823494660702,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.962075428808486,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.966950361450136,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.947702345543945,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.790905539883491,
+          "x": 0,
+          "children": 4
+        }
+      ]
+    },
+    {
+      "t": 15446.299999952316,
+      "motions": [
+        "spinning",
+        "spinning",
+        "spinning",
+        "spinning",
+        "spinning"
+      ],
+      "filters": [
+        {
+          "y": 14.988286190671518,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.985705888270093,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.989061966017358,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.97581094439095,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.895405761318557,
+          "x": 0,
+          "children": 4
+        }
+      ]
+    },
+    {
+      "t": 15462.899999976158,
+      "motions": [
+        "spinning",
+        "spinning",
+        "spinning",
+        "spinning",
+        "spinning"
+      ],
+      "filters": [
+        {
+          "y": 15.003598109699515,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 15.001813824810615,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 15.004134560088442,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.994971448959474,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.939371084805726,
+          "x": 0,
+          "children": 4
+        }
+      ]
+    },
+    {
+      "t": 15479.699999928474,
+      "motions": [
+        "spinning",
+        "spinning",
+        "spinning",
+        "spinning",
+        "spinning"
+      ],
+      "filters": [
+        {
+          "y": 11.379149508020326,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.974770839138644,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.97592809403303,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.971358828721684,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.898859298544654,
+          "x": 0,
+          "children": 4
+        }
+      ]
+    },
+    {
+      "t": 15496.199999928474,
+      "motions": [
+        "spinning",
+        "spinning",
+        "spinning",
+        "spinning",
+        "spinning"
+      ],
+      "filters": [
+        {
+          "y": 10.703217670961141,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 15.050145743707995,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 15.050945988059016,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 15.047786330863818,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 15.02547310095537,
+          "x": 0,
+          "children": 4
+        }
+      ]
+    },
+    {
+      "t": 15512.799999952316,
+      "motions": [
+        "spinning",
+        "spinning",
+        "spinning",
+        "spinning",
+        "spinning"
+      ],
+      "filters": [
+        {
+          "y": 10.303146903186663,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.953727524252702,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.954126573082286,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.9525509824465,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.941424295617576,
+          "x": 0,
+          "children": 4
+        }
+      ]
+    },
+    {
+      "t": 15529.799999952316,
+      "motions": [
+        "spinning",
+        "spinning",
+        "spinning",
+        "spinning",
+        "spinning"
+      ],
+      "filters": [
+        {
+          "y": 10.042048425332165,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.81737742661086,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.817573126789771,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.816800430953192,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.811343718789018,
+          "x": 0,
+          "children": 4
+        }
+      ]
+    },
+    {
+      "t": 15546.100000023842,
+      "motions": [
+        "spinning",
+        "spinning",
+        "spinning",
+        "spinning",
+        "spinning"
+      ],
+      "filters": [
+        {
+          "y": 10.16778019665233,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 15.080635063297697,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 15.08077129560459,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 15.080233400662742,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 15.076434832412527,
+          "x": 0,
+          "children": 4
+        }
+      ]
+    },
+    {
+      "t": 15563.100000023842,
+      "motions": [
+        "spinning",
+        "spinning",
+        "spinning",
+        "spinning",
+        "spinning"
+      ],
+      "filters": [
+        {
+          "y": 9.915798021823303,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.788763450504833,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.788831101466137,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.788563990743885,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.786677677581,
+          "x": 0,
+          "children": 4
+        }
+      ]
+    },
+    {
+      "t": 15579.5,
+      "motions": [
+        "spinning",
+        "spinning",
+        "spinning",
+        "spinning",
+        "spinning"
+      ],
+      "filters": [
+        {
+          "y": 10.042657685357943,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 15.005124105541993,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 15.005170990406166,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 15.004985871825566,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 15.003678580181447,
+          "x": 0,
+          "children": 4
+        }
+      ]
+    },
+    {
+      "t": 15596,
+      "motions": [
+        "spinning",
+        "spinning",
+        "spinning",
+        "spinning",
+        "spinning"
+      ],
+      "filters": [
+        {
+          "y": 10.034054533452602,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 15.015140548156316,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 15.015173113558866,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 15.015044533446591,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 15.014136511648625,
+          "x": 0,
+          "children": 4
+        }
+      ]
+    },
+    {
+      "t": 15612.899999976158,
+      "motions": [
+        "spinning",
+        "spinning",
+        "spinning",
+        "spinning",
+        "spinning"
+      ],
+      "filters": [
+        {
+          "y": 9.909879089712918,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.8471188514939,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.847134888791668,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.84707156767824,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.84662439937031,
+          "x": 0,
+          "children": 4
+        }
+      ]
+    },
+    {
+      "t": 15631.699999928474,
+      "motions": [
+        "spinning",
+        "spinning",
+        "spinning",
+        "spinning",
+        "spinning"
+      ],
+      "filters": [
+        {
+          "y": 10.001373553072728,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.962108729109735,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.962119794320353,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.962076104824398,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.961767573326163,
+          "x": 0,
+          "children": 4
+        }
+      ]
+    },
+    {
+      "t": 15646.100000023842,
+      "motions": [
+        "spinning",
+        "spinning",
+        "spinning",
+        "spinning",
+        "spinning"
+      ],
+      "filters": [
+        {
+          "y": 10.400003469587451,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 15.440318067594957,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 15.440325736235385,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 15.440295457640017,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 15.440081632779165,
+          "x": 0,
+          "children": 4
+        }
+      ]
+    },
+    {
+      "t": 15662.799999952316,
+      "motions": [
+        "spinning",
+        "spinning",
+        "spinning",
+        "spinning",
+        "spinning"
+      ],
+      "filters": [
+        {
+          "y": 9.51992365127267,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.200256092506681,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.20025991654113,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.200244817855298,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.200138192222312,
+          "x": 0,
+          "children": 4
+        }
+      ]
+    },
+    {
+      "t": 15679.5,
+      "motions": [
+        "spinning",
+        "spinning",
+        "spinning",
+        "spinning",
+        "spinning"
+      ],
+      "filters": [
+        {
+          "y": 9.67660063571654,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 11.068844951445442,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.45996192278386,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.45995150518478,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.459877936987464,
+          "x": 0,
+          "children": 4
+        }
+      ]
+    },
+    {
+      "t": 15696.100000023842,
+      "motions": [
+        "spinning",
+        "spinning",
+        "spinning",
+        "spinning",
+        "spinning"
+      ],
+      "filters": [
+        {
+          "y": 9.803314441463435,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 10.51556647200756,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.667065528809088,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.667058341006634,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.66700758135796,
+          "x": 0,
+          "children": 4
+        }
+      ]
+    },
+    {
+      "t": 15713,
+      "motions": [
+        "spinning",
+        "spinning",
+        "spinning",
+        "spinning",
+        "spinning"
+      ],
+      "filters": [
+        {
+          "y": 9.816693840461433,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 10.178626297309957,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.6989448246544,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.69893987631448,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.698904931559476,
+          "x": 0,
+          "children": 4
+        }
+      ]
+    },
+    {
+      "t": 15729.5,
+      "motions": [
+        "spinning",
+        "spinning",
+        "spinning",
+        "spinning",
+        "spinning"
+      ],
+      "filters": [
+        {
+          "y": 9.973974462053754,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 10.224808356377464,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.94287614938728,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.942872719986731,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.942848501852072,
+          "x": 0,
+          "children": 4
+        }
+      ]
+    },
+    {
+      "t": 15746.199999928474,
+      "motions": [
+        "bouncing",
+        "spinning",
+        "spinning",
+        "spinning",
+        "spinning"
+      ],
+      "filters": [
+        {
+          "y": 5.748173169612655,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 10.095040095687123,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.944250182872862,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.944247811434686,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.944231064540354,
+          "x": 0,
+          "children": 4
+        }
+      ]
+    },
+    {
+      "t": 15762.100000023842,
+      "motions": [
+        "bouncing",
+        "spinning",
+        "spinning",
+        "spinning",
+        "spinning"
+      ],
+      "filters": [
+        {
+          "y": 3.2073680062343612,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 10.224418621639407,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 15.197346311753199,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 15.197344646190118,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 15.1973328841254,
+          "x": 0,
+          "children": 4
+        }
+      ]
+    },
+    {
+      "t": 15779.5,
+      "motions": [
+        "bouncing",
+        "spinning",
+        "spinning",
+        "spinning",
+        "spinning"
+      ],
+      "filters": [
+        {
+          "y": 1.7589075744025777,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 9.6171572621244,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.35855887048072,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.358558067161715,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.358552394191479,
+          "x": 0,
+          "children": 4
+        }
+      ]
+    },
+    {
+      "t": 15796.199999928474,
+      "motions": [
+        "bouncing",
+        "spinning",
+        "spinning",
+        "spinning",
+        "spinning"
+      ],
+      "filters": [
+        {
+          "y": 1.0588981930321073,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 9.892582806165478,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.79252426192466,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.792523707660834,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.792519793497036,
+          "x": 0,
+          "children": 4
+        }
+      ]
+    },
+    {
+      "t": 15812.600000023842,
+      "motions": [
+        "bouncing",
+        "spinning",
+        "spinning",
+        "spinning",
+        "spinning"
+      ],
+      "filters": [
+        {
+          "y": 0.6252514802143457,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 9.91511148657262,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.84068728307547,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.840686900651551,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.840684200006645,
+          "x": 0,
+          "children": 4
+        }
+      ]
+    },
+    {
+      "t": 15829.600000023842,
+      "motions": [
+        "stopped",
+        "spinning",
+        "spinning",
+        "spinning",
+        "spinning"
+      ],
+      "filters": [
+        {
+          "y": 9.930467038528882,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.873586352976746,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.873586088529768,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.873584221027732,
+          "x": 0,
+          "children": 4
+        }
+      ]
+    },
+    {
+      "t": 15846.5,
+      "motions": [
+        "stopped",
+        "spinning",
+        "spinning",
+        "spinning",
+        "spinning"
+      ],
+      "filters": [
+        {
+          "y": 9.997085721946187,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.980370505275078,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.980370322815316,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.980369034300061,
+          "x": 0,
+          "children": 4
+        }
+      ]
+    },
+    {
+      "t": 15862.699999928474,
+      "motions": [
+        "stopped",
+        "spinning",
+        "spinning",
+        "spinning",
+        "spinning"
+      ],
+      "filters": [
+        {
+          "y": 10.08034273032949,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 15.109939627902367,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 15.109939501450379,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 15.081963689786168,
+          "x": 0,
+          "children": 4
+        }
+      ]
+    },
+    {
+      "t": 15879.5,
+      "motions": [
+        "stopped",
+        "spinning",
+        "spinning",
+        "spinning",
+        "spinning"
+      ],
+      "filters": [
+        {
+          "y": 9.872377825364467,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 11.30354936417778,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.803315550066541,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.83416026227817,
+          "x": 0,
+          "children": 4
+        }
+      ]
+    },
+    {
+      "t": 15895.600000023842,
+      "motions": [
+        "stopped",
+        "spinning",
+        "spinning",
+        "spinning",
+        "spinning"
+      ],
+      "filters": [
+        {
+          "y": 10.049467289481274,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 10.830995902530761,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 15.070529154234697,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 15.092096654282043,
+          "x": 0,
+          "children": 4
+        }
+      ]
+    },
+    {
+      "t": 15913.199999928474,
+      "motions": [
+        "stopped",
+        "spinning",
+        "spinning",
+        "spinning",
+        "spinning"
+      ],
+      "filters": [
+        {
+          "y": 9.621747420649996,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 9.99868707082096,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.43085019202183,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.44125242910844,
+          "x": 0,
+          "children": 4
+        }
+      ]
+    },
+    {
+      "t": 15929.399999976158,
+      "motions": [
+        "stopped",
+        "spinning",
+        "spinning",
+        "spinning",
+        "spinning"
+      ],
+      "filters": [
+        {
+          "y": 9.987704680354001,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 10.249520335970269,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.980326957461557,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.987552168503885,
+          "x": 0,
+          "children": 4
+        }
+      ]
+    },
+    {
+      "t": 15946.299999952316,
+      "motions": [
+        "stopped",
+        "bouncing",
+        "spinning",
+        "spinning",
+        "spinning"
+      ],
+      "filters": [
+        {
+          "y": 5.6732190491620935,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 9.926348089983296,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.693890593020908,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.69747852664839,
+          "x": 0,
+          "children": 4
+        }
+      ]
+    },
+    {
+      "t": 15963.199999928474,
+      "motions": [
+        "stopped",
+        "bouncing",
+        "spinning",
+        "spinning",
+        "spinning"
+      ],
+      "filters": [
+        {
+          "y": 3.091770455815867,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 10.012761903640333,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.883863206102454,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.886344270240704,
+          "x": 0,
+          "children": 4
+        }
+      ]
+    },
+    {
+      "t": 15979.299999952316,
+      "motions": [
+        "stopped",
+        "bouncing",
+        "spinning",
+        "spinning",
+        "spinning"
+      ],
+      "filters": [
+        {
+          "y": 1.7753123332687069,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 10.07251724929908,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 15.015229693472588,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 15.01694535488024,
+          "x": 0,
+          "children": 4
+        }
+      ]
+    },
+    {
+      "t": 15996.199999928474,
+      "motions": [
+        "stopped",
+        "bouncing",
+        "spinning",
+        "spinning",
+        "spinning"
+      ],
+      "filters": [
+        {
+          "y": 1.0493002568395182,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 9.898353666103784,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.800882879852022,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.801738409386108,
+          "x": 0,
+          "children": 4
+        }
+      ]
+    },
+    {
+      "t": 16012.699999928474,
+      "motions": [
+        "stopped",
+        "bouncing",
+        "spinning",
+        "spinning",
+        "spinning"
+      ],
+      "filters": [
+        {
+          "y": 0.6210253343828438,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 9.974772509112043,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.92990183045699,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.930493431045717,
+          "x": 0,
+          "children": 4
+        }
+      ]
+    },
+    {
+      "t": 16029.199999928474,
+      "motions": [
+        "stopped",
+        "stopped",
+        "spinning",
+        "spinning",
+        "spinning"
+      ],
+      "filters": [
+        {
+          "y": 10.04616950821689,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 15.046749363696184,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 15.047162109420992,
+          "x": 0,
+          "children": 4
+        }
+      ]
+    },
+    {
+      "t": 16046.299999952316,
+      "motions": [
+        "stopped",
+        "stopped",
+        "spinning",
+        "spinning",
+        "spinning"
+      ],
+      "filters": [
+        {
+          "y": 9.797311597705107,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.685022211147299,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.685222948709306,
+          "x": 0,
+          "children": 4
+        }
+      ]
+    },
+    {
+      "t": 16062.699999928474,
+      "motions": [
+        "stopped",
+        "stopped",
+        "spinning",
+        "spinning",
+        "spinning"
+      ],
+      "filters": [
+        {
+          "y": 9.979192413642263,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.961203162379645,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.961342281664095,
+          "x": 0,
+          "children": 4
+        }
+      ]
+    },
+    {
+      "t": 16079.5,
+      "motions": [
+        "stopped",
+        "stopped",
+        "spinning",
+        "spinning",
+        "spinning"
+      ],
+      "filters": [
+        {
+          "y": 9.88222990384754,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 11.319811780092545,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.819647113367548,
+          "x": 0,
+          "children": 4
+        }
+      ]
+    },
+    {
+      "t": 16096.100000023842,
+      "motions": [
+        "stopped",
+        "stopped",
+        "spinning",
+        "spinning",
+        "spinning"
+      ],
+      "filters": [
+        {
+          "y": 9.963622935608813,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 10.673504924436974,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.942877406253519,
+          "x": 0,
+          "children": 4
+        }
+      ]
+    },
+    {
+      "t": 16112.100000023842,
+      "motions": [
+        "stopped",
+        "stopped",
+        "spinning",
+        "spinning",
+        "spinning"
+      ],
+      "filters": [
+        {
+          "y": 10.057099851800928,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 10.47683020314916,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 15.083865821319133,
+          "x": 0,
+          "children": 4
+        }
+      ]
+    },
+    {
+      "t": 16129.299999952316,
+      "motions": [
+        "stopped",
+        "stopped",
+        "spinning",
+        "spinning",
+        "spinning"
+      ],
+      "filters": [
+        {
+          "y": 9.712254120413988,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 9.918096861300434,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.567506298758977,
+          "x": 0,
+          "children": 4
+        }
+      ]
+    },
+    {
+      "t": 16145.399999976158,
+      "motions": [
+        "stopped",
+        "stopped",
+        "bouncing",
+        "spinning",
+        "spinning"
+      ],
+      "filters": [
+        {
+          "y": 5.87269641002513,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 10.19398321797982,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 15.073502035071504,
+          "x": 0,
+          "children": 4
+        }
+      ]
+    },
+    {
+      "t": 16162.5,
+      "motions": [
+        "stopped",
+        "stopped",
+        "bouncing",
+        "spinning",
+        "spinning"
+      ],
+      "filters": [
+        {
+          "y": 3.101782305720919,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 9.779643226347755,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.563256027686624,
+          "x": 0,
+          "children": 4
+        }
+      ]
+    },
+    {
+      "t": 16179.399999976158,
+      "motions": [
+        "stopped",
+        "stopped",
+        "bouncing",
+        "spinning",
+        "spinning"
+      ],
+      "filters": [
+        {
+          "y": 1.7647701909043538,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 9.893696280995409,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.740424008601675,
+          "x": 0,
+          "children": 4
+        }
+      ]
+    },
+    {
+      "t": 16196.100000023842,
+      "motions": [
+        "stopped",
+        "stopped",
+        "bouncing",
+        "spinning",
+        "spinning"
+      ],
+      "filters": [
+        {
+          "y": 1.0536800809016875,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 9.990326850598136,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.943987981680014,
+          "x": 0,
+          "children": 4
+        }
+      ]
+    },
+    {
+      "t": 16212.799999952316,
+      "motions": [
+        "stopped",
+        "stopped",
+        "bouncing",
+        "spinning",
+        "spinning"
+      ],
+      "filters": [
+        {
+          "y": 0.6181721085138054,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 9.977881824388929,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.945365239788437,
+          "x": 0,
+          "children": 4
+        }
+      ]
+    },
+    {
+      "t": 16229.199999928474,
+      "motions": [
+        "stopped",
+        "stopped",
+        "stopped",
+        "spinning",
+        "spinning"
+      ],
+      "filters": [
+        {
+          "y": 10.011081772110556,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 15.00175174128153,
+          "x": 0,
+          "children": 4
+        }
+      ]
+    },
+    {
+      "t": 16245.899999976158,
+      "motions": [
+        "stopped",
+        "stopped",
+        "stopped",
+        "spinning",
+        "spinning"
+      ],
+      "filters": [
+        {
+          "y": 9.98801847389552,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.974581235956046,
+          "x": 0,
+          "children": 4
+        }
+      ]
+    },
+    {
+      "t": 16262.600000023842,
+      "motions": [
+        "stopped",
+        "stopped",
+        "stopped",
+        "spinning",
+        "spinning"
+      ],
+      "filters": [
+        {
+          "y": 9.946694670308425,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.916344195461257,
+          "x": 0,
+          "children": 4
+        }
+      ]
+    },
+    {
+      "t": 16279.100000023842,
+      "motions": [
+        "stopped",
+        "stopped",
+        "stopped",
+        "spinning",
+        "spinning"
+      ],
+      "filters": [
+        {
+          "y": 10.008118440634892,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 11.593537592476245,
+          "x": 0,
+          "children": 4
+        }
+      ]
+    },
+    {
+      "t": 16295.600000023842,
+      "motions": [
+        "stopped",
+        "stopped",
+        "stopped",
+        "spinning",
+        "spinning"
+      ],
+      "filters": [
+        {
+          "y": 9.986534612907803,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 10.750266816685802,
+          "x": 0,
+          "children": 4
+        }
+      ]
+    },
+    {
+      "t": 16312.899999976158,
+      "motions": [
+        "stopped",
+        "stopped",
+        "stopped",
+        "spinning",
+        "spinning"
+      ],
+      "filters": [
+        {
+          "y": 9.916162664294452,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 10.293843898250312,
+          "x": 0,
+          "children": 4
+        }
+      ]
+    },
+    {
+      "t": 16329.199999928474,
+      "motions": [
+        "stopped",
+        "stopped",
+        "stopped",
+        "spinning",
+        "spinning"
+      ],
+      "filters": [
+        {
+          "y": 10.061612222142172,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 10.322779641201157,
+          "x": 0,
+          "children": 4
+        }
+      ]
+    },
+    {
+      "t": 16345.799999952316,
+      "motions": [
+        "stopped",
+        "stopped",
+        "stopped",
+        "bouncing",
+        "spinning"
+      ],
+      "filters": [
+        {
+          "y": 5.792056972121442,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 10.083794527595645,
+          "x": 0,
+          "children": 4
+        }
+      ]
+    },
+    {
+      "t": 16362.699999928474,
+      "motions": [
+        "stopped",
+        "stopped",
+        "stopped",
+        "bouncing",
+        "spinning"
+      ],
+      "filters": [
+        {
+          "y": 3.1233693543640193,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 10.024296570728556,
+          "x": 0,
+          "children": 4
+        }
+      ]
+    },
+    {
+      "t": 16379.100000023842,
+      "motions": [
+        "stopped",
+        "stopped",
+        "stopped",
+        "bouncing",
+        "spinning"
+      ],
+      "filters": [
+        {
+          "y": 1.790456089320169,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 10.06186230969633,
+          "x": 0,
+          "children": 4
+        }
+      ]
+    },
+    {
+      "t": 16396.100000023842,
+      "motions": [
+        "stopped",
+        "stopped",
+        "stopped",
+        "bouncing",
+        "spinning"
+      ],
+      "filters": [
+        {
+          "y": 1.0596395889048371,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 9.953233156389578,
+          "x": 0,
+          "children": 4
+        }
+      ]
+    },
+    {
+      "t": 16411.899999976158,
+      "motions": [
+        "stopped",
+        "stopped",
+        "stopped",
+        "bouncing",
+        "spinning"
+      ],
+      "filters": [
+        {
+          "y": 0.6442937863845526,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 10.181125163006191,
+          "x": 0,
+          "children": 4
+        }
+      ]
+    },
+    {
+      "t": 16429.299999952316,
+      "motions": [
+        "stopped",
+        "stopped",
+        "stopped",
+        "stopped",
+        "spinning"
+      ],
+      "filters": [
+        {
+          "y": 9.625376591849731,
+          "x": 0,
+          "children": 4
+        }
+      ]
+    },
+    {
+      "t": 16446,
+      "motions": [
+        "stopped",
+        "stopped",
+        "stopped",
+        "stopped",
+        "spinning"
+      ],
+      "filters": [
+        {
+          "y": 9.89779535510079,
+          "x": 0,
+          "children": 4
+        }
+      ]
+    },
+    {
+      "t": 16462.5,
+      "motions": [
+        "stopped",
+        "stopped",
+        "stopped",
+        "stopped",
+        "spinning"
+      ],
+      "filters": [
+        {
+          "y": 9.918922658735411,
+          "x": 0,
+          "children": 4
+        }
+      ]
+    },
+    {
+      "t": 16479.199999928474,
+      "motions": [
+        "stopped",
+        "stopped",
+        "stopped",
+        "stopped",
+        "spinning"
+      ],
+      "filters": [
+        {
+          "y": 9.933285145022644,
+          "x": 0,
+          "children": 4
+        }
+      ]
+    },
+    {
+      "t": 16495.799999952316,
+      "motions": [
+        "stopped",
+        "stopped",
+        "stopped",
+        "stopped",
+        "spinning"
+      ],
+      "filters": [
+        {
+          "y": 9.96166535160157,
+          "x": 0,
+          "children": 4
+        }
+      ]
+    },
+    {
+      "t": 16512.399999976158,
+      "motions": [
+        "stopped",
+        "stopped",
+        "stopped",
+        "stopped",
+        "spinning"
+      ],
+      "filters": [
+        {
+          "y": 10.018493730881408,
+          "x": 0,
+          "children": 4
+        }
+      ]
+    },
+    {
+      "t": 16528.799999952316,
+      "motions": [
+        "stopped",
+        "stopped",
+        "stopped",
+        "stopped",
+        "spinning"
+      ],
+      "filters": [
+        {
+          "y": 10.039227472968992,
+          "x": 0,
+          "children": 4
+        }
+      ]
+    },
+    {
+      "t": 16545.5,
+      "motions": [
+        "stopped",
+        "stopped",
+        "stopped",
+        "stopped",
+        "bouncing"
+      ],
+      "filters": [
+        {
+          "y": 5.805974578202356,
+          "x": 0,
+          "children": 4
+        }
+      ]
+    },
+    {
+      "t": 16562.699999928474,
+      "motions": [
+        "stopped",
+        "stopped",
+        "stopped",
+        "stopped",
+        "bouncing"
+      ],
+      "filters": [
+        {
+          "y": 3.083708782449457,
+          "x": 0,
+          "children": 4
+        }
+      ]
+    },
+    {
+      "t": 16579.100000023842,
+      "motions": [
+        "stopped",
+        "stopped",
+        "stopped",
+        "stopped",
+        "bouncing"
+      ],
+      "filters": [
+        {
+          "y": 1.7886379607038565,
+          "x": 0,
+          "children": 4
+        }
+      ]
+    },
+    {
+      "t": 16595.899999976158,
+      "motions": [
+        "stopped",
+        "stopped",
+        "stopped",
+        "stopped",
+        "bouncing"
+      ],
+      "filters": [
+        {
+          "y": 1.0523674811844548,
+          "x": 0,
+          "children": 4
+        }
+      ]
+    },
+    {
+      "t": 16612.600000023842,
+      "motions": [
+        "stopped",
+        "stopped",
+        "stopped",
+        "stopped",
+        "bouncing"
+      ],
+      "filters": [
+        {
+          "y": 0.6177155968122716,
+          "x": 0,
+          "children": 4
+        }
+      ]
+    },
+    {
+      "t": 18629.299999952316,
+      "motions": [
+        "spinning",
+        "stopped",
+        "stopped",
+        "stopped",
+        "stopped"
+      ],
+      "filters": [
+        {
+          "y": 3.657211979849631,
+          "x": 0,
+          "children": 4
+        }
+      ]
+    },
+    {
+      "t": 18646.299999952316,
+      "motions": [
+        "spinning",
+        "stopped",
+        "stopped",
+        "stopped",
+        "stopped"
+      ],
+      "filters": [
+        {
+          "y": 7.157686261098556,
+          "x": 0,
+          "children": 4
+        }
+      ]
+    },
+    {
+      "t": 18662.799999952316,
+      "motions": [
+        "spinning",
+        "stopped",
+        "stopped",
+        "stopped",
+        "stopped"
+      ],
+      "filters": [
+        {
+          "y": 9.724439887805211,
+          "x": 0,
+          "children": 4
+        }
+      ]
+    },
+    {
+      "t": 18679,
+      "motions": [
+        "spinning",
+        "stopped",
+        "stopped",
+        "stopped",
+        "stopped"
+      ],
+      "filters": [
+        {
+          "y": 11.358894426182793,
+          "x": 0,
+          "children": 4
+        }
+      ]
+    },
+    {
+      "t": 18697.399999976158,
+      "motions": [
+        "spinning",
+        "stopped",
+        "stopped",
+        "stopped",
+        "stopped"
+      ],
+      "filters": [
+        {
+          "y": 12.327365477761822,
+          "x": 0,
+          "children": 4
+        }
+      ]
+    },
+    {
+      "t": 18712.899999976158,
+      "motions": [
+        "spinning",
+        "spinning",
+        "stopped",
+        "stopped",
+        "stopped"
+      ],
+      "filters": [
+        {
+          "y": 13.620783838895946,
+          "x": 0,
+          "children": 4
+        }
+      ]
+    },
+    {
+      "t": 18729.399999976158,
+      "motions": [
+        "spinning",
+        "spinning",
+        "stopped",
+        "stopped",
+        "stopped"
+      ],
+      "filters": [
+        {
+          "y": 13.432963639779498,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 3.29085058728538,
+          "x": 0,
+          "children": 4
+        }
+      ]
+    },
+    {
+      "t": 18745.699999928474,
+      "motions": [
+        "spinning",
+        "spinning",
+        "stopped",
+        "stopped",
+        "stopped"
+      ],
+      "filters": [
+        {
+          "y": 13.971874946029809,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 6.880221024328971,
+          "x": 0,
+          "children": 4
+        }
+      ]
+    },
+    {
+      "t": 18763.600000023842,
+      "motions": [
+        "spinning",
+        "spinning",
+        "stopped",
+        "stopped",
+        "stopped"
+      ],
+      "filters": [
+        {
+          "y": 14.171647978015825,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 9.332704702755834,
+          "x": 0,
+          "children": 4
+        }
+      ]
+    },
+    {
+      "t": 18780.5,
+      "motions": [
+        "spinning",
+        "spinning",
+        "stopped",
+        "stopped",
+        "stopped"
+      ],
+      "filters": [
+        {
+          "y": 14.896109317903688,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 11.549969206742677,
+          "x": 0,
+          "children": 4
+        }
+      ]
+    },
+    {
+      "t": 18797.199999928474,
+      "motions": [
+        "spinning",
+        "spinning",
+        "stopped",
+        "stopped",
+        "stopped"
+      ],
+      "filters": [
+        {
+          "y": 15.079591470381944,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 12.765728090175438,
+          "x": 0,
+          "children": 4
+        }
+      ]
+    },
+    {
+      "t": 18813.299999952316,
+      "motions": [
+        "spinning",
+        "spinning",
+        "spinning",
+        "stopped",
+        "stopped"
+      ],
+      "filters": [
+        {
+          "y": 15.094589606221025,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 13.498099594211308,
+          "x": 0,
+          "children": 4
+        }
+      ]
+    },
+    {
+      "t": 18830.100000023842,
+      "motions": [
+        "spinning",
+        "spinning",
+        "spinning",
+        "stopped",
+        "stopped"
+      ],
+      "filters": [
+        {
+          "y": 15.094589606221025,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 13.559524176131893,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 3.4024048371561606,
+          "x": 0,
+          "children": 4
+        }
+      ]
+    },
+    {
+      "t": 18846.299999952316,
+      "motions": [
+        "spinning",
+        "spinning",
+        "spinning",
+        "stopped",
+        "stopped"
+      ],
+      "filters": [
+        {
+          "y": 14.11487611673431,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.069283507524373,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 7.019881968654511,
+          "x": 0,
+          "children": 4
+        }
+      ]
+    },
+    {
+      "t": 18862.699999928474,
+      "motions": [
+        "spinning",
+        "spinning",
+        "spinning",
+        "stopped",
+        "stopped"
+      ],
+      "filters": [
+        {
+          "y": 14.317296994077216,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.285839585723824,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 9.437535182573308,
+          "x": 0,
+          "children": 4
+        }
+      ]
+    },
+    {
+      "t": 18880.199999928474,
+      "motions": [
+        "spinning",
+        "spinning",
+        "spinning",
+        "stopped",
+        "stopped"
+      ],
+      "filters": [
+        {
+          "y": 14.399873703020786,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.378120834698757,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 11.02550748263816,
+          "x": 0,
+          "children": 4
+        }
+      ]
+    },
+    {
+      "t": 18896.399999976158,
+      "motions": [
+        "spinning",
+        "spinning",
+        "spinning",
+        "stopped",
+        "stopped"
+      ],
+      "filters": [
+        {
+          "y": 14.710220423474064,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.695244971979404,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 12.38718619596539,
+          "x": 0,
+          "children": 4
+        }
+      ]
+    },
+    {
+      "t": 18913.5,
+      "motions": [
+        "spinning",
+        "spinning",
+        "spinning",
+        "spinning",
+        "stopped"
+      ],
+      "filters": [
+        {
+          "y": 14.78336822739517,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.773012669150631,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 13.176984856875288,
+          "x": 0,
+          "children": 4
+        }
+      ]
+    },
+    {
+      "t": 18930,
+      "motions": [
+        "spinning",
+        "spinning",
+        "spinning",
+        "spinning",
+        "stopped"
+      ],
+      "filters": [
+        {
+          "y": 14.80645229686875,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.773012669150631,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 13.698100342454385,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 3.824717878407706,
+          "x": 0,
+          "children": 4
+        }
+      ]
+    },
+    {
+      "t": 18946.299999952316,
+      "motions": [
+        "spinning",
+        "spinning",
+        "spinning",
+        "spinning",
+        "stopped"
+      ],
+      "filters": [
+        {
+          "y": 14.850297237474676,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.048076384679145,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.085570659341066,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 7.273259861978577,
+          "x": 0,
+          "children": 4
+        }
+      ]
+    },
+    {
+      "t": 18962.399999976158,
+      "motions": [
+        "spinning",
+        "spinning",
+        "spinning",
+        "spinning",
+        "stopped"
+      ],
+      "filters": [
+        {
+          "y": 15.159454659845528,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.593510702755342,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.619961845350861,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 9.814070654474264,
+          "x": 0,
+          "children": 4
+        }
+      ]
+    },
+    {
+      "t": 18978.899999976158,
+      "motions": [
+        "spinning",
+        "spinning",
+        "spinning",
+        "spinning",
+        "stopped"
+      ],
+      "filters": [
+        {
+          "y": 14.6488137479781,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.370106560285478,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.383132803381981,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 11.179278354514675,
+          "x": 0,
+          "children": 4
+        }
+      ]
+    },
+    {
+      "t": 18996.100000023842,
+      "motions": [
+        "spinning",
+        "spinning",
+        "spinning",
+        "spinning",
+        "stopped"
+      ],
+      "filters": [
+        {
+          "y": 14.579503030219005,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.415606044294366,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.42449441534711,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 12.238365465537914,
+          "x": 0,
+          "children": 4
+        }
+      ]
+    },
+    {
+      "t": 19013.5,
+      "motions": [
+        "spinning",
+        "spinning",
+        "spinning",
+        "spinning",
+        "spinning"
+      ],
+      "filters": [
+        {
+          "y": 14.579503030219005,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.415606044294366,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.42449441534711,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 12.238365465537914,
+          "x": 0,
+          "children": 4
+        }
+      ]
+    },
+    {
+      "t": 19029.600000023842,
+      "motions": [
+        "spinning",
+        "spinning",
+        "spinning",
+        "spinning",
+        "spinning"
+      ],
+      "filters": [
+        {
+          "y": 10.91877850232314,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 10.836708593703346,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 10.841159363776772,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 9.746475394271181,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 2.207795212365651,
+          "x": 0,
+          "children": 4
+        }
+      ]
+    },
+    {
+      "t": 19046.199999928474,
+      "motions": [
+        "spinning",
+        "spinning",
+        "spinning",
+        "spinning",
+        "spinning"
+      ],
+      "filters": [
+        {
+          "y": 12.049790580933907,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 11.993039055185774,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 11.996116772666745,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 11.239140354315499,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 6.026126112614546,
+          "x": 0,
+          "children": 4
+        }
+      ]
+    },
+    {
+      "t": 19062.799999952316,
+      "motions": [
+        "spinning",
+        "spinning",
+        "spinning",
+        "spinning",
+        "spinning"
+      ],
+      "filters": [
+        {
+          "y": 12.999568563377753,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 12.937051762978362,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 12.939175287317429,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 12.41688633181507,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 8.820077108553983,
+          "x": 0,
+          "children": 4
+        }
+      ]
+    },
+    {
+      "t": 19080.199999928474,
+      "motions": [
+        "spinning",
+        "spinning",
+        "spinning",
+        "spinning",
+        "spinning"
+      ],
+      "filters": [
+        {
+          "y": 13.550980359119025,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 13.532554359826781,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 13.534019522125298,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 13.173657235498334,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 10.691976582288609,
+          "x": 0,
+          "children": 4
+        }
+      ]
+    },
+    {
+      "t": 19096.699999928474,
+      "motions": [
+        "spinning",
+        "spinning",
+        "spinning",
+        "spinning",
+        "spinning"
+      ],
+      "filters": [
+        {
+          "y": 14.233272125420013,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.220530505612532,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.22154366862572,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 13.972352339768547,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 12.256264606057812,
+          "x": 0,
+          "children": 4
+        }
+      ]
+    },
+    {
+      "t": 19111.899999976158,
+      "motions": [
+        "spinning",
+        "spinning",
+        "spinning",
+        "spinning",
+        "spinning"
+      ],
+      "filters": [
+        {
+          "y": 14.695950247139482,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.686961397362694,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.687676155004388,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.511878771734501,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 13.301227765411557,
+          "x": 0,
+          "children": 4
+        }
+      ]
+    },
+    {
+      "t": 19128.5,
+      "motions": [
+        "spinning",
+        "spinning",
+        "spinning",
+        "spinning",
+        "spinning"
+      ],
+      "filters": [
+        {
+          "y": 14.147120990447696,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.142657259741686,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.143012197883028,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.055713800732772,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 13.396102036668166,
+          "x": 0,
+          "children": 4
+        }
+      ]
+    },
+    {
+      "t": 19146.199999928474,
+      "motions": [
+        "spinning",
+        "spinning",
+        "spinning",
+        "spinning",
+        "spinning"
+      ],
+      "filters": [
+        {
+          "y": 14.211065188054711,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.20803289769352,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.208274013382546,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.148970684920187,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 13.700884873738158,
+          "x": 0,
+          "children": 4
+        }
+      ]
+    },
+    {
+      "t": 19162.899999976158,
+      "motions": [
+        "spinning",
+        "spinning",
+        "spinning",
+        "spinning",
+        "spinning"
+      ],
+      "filters": [
+        {
+          "y": 14.719680685722123,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.71759314873392,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.717759141386114,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.676932611950425,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.368454335363513,
+          "x": 0,
+          "children": 4
+        }
+      ]
+    },
+    {
+      "t": 19179.600000023842,
+      "motions": [
+        "spinning",
+        "spinning",
+        "spinning",
+        "spinning",
+        "spinning"
+      ],
+      "filters": [
+        {
+          "y": 14.846262943301518,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.844822611097376,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.844937140595038,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.816768171392276,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.603928255949873,
+          "x": 0,
+          "children": 4
+        }
+      ]
+    },
+    {
+      "t": 19196,
+      "motions": [
+        "spinning",
+        "spinning",
+        "spinning",
+        "spinning",
+        "spinning"
+      ],
+      "filters": [
+        {
+          "y": 14.933335497367718,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.932339504420428,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.932418701824748,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.91293979648791,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.765760517936403,
+          "x": 0,
+          "children": 4
+        }
+      ]
+    },
+    {
+      "t": 19212.699999928474,
+      "motions": [
+        "spinning",
+        "spinning",
+        "spinning",
+        "spinning",
+        "spinning"
+      ],
+      "filters": [
+        {
+          "y": 15.020977624540519,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 15.020281197944252,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 15.020336575021842,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 15.006716370401612,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.90380443284327,
+          "x": 0,
+          "children": 4
+        }
+      ]
+    },
+    {
+      "t": 19230.199999928474,
+      "motions": [
+        "spinning",
+        "spinning",
+        "spinning",
+        "spinning",
+        "spinning"
+      ],
+      "filters": [
+        {
+          "y": 14.76178610949831,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.761447404654195,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.761474337118486,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.75485019423247,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.704799303069544,
+          "x": 0,
+          "children": 4
+        }
+      ]
+    },
+    {
+      "t": 19246.799999952316,
+      "motions": [
+        "spinning",
+        "spinning",
+        "spinning",
+        "spinning",
+        "spinning"
+      ],
+      "filters": [
+        {
+          "y": 15.266245982700303,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 15.26600862376122,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 15.266027497601561,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 15.26138540418316,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 15.226310539940275,
+          "x": 0,
+          "children": 4
+        }
+      ]
+    },
+    {
+      "t": 19263.399999976158,
+      "motions": [
+        "spinning",
+        "spinning",
+        "spinning",
+        "spinning",
+        "spinning"
+      ],
+      "filters": [
+        {
+          "y": 11.432612317932083,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 15.060757607312649,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 15.060766940813679,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 15.05847133043909,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 15.04112609091336,
+          "x": 0,
+          "children": 4
+        }
+      ]
+    },
+    {
+      "t": 19280.399999976158,
+      "motions": [
+        "spinning",
+        "spinning",
+        "spinning",
+        "spinning",
+        "spinning"
+      ],
+      "filters": [
+        {
+          "y": 10.384561810318855,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.735956133207747,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.735960691479386,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.734839567087668,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.726368542854749,
+          "x": 0,
+          "children": 4
+        }
+      ]
+    },
+    {
+      "t": 19296.399999976158,
+      "motions": [
+        "spinning",
+        "spinning",
+        "spinning",
+        "spinning",
+        "spinning"
+      ],
+      "filters": [
+        {
+          "y": 10.355946497098335,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.968845184518027,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.968848336573073,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.968073076545558,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.962215344318501,
+          "x": 0,
+          "children": 4
+        }
+      ]
+    },
+    {
+      "t": 19313.699999928474,
+      "motions": [
+        "spinning",
+        "spinning",
+        "spinning",
+        "spinning",
+        "spinning"
+      ],
+      "filters": [
+        {
+          "y": 10.009591763348416,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.73260828491745,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.7326098567172,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.732223266540414,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.729302257257542,
+          "x": 0,
+          "children": 4
+        }
+      ]
+    },
+    {
+      "t": 19329.899999976158,
+      "motions": [
+        "spinning",
+        "spinning",
+        "spinning",
+        "spinning",
+        "spinning"
+      ],
+      "filters": [
+        {
+          "y": 10.107587443427832,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.966530106612963,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.938936580381663,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.938669845810738,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.936654444994446,
+          "x": 0,
+          "children": 4
+        }
+      ]
+    },
+    {
+      "t": 19346.899999976158,
+      "motions": [
+        "spinning",
+        "spinning",
+        "spinning",
+        "spinning",
+        "spinning"
+      ],
+      "filters": [
+        {
+          "y": 9.976039085210921,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.866488751487367,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.897525268093235,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.897391145528008,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.896377738355367,
+          "x": 0,
+          "children": 4
+        }
+      ]
+    },
+    {
+      "t": 19362.699999928474,
+      "motions": [
+        "spinning",
+        "spinning",
+        "spinning",
+        "spinning",
+        "spinning"
+      ],
+      "filters": [
+        {
+          "y": 10.178374854788776,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 15.199034758774355,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 15.220833040152357,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 15.220738840102362,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 15.220027080629473,
+          "x": 0,
+          "children": 4
+        }
+      ]
+    },
+    {
+      "t": 19380.199999928474,
+      "motions": [
+        "spinning",
+        "spinning",
+        "spinning",
+        "spinning",
+        "spinning"
+      ],
+      "filters": [
+        {
+          "y": 9.59494982312659,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.359373173596033,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.36988671899892,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.369841285302348,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.369497996058318,
+          "x": 0,
+          "children": 4
+        }
+      ]
+    },
+    {
+      "t": 19396.699999928474,
+      "motions": [
+        "spinning",
+        "spinning",
+        "spinning",
+        "spinning",
+        "spinning"
+      ],
+      "filters": [
+        {
+          "y": 9.877260399987309,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.793086104426454,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.800340106702519,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.800308758938666,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.800071900594338,
+          "x": 0,
+          "children": 4
+        }
+      ]
+    },
+    {
+      "t": 19413.699999928474,
+      "motions": [
+        "spinning",
+        "spinning",
+        "spinning",
+        "spinning",
+        "spinning"
+      ],
+      "filters": [
+        {
+          "y": 9.9042929273915,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.84067003134298,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.845686190161457,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.84566451311255,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.845500725037029,
+          "x": 0,
+          "children": 4
+        }
+      ]
+    },
+    {
+      "t": 19430.199999928474,
+      "motions": [
+        "spinning",
+        "spinning",
+        "spinning",
+        "spinning",
+        "spinning"
+      ],
+      "filters": [
+        {
+          "y": 10.109240603083386,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 15.152834519788087,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 15.156341960700919,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 15.156326803491815,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 15.156212278211,
+          "x": 0,
+          "children": 4
+        }
+      ]
+    },
+    {
+      "t": 19447.399999976158,
+      "motions": [
+        "spinning",
+        "spinning",
+        "spinning",
+        "spinning",
+        "spinning"
+      ],
+      "filters": [
+        {
+          "y": 9.827986022803518,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.73661638723516,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.738322219895833,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.738314848235675,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.738259149232,
+          "x": 0,
+          "children": 4
+        }
+      ]
+    },
+    {
+      "t": 19463.600000023842,
+      "motions": [
+        "spinning",
+        "spinning",
+        "spinning",
+        "spinning",
+        "spinning"
+      ],
+      "filters": [
+        {
+          "y": 10.037752302487295,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 11.321919235391066,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 15.054094132874374,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 15.054089024014447,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.998669718367594,
+          "x": 0,
+          "children": 4
+        }
+      ]
+    },
+    {
+      "t": 19479.899999976158,
+      "motions": [
+        "spinning",
+        "spinning",
+        "spinning",
+        "spinning",
+        "spinning"
+      ],
+      "filters": [
+        {
+          "y": 10.071516927677147,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 10.569043510960558,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 15.105499379981731,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 15.105495799774381,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 15.094808325437407,
+          "x": 0,
+          "children": 4
+        }
+      ]
+    },
+    {
+      "t": 19496.899999976158,
+      "motions": [
+        "spinning",
+        "spinning",
+        "spinning",
+        "spinning",
+        "spinning"
+      ],
+      "filters": [
+        {
+          "y": 9.66203923208356,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 9.902001650761793,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.448720891338557,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.44871917174599,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.487045848156123,
+          "x": 0,
+          "children": 4
+        }
+      ]
+    },
+    {
+      "t": 19513.199999928474,
+      "motions": [
+        "spinning",
+        "spinning",
+        "spinning",
+        "spinning",
+        "spinning"
+      ],
+      "filters": [
+        {
+          "y": 9.939849929272713,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 10.107638477296616,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.90624281755909,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.906241612496114,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.905570433312056,
+          "x": 0,
+          "children": 4
+        }
+      ]
+    },
+    {
+      "t": 19530.699999928474,
+      "motions": [
+        "bouncing",
+        "spinning",
+        "spinning",
+        "spinning",
+        "spinning"
+      ],
+      "filters": [
+        {
+          "y": 5.584950504077007,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 9.738775076227569,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.485069725725763,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.485069144510966,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.528148250719148,
+          "x": 0,
+          "children": 4
+        }
+      ]
+    },
+    {
+      "t": 19548.399999976158,
+      "motions": [
+        "bouncing",
+        "spinning",
+        "spinning",
+        "spinning",
+        "spinning"
+      ],
+      "filters": [
+        {
+          "y": 3.1395268821685645,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 10.105573597416377,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 15.071906962485244,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 15.07190655427304,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 15.102162864704136,
+          "x": 0,
+          "children": 4
+        }
+      ]
+    },
+    {
+      "t": 19563.5,
+      "motions": [
+        "bouncing",
+        "spinning",
+        "spinning",
+        "spinning",
+        "spinning"
+      ],
+      "filters": [
+        {
+          "y": 1.7810752113328832,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 10.228741303768972,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 15.283858260011531,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 15.255773029254945,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 15.276464152332942,
+          "x": 0,
+          "children": 4
+        }
+      ]
+    },
+    {
+      "t": 19580.199999928474,
+      "motions": [
+        "bouncing",
+        "spinning",
+        "spinning",
+        "spinning",
+        "spinning"
+      ],
+      "filters": [
+        {
+          "y": 1.054445284473898,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 9.764609604995716,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.61687045231005,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.60263018878991,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.613121402389407,
+          "x": 0,
+          "children": 4
+        }
+      ]
+    },
+    {
+      "t": 19597,
+      "motions": [
+        "bouncing",
+        "spinning",
+        "spinning",
+        "spinning",
+        "spinning"
+      ],
+      "filters": [
+        {
+          "y": 0.6079160313242695,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 9.719050289055314,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.563902642697942,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.600380094759903,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.605525160289762,
+          "x": 0,
+          "children": 4
+        }
+      ]
+    },
+    {
+      "t": 19614,
+      "motions": [
+        "stopped",
+        "spinning",
+        "spinning",
+        "spinning",
+        "spinning"
+      ],
+      "filters": [
+        {
+          "y": 9.83260329146745,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.738781191679022,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.763949439823843,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.767499366659637,
+          "x": 0,
+          "children": 4
+        }
+      ]
+    },
+    {
+      "t": 19630,
+      "motions": [
+        "stopped",
+        "spinning",
+        "spinning",
+        "spinning",
+        "spinning"
+      ],
+      "filters": [
+        {
+          "y": 9.966568353259701,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.942851937189877,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.960255837143738,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.962710619500388,
+          "x": 0,
+          "children": 4
+        }
+      ]
+    },
+    {
+      "t": 19647,
+      "motions": [
+        "stopped",
+        "spinning",
+        "spinning",
+        "spinning",
+        "spinning"
+      ],
+      "filters": [
+        {
+          "y": 9.815424989987767,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.719646578335428,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.728325184937166,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.729549283583028,
+          "x": 0,
+          "children": 4
+        }
+      ]
+    },
+    {
+      "t": 19663.299999952316,
+      "motions": [
+        "stopped",
+        "spinning",
+        "spinning",
+        "spinning",
+        "spinning"
+      ],
+      "filters": [
+        {
+          "y": 9.95468951931745,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 11.320624840024726,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.935621585112724,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.936468052067617,
+          "x": 0,
+          "children": 4
+        }
+      ]
+    },
+    {
+      "t": 19680.100000023842,
+      "motions": [
+        "stopped",
+        "spinning",
+        "spinning",
+        "spinning",
+        "spinning"
+      ],
+      "filters": [
+        {
+          "y": 9.869324889715637,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 10.400348032571198,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.761185494968046,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.761607593100354,
+          "x": 0,
+          "children": 4
+        }
+      ]
+    },
+    {
+      "t": 19696.899999976158,
+      "motions": [
+        "stopped",
+        "spinning",
+        "spinning",
+        "spinning",
+        "spinning"
+      ],
+      "filters": [
+        {
+          "y": 9.936287869892094,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 10.273395693547938,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.902451066104353,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.902742947908898,
+          "x": 0,
+          "children": 4
+        }
+      ]
+    },
+    {
+      "t": 19713.299999952316,
+      "motions": [
+        "stopped",
+        "spinning",
+        "spinning",
+        "spinning",
+        "spinning"
+      ],
+      "filters": [
+        {
+          "y": 10.03814801200596,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 10.271615050430796,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 15.055846231703155,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 15.056048967673672,
+          "x": 0,
+          "children": 4
+        }
+      ]
+    },
+    {
+      "t": 19730,
+      "motions": [
+        "stopped",
+        "bouncing",
+        "spinning",
+        "spinning",
+        "spinning"
+      ],
+      "filters": [
+        {
+          "y": 5.8413448796807055,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 9.967008115319649,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.777373379196055,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.777473219421362,
+          "x": 0,
+          "children": 4
+        }
+      ]
+    },
+    {
+      "t": 19746.5,
+      "motions": [
+        "stopped",
+        "bouncing",
+        "spinning",
+        "spinning",
+        "spinning"
+      ],
+      "filters": [
+        {
+          "y": 3.2112018732454,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 10.078163368275222,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.996718349672204,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.969038882767222,
+          "x": 0,
+          "children": 4
+        }
+      ]
+    },
+    {
+      "t": 19763.699999928474,
+      "motions": [
+        "stopped",
+        "bouncing",
+        "spinning",
+        "spinning",
+        "spinning"
+      ],
+      "filters": [
+        {
+          "y": 1.8026003366290457,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 9.901670593050673,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.748834223326702,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.779519643812412,
+          "x": 0,
+          "children": 4
+        }
+      ]
+    },
+    {
+      "t": 19780,
+      "motions": [
+        "stopped",
+        "bouncing",
+        "spinning",
+        "spinning",
+        "spinning"
+      ],
+      "filters": [
+        {
+          "y": 1.076613734666172,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 10.03295971248852,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 15.00542744551949,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 15.02669368836052,
+          "x": 0,
+          "children": 4
+        }
+      ]
+    },
+    {
+      "t": 19796.399999976158,
+      "motions": [
+        "stopped",
+        "bouncing",
+        "spinning",
+        "spinning",
+        "spinning"
+      ],
+      "filters": [
+        {
+          "y": 0.6295512663125533,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 9.938820624049123,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.886283906724593,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.896888504315053,
+          "x": 0,
+          "children": 4
+        }
+      ]
+    },
+    {
+      "t": 19813.5,
+      "motions": [
+        "stopped",
+        "stopped",
+        "spinning",
+        "spinning",
+        "spinning"
+      ],
+      "filters": [
+        {
+          "y": 9.861780940284532,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.781727332757024,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.787015407869164,
+          "x": 0,
+          "children": 4
+        }
+      ]
+    },
+    {
+      "t": 19829.5,
+      "motions": [
+        "stopped",
+        "stopped",
+        "spinning",
+        "spinning",
+        "spinning"
+      ],
+      "filters": [
+        {
+          "y": 10.023872286800074,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 15.028223739825584,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 15.004152787288422,
+          "x": 0,
+          "children": 4
+        }
+      ]
+    },
+    {
+      "t": 19845.799999952316,
+      "motions": [
+        "stopped",
+        "stopped",
+        "spinning",
+        "spinning",
+        "spinning"
+      ],
+      "filters": [
+        {
+          "y": 10.061864173760076,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 15.087457355077442,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 15.098730618302772,
+          "x": 0,
+          "children": 4
+        }
+      ]
+    },
+    {
+      "t": 19862.699999928474,
+      "motions": [
+        "stopped",
+        "stopped",
+        "spinning",
+        "spinning",
+        "spinning"
+      ],
+      "filters": [
+        {
+          "y": 9.687618499222346,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 11.390971431514892,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.534278052274626,
+          "x": 0,
+          "children": 4
+        }
+      ]
+    },
+    {
+      "t": 19879.699999928474,
+      "motions": [
+        "stopped",
+        "stopped",
+        "spinning",
+        "spinning",
+        "spinning"
+      ],
+      "filters": [
+        {
+          "y": 9.810916362947022,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 10.676197577529642,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.718341160514564,
+          "x": 0,
+          "children": 4
+        }
+      ]
+    },
+    {
+      "t": 19896.199999928474,
+      "motions": [
+        "stopped",
+        "stopped",
+        "spinning",
+        "spinning",
+        "spinning"
+      ],
+      "filters": [
+        {
+          "y": 9.951823186314696,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 10.470251068629835,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.929091680220147,
+          "x": 0,
+          "children": 4
+        }
+      ]
+    },
+    {
+      "t": 19913,
+      "motions": [
+        "stopped",
+        "stopped",
+        "spinning",
+        "spinning",
+        "spinning"
+      ],
+      "filters": [
+        {
+          "y": 10.011523873770786,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 10.311536696550093,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 15.018230386791343,
+          "x": 0,
+          "children": 4
+        }
+      ]
+    },
+    {
+      "t": 19930.100000023842,
+      "motions": [
+        "stopped",
+        "stopped",
+        "bouncing",
+        "spinning",
+        "spinning"
+      ],
+      "filters": [
+        {
+          "y": 5.784023503811359,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 10.015977894666635,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.804648895715493,
+          "x": 0,
+          "children": 4
+        }
+      ]
+    },
+    {
+      "t": 19946.899999976158,
+      "motions": [
+        "stopped",
+        "stopped",
+        "bouncing",
+        "spinning",
+        "spinning"
+      ],
+      "filters": [
+        {
+          "y": 3.150176840213611,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 10.130634655260437,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 15.044293131894822,
+          "x": 0,
+          "children": 4
+        }
+      ]
+    },
+    {
+      "t": 19962.299999952316,
+      "motions": [
+        "stopped",
+        "stopped",
+        "bouncing",
+        "spinning",
+        "spinning"
+      ],
+      "filters": [
+        {
+          "y": 1.8668984159446373,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 10.306483923682983,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 15.352734886772385,
+          "x": 0,
+          "children": 4
+        }
+      ]
+    },
+    {
+      "t": 19979.299999952316,
+      "motions": [
+        "stopped",
+        "stopped",
+        "bouncing",
+        "spinning",
+        "spinning"
+      ],
+      "filters": [
+        {
+          "y": 1.0789107588990485,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 9.684570827179513,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.429726923648012,
+          "x": 0,
+          "children": 4
+        }
+      ]
+    },
+    {
+      "t": 19996.199999928474,
+      "motions": [
+        "stopped",
+        "stopped",
+        "bouncing",
+        "spinning",
+        "spinning"
+      ],
+      "filters": [
+        {
+          "y": 0.6236663139482049,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 9.737827870691161,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.567378200315373,
+          "x": 0,
+          "children": 4
+        }
+      ]
+    },
+    {
+      "t": 20012.299999952316,
+      "motions": [
+        "stopped",
+        "stopped",
+        "stopped",
+        "spinning",
+        "spinning"
+      ],
+      "filters": [
+        {
+          "y": 10.066984316500388,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 15.07270657234815,
+          "x": 0,
+          "children": 4
+        }
+      ]
+    },
+    {
+      "t": 20028.399999976158,
+      "motions": [
+        "stopped",
+        "stopped",
+        "stopped",
+        "spinning",
+        "spinning"
+      ],
+      "filters": [
+        {
+          "y": 9.865251724672895,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.78397206373395,
+          "x": 0,
+          "children": 4
+        }
+      ]
+    },
+    {
+      "t": 20046.299999952316,
+      "motions": [
+        "stopped",
+        "stopped",
+        "stopped",
+        "spinning",
+        "spinning"
+      ],
+      "filters": [
+        {
+          "y": 9.475959208609007,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.20728768718956,
+          "x": 0,
+          "children": 4
+        }
+      ]
+    },
+    {
+      "t": 20062.899999976158,
+      "motions": [
+        "stopped",
+        "stopped",
+        "stopped",
+        "spinning",
+        "spinning"
+      ],
+      "filters": [
+        {
+          "y": 9.888219577360996,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 11.839807682924523,
+          "x": 0,
+          "children": 4
+        }
+      ]
+    },
+    {
+      "t": 20079.600000023842,
+      "motions": [
+        "stopped",
+        "stopped",
+        "stopped",
+        "spinning",
+        "spinning"
+      ],
+      "filters": [
+        {
+          "y": 9.911871223087362,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 10.843432369960782,
+          "x": 0,
+          "children": 4
+        }
+      ]
+    },
+    {
+      "t": 20096.199999928474,
+      "motions": [
+        "stopped",
+        "stopped",
+        "stopped",
+        "spinning",
+        "spinning"
+      ],
+      "filters": [
+        {
+          "y": 9.984119930037373,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 10.495266028249194,
+          "x": 0,
+          "children": 4
+        }
+      ]
+    },
+    {
+      "t": 20113.100000023842,
+      "motions": [
+        "stopped",
+        "stopped",
+        "stopped",
+        "spinning",
+        "spinning"
+      ],
+      "filters": [
+        {
+          "y": 9.884982940727161,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 10.137755166579877,
+          "x": 0,
+          "children": 4
+        }
+      ]
+    },
+    {
+      "t": 20129.5,
+      "motions": [
+        "stopped",
+        "stopped",
+        "stopped",
+        "bouncing",
+        "spinning"
+      ],
+      "filters": [
+        {
+          "y": 5.6910482094029495,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 10.158950392741515,
+          "x": 0,
+          "children": 4
+        }
+      ]
+    },
+    {
+      "t": 20145.5,
+      "motions": [
+        "stopped",
+        "stopped",
+        "stopped",
+        "bouncing",
+        "spinning"
+      ],
+      "filters": [
+        {
+          "y": 3.2048700000829404,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 10.251231070548181,
+          "x": 0,
+          "children": 4
+        }
+      ]
+    },
+    {
+      "t": 20162,
+      "motions": [
+        "stopped",
+        "stopped",
+        "stopped",
+        "bouncing",
+        "spinning"
+      ],
+      "filters": [
+        {
+          "y": 1.8013952937009226,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 9.86714666654993,
+          "x": 0,
+          "children": 4
+        }
+      ]
+    },
+    {
+      "t": 20180,
+      "motions": [
+        "stopped",
+        "stopped",
+        "stopped",
+        "bouncing",
+        "spinning"
+      ],
+      "filters": [
+        {
+          "y": 1.0307746603576649,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 9.595060029769405,
+          "x": 0,
+          "children": 4
+        }
+      ]
+    },
+    {
+      "t": 20196.399999976158,
+      "motions": [
+        "stopped",
+        "stopped",
+        "stopped",
+        "bouncing",
+        "spinning"
+      ],
+      "filters": [
+        {
+          "y": 0.6290718954230662,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 10.062204853207913,
+          "x": 0,
+          "children": 4
+        }
+      ]
+    },
+    {
+      "t": 20219.799999952316,
+      "motions": [
+        "stopped",
+        "stopped",
+        "stopped",
+        "stopped",
+        "spinning"
+      ],
+      "filters": [
+        {
+          "y": 8.194913051275304,
+          "x": 0,
+          "children": 4
+        }
+      ]
+    },
+    {
+      "t": 20235.5,
+      "motions": [
+        "stopped",
+        "stopped",
+        "stopped",
+        "stopped",
+        "spinning"
+      ],
+      "filters": [
+        {
+          "y": 10.128558301949226,
+          "x": 0,
+          "children": 4
+        }
+      ]
+    },
+    {
+      "t": 20249.5,
+      "motions": [
+        "stopped",
+        "stopped",
+        "stopped",
+        "stopped",
+        "spinning"
+      ],
+      "filters": [
+        {
+          "y": 10.464718269103685,
+          "x": 0,
+          "children": 4
+        }
+      ]
+    },
+    {
+      "t": 20265.899999976158,
+      "motions": [
+        "stopped",
+        "stopped",
+        "stopped",
+        "stopped",
+        "spinning"
+      ],
+      "filters": [
+        {
+          "y": 9.490106555373963,
+          "x": 0,
+          "children": 4
+        }
+      ]
+    },
+    {
+      "t": 20281.5,
+      "motions": [
+        "stopped",
+        "stopped",
+        "stopped",
+        "stopped",
+        "spinning"
+      ],
+      "filters": [
+        {
+          "y": 9.779380775216147,
+          "x": 0,
+          "children": 4
+        }
+      ]
+    },
+    {
+      "t": 20298.100000023842,
+      "motions": [
+        "stopped",
+        "stopped",
+        "stopped",
+        "stopped",
+        "spinning"
+      ],
+      "filters": [
+        {
+          "y": 9.601696934001357,
+          "x": 0,
+          "children": 4
+        }
+      ]
+    },
+    {
+      "t": 20318,
+      "motions": [
+        "stopped",
+        "stopped",
+        "stopped",
+        "stopped",
+        "spinning"
+      ],
+      "filters": [
+        {
+          "y": 9.005694186711551,
+          "x": 0,
+          "children": 4
+        }
+      ]
+    },
+    {
+      "t": 20332.100000023842,
+      "motions": [
+        "stopped",
+        "stopped",
+        "stopped",
+        "stopped",
+        "bouncing"
+      ],
+      "filters": [
+        {
+          "y": 5.466701848783918,
+          "x": 0,
+          "children": 4
+        }
+      ]
+    },
+    {
+      "t": 20349.100000023842,
+      "motions": [
+        "stopped",
+        "stopped",
+        "stopped",
+        "stopped",
+        "bouncing"
+      ],
+      "filters": [
+        {
+          "y": 2.932283043732126,
+          "x": 0,
+          "children": 4
+        }
+      ]
+    },
+    {
+      "t": 20365.899999976158,
+      "motions": [
+        "stopped",
+        "stopped",
+        "stopped",
+        "stopped",
+        "bouncing"
+      ],
+      "filters": [
+        {
+          "y": 1.6717338593360744,
+          "x": 0,
+          "children": 4
+        }
+      ]
+    },
+    {
+      "t": 20381.199999928474,
+      "motions": [
+        "stopped",
+        "stopped",
+        "stopped",
+        "stopped",
+        "bouncing"
+      ],
+      "filters": [
+        {
+          "y": 1.0767444587487445,
+          "x": 0,
+          "children": 4
+        }
+      ]
+    },
+    {
+      "t": 20398.899999976158,
+      "motions": [
+        "stopped",
+        "stopped",
+        "stopped",
+        "stopped",
+        "bouncing"
+      ],
+      "filters": [
+        {
+          "y": 0.6160648884816133,
+          "x": 0,
+          "children": 4
+        }
+      ]
+    },
+    {
+      "t": 21129.299999952316,
+      "motions": [
+        "spinning",
+        "stopped",
+        "stopped",
+        "stopped",
+        "stopped"
+      ],
+      "filters": [
+        {
+          "y": 3.852635500433699,
+          "x": 0,
+          "children": 4
+        }
+      ]
+    },
+    {
+      "t": 21145.899999976158,
+      "motions": [
+        "spinning",
+        "stopped",
+        "stopped",
+        "stopped",
+        "stopped"
+      ],
+      "filters": [
+        {
+          "y": 7.331217514696375,
+          "x": 0,
+          "children": 4
+        }
+      ]
+    },
+    {
+      "t": 21162.600000023842,
+      "motions": [
+        "spinning",
+        "stopped",
+        "stopped",
+        "stopped",
+        "stopped"
+      ],
+      "filters": [
+        {
+          "y": 9.692629842940228,
+          "x": 0,
+          "children": 4
+        }
+      ]
+    },
+    {
+      "t": 21178.299999952316,
+      "motions": [
+        "spinning",
+        "stopped",
+        "stopped",
+        "stopped",
+        "stopped"
+      ],
+      "filters": [
+        {
+          "y": 11.682186071565326,
+          "x": 0,
+          "children": 4
+        }
+      ]
+    },
+    {
+      "t": 21195,
+      "motions": [
+        "spinning",
+        "stopped",
+        "stopped",
+        "stopped",
+        "stopped"
+      ],
+      "filters": [
+        {
+          "y": 12.393050157725126,
+          "x": 0,
+          "children": 4
+        }
+      ]
+    },
+    {
+      "t": 21213,
+      "motions": [
+        "spinning",
+        "spinning",
+        "stopped",
+        "stopped",
+        "stopped"
+      ],
+      "filters": [
+        {
+          "y": 12.940654386310738,
+          "x": 0,
+          "children": 4
+        }
+      ]
+    },
+    {
+      "t": 21229.699999928474,
+      "motions": [
+        "spinning",
+        "spinning",
+        "stopped",
+        "stopped",
+        "stopped"
+      ],
+      "filters": [
+        {
+          "y": 13.764449533818865,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 4.262506750169127,
+          "x": 0,
+          "children": 4
+        }
+      ]
+    },
+    {
+      "t": 21247.600000023842,
+      "motions": [
+        "spinning",
+        "spinning",
+        "stopped",
+        "stopped",
+        "stopped"
+      ],
+      "filters": [
+        {
+          "y": 14.209400085982018,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 7.6095176596812415,
+          "x": 0,
+          "children": 4
+        }
+      ]
+    },
+    {
+      "t": 21263,
+      "motions": [
+        "spinning",
+        "spinning",
+        "stopped",
+        "stopped",
+        "stopped"
+      ],
+      "filters": [
+        {
+          "y": 14.857115480553473,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 10.30341258514428,
+          "x": 0,
+          "children": 5
+        }
+      ]
+    },
+    {
+      "t": 21278.699999928474,
+      "motions": [
+        "spinning",
+        "spinning",
+        "stopped",
+        "stopped",
+        "stopped"
+      ],
+      "filters": [
+        {
+          "y": 14.853069619115768,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 11.656368020355215,
+          "x": 0,
+          "children": 4
+        }
+      ]
+    },
+    {
+      "t": 21297,
+      "motions": [
+        "spinning",
+        "spinning",
+        "stopped",
+        "stopped",
+        "stopped"
+      ],
+      "filters": [
+        {
+          "y": 14.061052681213528,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 12.197811773213123,
+          "x": 0,
+          "children": 4
+        }
+      ]
+    },
+    {
+      "t": 21313.100000023842,
+      "motions": [
+        "spinning",
+        "spinning",
+        "spinning",
+        "stopped",
+        "stopped"
+      ],
+      "filters": [
+        {
+          "y": 14.81963242249804,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 13.531197162078247,
+          "x": 0,
+          "children": 4
+        }
+      ]
+    },
+    {
+      "t": 21330,
+      "motions": [
+        "spinning",
+        "spinning",
+        "spinning",
+        "stopped",
+        "stopped"
+      ],
+      "filters": [
+        {
+          "y": 14.81963242249804,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 13.660656471006343,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 3.5212936471391187,
+          "x": 0,
+          "children": 4
+        }
+      ]
+    },
+    {
+      "t": 21346.100000023842,
+      "motions": [
+        "spinning",
+        "spinning",
+        "spinning",
+        "stopped",
+        "stopped"
+      ],
+      "filters": [
+        {
+          "y": 14.473748182795312,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.221322725681059,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 7.178699525765429,
+          "x": 0,
+          "children": 4
+        }
+      ]
+    },
+    {
+      "t": 21362.699999928474,
+      "motions": [
+        "spinning",
+        "spinning",
+        "spinning",
+        "stopped",
+        "stopped"
+      ],
+      "filters": [
+        {
+          "y": 14.444076260326533,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.28197653119237,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 9.444345428282537,
+          "x": 0,
+          "children": 4
+        }
+      ]
+    },
+    {
+      "t": 21379.399999976158,
+      "motions": [
+        "spinning",
+        "spinning",
+        "spinning",
+        "stopped",
+        "stopped"
+      ],
+      "filters": [
+        {
+          "y": 14.627275690848299,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.515183365146264,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 11.169950624103853,
+          "x": 0,
+          "children": 4
+        }
+      ]
+    },
+    {
+      "t": 21395.899999976158,
+      "motions": [
+        "spinning",
+        "spinning",
+        "spinning",
+        "stopped",
+        "stopped"
+      ],
+      "filters": [
+        {
+          "y": 14.726671210314294,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.64933117396513,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 12.3412300602781,
+          "x": 0,
+          "children": 4
+        }
+      ]
+    },
+    {
+      "t": 21413.100000023842,
+      "motions": [
+        "spinning",
+        "spinning",
+        "spinning",
+        "spinning",
+        "stopped"
+      ],
+      "filters": [
+        {
+          "y": 14.906531109218898,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.853050300746672,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 13.256993207647522,
+          "x": 0,
+          "children": 4
+        }
+      ]
+    },
+    {
+      "t": 21429.600000023842,
+      "motions": [
+        "spinning",
+        "spinning",
+        "spinning",
+        "spinning",
+        "stopped"
+      ],
+      "filters": [
+        {
+          "y": 14.947467195041641,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.853050300746672,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 13.811866390474112,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 4.183284619497364,
+          "x": 0,
+          "children": 4
+        }
+      ]
+    },
+    {
+      "t": 21446.299999952316,
+      "motions": [
+        "spinning",
+        "spinning",
+        "spinning",
+        "spinning",
+        "stopped"
+      ],
+      "filters": [
+        {
+          "y": 14.902170907520363,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.086019433388918,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.13420762021626,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 7.476021763361393,
+          "x": 0,
+          "children": 4
+        }
+      ]
+    },
+    {
+      "t": 21462.399999976158,
+      "motions": [
+        "spinning",
+        "spinning",
+        "spinning",
+        "spinning",
+        "stopped"
+      ],
+      "filters": [
+        {
+          "y": 14.999490125673296,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.431344512755313,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.464889642315443,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 9.829942326205572,
+          "x": 0,
+          "children": 4
+        }
+      ]
+    },
+    {
+      "t": 21479.699999928474,
+      "motions": [
+        "spinning",
+        "spinning",
+        "spinning",
+        "spinning",
+        "stopped"
+      ],
+      "filters": [
+        {
+          "y": 14.570940364478991,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.292312312421291,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.308763401530927,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 11.198369446295121,
+          "x": 0,
+          "children": 4
+        }
+      ]
+    },
+    {
+      "t": 21496.699999928474,
+      "motions": [
+        "spinning",
+        "spinning",
+        "spinning",
+        "spinning",
+        "stopped"
+      ],
+      "filters": [
+        {
+          "y": 14.966523503940767,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.773851581983832,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.785227546943677,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 12.634383161488863,
+          "x": 0,
+          "children": 4
+        }
+      ]
+    },
+    {
+      "t": 21513.199999928474,
+      "motions": [
+        "spinning",
+        "spinning",
+        "spinning",
+        "spinning",
+        "spinning"
+      ],
+      "filters": [
+        {
+          "y": 14.966523503940767,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.773851581983832,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.785227546943677,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 12.634383161488863,
+          "x": 0,
+          "children": 4
+        }
+      ]
+    },
+    {
+      "t": 21529.600000023842,
+      "motions": [
+        "spinning",
+        "spinning",
+        "spinning",
+        "spinning",
+        "spinning"
+      ],
+      "filters": [
+        {
+          "y": 10.380258028564729,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 10.28337650201643,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 10.289096696428132,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 9.207584220119948,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 1.7624843969542507,
+          "x": 0,
+          "children": 4
+        }
+      ]
+    },
+    {
+      "t": 21546.5,
+      "motions": [
+        "spinning",
+        "spinning",
+        "spinning",
+        "spinning",
+        "spinning"
+      ],
+      "filters": [
+        {
+          "y": 11.74053273586842,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 11.673687653139712,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 11.677634400082061,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 10.931426185506389,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 5.794550959298661,
+          "x": 0,
+          "children": 4
+        }
+      ]
+    },
+    {
+      "t": 21562.600000023842,
+      "motions": [
+        "spinning",
+        "spinning",
+        "spinning",
+        "spinning",
+        "spinning"
+      ],
+      "filters": [
+        {
+          "y": 12.846583659564683,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 12.800462739962738,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 12.803185866197108,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 12.288326617530775,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 8.744050813810254,
+          "x": 0,
+          "children": 4
+        }
+      ]
+    },
+    {
+      "t": 21578.799999952316,
+      "motions": [
+        "spinning",
+        "spinning",
+        "spinning",
+        "spinning",
+        "spinning"
+      ],
+      "filters": [
+        {
+          "y": 13.576627032242646,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 13.544090037407365,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 13.546011125386274,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 13.182792593333263,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 10.682406987067022,
+          "x": 0,
+          "children": 4
+        }
+      ]
+    },
+    {
+      "t": 21596.399999976158,
+      "motions": [
+        "spinning",
+        "spinning",
+        "spinning",
+        "spinning",
+        "spinning"
+      ],
+      "filters": [
+        {
+          "y": 13.687521843068748,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 13.66546795632988,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 13.666770088162158,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 13.420577088227548,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 11.725791775593326,
+          "x": 0,
+          "children": 4
+        }
+      ]
+    },
+    {
+      "t": 21613.199999928474,
+      "motions": [
+        "spinning",
+        "spinning",
+        "spinning",
+        "spinning",
+        "spinning"
+      ],
+      "filters": [
+        {
+          "y": 14.3313662101986,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.31618352687439,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.317079960935665,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.147591906566662,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 12.980841165124655,
+          "x": 0,
+          "children": 4
+        }
+      ]
+    },
+    {
+      "t": 21629.299999952316,
+      "motions": [
+        "spinning",
+        "spinning",
+        "spinning",
+        "spinning",
+        "spinning"
+      ],
+      "filters": [
+        {
+          "y": 14.605230001957107,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.594731142438349,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.595351028599191,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.478149659451857,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 13.671338908925714,
+          "x": 0,
+          "children": 4
+        }
+      ]
+    },
+    {
+      "t": 21647.199999928474,
+      "motions": [
+        "spinning",
+        "spinning",
+        "spinning",
+        "spinning",
+        "spinning"
+      ],
+      "filters": [
+        {
+          "y": 14.464118242054175,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.458926340758723,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.459232887175128,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.401274407092766,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 13.876328962811733,
+          "x": 0,
+          "children": 4
+        }
+      ]
+    },
+    {
+      "t": 21662.600000023842,
+      "motions": [
+        "spinning",
+        "spinning",
+        "spinning",
+        "spinning",
+        "spinning"
+      ],
+      "filters": [
+        {
+          "y": 15.087031180037991,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 15.083416953966736,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 15.083630349404586,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 15.043283848605858,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.677854807732173,
+          "x": 0,
+          "children": 4
+        }
+      ]
+    },
+    {
+      "t": 21679.5,
+      "motions": [
+        "spinning",
+        "spinning",
+        "spinning",
+        "spinning",
+        "spinning"
+      ],
+      "filters": [
+        {
+          "y": 14.476510119200242,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.474715347645125,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.47482131668364,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.454785837287776,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.273319145650772,
+          "x": 0,
+          "children": 4
+        }
+      ]
+    },
+    {
+      "t": 21695.899999976158,
+      "motions": [
+        "spinning",
+        "spinning",
+        "spinning",
+        "spinning",
+        "spinning"
+      ],
+      "filters": [
+        {
+          "y": 14.67848321051372,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.677244876877202,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.677317992045786,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.663494166952995,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.538288088486254,
+          "x": 0,
+          "children": 4
+        }
+      ]
+    },
+    {
+      "t": 21712.799999952316,
+      "motions": [
+        "spinning",
+        "spinning",
+        "spinning",
+        "spinning",
+        "spinning"
+      ],
+      "filters": [
+        {
+          "y": 14.706167444949017,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.705313035263835,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.705363482337491,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.695825495403085,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.609437398584156,
+          "x": 0,
+          "children": 4
+        }
+      ]
+    },
+    {
+      "t": 21729.399999976158,
+      "motions": [
+        "spinning",
+        "spinning",
+        "spinning",
+        "spinning",
+        "spinning"
+      ],
+      "filters": [
+        {
+          "y": 14.837418230117981,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.836830023975523,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.836864753542741,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.830298462688589,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.770825811493864,
+          "x": 0,
+          "children": 4
+        }
+      ]
+    },
+    {
+      "t": 21746.199999928474,
+      "motions": [
+        "spinning",
+        "spinning",
+        "spinning",
+        "spinning",
+        "spinning"
+      ],
+      "filters": [
+        {
+          "y": 14.926940078763067,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.926532428013367,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.926556497014168,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.922005790728939,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.88078882766676,
+          "x": 0,
+          "children": 4
+        }
+      ]
+    },
+    {
+      "t": 21762.399999976158,
+      "motions": [
+        "spinning",
+        "spinning",
+        "spinning",
+        "spinning",
+        "spinning"
+      ],
+      "filters": [
+        {
+          "y": 12.374209648920845,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 15.016788807570492,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 15.01680545133851,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 15.013658627743059,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.98515700540892,
+          "x": 0,
+          "children": 4
+        }
+      ]
+    },
+    {
+      "t": 21780.299999952316,
+      "motions": [
+        "spinning",
+        "spinning",
+        "spinning",
+        "spinning",
+        "spinning"
+      ],
+      "filters": [
+        {
+          "y": 10.887017412077308,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.757599404226152,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.757607634910624,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.711701760508033,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.6976657293676,
+          "x": 0,
+          "children": 4
+        }
+      ]
+    },
+    {
+      "t": 21796.299999952316,
+      "motions": [
+        "spinning",
+        "spinning",
+        "spinning",
+        "spinning",
+        "spinning"
+      ],
+      "filters": [
+        {
+          "y": 10.851287460998195,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 15.17943899259553,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 15.179444684132289,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 15.175524754946089,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 15.16579721522097,
+          "x": 0,
+          "children": 4
+        }
+      ]
+    },
+    {
+      "t": 21813.199999928474,
+      "motions": [
+        "spinning",
+        "spinning",
+        "spinning",
+        "spinning",
+        "spinning"
+      ],
+      "filters": [
+        {
+          "y": 10.195135881567653,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.79247822313561,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.792481061270044,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.790526354380443,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.785675631825121,
+          "x": 0,
+          "children": 4
+        }
+      ]
+    },
+    {
+      "t": 21829.399999976158,
+      "motions": [
+        "spinning",
+        "spinning",
+        "spinning",
+        "spinning",
+        "spinning"
+      ],
+      "filters": [
+        {
+          "y": 10.198310287925507,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.95232613904337,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.952328097263266,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.9509794134801,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.947632573663878,
+          "x": 0,
+          "children": 4
+        }
+      ]
+    },
+    {
+      "t": 21846.899999976158,
+      "motions": [
+        "spinning",
+        "spinning",
+        "spinning",
+        "spinning",
+        "spinning"
+      ],
+      "filters": [
+        {
+          "y": 10.175577443284531,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 15.03410742821424,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 15.034108803556338,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 15.033161564887541,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 15.030810935235388,
+          "x": 0,
+          "children": 4
+        }
+      ]
+    },
+    {
+      "t": 21863.199999928474,
+      "motions": [
+        "spinning",
+        "spinning",
+        "spinning",
+        "spinning",
+        "spinning"
+      ],
+      "filters": [
+        {
+          "y": 10.127784191748587,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 15.063044989980366,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 15.063045924274334,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 15.062402448473073,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 15.060805624622065,
+          "x": 0,
+          "children": 4
+        }
+      ]
+    },
+    {
+      "t": 21880,
+      "motions": [
+        "spinning",
+        "spinning",
+        "spinning",
+        "spinning",
+        "spinning"
+      ],
+      "filters": [
+        {
+          "y": 10.016304243369708,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.96004542556344,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.960045893402553,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.959723678812024,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.958924083951848,
+          "x": 0,
+          "children": 4
+        }
+      ]
+    },
+    {
+      "t": 21896.199999928474,
+      "motions": [
+        "spinning",
+        "spinning",
+        "spinning",
+        "spinning",
+        "spinning"
+      ],
+      "filters": [
+        {
+          "y": 10.037698814067816,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 15.012106780677303,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.984308716854024,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.984086892821427,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.983536423160752,
+          "x": 0,
+          "children": 4
+        }
+      ]
+    },
+    {
+      "t": 21913,
+      "motions": [
+        "spinning",
+        "spinning",
+        "spinning",
+        "spinning",
+        "spinning"
+      ],
+      "filters": [
+        {
+          "y": 9.880739136720715,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.7988550624409,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.829716960213652,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.829605420085368,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.829328626557267,
+          "x": 0,
+          "children": 4
+        }
+      ]
+    },
+    {
+      "t": 21930,
+      "motions": [
+        "spinning",
+        "spinning",
+        "spinning",
+        "spinning",
+        "spinning"
+      ],
+      "filters": [
+        {
+          "y": 9.944163304852644,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.90089067214024,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.922184371602697,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.922107412564495,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.921916434088578,
+          "x": 0,
+          "children": 4
+        }
+      ]
+    },
+    {
+      "t": 21946.199999928474,
+      "motions": [
+        "spinning",
+        "spinning",
+        "spinning",
+        "spinning",
+        "spinning"
+      ],
+      "filters": [
+        {
+          "y": 10.062315978697525,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 15.054951005956417,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 15.069675646819785,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 15.069622429472508,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 15.069490367428772,
+          "x": 0,
+          "children": 4
+        }
+      ]
+    },
+    {
+      "t": 21962.799999952316,
+      "motions": [
+        "spinning",
+        "spinning",
+        "spinning",
+        "spinning",
+        "spinning"
+      ],
+      "filters": [
+        {
+          "y": 9.804074751880675,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 12.04777798414795,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.738774556270307,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.738748239200936,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.738682931812573,
+          "x": 0,
+          "children": 4
+        }
+      ]
+    },
+    {
+      "t": 21979.699999928474,
+      "motions": [
+        "spinning",
+        "spinning",
+        "spinning",
+        "spinning",
+        "spinning"
+      ],
+      "filters": [
+        {
+          "y": 9.909277043931045,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 10.98184065491716,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.886551955562613,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.886533716764536,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.886488456091591,
+          "x": 0,
+          "children": 4
+        }
+      ]
+    },
+    {
+      "t": 21996.100000023842,
+      "motions": [
+        "spinning",
+        "spinning",
+        "spinning",
+        "spinning",
+        "spinning"
+      ],
+      "filters": [
+        {
+          "y": 9.945419421793456,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 10.500293964360715,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.933712831834582,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.933700275594553,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.933669116530716,
+          "x": 0,
+          "children": 4
+        }
+      ]
+    },
+    {
+      "t": 22013,
+      "motions": [
+        "spinning",
+        "spinning",
+        "spinning",
+        "spinning",
+        "spinning"
+      ],
+      "filters": [
+        {
+          "y": 9.925264157129046,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 10.201957188984386,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.89566718323753,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.895660921958916,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.895645384219904,
+          "x": 0,
+          "children": 4
+        }
+      ]
+    },
+    {
+      "t": 22029.699999928474,
+      "motions": [
+        "bouncing",
+        "spinning",
+        "spinning",
+        "spinning",
+        "spinning"
+      ],
+      "filters": [
+        {
+          "y": 5.729831336826594,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 10.11301533155069,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.939988113378094,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.939983802890229,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.939973106155735,
+          "x": 0,
+          "children": 4
+        }
+      ]
+    },
+    {
+      "t": 22046.199999928474,
+      "motions": [
+        "bouncing",
+        "spinning",
+        "spinning",
+        "spinning",
+        "spinning"
+      ],
+      "filters": [
+        {
+          "y": 3.1531872245380614,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 10.161113376948926,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 15.081884485032194,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 15.081881484382405,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 15.081874038089747,
+          "x": 0,
+          "children": 4
+        }
+      ]
+    },
+    {
+      "t": 22062.799999952316,
+      "motions": [
+        "bouncing",
+        "spinning",
+        "spinning",
+        "spinning",
+        "spinning"
+      ],
+      "filters": [
+        {
+          "y": 1.7811727554969237,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 9.97250982921109,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.879747498148662,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.87974601426579,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.879742331921365,
+          "x": 0,
+          "children": 4
+        }
+      ]
+    },
+    {
+      "t": 22079.5,
+      "motions": [
+        "bouncing",
+        "spinning",
+        "spinning",
+        "spinning",
+        "spinning"
+      ],
+      "filters": [
+        {
+          "y": 1.0622290095729647,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 9.988789308726066,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.92854336075863,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.928542334650334,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.92853978830092,
+          "x": 0,
+          "children": 4
+        }
+      ]
+    },
+    {
+      "t": 22096.100000023842,
+      "motions": [
+        "bouncing",
+        "spinning",
+        "spinning",
+        "spinning",
+        "spinning"
+      ],
+      "filters": [
+        {
+          "y": 0.6265936771845622,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 10.018714409579875,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.990371386855534,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.990370678874353,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.990368921976584,
+          "x": 0,
+          "children": 4
+        }
+      ]
+    },
+    {
+      "t": 22112.699999928474,
+      "motions": [
+        "stopped",
+        "spinning",
+        "spinning",
+        "spinning",
+        "spinning"
+      ],
+      "filters": [
+        {
+          "y": 10.039380390037739,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 15.032942796002699,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 15.032942305343036,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 15.032941087741444,
+          "x": 0,
+          "children": 4
+        }
+      ]
+    },
+    {
+      "t": 22129.299999952316,
+      "motions": [
+        "stopped",
+        "spinning",
+        "spinning",
+        "spinning",
+        "spinning"
+      ],
+      "filters": [
+        {
+          "y": 9.972118613740596,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.94514907063783,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.945148825965992,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.945148218798451,
+          "x": 0,
+          "children": 4
+        }
+      ]
+    },
+    {
+      "t": 22146,
+      "motions": [
+        "stopped",
+        "spinning",
+        "spinning",
+        "spinning",
+        "spinning"
+      ],
+      "filters": [
+        {
+          "y": 10.025738266156166,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 15.029577876969865,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 15.029577707402414,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 15.029577286610609,
+          "x": 0,
+          "children": 4
+        }
+      ]
+    },
+    {
+      "t": 22162.799999952316,
+      "motions": [
+        "stopped",
+        "spinning",
+        "spinning",
+        "spinning",
+        "spinning"
+      ],
+      "filters": [
+        {
+          "y": 9.93554971038377,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 12.305101240124095,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.898859197824434,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.89885898973426,
+          "x": 0,
+          "children": 4
+        }
+      ]
+    },
+    {
+      "t": 22179.199999928474,
+      "motions": [
+        "stopped",
+        "spinning",
+        "spinning",
+        "spinning",
+        "spinning"
+      ],
+      "filters": [
+        {
+          "y": 10.000493657028391,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 11.197031380454018,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.997652673742895,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.997652529848109,
+          "x": 0,
+          "children": 4
+        }
+      ]
+    },
+    {
+      "t": 22195.699999928474,
+      "motions": [
+        "stopped",
+        "spinning",
+        "spinning",
+        "spinning",
+        "spinning"
+      ],
+      "filters": [
+        {
+          "y": 9.982609045103953,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 10.584265996675825,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.972360918376218,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.972360846021317,
+          "x": 0,
+          "children": 4
+        }
+      ]
+    },
+    {
+      "t": 22212.600000023842,
+      "motions": [
+        "stopped",
+        "spinning",
+        "spinning",
+        "spinning",
+        "spinning"
+      ],
+      "filters": [
+        {
+          "y": 9.913967507860258,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 10.212741508528401,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.870180238974601,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.87018020304428,
+          "x": 0,
+          "children": 4
+        }
+      ]
+    },
+    {
+      "t": 22228.5,
+      "motions": [
+        "stopped",
+        "bouncing",
+        "spinning",
+        "spinning",
+        "spinning"
+      ],
+      "filters": [
+        {
+          "y": 5.989418987663067,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 10.344621199335231,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 15.201627516470884,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 15.201627491235472,
+          "x": 0,
+          "children": 4
+        }
+      ]
+    },
+    {
+      "t": 22246.5,
+      "motions": [
+        "stopped",
+        "bouncing",
+        "spinning",
+        "spinning",
+        "spinning"
+      ],
+      "filters": [
+        {
+          "y": 3.1116207341688114,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 9.705017184703587,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.406083458849393,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.40608344672869,
+          "x": 0,
+          "children": 4
+        }
+      ]
+    },
+    {
+      "t": 22262.699999928474,
+      "motions": [
+        "stopped",
+        "bouncing",
+        "spinning",
+        "spinning",
+        "spinning"
+      ],
+      "filters": [
+        {
+          "y": 1.806327376337946,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 10.064433656974755,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.991694807345334,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.991694798945195,
+          "x": 0,
+          "children": 4
+        }
+      ]
+    },
+    {
+      "t": 22279.600000023842,
+      "motions": [
+        "stopped",
+        "bouncing",
+        "spinning",
+        "spinning",
+        "spinning"
+      ],
+      "filters": [
+        {
+          "y": 1.0680532462345016,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 9.924278257517278,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.833861795557906,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.833861791351554,
+          "x": 0,
+          "children": 4
+        }
+      ]
+    },
+    {
+      "t": 22295.899999976158,
+      "motions": [
+        "stopped",
+        "bouncing",
+        "spinning",
+        "spinning",
+        "spinning"
+      ],
+      "filters": [
+        {
+          "y": 0.6273328409397502,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 9.99281564352517,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.952961827650842,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.952961824748632,
+          "x": 0,
+          "children": 4
+        }
+      ]
+    },
+    {
+      "t": 22312.799999952316,
+      "motions": [
+        "stopped",
+        "stopped",
+        "spinning",
+        "spinning",
+        "spinning"
+      ],
+      "filters": [
+        {
+          "y": 9.888706063378017,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.814976912991783,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.81497691154451,
+          "x": 0,
+          "children": 4
+        }
+      ]
+    },
+    {
+      "t": 22329.199999928474,
+      "motions": [
+        "stopped",
+        "stopped",
+        "spinning",
+        "spinning",
+        "spinning"
+      ],
+      "filters": [
+        {
+          "y": 9.968271971534184,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.939931843435206,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.93993184243667,
+          "x": 0,
+          "children": 4
+        }
+      ]
+    },
+    {
+      "t": 22345.899999976158,
+      "motions": [
+        "stopped",
+        "stopped",
+        "spinning",
+        "spinning",
+        "spinning"
+      ],
+      "filters": [
+        {
+          "y": 9.906563481592745,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.853623899326523,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.853623898828594,
+          "x": 0,
+          "children": 4
+        }
+      ]
+    },
+    {
+      "t": 22361.899999976158,
+      "motions": [
+        "stopped",
+        "stopped",
+        "spinning",
+        "spinning",
+        "spinning"
+      ],
+      "filters": [
+        {
+          "y": 10.092071579231138,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 12.671920142153866,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 15.133747564770754,
+          "x": 0,
+          "children": 4
+        }
+      ]
+    },
+    {
+      "t": 22379.799999952316,
+      "motions": [
+        "stopped",
+        "stopped",
+        "spinning",
+        "spinning",
+        "spinning"
+      ],
+      "filters": [
+        {
+          "y": 9.611957165868272,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 10.802018345174835,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.41582418858099,
+          "x": 0,
+          "children": 4
+        }
+      ]
+    },
+    {
+      "t": 22396.100000023842,
+      "motions": [
+        "stopped",
+        "stopped",
+        "spinning",
+        "spinning",
+        "spinning"
+      ],
+      "filters": [
+        {
+          "y": 9.99993928381588,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 10.824700021463293,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.998445528718614,
+          "x": 0,
+          "children": 4
+        }
+      ]
+    },
+    {
+      "t": 22412.5,
+      "motions": [
+        "stopped",
+        "stopped",
+        "spinning",
+        "spinning",
+        "spinning"
+      ],
+      "filters": [
+        {
+          "y": 9.922135258874592,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 10.335126616380537,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.882470105714301,
+          "x": 0,
+          "children": 4
+        }
+      ]
+    },
+    {
+      "t": 22429.299999952316,
+      "motions": [
+        "stopped",
+        "stopped",
+        "bouncing",
+        "spinning",
+        "spinning"
+      ],
+      "filters": [
+        {
+          "y": 5.678209346471976,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 10.089022517054374,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.825541729335109,
+          "x": 0,
+          "children": 4
+        }
+      ]
+    },
+    {
+      "t": 22445.100000023842,
+      "motions": [
+        "stopped",
+        "stopped",
+        "bouncing",
+        "spinning",
+        "spinning"
+      ],
+      "filters": [
+        {
+          "y": 3.191416962322615,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 10.239236484953187,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 15.14205742025376,
+          "x": 0,
+          "children": 4
+        }
+      ]
+    },
+    {
+      "t": 22462.600000023842,
+      "motions": [
+        "stopped",
+        "stopped",
+        "bouncing",
+        "spinning",
+        "spinning"
+      ],
+      "filters": [
+        {
+          "y": 1.7432612413061845,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 9.595194859082971,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.288663392829246,
+          "x": 0,
+          "children": 4
+        }
+      ]
+    },
+    {
+      "t": 22479.199999928474,
+      "motions": [
+        "stopped",
+        "stopped",
+        "bouncing",
+        "spinning",
+        "spinning"
+      ],
+      "filters": [
+        {
+          "y": 1.0569807850481647,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 9.913719814052524,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.798414166567975,
+          "x": 0,
+          "children": 4
+        }
+      ]
+    },
+    {
+      "t": 22495.899999976158,
+      "motions": [
+        "stopped",
+        "stopped",
+        "bouncing",
+        "spinning",
+        "spinning"
+      ],
+      "filters": [
+        {
+          "y": 0.6242339065816814,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 9.948135859379587,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.87230114651778,
+          "x": 0,
+          "children": 4
+        }
+      ]
+    },
+    {
+      "t": 22512.699999928474,
+      "motions": [
+        "stopped",
+        "stopped",
+        "stopped",
+        "spinning",
+        "spinning"
+      ],
+      "filters": [
+        {
+          "y": 9.972053089672654,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.923648444194098,
+          "x": 0,
+          "children": 4
+        }
+      ]
+    },
+    {
+      "t": 22529.100000023842,
+      "motions": [
+        "stopped",
+        "stopped",
+        "stopped",
+        "spinning",
+        "spinning"
+      ],
+      "filters": [
+        {
+          "y": 9.988636671771596,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.959251346537194,
+          "x": 0,
+          "children": 4
+        }
+      ]
+    },
+    {
+      "t": 22546,
+      "motions": [
+        "stopped",
+        "stopped",
+        "stopped",
+        "spinning",
+        "spinning"
+      ],
+      "filters": [
+        {
+          "y": 9.976647014507552,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 14.953051572436536,
+          "x": 0,
+          "children": 4
+        }
+      ]
+    },
+    {
+      "t": 22561.600000023842,
+      "motions": [
+        "stopped",
+        "stopped",
+        "stopped",
+        "spinning",
+        "spinning"
+      ],
+      "filters": [
+        {
+          "y": 10.159933256088214,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 12.768700433253693,
+          "x": 0,
+          "children": 4
+        }
+      ]
+    },
+    {
+      "t": 22579.299999952316,
+      "motions": [
+        "stopped",
+        "stopped",
+        "stopped",
+        "spinning",
+        "spinning"
+      ],
+      "filters": [
+        {
+          "y": 9.526741209340052,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 10.7553206247407,
+          "x": 0,
+          "children": 4
+        }
+      ]
+    },
+    {
+      "t": 22595.699999928474,
+      "motions": [
+        "stopped",
+        "stopped",
+        "stopped",
+        "spinning",
+        "spinning"
+      ],
+      "filters": [
+        {
+          "y": 9.903579898208266,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 10.754858558660521,
+          "x": 0,
+          "children": 4
+        }
+      ]
+    },
+    {
+      "t": 22612.5,
+      "motions": [
+        "stopped",
+        "stopped",
+        "stopped",
+        "spinning",
+        "spinning"
+      ],
+      "filters": [
+        {
+          "y": 9.844681875259694,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 10.267414348311414,
+          "x": 0,
+          "children": 4
+        }
+      ]
+    },
+    {
+      "t": 22629.199999928474,
+      "motions": [
+        "stopped",
+        "stopped",
+        "stopped",
+        "bouncing",
+        "spinning"
+      ],
+      "filters": [
+        {
+          "y": 5.746247526611801,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 10.206830336510587,
+          "x": 0,
+          "children": 4
+        }
+      ]
+    },
+    {
+      "t": 22646.199999928474,
+      "motions": [
+        "stopped",
+        "stopped",
+        "stopped",
+        "bouncing",
+        "spinning"
+      ],
+      "filters": [
+        {
+          "y": 3.1144522799889613,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 10.115811623425147,
+          "x": 0,
+          "children": 4
+        }
+      ]
+    },
+    {
+      "t": 22662.600000023842,
+      "motions": [
+        "stopped",
+        "stopped",
+        "stopped",
+        "bouncing",
+        "spinning"
+      ],
+      "filters": [
+        {
+          "y": 1.7812269205126656,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 10.124789964146343,
+          "x": 0,
+          "children": 4
+        }
+      ]
+    },
+    {
+      "t": 22679,
+      "motions": [
+        "stopped",
+        "stopped",
+        "stopped",
+        "bouncing",
+        "spinning"
+      ],
+      "filters": [
+        {
+          "y": 1.070019213818404,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 10.132124020229082,
+          "x": 0,
+          "children": 4
+        }
+      ]
+    },
+    {
+      "t": 22696,
+      "motions": [
+        "stopped",
+        "stopped",
+        "stopped",
+        "bouncing",
+        "spinning"
+      ],
+      "filters": [
+        {
+          "y": 0.6172433115709179,
+          "x": 0,
+          "children": 4
+        },
+        {
+          "y": 9.868549377628437,
+          "x": 0,
+          "children": 4
+        }
+      ]
+    },
+    {
+      "t": 22711.5,
+      "motions": [
+        "stopped",
+        "stopped",
+        "stopped",
+        "stopped",
+        "spinning"
+      ],
+      "filters": [
+        {
+          "y": 10.17804161637759,
+          "x": 0,
+          "children": 4
+        }
+      ]
+    },
+    {
+      "t": 22729,
+      "motions": [
+        "stopped",
+        "stopped",
+        "stopped",
+        "stopped",
+        "spinning"
+      ],
+      "filters": [
+        {
+          "y": 9.477826022497117,
+          "x": 0,
+          "children": 4
+        }
+      ]
+    },
+    {
+      "t": 22744.799999952316,
+      "motions": [
+        "stopped",
+        "stopped",
+        "stopped",
+        "stopped",
+        "spinning"
+      ],
+      "filters": [
+        {
+          "y": 9.940524612981418,
+          "x": 0,
+          "children": 4
+        }
+      ]
+    },
+    {
+      "t": 22762.5,
+      "motions": [
+        "stopped",
+        "stopped",
+        "stopped",
+        "stopped",
+        "spinning"
+      ],
+      "filters": [
+        {
+          "y": 9.509889128954981,
+          "x": 0,
+          "children": 4
+        }
+      ]
+    },
+    {
+      "t": 22779.299999952316,
+      "motions": [
+        "stopped",
+        "stopped",
+        "stopped",
+        "stopped",
+        "spinning"
+      ],
+      "filters": [
+        {
+          "y": 9.855197891336632,
+          "x": 0,
+          "children": 4
+        }
+      ]
+    },
+    {
+      "t": 22795.799999952316,
+      "motions": [
+        "stopped",
+        "stopped",
+        "stopped",
+        "stopped",
+        "spinning"
+      ],
+      "filters": [
+        {
+          "y": 9.926540659225266,
+          "x": 0,
+          "children": 4
+        }
+      ]
+    },
+    {
+      "t": 22812.5,
+      "motions": [
+        "stopped",
+        "stopped",
+        "stopped",
+        "stopped",
+        "spinning"
+      ],
+      "filters": [
+        {
+          "y": 9.938370359018716,
+          "x": 0,
+          "children": 4
+        }
+      ]
+    },
+    {
+      "t": 22829.399999976158,
+      "motions": [
+        "stopped",
+        "stopped",
+        "stopped",
+        "stopped",
+        "bouncing"
+      ],
+      "filters": [
+        {
+          "y": 5.701850998607946,
+          "x": 0,
+          "children": 4
+        }
+      ]
+    },
+    {
+      "t": 22845.899999976158,
+      "motions": [
+        "stopped",
+        "stopped",
+        "stopped",
+        "stopped",
+        "bouncing"
+      ],
+      "filters": [
+        {
+          "y": 3.122882156117451,
+          "x": 0,
+          "children": 4
+        }
+      ]
+    },
+    {
+      "t": 22862.5,
+      "motions": [
+        "stopped",
+        "stopped",
+        "stopped",
+        "stopped",
+        "bouncing"
+      ],
+      "filters": [
+        {
+          "y": 1.778399604724518,
+          "x": 0,
+          "children": 4
+        }
+      ]
+    },
+    {
+      "t": 22879.299999952316,
+      "motions": [
+        "stopped",
+        "stopped",
+        "stopped",
+        "stopped",
+        "bouncing"
+      ],
+      "filters": [
+        {
+          "y": 1.0576619722336225,
+          "x": 0,
+          "children": 4
+        }
+      ]
+    },
+    {
+      "t": 22895.799999952316,
+      "motions": [
+        "stopped",
+        "stopped",
+        "stopped",
+        "stopped",
+        "bouncing"
+      ],
+      "filters": [
+        {
+          "y": 0.6197837254876135,
+          "x": 0,
+          "children": 4
+        }
+      ]
+    }
+  ],
+  "errors": []
+}

@@ -1,0 +1,711 @@
+{
+ "copy": [],
+ "delete": [
+  {
+   "path": "/front/_app/immutable/bundle.lMbaApZ1.js",
+   "size": 1569519
+  }
+ ],
+ "plan_id": "d735c31bc7438f953417d16b0e5ef0fac13ef49254fdfa558b035300d47e75aa",
+ "safety": null,
+ "target": {
+  "game": "hard-time",
+  "path": "/Users/stone/stake-engine/upload/HardTime/frontend",
+  "team": "silver-stars",
+  "type": "front"
+ },
+ "total_actions": 4,
+ "total_upload_size": 3190990,
+ "unchanged": [
+  {
+   "path": "/front/_app/env.js",
+   "size": 19
+  },
+  {
+   "path": "/front/_app/immutable/assets/style.C_pntPTJ.css",
+   "size": 46491
+  },
+  {
+   "path": "/front/_app/immutable/assets/style.CfwCVehl.css",
+   "size": 46226
+  },
+  {
+   "path": "/front/assets/audio/hard_time/bgm_base.m4a",
+   "size": 691110
+  },
+  {
+   "path": "/front/assets/audio/hard_time/bgm_feature.m4a",
+   "size": 656781
+  },
+  {
+   "path": "/front/assets/audio/hard_time/sfx/alarm_transition.wav",
+   "size": 388124
+  },
+  {
+   "path": "/front/assets/audio/hard_time/sfx/bigwin_blast.wav",
+   "size": 167624
+  },
+  {
+   "path": "/front/assets/audio/hard_time/sfx/btn.wav",
+   "size": 14156
+  },
+  {
+   "path": "/front/assets/audio/hard_time/sfx/coin_shimmer.wav",
+   "size": 282284
+  },
+  {
+   "path": "/front/assets/audio/hard_time/sfx/frame_big_land.wav",
+   "size": 114704
+  },
+  {
+   "path": "/front/assets/audio/hard_time/sfx/fs_intro.wav",
+   "size": 441044
+  },
+  {
+   "path": "/front/assets/audio/hard_time/sfx/fs_outro.wav",
+   "size": 388124
+  },
+  {
+   "path": "/front/assets/audio/hard_time/sfx/gong_feature.wav",
+   "size": 314036
+  },
+  {
+   "path": "/front/assets/audio/hard_time/sfx/light_double.wav",
+   "size": 84716
+  },
+  {
+   "path": "/front/assets/audio/hard_time/sfx/light_land.wav",
+   "size": 33560
+  },
+  {
+   "path": "/front/assets/audio/hard_time/sfx/light_sweep_1.wav",
+   "size": 60020
+  },
+  {
+   "path": "/front/assets/audio/hard_time/sfx/light_sweep_2.wav",
+   "size": 91772
+  },
+  {
+   "path": "/front/assets/audio/hard_time/sfx/light_sweep_3.wav",
+   "size": 123520
+  },
+  {
+   "path": "/front/assets/audio/hard_time/sfx/light_sweep_4.wav",
+   "size": 155276
+  },
+  {
+   "path": "/front/assets/audio/hard_time/sfx/lights_carry.wav",
+   "size": 247000
+  },
+  {
+   "path": "/front/assets/audio/hard_time/sfx/mult_update.wav",
+   "size": 132344
+  },
+  {
+   "path": "/front/assets/audio/hard_time/sfx/pluck_low.wav",
+   "size": 49436
+  },
+  {
+   "path": "/front/assets/audio/hard_time/sfx/reel_stop.wav",
+   "size": 21212
+  },
+  {
+   "path": "/front/assets/audio/hard_time/sfx/reel_tension.wav",
+   "size": 529244
+  },
+  {
+   "path": "/front/assets/audio/hard_time/sfx/scatter_1.wav",
+   "size": 61780
+  },
+  {
+   "path": "/front/assets/audio/hard_time/sfx/scatter_2.wav",
+   "size": 70604
+  },
+  {
+   "path": "/front/assets/audio/hard_time/sfx/scatter_3.wav",
+   "size": 79424
+  },
+  {
+   "path": "/front/assets/audio/hard_time/sfx/scatter_4.wav",
+   "size": 88244
+  },
+  {
+   "path": "/front/assets/audio/hard_time/sfx/scatter_5.wav",
+   "size": 97064
+  },
+  {
+   "path": "/front/assets/audio/hard_time/sfx/spin.wav",
+   "size": 60020
+  },
+  {
+   "path": "/front/assets/audio/hard_time/sfx/tier_breakout.wav",
+   "size": 458684
+  },
+  {
+   "path": "/front/assets/audio/hard_time/sfx/tier_lockdown.wav",
+   "size": 317564
+  },
+  {
+   "path": "/front/assets/audio/hard_time/sfx/tier_riot.wav",
+   "size": 370484
+  },
+  {
+   "path": "/front/assets/audio/hard_time/sfx/wild_expand.wav",
+   "size": 149984
+  },
+  {
+   "path": "/front/assets/audio/hard_time/sfx/win_cap.wav",
+   "size": 635084
+  },
+  {
+   "path": "/front/assets/audio/hard_time/sfx/win_gliss.wav",
+   "size": 229364
+  },
+  {
+   "path": "/front/assets/audio/hard_time/sfx/win_gliss_big.wav",
+   "size": 370484
+  },
+  {
+   "path": "/front/assets/audio/hard_time/sfx/win_line_tick.wav",
+   "size": 21212
+  },
+  {
+   "path": "/front/assets/audio/hard_time/sfx/win_step_1.wav",
+   "size": 109412
+  },
+  {
+   "path": "/front/assets/audio/hard_time/sfx/win_step_2.wav",
+   "size": 144692
+  },
+  {
+   "path": "/front/assets/audio/hard_time/sfx/win_step_3.wav",
+   "size": 179972
+  },
+  {
+   "path": "/front/assets/audio/hard_time/sfx/win_step_4.wav",
+   "size": 218780
+  },
+  {
+   "path": "/front/assets/audio/hard_time/sfx/win_tier_big.wav",
+   "size": 285812
+  },
+  {
+   "path": "/front/assets/audio/hard_time/sfx/win_tier_epic.wav",
+   "size": 767380
+  },
+  {
+   "path": "/front/assets/audio/hard_time/sfx/win_tier_max.wav",
+   "size": 996704
+  },
+  {
+   "path": "/front/assets/audio/hard_time/sfx/win_tier_mega.wav",
+   "size": 538064
+  },
+  {
+   "path": "/front/assets/audio/hard_time/sfx/win_tier_super.wav",
+   "size": 405760
+  },
+  {
+   "path": "/front/assets/audio/sounds.json",
+   "size": 5088
+  },
+  {
+   "path": "/front/assets/audio/sounds.wav",
+   "size": 8864
+  },
+  {
+   "path": "/front/assets/castLayers/prisoner_crossed/body.png",
+   "size": 1055210
+  },
+  {
+   "path": "/front/assets/castLayers/prisoner_crossed/full.png",
+   "size": 1129168
+  },
+  {
+   "path": "/front/assets/castLayers/prisoner_crossed/head.png",
+   "size": 100154
+  },
+  {
+   "path": "/front/assets/castLayers/prisoner_crossed/layers.json",
+   "size": 363534
+  },
+  {
+   "path": "/front/assets/castLayers/prisoner_spine_v2/blink.png",
+   "size": 9815
+  },
+  {
+   "path": "/front/assets/castLayers/prisoner_spine_v2/forearm_over.png",
+   "size": 88920
+  },
+  {
+   "path": "/front/assets/castLayers/prisoner_spine_v2/forearm_under.png",
+   "size": 117872
+  },
+  {
+   "path": "/front/assets/castLayers/prisoner_spine_v2/head.png",
+   "size": 84505
+  },
+  {
+   "path": "/front/assets/castLayers/prisoner_spine_v2/layers.json",
+   "size": 2610
+  },
+  {
+   "path": "/front/assets/castLayers/prisoner_spine_v2/pelvis.png",
+   "size": 141837
+  },
+  {
+   "path": "/front/assets/castLayers/prisoner_spine_v2/shin_l.png",
+   "size": 117618
+  },
+  {
+   "path": "/front/assets/castLayers/prisoner_spine_v2/shin_r.png",
+   "size": 112094
+  },
+  {
+   "path": "/front/assets/castLayers/prisoner_spine_v2/shoe_l.png",
+   "size": 39480
+  },
+  {
+   "path": "/front/assets/castLayers/prisoner_spine_v2/shoe_r.png",
+   "size": 43705
+  },
+  {
+   "path": "/front/assets/castLayers/prisoner_spine_v2/thigh_l.png",
+   "size": 117381
+  },
+  {
+   "path": "/front/assets/castLayers/prisoner_spine_v2/thigh_r.png",
+   "size": 116446
+  },
+  {
+   "path": "/front/assets/castLayers/prisoner_spine_v2/torso.png",
+   "size": 361586
+  },
+  {
+   "path": "/front/assets/castLayers/prisoner_spine_v2/towel.png",
+   "size": 90788
+  },
+  {
+   "path": "/front/assets/castLayers/prisoner_spine_v2/upper_arm_l.png",
+   "size": 50275
+  },
+  {
+   "path": "/front/assets/castLayers/prisoner_spine_v2/upper_arm_r.png",
+   "size": 75477
+  },
+  {
+   "path": "/front/assets/castLayers/warden/arm_l.png",
+   "size": 137529
+  },
+  {
+   "path": "/front/assets/castLayers/warden/arm_r.png",
+   "size": 109393
+  },
+  {
+   "path": "/front/assets/castLayers/warden/body.png",
+   "size": 942289
+  },
+  {
+   "path": "/front/assets/castLayers/warden/dangle_chain.png",
+   "size": 11861
+  },
+  {
+   "path": "/front/assets/castLayers/warden/dangle_mask.png",
+   "size": 37973
+  },
+  {
+   "path": "/front/assets/castLayers/warden/fingers_r.png",
+   "size": 18018
+  },
+  {
+   "path": "/front/assets/castLayers/warden/full.png",
+   "size": 1296623
+  },
+  {
+   "path": "/front/assets/castLayers/warden/head.png",
+   "size": 118755
+  },
+  {
+   "path": "/front/assets/castLayers/warden/layers.json",
+   "size": 374242
+  },
+  {
+   "path": "/front/assets/castLayers/warden/prop_bat.png",
+   "size": 35968
+  },
+  {
+   "path": "/front/assets/castLayers/warden_spine_v2/baton.png",
+   "size": 35864
+  },
+  {
+   "path": "/front/assets/castLayers/warden_spine_v2/blink.png",
+   "size": 7588
+  },
+  {
+   "path": "/front/assets/castLayers/warden_spine_v2/fingers_r.png",
+   "size": 18158
+  },
+  {
+   "path": "/front/assets/castLayers/warden_spine_v2/forearm_l.png",
+   "size": 41347
+  },
+  {
+   "path": "/front/assets/castLayers/warden_spine_v2/forearm_r.png",
+   "size": 106693
+  },
+  {
+   "path": "/front/assets/castLayers/warden_spine_v2/hand_l.png",
+   "size": 28539
+  },
+  {
+   "path": "/front/assets/castLayers/warden_spine_v2/head.png",
+   "size": 118516
+  },
+  {
+   "path": "/front/assets/castLayers/warden_spine_v2/keys.png",
+   "size": 21609
+  },
+  {
+   "path": "/front/assets/castLayers/warden_spine_v2/layers.json",
+   "size": 3383
+  },
+  {
+   "path": "/front/assets/castLayers/warden_spine_v2/pelvis.png",
+   "size": 160945
+  },
+  {
+   "path": "/front/assets/castLayers/warden_spine_v2/radio_cord.png",
+   "size": 37801
+  },
+  {
+   "path": "/front/assets/castLayers/warden_spine_v2/shin_l.png",
+   "size": 113980
+  },
+  {
+   "path": "/front/assets/castLayers/warden_spine_v2/shin_r.png",
+   "size": 104425
+  },
+  {
+   "path": "/front/assets/castLayers/warden_spine_v2/shoe_l.png",
+   "size": 49835
+  },
+  {
+   "path": "/front/assets/castLayers/warden_spine_v2/shoe_r.png",
+   "size": 42545
+  },
+  {
+   "path": "/front/assets/castLayers/warden_spine_v2/thigh_l.png",
+   "size": 156065
+  },
+  {
+   "path": "/front/assets/castLayers/warden_spine_v2/thigh_r.png",
+   "size": 144964
+  },
+  {
+   "path": "/front/assets/castLayers/warden_spine_v2/torso.png",
+   "size": 326932
+  },
+  {
+   "path": "/front/assets/castLayers/warden_spine_v2/upper_arm_l.png",
+   "size": 87161
+  },
+  {
+   "path": "/front/assets/castLayers/warden_spine_v2/upper_arm_r.png",
+   "size": 79502
+  },
+  {
+   "path": "/front/assets/castLayers/warden_spine_v2/whistle.png",
+   "size": 11814
+  },
+  {
+   "path": "/front/assets/spines/htCast/prisoner.atlas",
+   "size": 505
+  },
+  {
+   "path": "/front/assets/spines/htCast/prisoner.json",
+   "size": 199343
+  },
+  {
+   "path": "/front/assets/spines/htCast/prisoner.png",
+   "size": 1607394
+  },
+  {
+   "path": "/front/assets/spines/htCast/warden.atlas",
+   "size": 653
+  },
+  {
+   "path": "/front/assets/spines/htCast/warden.json",
+   "size": 211918
+  },
+  {
+   "path": "/front/assets/spines/htCast/warden.png",
+   "size": 1753838
+  },
+  {
+   "path": "/front/assets/sprites/coin/coin.json",
+   "size": 3584
+  },
+  {
+   "path": "/front/assets/sprites/coin/coin.png",
+   "size": 97119
+  },
+  {
+   "path": "/front/assets/sprites/hardTimeBackground/bg_base.jpg",
+   "size": 477527
+  },
+  {
+   "path": "/front/assets/sprites/hardTimeBackground/bg_breakout.jpg",
+   "size": 426941
+  },
+  {
+   "path": "/front/assets/sprites/hardTimeBackground/bg_lockdown.jpg",
+   "size": 315441
+  },
+  {
+   "path": "/front/assets/sprites/hardTimeBackground/bg_riot.jpg",
+   "size": 534004
+  },
+  {
+   "path": "/front/assets/sprites/hardTimeBoardFrame/frame_bg.png",
+   "size": 726451
+  },
+  {
+   "path": "/front/assets/sprites/hardTimeBoardFrame/frame_edge.png",
+   "size": 239205
+  },
+  {
+   "path": "/front/assets/sprites/hardTimeBoardFrame/fs_counter_panel.png",
+   "size": 696318
+  },
+  {
+   "path": "/front/assets/sprites/hardTimeBoardFrame/fs_sign.png",
+   "size": 732526
+  },
+  {
+   "path": "/front/assets/sprites/hardTimeBrand/logo.png",
+   "size": 277209
+  },
+  {
+   "path": "/front/assets/sprites/hardTimeCast/prisoner.png",
+   "size": 451202
+  },
+  {
+   "path": "/front/assets/sprites/hardTimeCast/prisoner_crossed.png",
+   "size": 467612
+  },
+  {
+   "path": "/front/assets/sprites/hardTimeCast/prisoner_crossed_intro.png",
+   "size": 467031
+  },
+  {
+   "path": "/front/assets/sprites/hardTimeFx/fx_glow.png",
+   "size": 3836
+  },
+  {
+   "path": "/front/assets/sprites/hardTimeFx/fx_ray.png",
+   "size": 4417
+  },
+  {
+   "path": "/front/assets/sprites/hardTimeFx/fx_star.png",
+   "size": 3588
+  },
+  {
+   "path": "/front/assets/sprites/hardTimeFx/fx_streak.png",
+   "size": 725
+  },
+  {
+   "path": "/front/assets/sprites/hardTimeFx/fx_vignette.png",
+   "size": 27412
+  },
+  {
+   "path": "/front/assets/sprites/hardTimeFx/lit_cell_frame.png",
+   "size": 1090
+  },
+  {
+   "path": "/front/assets/sprites/hardTimeFx/searchlight_beam.png",
+   "size": 15816
+  },
+  {
+   "path": "/front/assets/sprites/hardTimeSplash/title_breakout.png",
+   "size": 195520
+  },
+  {
+   "path": "/front/assets/sprites/hardTimeSplash/title_lockdown.png",
+   "size": 209181
+  },
+  {
+   "path": "/front/assets/sprites/hardTimeSplash/title_riot.png",
+   "size": 137877
+  },
+  {
+   "path": "/front/assets/sprites/hardTimeSymbols/fs.png",
+   "size": 339699
+  },
+  {
+   "path": "/front/assets/sprites/hardTimeSymbols/h1.png",
+   "size": 306654
+  },
+  {
+   "path": "/front/assets/sprites/hardTimeSymbols/h2.png",
+   "size": 236729
+  },
+  {
+   "path": "/front/assets/sprites/hardTimeSymbols/h3.png",
+   "size": 304313
+  },
+  {
+   "path": "/front/assets/sprites/hardTimeSymbols/h4.png",
+   "size": 229089
+  },
+  {
+   "path": "/front/assets/sprites/hardTimeSymbols/h5.png",
+   "size": 269950
+  },
+  {
+   "path": "/front/assets/sprites/hardTimeSymbols/l1.png",
+   "size": 37814
+  },
+  {
+   "path": "/front/assets/sprites/hardTimeSymbols/l2.png",
+   "size": 40813
+  },
+  {
+   "path": "/front/assets/sprites/hardTimeSymbols/l3.png",
+   "size": 32382
+  },
+  {
+   "path": "/front/assets/sprites/hardTimeSymbols/l4.png",
+   "size": 42483
+  },
+  {
+   "path": "/front/assets/sprites/hardTimeSymbols/sw.png",
+   "size": 311390
+  },
+  {
+   "path": "/front/assets/sprites/hardTimeSymbols/w.png",
+   "size": 370320
+  },
+  {
+   "path": "/front/assets/sprites/hardTimeUi/button_plate.png",
+   "size": 81813
+  },
+  {
+   "path": "/front/assets/sprites/hardTimeUi/buy_card_frame.svg",
+   "size": 491
+  },
+  {
+   "path": "/front/assets/sprites/hardTimeUi/buybonus_plate.png",
+   "size": 342325
+  },
+  {
+   "path": "/front/assets/sprites/hardTimeUi/spin_plate.png",
+   "size": 272931
+  },
+  {
+   "path": "/front/assets/sprites/hardTimeUi/ticker_plate.png",
+   "size": 172920
+  },
+  {
+   "path": "/front/assets/sprites/hardTimeUiIcons/autoSpin.png",
+   "size": 17405
+  },
+  {
+   "path": "/front/assets/sprites/hardTimeUiIcons/decrease.png",
+   "size": 2275
+  },
+  {
+   "path": "/front/assets/sprites/hardTimeUiIcons/increase.png",
+   "size": 5468
+  },
+  {
+   "path": "/front/assets/sprites/hardTimeUiIcons/info.png",
+   "size": 20203
+  },
+  {
+   "path": "/front/assets/sprites/hardTimeUiIcons/menu.png",
+   "size": 6509
+  },
+  {
+   "path": "/front/assets/sprites/hardTimeUiIcons/menuExit.png",
+   "size": 6514
+  },
+  {
+   "path": "/front/assets/sprites/hardTimeUiIcons/payTable.png",
+   "size": 6574
+  },
+  {
+   "path": "/front/assets/sprites/hardTimeUiIcons/settings.png",
+   "size": 16923
+  },
+  {
+   "path": "/front/assets/sprites/hardTimeUiIcons/soundOff.png",
+   "size": 7578
+  },
+  {
+   "path": "/front/assets/sprites/hardTimeUiIcons/soundOn.png",
+   "size": 11604
+  },
+  {
+   "path": "/front/assets/sprites/hardTimeUiIcons/spin.png",
+   "size": 9727
+  },
+  {
+   "path": "/front/assets/sprites/hardTimeUiIcons/turbo.png",
+   "size": 4282
+  },
+  {
+   "path": "/front/assets/sprites/hardTimeWinBanners/big.png",
+   "size": 573842
+  },
+  {
+   "path": "/front/assets/sprites/hardTimeWinBanners/epic.png",
+   "size": 579599
+  },
+  {
+   "path": "/front/assets/sprites/hardTimeWinBanners/max.png",
+   "size": 582395
+  },
+  {
+   "path": "/front/assets/sprites/hardTimeWinBanners/mega.png",
+   "size": 594019
+  },
+  {
+   "path": "/front/assets/sprites/hardTimeWinBanners/superwin.png",
+   "size": 578949
+  },
+  {
+   "path": "/front/build-version.txt",
+   "size": 35
+  },
+  {
+   "path": "/front/favicon.svg",
+   "size": 374
+  },
+  {
+   "path": "/front/fonts/Saira-OFL.txt",
+   "size": 4386
+  },
+  {
+   "path": "/front/fonts/Saira-latin-ext.woff2",
+   "size": 25472
+  },
+  {
+   "path": "/front/fonts/Saira-latin.woff2",
+   "size": 32988
+  }
+ ],
+ "upload": [
+  {
+   "path": "/front/_app/immutable/bundle.8l51sV_K.js",
+   "size": 1570061
+  },
+  {
+   "path": "/front/_app/version.json",
+   "size": 27
+  },
+  {
+   "path": "/front/index.html",
+   "size": 1620902
+  }
+ ]
+}

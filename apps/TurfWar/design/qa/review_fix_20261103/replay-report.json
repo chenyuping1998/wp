@@ -1,0 +1,190 @@
+{
+  "stats": {
+    "rounds": 0,
+    "byMode": {},
+    "balance": 100000,
+    "wagered": 0,
+    "won": 0,
+    "rtpSoFar": 0
+  },
+  "game": {
+    "gameType": "basegame",
+    "isTurbo": false,
+    "betMode": "BASE",
+    "dimmedBy": 0,
+    "anticipation": [
+      0,
+      0,
+      0,
+      0,
+      0
+    ]
+  },
+  "trace": [
+    {
+      "i": 0,
+      "type": "createBonusSnapshot",
+      "phase": "enter",
+      "t": 9099
+    },
+    {
+      "i": 0,
+      "type": "createBonusSnapshot",
+      "phase": "exit",
+      "t": 9099,
+      "ms": 0
+    },
+    {
+      "i": 1,
+      "type": "reveal",
+      "phase": "enter",
+      "t": 9099
+    },
+    {
+      "i": 1,
+      "type": "reveal",
+      "phase": "exit",
+      "t": 10508,
+      "ms": 1408
+    },
+    {
+      "i": 2,
+      "type": "newFrames",
+      "phase": "enter",
+      "t": 10508
+    },
+    {
+      "i": 2,
+      "type": "newFrames",
+      "phase": "exit",
+      "t": 10508,
+      "ms": 0
+    },
+    {
+      "i": 3,
+      "type": "winInfo",
+      "phase": "enter",
+      "t": 10508
+    },
+    {
+      "i": 3,
+      "type": "winInfo",
+      "phase": "exit",
+      "t": 11541,
+      "ms": 1034
+    },
+    {
+      "i": 4,
+      "type": "setWin",
+      "phase": "enter",
+      "t": 11541
+    },
+    {
+      "i": 4,
+      "type": "setWin",
+      "phase": "exit",
+      "t": 11865,
+      "ms": 323
+    },
+    {
+      "i": 5,
+      "type": "setTotalWin",
+      "phase": "enter",
+      "t": 11865
+    },
+    {
+      "i": 5,
+      "type": "setTotalWin",
+      "phase": "exit",
+      "t": 11865,
+      "ms": 0
+    },
+    {
+      "i": 6,
+      "type": "finalWin",
+      "phase": "enter",
+      "t": 11865
+    },
+    {
+      "i": 6,
+      "type": "finalWin",
+      "phase": "exit",
+      "t": 11865,
+      "ms": 0
+    }
+  ],
+  "errors": [],
+  "audio": {
+    "context": "running",
+    "filtered": true,
+    "hz": 20000,
+    "cues": [
+      {
+        "name": "reel_stop",
+        "at": 0.8881632653061224,
+        "volume": 0.21375
+      },
+      {
+        "name": "reel_stop",
+        "at": 1.0855328798185941,
+        "volume": 0.21375
+      },
+      {
+        "name": "pluck_low",
+        "at": 1.0855328798185941,
+        "volume": 0.5625
+      },
+      {
+        "name": "reel_stop",
+        "at": 1.2887074829931973,
+        "volume": 0.21375
+      },
+      {
+        "name": "pluck_low",
+        "at": 1.2887074829931973,
+        "volume": 0.5625
+      },
+      {
+        "name": "reel_stop",
+        "at": 1.486077097505669,
+        "volume": 0.21375
+      },
+      {
+        "name": "pluck_low",
+        "at": 1.486077097505669,
+        "volume": 0.5625
+      },
+      {
+        "name": "reel_stop",
+        "at": 1.689251700680272,
+        "volume": 0.21375
+      },
+      {
+        "name": "pluck_low",
+        "at": 1.7705215419501135,
+        "volume": 0.5625
+      },
+      {
+        "name": "win_line_tick",
+        "at": 1.7705215419501135,
+        "volume": 0.40499999999999997
+      },
+      {
+        "name": "win_step_1",
+        "at": 2.803809523809524,
+        "volume": 0.40499999999999997
+      }
+    ],
+    "fallback": [],
+    "mixReductionDb": -0.010476806201040745,
+    "music": [
+      {
+        "src": "http://localhost:8021/assets/audio/turf/bgm_base.m4a",
+        "level": 1,
+        "volume": 0.5625,
+        "paused": false
+      }
+    ]
+  },
+  "consoleErrors": []
+}

@@ -1,0 +1,1334 @@
+{
+  "variant": "before",
+  "viewport": {
+    "w": 390,
+    "h": 844
+  },
+  "rounds": [
+    {
+      "id": 64,
+      "complete": true,
+      "duration": 3525,
+      "prompts": [],
+      "game": {
+        "gameType": "basegame",
+        "isTurbo": false,
+        "betMode": "BASE",
+        "dimmedBy": 0,
+        "anticipation": [
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "trace": [
+        {
+          "i": 0,
+          "type": "reveal",
+          "phase": "enter",
+          "t": 9168
+        },
+        {
+          "i": 0,
+          "type": "reveal",
+          "phase": "exit",
+          "t": 10883,
+          "ms": 1715
+        },
+        {
+          "i": 1,
+          "type": "newFrames",
+          "phase": "enter",
+          "t": 10883
+        },
+        {
+          "i": 1,
+          "type": "newFrames",
+          "phase": "exit",
+          "t": 10883,
+          "ms": 0
+        },
+        {
+          "i": 2,
+          "type": "winInfo",
+          "phase": "enter",
+          "t": 10883
+        },
+        {
+          "i": 2,
+          "type": "winInfo",
+          "phase": "exit",
+          "t": 11918,
+          "ms": 1034
+        },
+        {
+          "i": 3,
+          "type": "setWin",
+          "phase": "enter",
+          "t": 11918
+        },
+        {
+          "i": 3,
+          "type": "setWin",
+          "phase": "exit",
+          "t": 12238,
+          "ms": 321
+        },
+        {
+          "i": 4,
+          "type": "setTotalWin",
+          "phase": "enter",
+          "t": 12238
+        },
+        {
+          "i": 4,
+          "type": "setTotalWin",
+          "phase": "exit",
+          "t": 12239,
+          "ms": 0
+        },
+        {
+          "i": 5,
+          "type": "finalWin",
+          "phase": "enter",
+          "t": 12239
+        },
+        {
+          "i": 5,
+          "type": "finalWin",
+          "phase": "exit",
+          "t": 12239,
+          "ms": 0
+        }
+      ],
+      "audio": {
+        "context": "running",
+        "filtered": true,
+        "hz": 20000
+      },
+      "reels": [
+        {
+          "reel": 0,
+          "motion": "stopped",
+          "spinType": "normal",
+          "anticipating": false,
+          "symbolState": "postWinStatic",
+          "names": [
+            "L4",
+            "L1",
+            "L3",
+            "H2",
+            "H5",
+            "H2"
+          ]
+        },
+        {
+          "reel": 1,
+          "motion": "stopped",
+          "spinType": "normal",
+          "anticipating": false,
+          "symbolState": "postWinStatic",
+          "names": [
+            "L1",
+            "W",
+            "H5",
+            "H3",
+            "H5",
+            "H5"
+          ]
+        },
+        {
+          "reel": 2,
+          "motion": "stopped",
+          "spinType": "normal",
+          "anticipating": false,
+          "symbolState": "postWinStatic",
+          "names": [
+            "L3",
+            "L1",
+            "H3",
+            "H4",
+            "H5",
+            "W"
+          ]
+        },
+        {
+          "reel": 3,
+          "motion": "stopped",
+          "spinType": "normal",
+          "anticipating": false,
+          "symbolState": "static",
+          "names": [
+            "H2",
+            "H2",
+            "H5",
+            "H5",
+            "L3",
+            "SW"
+          ]
+        },
+        {
+          "reel": 4,
+          "motion": "stopped",
+          "spinType": "normal",
+          "anticipating": false,
+          "symbolState": "static",
+          "names": [
+            "L2",
+            "H4",
+            "L1",
+            "L2",
+            "L1",
+            "L4"
+          ]
+        }
+      ],
+      "text": [
+        {
+          "text": "WILD",
+          "x": 118.95227453979493,
+          "y": 298.5964881479675,
+          "width": 27.105130920410147,
+          "height": 10.69434885406497
+        },
+        {
+          "text": "2x",
+          "x": 78.04080610194052,
+          "y": 430.9757354484497,
+          "width": 17.44030779611893,
+          "height": 17.04887825310061
+        },
+        {
+          "text": "14:07",
+          "x": 20,
+          "y": 0,
+          "width": 52.17596435546875,
+          "height": 32
+        },
+        {
+          "text": "BUY BONUS",
+          "x": 338.21446757846405,
+          "y": 686.7164299329122,
+          "width": 31.34884262084961,
+          "height": 25.678251245286674
+        },
+        {
+          "text": "BALANCE",
+          "x": 172.48774526596068,
+          "y": 757.3333333333333,
+          "width": 45.024509468078634,
+          "height": 17.277977142333953
+        },
+        {
+          "text": "$99,999.08",
+          "x": 165.51015901565552,
+          "y": 770.1207017262776,
+          "width": 58.979681968688965,
+          "height": 17.57047714233397
+        },
+        {
+          "text": "WIN",
+          "x": 184.65647232055665,
+          "y": 602.0555555555554,
+          "width": 20.68705535888671,
+          "height": 17.277977142333953
+        },
+        {
+          "text": "$0.08",
+          "x": 179.85728044509887,
+          "y": 615.1983109352323,
+          "width": 30.28543910980227,
+          "height": 17.57047714233397
+        },
+        {
+          "text": "BET",
+          "x": 185.71605508804322,
+          "y": 797.0555555555555,
+          "width": 18.56788982391356,
+          "height": 17.277977142333953
+        },
+        {
+          "text": "$1.00",
+          "x": 180.65361053466796,
+          "y": 810.1983109352324,
+          "width": 28.692778930664076,
+          "height": 17.57047714233397
+        },
+        {
+          "text": "$0.70",
+          "x": 126.77828416442871,
+          "y": 349.6629171142578,
+          "width": 136.44343167114255,
+          "height": 76.79588452148437
+        }
+      ],
+      "errors": []
+    },
+    {
+      "id": 11,
+      "complete": true,
+      "duration": 48636,
+      "prompts": [
+        "PRESS ANYWHERE TO CONTINUE",
+        "PRESS ANYWHERE TO CONTINUE"
+      ],
+      "game": {
+        "gameType": "basegame",
+        "isTurbo": false,
+        "betMode": "BASE",
+        "dimmedBy": 0,
+        "anticipation": [
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "trace": [
+        {
+          "i": 6,
+          "type": "reveal",
+          "phase": "enter",
+          "t": 12847
+        },
+        {
+          "i": 6,
+          "type": "reveal",
+          "phase": "exit",
+          "t": 17850,
+          "ms": 5002
+        },
+        {
+          "i": 7,
+          "type": "wildExpand",
+          "phase": "enter",
+          "t": 17850
+        },
+        {
+          "i": 7,
+          "type": "wildExpand",
+          "phase": "exit",
+          "t": 19001,
+          "ms": 1151
+        },
+        {
+          "i": 8,
+          "type": "winInfo",
+          "phase": "enter",
+          "t": 19001
+        },
+        {
+          "i": 8,
+          "type": "winInfo",
+          "phase": "exit",
+          "t": 20160,
+          "ms": 1159
+        },
+        {
+          "i": 9,
+          "type": "setWin",
+          "phase": "enter",
+          "t": 20160
+        },
+        {
+          "i": 9,
+          "type": "setWin",
+          "phase": "exit",
+          "t": 23374,
+          "ms": 3214
+        },
+        {
+          "i": 10,
+          "type": "setTotalWin",
+          "phase": "enter",
+          "t": 23374
+        },
+        {
+          "i": 10,
+          "type": "setTotalWin",
+          "phase": "exit",
+          "t": 23374,
+          "ms": 0
+        },
+        {
+          "i": 11,
+          "type": "freeSpinTrigger",
+          "phase": "enter",
+          "t": 23374
+        },
+        {
+          "i": 11,
+          "type": "freeSpinTrigger",
+          "phase": "exit",
+          "t": 27584,
+          "ms": 4209
+        },
+        {
+          "i": 12,
+          "type": "bonusTier",
+          "phase": "enter",
+          "t": 27584
+        },
+        {
+          "i": 12,
+          "type": "bonusTier",
+          "phase": "exit",
+          "t": 27584,
+          "ms": 0
+        },
+        {
+          "i": 13,
+          "type": "updateFreeSpin",
+          "phase": "enter",
+          "t": 27584
+        },
+        {
+          "i": 13,
+          "type": "updateFreeSpin",
+          "phase": "exit",
+          "t": 27584,
+          "ms": 0
+        },
+        {
+          "i": 14,
+          "type": "reveal",
+          "phase": "enter",
+          "t": 27584
+        },
+        {
+          "i": 14,
+          "type": "reveal",
+          "phase": "exit",
+          "t": 28981,
+          "ms": 1398
+        },
+        {
+          "i": 15,
+          "type": "wildExpand",
+          "phase": "enter",
+          "t": 28981
+        },
+        {
+          "i": 15,
+          "type": "wildExpand",
+          "phase": "exit",
+          "t": 30132,
+          "ms": 1151
+        },
+        {
+          "i": 16,
+          "type": "newFrames",
+          "phase": "enter",
+          "t": 30132
+        },
+        {
+          "i": 16,
+          "type": "newFrames",
+          "phase": "exit",
+          "t": 30132,
+          "ms": 0
+        },
+        {
+          "i": 17,
+          "type": "setTotalWin",
+          "phase": "enter",
+          "t": 30132
+        },
+        {
+          "i": 17,
+          "type": "setTotalWin",
+          "phase": "exit",
+          "t": 30132,
+          "ms": 0
+        },
+        {
+          "i": 18,
+          "type": "updateFreeSpin",
+          "phase": "enter",
+          "t": 30132
+        },
+        {
+          "i": 18,
+          "type": "updateFreeSpin",
+          "phase": "exit",
+          "t": 30133,
+          "ms": 0
+        },
+        {
+          "i": 19,
+          "type": "reveal",
+          "phase": "enter",
+          "t": 30133
+        },
+        {
+          "i": 19,
+          "type": "reveal",
+          "phase": "exit",
+          "t": 33882,
+          "ms": 3749
+        },
+        {
+          "i": 20,
+          "type": "updateFrames",
+          "phase": "enter",
+          "t": 33882
+        },
+        {
+          "i": 20,
+          "type": "updateFrames",
+          "phase": "exit",
+          "t": 34213,
+          "ms": 332
+        },
+        {
+          "i": 21,
+          "type": "newFrames",
+          "phase": "enter",
+          "t": 34213
+        },
+        {
+          "i": 21,
+          "type": "newFrames",
+          "phase": "exit",
+          "t": 34213,
+          "ms": 0
+        },
+        {
+          "i": 22,
+          "type": "setTotalWin",
+          "phase": "enter",
+          "t": 34213
+        },
+        {
+          "i": 22,
+          "type": "setTotalWin",
+          "phase": "exit",
+          "t": 34213,
+          "ms": 0
+        },
+        {
+          "i": 23,
+          "type": "freeSpinRetrigger",
+          "phase": "enter",
+          "t": 34213
+        },
+        {
+          "i": 23,
+          "type": "freeSpinRetrigger",
+          "phase": "exit",
+          "t": 38403,
+          "ms": 4190
+        },
+        {
+          "i": 24,
+          "type": "updateFreeSpin",
+          "phase": "enter",
+          "t": 38403
+        },
+        {
+          "i": 24,
+          "type": "updateFreeSpin",
+          "phase": "exit",
+          "t": 38404,
+          "ms": 0
+        },
+        {
+          "i": 25,
+          "type": "reveal",
+          "phase": "enter",
+          "t": 38404
+        },
+        {
+          "i": 25,
+          "type": "reveal",
+          "phase": "exit",
+          "t": 39798,
+          "ms": 1394
+        },
+        {
+          "i": 26,
+          "type": "updateFrames",
+          "phase": "enter",
+          "t": 39798
+        },
+        {
+          "i": 26,
+          "type": "updateFrames",
+          "phase": "exit",
+          "t": 40132,
+          "ms": 334
+        },
+        {
+          "i": 27,
+          "type": "setTotalWin",
+          "phase": "enter",
+          "t": 40132
+        },
+        {
+          "i": 27,
+          "type": "setTotalWin",
+          "phase": "exit",
+          "t": 40132,
+          "ms": 0
+        },
+        {
+          "i": 28,
+          "type": "updateFreeSpin",
+          "phase": "enter",
+          "t": 40132
+        },
+        {
+          "i": 28,
+          "type": "updateFreeSpin",
+          "phase": "exit",
+          "t": 40132,
+          "ms": 1
+        },
+        {
+          "i": 29,
+          "type": "reveal",
+          "phase": "enter",
+          "t": 40132
+        },
+        {
+          "i": 29,
+          "type": "reveal",
+          "phase": "exit",
+          "t": 41532,
+          "ms": 1400
+        },
+        {
+          "i": 30,
+          "type": "updateFrames",
+          "phase": "enter",
+          "t": 41532
+        },
+        {
+          "i": 30,
+          "type": "updateFrames",
+          "phase": "exit",
+          "t": 41865,
+          "ms": 334
+        },
+        {
+          "i": 31,
+          "type": "setTotalWin",
+          "phase": "enter",
+          "t": 41865
+        },
+        {
+          "i": 31,
+          "type": "setTotalWin",
+          "phase": "exit",
+          "t": 41865,
+          "ms": 0
+        },
+        {
+          "i": 32,
+          "type": "updateFreeSpin",
+          "phase": "enter",
+          "t": 41865
+        },
+        {
+          "i": 32,
+          "type": "updateFreeSpin",
+          "phase": "exit",
+          "t": 41866,
+          "ms": 1
+        },
+        {
+          "i": 33,
+          "type": "reveal",
+          "phase": "enter",
+          "t": 41866
+        },
+        {
+          "i": 33,
+          "type": "reveal",
+          "phase": "exit",
+          "t": 43265,
+          "ms": 1399
+        },
+        {
+          "i": 34,
+          "type": "updateFrames",
+          "phase": "enter",
+          "t": 43265
+        },
+        {
+          "i": 34,
+          "type": "updateFrames",
+          "phase": "exit",
+          "t": 43598,
+          "ms": 334
+        },
+        {
+          "i": 35,
+          "type": "setTotalWin",
+          "phase": "enter",
+          "t": 43598
+        },
+        {
+          "i": 35,
+          "type": "setTotalWin",
+          "phase": "exit",
+          "t": 43598,
+          "ms": 0
+        },
+        {
+          "i": 36,
+          "type": "updateFreeSpin",
+          "phase": "enter",
+          "t": 43598
+        },
+        {
+          "i": 36,
+          "type": "updateFreeSpin",
+          "phase": "exit",
+          "t": 43599,
+          "ms": 1
+        },
+        {
+          "i": 37,
+          "type": "reveal",
+          "phase": "enter",
+          "t": 43599
+        },
+        {
+          "i": 37,
+          "type": "reveal",
+          "phase": "exit",
+          "t": 44998,
+          "ms": 1399
+        },
+        {
+          "i": 38,
+          "type": "wildExpand",
+          "phase": "enter",
+          "t": 44998
+        },
+        {
+          "i": 38,
+          "type": "wildExpand",
+          "phase": "exit",
+          "t": 46149,
+          "ms": 1152
+        },
+        {
+          "i": 39,
+          "type": "updateFrames",
+          "phase": "enter",
+          "t": 46149
+        },
+        {
+          "i": 39,
+          "type": "updateFrames",
+          "phase": "exit",
+          "t": 46482,
+          "ms": 332
+        },
+        {
+          "i": 40,
+          "type": "setTotalWin",
+          "phase": "enter",
+          "t": 46482
+        },
+        {
+          "i": 40,
+          "type": "setTotalWin",
+          "phase": "exit",
+          "t": 46482,
+          "ms": 0
+        },
+        {
+          "i": 41,
+          "type": "updateFreeSpin",
+          "phase": "enter",
+          "t": 46482
+        },
+        {
+          "i": 41,
+          "type": "updateFreeSpin",
+          "phase": "exit",
+          "t": 46482,
+          "ms": 1
+        },
+        {
+          "i": 42,
+          "type": "reveal",
+          "phase": "enter",
+          "t": 46482
+        },
+        {
+          "i": 42,
+          "type": "reveal",
+          "phase": "exit",
+          "t": 47881,
+          "ms": 1399
+        },
+        {
+          "i": 43,
+          "type": "updateFrames",
+          "phase": "enter",
+          "t": 47881
+        },
+        {
+          "i": 43,
+          "type": "updateFrames",
+          "phase": "exit",
+          "t": 48215,
+          "ms": 334
+        },
+        {
+          "i": 44,
+          "type": "newFrames",
+          "phase": "enter",
+          "t": 48215
+        },
+        {
+          "i": 44,
+          "type": "newFrames",
+          "phase": "exit",
+          "t": 48215,
+          "ms": 0
+        },
+        {
+          "i": 45,
+          "type": "winInfo",
+          "phase": "enter",
+          "t": 48215
+        },
+        {
+          "i": 45,
+          "type": "winInfo",
+          "phase": "exit",
+          "t": 48751,
+          "ms": 536
+        },
+        {
+          "i": 46,
+          "type": "setWin",
+          "phase": "enter",
+          "t": 48751
+        },
+        {
+          "i": 46,
+          "type": "setWin",
+          "phase": "exit",
+          "t": 49072,
+          "ms": 321
+        },
+        {
+          "i": 47,
+          "type": "setTotalWin",
+          "phase": "enter",
+          "t": 49072
+        },
+        {
+          "i": 47,
+          "type": "setTotalWin",
+          "phase": "exit",
+          "t": 49073,
+          "ms": 0
+        },
+        {
+          "i": 48,
+          "type": "updateFreeSpin",
+          "phase": "enter",
+          "t": 49073
+        },
+        {
+          "i": 48,
+          "type": "updateFreeSpin",
+          "phase": "exit",
+          "t": 49073,
+          "ms": 0
+        },
+        {
+          "i": 49,
+          "type": "reveal",
+          "phase": "enter",
+          "t": 49073
+        },
+        {
+          "i": 49,
+          "type": "reveal",
+          "phase": "exit",
+          "t": 50481,
+          "ms": 1408
+        },
+        {
+          "i": 50,
+          "type": "updateFrames",
+          "phase": "enter",
+          "t": 50481
+        },
+        {
+          "i": 50,
+          "type": "updateFrames",
+          "phase": "exit",
+          "t": 50814,
+          "ms": 333
+        },
+        {
+          "i": 51,
+          "type": "newFrames",
+          "phase": "enter",
+          "t": 50814
+        },
+        {
+          "i": 51,
+          "type": "newFrames",
+          "phase": "exit",
+          "t": 50814,
+          "ms": 0
+        },
+        {
+          "i": 52,
+          "type": "setTotalWin",
+          "phase": "enter",
+          "t": 50814
+        },
+        {
+          "i": 52,
+          "type": "setTotalWin",
+          "phase": "exit",
+          "t": 50814,
+          "ms": 0
+        },
+        {
+          "i": 53,
+          "type": "updateFreeSpin",
+          "phase": "enter",
+          "t": 50814
+        },
+        {
+          "i": 53,
+          "type": "updateFreeSpin",
+          "phase": "exit",
+          "t": 50815,
+          "ms": 1
+        },
+        {
+          "i": 54,
+          "type": "reveal",
+          "phase": "enter",
+          "t": 50815
+        },
+        {
+          "i": 54,
+          "type": "reveal",
+          "phase": "exit",
+          "t": 52230,
+          "ms": 1415
+        },
+        {
+          "i": 55,
+          "type": "updateFrames",
+          "phase": "enter",
+          "t": 52230
+        },
+        {
+          "i": 55,
+          "type": "updateFrames",
+          "phase": "exit",
+          "t": 52564,
+          "ms": 333
+        },
+        {
+          "i": 56,
+          "type": "setTotalWin",
+          "phase": "enter",
+          "t": 52564
+        },
+        {
+          "i": 56,
+          "type": "setTotalWin",
+          "phase": "exit",
+          "t": 52564,
+          "ms": 0
+        },
+        {
+          "i": 57,
+          "type": "updateFreeSpin",
+          "phase": "enter",
+          "t": 52564
+        },
+        {
+          "i": 57,
+          "type": "updateFreeSpin",
+          "phase": "exit",
+          "t": 52564,
+          "ms": 0
+        },
+        {
+          "i": 58,
+          "type": "reveal",
+          "phase": "enter",
+          "t": 52564
+        },
+        {
+          "i": 58,
+          "type": "reveal",
+          "phase": "exit",
+          "t": 53964,
+          "ms": 1400
+        },
+        {
+          "i": 59,
+          "type": "wildExpand",
+          "phase": "enter",
+          "t": 53964
+        },
+        {
+          "i": 59,
+          "type": "wildExpand",
+          "phase": "exit",
+          "t": 55115,
+          "ms": 1151
+        },
+        {
+          "i": 60,
+          "type": "updateFrames",
+          "phase": "enter",
+          "t": 55115
+        },
+        {
+          "i": 60,
+          "type": "updateFrames",
+          "phase": "exit",
+          "t": 55450,
+          "ms": 335
+        },
+        {
+          "i": 61,
+          "type": "newFrames",
+          "phase": "enter",
+          "t": 55450
+        },
+        {
+          "i": 61,
+          "type": "newFrames",
+          "phase": "exit",
+          "t": 55450,
+          "ms": 0
+        },
+        {
+          "i": 62,
+          "type": "setTotalWin",
+          "phase": "enter",
+          "t": 55450
+        },
+        {
+          "i": 62,
+          "type": "setTotalWin",
+          "phase": "exit",
+          "t": 55450,
+          "ms": 0
+        },
+        {
+          "i": 63,
+          "type": "updateFreeSpin",
+          "phase": "enter",
+          "t": 55450
+        },
+        {
+          "i": 63,
+          "type": "updateFreeSpin",
+          "phase": "exit",
+          "t": 55451,
+          "ms": 1
+        },
+        {
+          "i": 64,
+          "type": "reveal",
+          "phase": "enter",
+          "t": 55451
+        },
+        {
+          "i": 64,
+          "type": "reveal",
+          "phase": "exit",
+          "t": 56847,
+          "ms": 1397
+        },
+        {
+          "i": 65,
+          "type": "updateFrames",
+          "phase": "enter",
+          "t": 56847
+        },
+        {
+          "i": 65,
+          "type": "updateFrames",
+          "phase": "exit",
+          "t": 57181,
+          "ms": 334
+        },
+        {
+          "i": 66,
+          "type": "newFrames",
+          "phase": "enter",
+          "t": 57181
+        },
+        {
+          "i": 66,
+          "type": "newFrames",
+          "phase": "exit",
+          "t": 57181,
+          "ms": 0
+        },
+        {
+          "i": 67,
+          "type": "setTotalWin",
+          "phase": "enter",
+          "t": 57181
+        },
+        {
+          "i": 67,
+          "type": "setTotalWin",
+          "phase": "exit",
+          "t": 57181,
+          "ms": 0
+        },
+        {
+          "i": 68,
+          "type": "updateFreeSpin",
+          "phase": "enter",
+          "t": 57181
+        },
+        {
+          "i": 68,
+          "type": "updateFreeSpin",
+          "phase": "exit",
+          "t": 57182,
+          "ms": 0
+        },
+        {
+          "i": 69,
+          "type": "reveal",
+          "phase": "enter",
+          "t": 57182
+        },
+        {
+          "i": 69,
+          "type": "reveal",
+          "phase": "exit",
+          "t": 58582,
+          "ms": 1400
+        },
+        {
+          "i": 70,
+          "type": "updateFrames",
+          "phase": "enter",
+          "t": 58582
+        },
+        {
+          "i": 70,
+          "type": "updateFrames",
+          "phase": "exit",
+          "t": 58914,
+          "ms": 332
+        },
+        {
+          "i": 71,
+          "type": "setTotalWin",
+          "phase": "enter",
+          "t": 58914
+        },
+        {
+          "i": 71,
+          "type": "setTotalWin",
+          "phase": "exit",
+          "t": 58914,
+          "ms": 0
+        },
+        {
+          "i": 72,
+          "type": "freeSpinEnd",
+          "phase": "enter",
+          "t": 58914
+        },
+        {
+          "i": 72,
+          "type": "freeSpinEnd",
+          "phase": "exit",
+          "t": 60780,
+          "ms": 1866
+        },
+        {
+          "i": 73,
+          "type": "finalWin",
+          "phase": "enter",
+          "t": 60780
+        },
+        {
+          "i": 73,
+          "type": "finalWin",
+          "phase": "exit",
+          "t": 60780,
+          "ms": 0
+        }
+      ],
+      "audio": {
+        "context": "running",
+        "filtered": true,
+        "hz": 20000
+      },
+      "reels": [
+        {
+          "reel": 0,
+          "motion": "stopped",
+          "spinType": "normal",
+          "anticipating": false,
+          "symbolState": "static",
+          "names": [
+            "L1",
+            "H3",
+            "L4",
+            "L3",
+            "H1",
+            "L2"
+          ]
+        },
+        {
+          "reel": 1,
+          "motion": "stopped",
+          "spinType": "normal",
+          "anticipating": false,
+          "symbolState": "static",
+          "names": [
+            "H1",
+            "H3",
+            "H4",
+            "L2",
+            "L1",
+            "H2"
+          ]
+        },
+        {
+          "reel": 2,
+          "motion": "stopped",
+          "spinType": "normal",
+          "anticipating": false,
+          "symbolState": "static",
+          "names": [
+            "H3",
+            "H5",
+            "L4",
+            "L1",
+            "H4",
+            "L3"
+          ]
+        },
+        {
+          "reel": 3,
+          "motion": "stopped",
+          "spinType": "normal",
+          "anticipating": false,
+          "symbolState": "static",
+          "names": [
+            "L4",
+            "L2",
+            "H2",
+            "L3",
+            "L1",
+            "H3"
+          ]
+        },
+        {
+          "reel": 4,
+          "motion": "stopped",
+          "spinType": "normal",
+          "anticipating": false,
+          "symbolState": "static",
+          "names": [
+            "L3",
+            "H5",
+            "L1",
+            "H4",
+            "L2",
+            "H1"
+          ]
+        }
+      ],
+      "text": [
+        {
+          "text": "14:07",
+          "x": 20,
+          "y": 0,
+          "width": 52.17596435546875,
+          "height": 32
+        },
+        {
+          "text": "BALANCE",
+          "x": 172.48774526596068,
+          "y": 757.3333333333333,
+          "width": 45.024509468078634,
+          "height": 17.277977142333953
+        },
+        {
+          "text": "$100,013.95",
+          "x": 163.95698249816894,
+          "y": 770.1207017262776,
+          "width": 62.08603500366212,
+          "height": 17.57047714233397
+        },
+        {
+          "text": "BUY BONUS",
+          "x": 338.21446757846405,
+          "y": 686.7164299329122,
+          "width": 31.34884262084961,
+          "height": 25.678251245286674
+        },
+        {
+          "text": "WIN",
+          "x": 184.65647232055665,
+          "y": 602.0555555555554,
+          "width": 20.68705535888671,
+          "height": 17.277977142333953
+        },
+        {
+          "text": "$22.00",
+          "x": 176.8496488380432,
+          "y": 615.1983109352323,
+          "width": 36.30070232391358,
+          "height": 17.57047714233397
+        },
+        {
+          "text": "BET",
+          "x": 185.71605508804322,
+          "y": 797.0555555555555,
+          "width": 18.56788982391356,
+          "height": 17.277977142333953
+        },
+        {
+          "text": "$1.00",
+          "x": 180.65361053466796,
+          "y": 810.1983109352324,
+          "width": 28.692778930664076,
+          "height": 17.57047714233397
+        },
+        {
+          "text": "↓",
+          "x": 350.23263888888886,
+          "y": 796.8330204751755,
+          "width": 7.3125,
+          "height": 18.500625716315426
+        }
+      ],
+      "errors": []
+    }
+  ],
+  "consoleErrors": [],
+  "networkErrors": [],
+  "mix": {
+    "peak": 3.485370397567749,
+    "rmsMax": 1.4747334576197757,
+    "clipped": 9940,
+    "samples": 3579904
+  }
+}

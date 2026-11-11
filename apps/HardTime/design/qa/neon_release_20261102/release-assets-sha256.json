@@ -1,0 +1,746 @@
+{
+  "frontend/build-version.txt": {
+    "bytes": 35,
+    "sha256": "2a3a07781d87a19be84ffe616944b5a5cfc6ac82f04a90798dfaffa45729ffb0"
+  },
+  "frontend/index.html": {
+    "bytes": 1620902,
+    "sha256": "effaf79899cd5dd96cd991a9f10c9fb5bcc2381a8c0897faf881434267a4e910"
+  },
+  "frontend/favicon.svg": {
+    "bytes": 374,
+    "sha256": "2ba16a1c5b99489d1eb7aede668f749816d9d22247b9bf84677cdf988cfe13b7"
+  },
+  "frontend/fonts/Saira-latin.woff2": {
+    "bytes": 32988,
+    "sha256": "d00e219103120bc74dee30e5b3f0ce3b924e6e0a05cf9bcf4c3eb97f13b88a65"
+  },
+  "frontend/fonts/Saira-OFL.txt": {
+    "bytes": 4386,
+    "sha256": "f2665d4718b452b3818a877191355ac884a6b9b419d35408fe7ee487e9e8f30f"
+  },
+  "frontend/fonts/Saira-latin-ext.woff2": {
+    "bytes": 25472,
+    "sha256": "68383f31285bc545a2534d18083ea07d4cf12dee119774e0b98a2d0219ddf213"
+  },
+  "frontend/assets/castLayers/warden_spine_v2/shoe_l.png": {
+    "bytes": 49835,
+    "sha256": "13db5903fa2bb58a2c7a7f8427153e11b77337f3116e000f6dc4f183741e7c73"
+  },
+  "frontend/assets/castLayers/warden_spine_v2/shin_r.png": {
+    "bytes": 104425,
+    "sha256": "2c2c02f41473a3dcead7823cc57a75cb85b00dd5acb3c1b47744393bf9490b9c"
+  },
+  "frontend/assets/castLayers/warden_spine_v2/keys.png": {
+    "bytes": 21609,
+    "sha256": "c8ca5c45c3b9e71ee04e135e8b1783691787bf5b628ef02af4560e02b4120f67"
+  },
+  "frontend/assets/castLayers/warden_spine_v2/whistle.png": {
+    "bytes": 11814,
+    "sha256": "2535a7eaae58f5ce55ed42ca963d77ba141df3949fcf27c73beaa23ca3b77608"
+  },
+  "frontend/assets/castLayers/warden_spine_v2/thigh_r.png": {
+    "bytes": 144964,
+    "sha256": "435cad1408801a1c16e5b768914cb31eb5b043280565038cd786dd0a5f77b8ef"
+  },
+  "frontend/assets/castLayers/warden_spine_v2/baton.png": {
+    "bytes": 35864,
+    "sha256": "293ea2d8a531f90ec99f36273a5e37ecf735577615ec6556483783a8d12dd186"
+  },
+  "frontend/assets/castLayers/warden_spine_v2/hand_l.png": {
+    "bytes": 28539,
+    "sha256": "37445ff68886869c447a4dd815d3fe92e29744fa54b99ad4faee55ce5b38292b"
+  },
+  "frontend/assets/castLayers/warden_spine_v2/forearm_l.png": {
+    "bytes": 41347,
+    "sha256": "87428bb8c463860c94f3152affe6b7e56aed0d06cc2e3422375c2523a4566a31"
+  },
+  "frontend/assets/castLayers/warden_spine_v2/upper_arm_l.png": {
+    "bytes": 87161,
+    "sha256": "49afb1a2de13a2c5dda231945f8da26e047ac9468ffb87d7fbbf22d8fab2d059"
+  },
+  "frontend/assets/castLayers/warden_spine_v2/radio_cord.png": {
+    "bytes": 37801,
+    "sha256": "f4fa8ac42da12b680c06634f57059accd175c4c139dd2b9f724e924ebb04f1ea"
+  },
+  "frontend/assets/castLayers/warden_spine_v2/blink.png": {
+    "bytes": 7588,
+    "sha256": "b97d90f0c5f3c5b9bc9e7c4c6eda51385ee1d275bfcc8b17a503b0f40af5cbba"
+  },
+  "frontend/assets/castLayers/warden_spine_v2/forearm_r.png": {
+    "bytes": 106693,
+    "sha256": "41b8a1d0f5c25dd53aef424beba3274b2ebaaf5f354d0bcc38a3edeb4294a1f9"
+  },
+  "frontend/assets/castLayers/warden_spine_v2/upper_arm_r.png": {
+    "bytes": 79502,
+    "sha256": "283c87f54c4dad1d384bb24b42e48edaf39e2ab1b2d12ac51297af5cfcc14d7c"
+  },
+  "frontend/assets/castLayers/warden_spine_v2/head.png": {
+    "bytes": 118516,
+    "sha256": "2990c93bd0c706746aa48e171732e2ef411f3aa4e03f8b4750be6b49310b801c"
+  },
+  "frontend/assets/castLayers/warden_spine_v2/shoe_r.png": {
+    "bytes": 42545,
+    "sha256": "207742a782e0551442893b6be44ec18c91fad48ab4822e31ea67cc6981bb8db8"
+  },
+  "frontend/assets/castLayers/warden_spine_v2/torso.png": {
+    "bytes": 326932,
+    "sha256": "a922ff42c96cc89ac08a6684362902116e6d18b3079042d3dffec736b7380784"
+  },
+  "frontend/assets/castLayers/warden_spine_v2/shin_l.png": {
+    "bytes": 113980,
+    "sha256": "b18232c0e2567b6f284ec9789241c8e7aa7d9989bbd7850e0d9dcd6daad21dd5"
+  },
+  "frontend/assets/castLayers/warden_spine_v2/pelvis.png": {
+    "bytes": 160945,
+    "sha256": "92f6b8029f8dae8b1b528b637bc6d92a65600ea5a857172a2f9c5080b7d92a25"
+  },
+  "frontend/assets/castLayers/warden_spine_v2/layers.json": {
+    "bytes": 3383,
+    "sha256": "df30503d41ea06b8406d312eb27135e349e8dfd1eea023e18648726e16bf40df"
+  },
+  "frontend/assets/castLayers/warden_spine_v2/thigh_l.png": {
+    "bytes": 156065,
+    "sha256": "080ce49482c5dbfc9fe509fc8bba2e84c99cb72c304ef28ac448bbf8dc4720aa"
+  },
+  "frontend/assets/castLayers/warden_spine_v2/fingers_r.png": {
+    "bytes": 18158,
+    "sha256": "2b21b2af60df31847c66c12a71c51b4ee1aa3e56d329f980dc6e96ebdc4bf1ec"
+  },
+  "frontend/assets/castLayers/prisoner_crossed/body.png": {
+    "bytes": 1055210,
+    "sha256": "f3c343a35a468c430be3543e9de435d7b8f717b07a3ffdc8c1d1704ba0ecc9e7"
+  },
+  "frontend/assets/castLayers/prisoner_crossed/head.png": {
+    "bytes": 100154,
+    "sha256": "8b3ee165528d7f41104ad7366da6a2e6391b6de5067f24362136de1deaf9d19b"
+  },
+  "frontend/assets/castLayers/prisoner_crossed/layers.json": {
+    "bytes": 363534,
+    "sha256": "8aec276df0f4d62f03418d85acd26589e3c9e1d66e54ed691b5c9c5d47d603e0"
+  },
+  "frontend/assets/castLayers/prisoner_crossed/full.png": {
+    "bytes": 1129168,
+    "sha256": "4b907da7811c4163fa691c5c72dd73277b8cbe948c4ae10013ca9ea034a79af3"
+  },
+  "frontend/assets/castLayers/prisoner_spine_v2/forearm_over.png": {
+    "bytes": 88920,
+    "sha256": "f8746f2b7771d0c8db1b3cd7c3832decb7373d6cf8c8087fb80de3e1bb04f482"
+  },
+  "frontend/assets/castLayers/prisoner_spine_v2/shoe_l.png": {
+    "bytes": 39480,
+    "sha256": "3a9bdc070a7a3a2c46ab0f2e5bd3fe8cf49bbd2e4cf93ddee3830aafb2c15da3"
+  },
+  "frontend/assets/castLayers/prisoner_spine_v2/shin_r.png": {
+    "bytes": 112094,
+    "sha256": "4fdbba8981d66d9abc25f38cbe4bbdb1c4b8e84ea8d7083a1f04e9bfae6fdc22"
+  },
+  "frontend/assets/castLayers/prisoner_spine_v2/thigh_r.png": {
+    "bytes": 116446,
+    "sha256": "37b33ea0abdb5594aad77085305da8417da11ea052f490b0a41a693f006f5428"
+  },
+  "frontend/assets/castLayers/prisoner_spine_v2/towel.png": {
+    "bytes": 90788,
+    "sha256": "85d8e78111096f6de25790703c0196d3adaadf704e74646e85d2930d3b9ffdad"
+  },
+  "frontend/assets/castLayers/prisoner_spine_v2/upper_arm_l.png": {
+    "bytes": 50275,
+    "sha256": "cae50b4213434ffa96a349d96335de268d18e0a881539ef50db0f192534617a5"
+  },
+  "frontend/assets/castLayers/prisoner_spine_v2/forearm_under.png": {
+    "bytes": 117872,
+    "sha256": "8b4e1711e3bea7386e4576ce246941c98ccc9e091301fb314cb9bd5ab175f9ad"
+  },
+  "frontend/assets/castLayers/prisoner_spine_v2/blink.png": {
+    "bytes": 9815,
+    "sha256": "3cf7a8993d29895a37a71da0828f777626574d481d952327013817ca99b63046"
+  },
+  "frontend/assets/castLayers/prisoner_spine_v2/upper_arm_r.png": {
+    "bytes": 75477,
+    "sha256": "cc84dba65c0c26dcebe992dc8a09bccbf70da87b1fa190ccf71df7cb314c6a58"
+  },
+  "frontend/assets/castLayers/prisoner_spine_v2/head.png": {
+    "bytes": 84505,
+    "sha256": "e2aa2743b047c339303b722de693d88d26673fa340c85475a08d388f7d84cc4c"
+  },
+  "frontend/assets/castLayers/prisoner_spine_v2/shoe_r.png": {
+    "bytes": 43705,
+    "sha256": "e85f5d269e64fb346a55d66a2b3db93a5f86461262650e25adc511edda65441e"
+  },
+  "frontend/assets/castLayers/prisoner_spine_v2/torso.png": {
+    "bytes": 361586,
+    "sha256": "77456b0d97fb2d123aa2fa020c30c56811839d2ab7a400d28b33e72b1279f8f0"
+  },
+  "frontend/assets/castLayers/prisoner_spine_v2/shin_l.png": {
+    "bytes": 117618,
+    "sha256": "b82c5b5858d8a9c2675f73750837ef011a3f74f344c7cf6889c79af56066eb4f"
+  },
+  "frontend/assets/castLayers/prisoner_spine_v2/pelvis.png": {
+    "bytes": 141837,
+    "sha256": "73c1aac09f93179d70c725df3fd01ef5480fc4be380f5ddec9ebf14a1472e983"
+  },
+  "frontend/assets/castLayers/prisoner_spine_v2/layers.json": {
+    "bytes": 2610,
+    "sha256": "0f488287a20a49a4d33f44fa5a4d90ef760d219690900346548e2bcfd66a1844"
+  },
+  "frontend/assets/castLayers/prisoner_spine_v2/thigh_l.png": {
+    "bytes": 117381,
+    "sha256": "f355250227f16fde49102f33c4a9eecab036d3a124895e0b714628be1d211250"
+  },
+  "frontend/assets/castLayers/warden/arm_r.png": {
+    "bytes": 109393,
+    "sha256": "5c9cc1225e519b5c76bc39781d95db4ec3f08753b28c65d530c1a9e4ce304c52"
+  },
+  "frontend/assets/castLayers/warden/body.png": {
+    "bytes": 942289,
+    "sha256": "8367053a79c18c36073da3577a9256d1b657b9af052a1b93ff9d5e70730bf35f"
+  },
+  "frontend/assets/castLayers/warden/dangle_chain.png": {
+    "bytes": 11861,
+    "sha256": "4374709cdbfaa4a503502dede36ae107f8f492916eec35efbb07b57608191641"
+  },
+  "frontend/assets/castLayers/warden/prop_bat.png": {
+    "bytes": 35968,
+    "sha256": "985046a323ced067d56ae32e7626097471e77b01db5991483f19a71e9a042302"
+  },
+  "frontend/assets/castLayers/warden/head.png": {
+    "bytes": 118755,
+    "sha256": "55dbb1e2e18c00a1b8135473b19718e36ff9d650299e04b1ddb882118d2a6fed"
+  },
+  "frontend/assets/castLayers/warden/dangle_mask.png": {
+    "bytes": 37973,
+    "sha256": "069fa7fd591fb66b1e82453f687e14a71feff0d045a0f4ec7e1987a3394cf65c"
+  },
+  "frontend/assets/castLayers/warden/layers.json": {
+    "bytes": 374242,
+    "sha256": "ae4cbf1fb4f6613688f6a0b481cc58e8a8a8f21f2a1e8f61918af05e07a18e63"
+  },
+  "frontend/assets/castLayers/warden/arm_l.png": {
+    "bytes": 137529,
+    "sha256": "fe48942511eb77e2d0fd222f32c0f2100b1d020678ed1a545078344a4709bbb4"
+  },
+  "frontend/assets/castLayers/warden/full.png": {
+    "bytes": 1296623,
+    "sha256": "0acf11b3301c49077d939159065acc8cdb1e7c9c21abe2565ae0b5cad0fda7bf"
+  },
+  "frontend/assets/castLayers/warden/fingers_r.png": {
+    "bytes": 18018,
+    "sha256": "19cbefbd9c4c213a0e620b6e7f639ff7484c6d285232affb7433b2a52a9a4558"
+  },
+  "frontend/assets/audio/sounds.wav": {
+    "bytes": 8864,
+    "sha256": "021633496924eda562bd989559c28a66cbb572941f8e2d1e1c89e3d5258fc9ce"
+  },
+  "frontend/assets/audio/sounds.json": {
+    "bytes": 5088,
+    "sha256": "25315eb06263233f9ab6a97b8a83a2b7e76b75677b84d8f3b7946805d66e8d7c"
+  },
+  "frontend/assets/audio/hard_time/bgm_base.m4a": {
+    "bytes": 691110,
+    "sha256": "45e8d098d4421577b6af3ec08b0213d9dced21bc044862ec556f988f30a53276"
+  },
+  "frontend/assets/audio/hard_time/bgm_feature.m4a": {
+    "bytes": 656781,
+    "sha256": "6bdff7c571361b6be72ea655523ba030416ea1f43dc669bb9b59b2e60642f9bc"
+  },
+  "frontend/assets/audio/hard_time/sfx/alarm_transition.wav": {
+    "bytes": 388124,
+    "sha256": "1be0a58101c671224f52f4ae56c57c2459103c01e7db430b8a35271b7b92507e"
+  },
+  "frontend/assets/audio/hard_time/sfx/light_land.wav": {
+    "bytes": 33560,
+    "sha256": "730dc21009004b0e5a4b3099cf1140b89b2a29c81ec86b7915380749985dd31c"
+  },
+  "frontend/assets/audio/hard_time/sfx/reel_stop.wav": {
+    "bytes": 21212,
+    "sha256": "2f42913e3fa500a795661c934499bedb8e2dd0cea3541b6c7d33b34499c3de18"
+  },
+  "frontend/assets/audio/hard_time/sfx/tier_lockdown.wav": {
+    "bytes": 317564,
+    "sha256": "68915fd7d9c99e5a4af4d5d0a99f5fc9217bba630111c27b71c992242f48acf8"
+  },
+  "frontend/assets/audio/hard_time/sfx/fs_outro.wav": {
+    "bytes": 388124,
+    "sha256": "7de62a0bb723e4a0debb32bedc13df2ca89564f0bf08ed021765f8a26f9cdb4f"
+  },
+  "frontend/assets/audio/hard_time/sfx/scatter_3.wav": {
+    "bytes": 79424,
+    "sha256": "dda2c51a93534f3d8715c53915f92f7fb3a16f485fecdf63e2811e5396ea35ac"
+  },
+  "frontend/assets/audio/hard_time/sfx/fs_intro.wav": {
+    "bytes": 441044,
+    "sha256": "27ba85e560c6c1c31a0b3f94f22af9ea6674315d0ae2fba88716e07999bacb25"
+  },
+  "frontend/assets/audio/hard_time/sfx/scatter_2.wav": {
+    "bytes": 70604,
+    "sha256": "5c0bdb2bf87812a4cb1ac0a5f48960173323efb832bd71fc8775d69e63d508a3"
+  },
+  "frontend/assets/audio/hard_time/sfx/tier_riot.wav": {
+    "bytes": 370484,
+    "sha256": "9844c8c71a78b4fca38b3507b3980998b870321c8e86cf3914c8873502ab3899"
+  },
+  "frontend/assets/audio/hard_time/sfx/scatter_1.wav": {
+    "bytes": 61780,
+    "sha256": "d56fdab149d78802be6b5773631d7fa30e9d9d6781f8ce259140e399afeeed73"
+  },
+  "frontend/assets/audio/hard_time/sfx/win_gliss_big.wav": {
+    "bytes": 370484,
+    "sha256": "61520301e8f864df07cf3b8ea0a3b4b4fa3c3412bf160c756a0196e6aa4b774c"
+  },
+  "frontend/assets/audio/hard_time/sfx/mult_update.wav": {
+    "bytes": 132344,
+    "sha256": "8c6acd98aeac1e11be7126b91f0cb37338b997bd19eb6c4788000bfea034db16"
+  },
+  "frontend/assets/audio/hard_time/sfx/win_cap.wav": {
+    "bytes": 635084,
+    "sha256": "ad860347e3bd250f2abb141fa5a092799f8b6ca29ad28199ea4271254d6da634"
+  },
+  "frontend/assets/audio/hard_time/sfx/gong_feature.wav": {
+    "bytes": 314036,
+    "sha256": "917dde2e70b33f004e17bf3cec53b4cd1ffc30ff4741eb637f60df723b2d4b39"
+  },
+  "frontend/assets/audio/hard_time/sfx/scatter_5.wav": {
+    "bytes": 97064,
+    "sha256": "fbe89d210fb36c7c9ae6a308719ee1255606bb920638383c61026dc06ccf4c18"
+  },
+  "frontend/assets/audio/hard_time/sfx/reel_tension.wav": {
+    "bytes": 529244,
+    "sha256": "a39576040b7bb10c592cb5394243aab7a4771c0ccd2b848df7387acba3a54f2a"
+  },
+  "frontend/assets/audio/hard_time/sfx/win_tier_big.wav": {
+    "bytes": 285812,
+    "sha256": "f995c3df1c6e935508233a7b319e503c80850744d1e19401c6ce03de495966e6"
+  },
+  "frontend/assets/audio/hard_time/sfx/scatter_4.wav": {
+    "bytes": 88244,
+    "sha256": "e7a6772699aff6aa7873a4b3f875fbeaae097d3790001578b7bc5a4c9298235e"
+  },
+  "frontend/assets/audio/hard_time/sfx/coin_shimmer.wav": {
+    "bytes": 282284,
+    "sha256": "dd0821c2b6a9f663e903787863f65551f5c21bd93c1b2aaf835062514c4a3813"
+  },
+  "frontend/assets/audio/hard_time/sfx/btn.wav": {
+    "bytes": 14156,
+    "sha256": "a823a4ee7ec7a29a077979788fc40200f7b896f2335f7d0aaa430c38382a413d"
+  },
+  "frontend/assets/audio/hard_time/sfx/lights_carry.wav": {
+    "bytes": 247000,
+    "sha256": "7bbff858bc3850bb52787c444aa578f65045c5a2d26bc9e5a3e31e7ecc1e2b94"
+  },
+  "frontend/assets/audio/hard_time/sfx/win_step_4.wav": {
+    "bytes": 218780,
+    "sha256": "7d5a6b118c6e9ec4be748001fe0b7c7e68e786d900bb0fe2a4c60af6b16e0817"
+  },
+  "frontend/assets/audio/hard_time/sfx/light_double.wav": {
+    "bytes": 84716,
+    "sha256": "83f287de4bcd2507496212a0ba8bb4af68689fc12cd2569808ecc14b438b3e06"
+  },
+  "frontend/assets/audio/hard_time/sfx/frame_big_land.wav": {
+    "bytes": 114704,
+    "sha256": "4cc5795c2e0cfb22407c27c689a00e36abc8d727e9919c9b83e4ecc2afeb60ea"
+  },
+  "frontend/assets/audio/hard_time/sfx/tier_breakout.wav": {
+    "bytes": 458684,
+    "sha256": "e6417b60f5e583ea1e5e1c694e2d0b4f7c901354c7a988226ca1929224cd3be1"
+  },
+  "frontend/assets/audio/hard_time/sfx/win_tier_max.wav": {
+    "bytes": 996704,
+    "sha256": "a0d8d0d24f69e1086b02d95dea51de3eb63639c457e1280c775daba4f509e477"
+  },
+  "frontend/assets/audio/hard_time/sfx/win_tier_mega.wav": {
+    "bytes": 538064,
+    "sha256": "ef8cb65cec81439ef21a72c18593618678cbb8884c6b1078479ac08e723a11cb"
+  },
+  "frontend/assets/audio/hard_time/sfx/win_step_3.wav": {
+    "bytes": 179972,
+    "sha256": "5572497e2c1bc1ea21c2ed5b3ec0594b4e797f98f154fc2f4e57c3c49dd9b508"
+  },
+  "frontend/assets/audio/hard_time/sfx/win_step_2.wav": {
+    "bytes": 144692,
+    "sha256": "4e5d718e9fb27b44c00910ab38f787450dae3562d081e7f0524a819df98c109e"
+  },
+  "frontend/assets/audio/hard_time/sfx/pluck_low.wav": {
+    "bytes": 49436,
+    "sha256": "513c679b7d3cc608c3adc4190de4780c04266ec1ffff7f65fe54853b03ce1e33"
+  },
+  "frontend/assets/audio/hard_time/sfx/win_step_1.wav": {
+    "bytes": 109412,
+    "sha256": "27a3bbc42f8403a6647c4c028e501bd7b9667889d2f6658ad5a1c6c3c1567e88"
+  },
+  "frontend/assets/audio/hard_time/sfx/light_sweep_4.wav": {
+    "bytes": 155276,
+    "sha256": "c937ca59be0e826d7b9312ba556ecdcd1214a129b31c9c6b33bb226ed973577b"
+  },
+  "frontend/assets/audio/hard_time/sfx/wild_expand.wav": {
+    "bytes": 149984,
+    "sha256": "6f33a0d9c27e3222c1c0e1b40be1a957ad3d9cda84e3703ed22dae1c1a787a7e"
+  },
+  "frontend/assets/audio/hard_time/sfx/win_gliss.wav": {
+    "bytes": 229364,
+    "sha256": "c61a5459abed17968ffd29933b2e00cf152c40749469c30bdc1171b5a4ff3fc8"
+  },
+  "frontend/assets/audio/hard_time/sfx/win_line_tick.wav": {
+    "bytes": 21212,
+    "sha256": "726a3f242b3a187159d5a70c8a66512d2c1548224495992d604577bdee274d00"
+  },
+  "frontend/assets/audio/hard_time/sfx/win_tier_super.wav": {
+    "bytes": 405760,
+    "sha256": "d25966c6e2282539d8a8cc9ac1987aeb328a6d2430edec1fa60826e304dd9071"
+  },
+  "frontend/assets/audio/hard_time/sfx/light_sweep_2.wav": {
+    "bytes": 91772,
+    "sha256": "ef71f4c06ddbe8cf214d84b52eae7412af5d5ad70e0961c9c6b40b0f12b1793f"
+  },
+  "frontend/assets/audio/hard_time/sfx/bigwin_blast.wav": {
+    "bytes": 167624,
+    "sha256": "7d587ae50144c2fa8e847d2d1daa2aefa541781170329d0c6404c448f90e4283"
+  },
+  "frontend/assets/audio/hard_time/sfx/spin.wav": {
+    "bytes": 60020,
+    "sha256": "7a197bd969644e66644b4a08fa62163377fd5ec1e084ba4e5c20513a7ea917d3"
+  },
+  "frontend/assets/audio/hard_time/sfx/win_tier_epic.wav": {
+    "bytes": 767380,
+    "sha256": "a1c0e5d26c4895087f6fc7c456c3c8e1d92092ce5243499e0e76fa5b4d3ad9e2"
+  },
+  "frontend/assets/audio/hard_time/sfx/light_sweep_3.wav": {
+    "bytes": 123520,
+    "sha256": "c90fd6d8734b02cd64494746bf69f0dbca6484c4545d2bcb8b40376762abd62b"
+  },
+  "frontend/assets/audio/hard_time/sfx/light_sweep_1.wav": {
+    "bytes": 60020,
+    "sha256": "37e2c6a9fa24df7298c4d1cea442c5662e976e809e0a71a14ef057afdacee1ab"
+  },
+  "frontend/assets/spines/htCast/prisoner.atlas": {
+    "bytes": 505,
+    "sha256": "a978300ef1286bfdff1b54bea2386d22b0b10c3a297e6f9c262f3889604c1a95"
+  },
+  "frontend/assets/spines/htCast/warden.png": {
+    "bytes": 1753838,
+    "sha256": "db4829dbefaf9258359df93c60308fc7606748821645a58c25fdf2d027439b13"
+  },
+  "frontend/assets/spines/htCast/warden.json": {
+    "bytes": 211918,
+    "sha256": "2e85d5a294e825cc3df4f015fbd5315118964cc172aa54c8c916f1a407e6212c"
+  },
+  "frontend/assets/spines/htCast/warden.atlas": {
+    "bytes": 653,
+    "sha256": "4523d8a57122dcf194ec17cfded58928cab77cc3e5d50c8b3d288e2303fba886"
+  },
+  "frontend/assets/spines/htCast/prisoner.json": {
+    "bytes": 199343,
+    "sha256": "c0ae95ed925d886d47812be626b2afdcbccfefc419458be2e29c0564893e0bae"
+  },
+  "frontend/assets/spines/htCast/prisoner.png": {
+    "bytes": 1607394,
+    "sha256": "a41923b506278496e758a4290fdd4e58cf5726bc0ac9bf3c7d9c7bad49190969"
+  },
+  "frontend/assets/sprites/hardTimeBoardFrame/fs_sign.png": {
+    "bytes": 732526,
+    "sha256": "353b28a3293aea0242d77a5a979639ba8fb1d753dbb79a2071edf19647baedea"
+  },
+  "frontend/assets/sprites/hardTimeBoardFrame/frame_edge.png": {
+    "bytes": 239205,
+    "sha256": "eec045dc5452f1fc196c4b564f184762d42919edaf7414eb9e47e12d0aa8a66c"
+  },
+  "frontend/assets/sprites/hardTimeBoardFrame/frame_bg.png": {
+    "bytes": 726451,
+    "sha256": "4e055b18e58354f4310e14d0e4377ad424a8cac3462c922898ac62f2bfeeaa7f"
+  },
+  "frontend/assets/sprites/hardTimeBoardFrame/fs_counter_panel.png": {
+    "bytes": 696318,
+    "sha256": "034e5106a2cb7c9d125dd6bd93b456e684d58adf98eb20ebac39ee43904c6263"
+  },
+  "frontend/assets/sprites/hardTimeWinBanners/mega.png": {
+    "bytes": 594019,
+    "sha256": "f7e191cc5557b298b03f78941269a7fb46bab1e418065aa8b77cdf6378fc2aa2"
+  },
+  "frontend/assets/sprites/hardTimeWinBanners/superwin.png": {
+    "bytes": 578949,
+    "sha256": "b8f608e04477dfaff954502496e90c5fa560176e5cac3b303027b3962b9e9dc4"
+  },
+  "frontend/assets/sprites/hardTimeWinBanners/big.png": {
+    "bytes": 573842,
+    "sha256": "50e5839967f1a01677c20833aff11ae1dcc4491a0ac215c7a30bc03a0131ce2e"
+  },
+  "frontend/assets/sprites/hardTimeWinBanners/epic.png": {
+    "bytes": 579599,
+    "sha256": "69fff7bff50ef546a6dd9ce1eae7037c44d9f9b6524b7f269e3993dab4e641d9"
+  },
+  "frontend/assets/sprites/hardTimeWinBanners/max.png": {
+    "bytes": 582395,
+    "sha256": "dea97919d4d6982fb6f6197db28965102b420b7bc2969814f1248b244882a39f"
+  },
+  "frontend/assets/sprites/hardTimeSymbols/l4.png": {
+    "bytes": 42483,
+    "sha256": "abcfc57963f3f1bbf3f8ff9cd25f4c0a286e80cb4af58e43547a4bb598e85969"
+  },
+  "frontend/assets/sprites/hardTimeSymbols/l1.png": {
+    "bytes": 37814,
+    "sha256": "694397ecd8ee81c0bd5cb3d8c2a779a8cbdc669953463d036e5c99d0ca268fdb"
+  },
+  "frontend/assets/sprites/hardTimeSymbols/l2.png": {
+    "bytes": 40813,
+    "sha256": "4e245de16d1cb9bb95da54ea7200af2813874d95aeb8f1cdf8765183a5a8a654"
+  },
+  "frontend/assets/sprites/hardTimeSymbols/l3.png": {
+    "bytes": 32382,
+    "sha256": "398bc45e120d108159c325b6298e4965df4c65bf1d87adb35d3b0d8a6eded9b8"
+  },
+  "frontend/assets/sprites/hardTimeSymbols/sw.png": {
+    "bytes": 311390,
+    "sha256": "2c6b1680f977794770a597d8ff80e34d10b09a86c1fe71fcf00a444bf1d54765"
+  },
+  "frontend/assets/sprites/hardTimeSymbols/fs.png": {
+    "bytes": 339699,
+    "sha256": "42863ccceebdd18866f692e61b853dff41385546acf92de02154c53a05d445ac"
+  },
+  "frontend/assets/sprites/hardTimeSymbols/h5.png": {
+    "bytes": 269950,
+    "sha256": "cb66b9442f944ae022d91d4ba703c30042853c8833baeb113242bb70abed1eab"
+  },
+  "frontend/assets/sprites/hardTimeSymbols/h4.png": {
+    "bytes": 229089,
+    "sha256": "d3e9e4a107d7513687c808ee822593da4007270c2dcc2b379e423efcc47de96c"
+  },
+  "frontend/assets/sprites/hardTimeSymbols/h3.png": {
+    "bytes": 304313,
+    "sha256": "b738e541472dc59a0e8d574887fdd93dedfe722f778b9c131fbefcaf2263c722"
+  },
+  "frontend/assets/sprites/hardTimeSymbols/h2.png": {
+    "bytes": 236729,
+    "sha256": "99ad62c764a964cbcf7c626de9e2bcec6464e045adaf0b3c3e7a43ba0390d140"
+  },
+  "frontend/assets/sprites/hardTimeSymbols/h1.png": {
+    "bytes": 306654,
+    "sha256": "74fa143f615e52b4fd3781138f762c613ff887ca87e6ad24bc93a5b40ac8859a"
+  },
+  "frontend/assets/sprites/hardTimeSymbols/w.png": {
+    "bytes": 370320,
+    "sha256": "abe68981330f64e19a33970a3c4cf304e6cb9e8e0804c31cd44ae119b68f2e76"
+  },
+  "frontend/assets/sprites/hardTimeUi/spin_plate.png": {
+    "bytes": 272931,
+    "sha256": "6564d0f90cb0319bd7e5ab9e1af106d893122c0b314e8b53b3883d2aafaf0642"
+  },
+  "frontend/assets/sprites/hardTimeUi/ticker_plate.png": {
+    "bytes": 172920,
+    "sha256": "831adedaf44ac11932dd0ef16dd224811dab51307a8b1e5b076513fb7550c66e"
+  },
+  "frontend/assets/sprites/hardTimeUi/buybonus_plate.png": {
+    "bytes": 342325,
+    "sha256": "886c1482c997b2c6578c4b295f8467b941ff4e3b9acb2555e98d05d40fa23717"
+  },
+  "frontend/assets/sprites/hardTimeUi/buy_card_frame.svg": {
+    "bytes": 491,
+    "sha256": "64a70ebcafe9ef7744658e99d63f3186efa54666de8ecc34d2d5acee4fdf7380"
+  },
+  "frontend/assets/sprites/hardTimeUi/button_plate.png": {
+    "bytes": 81813,
+    "sha256": "c711bd832f06218e44b0fad3ee2e7ef4473321a2cafcc54cc5063159c70bc873"
+  },
+  "frontend/assets/sprites/hardTimeUiIcons/info.png": {
+    "bytes": 20203,
+    "sha256": "da2dd2cf3e02e280fae06b92493e5f5e17b23cb120849e23866f5504367d95a9"
+  },
+  "frontend/assets/sprites/hardTimeUiIcons/soundOff.png": {
+    "bytes": 7578,
+    "sha256": "a20155fde4e278b3b0dbdd83980afef430e20a3c13116b74d43ce3b044073879"
+  },
+  "frontend/assets/sprites/hardTimeUiIcons/decrease.png": {
+    "bytes": 2275,
+    "sha256": "34e92c7a752d46764b806a3a5b17ce413575f538c788efe88dca8044652ca3cf"
+  },
+  "frontend/assets/sprites/hardTimeUiIcons/settings.png": {
+    "bytes": 16923,
+    "sha256": "a8888140505c2ace64ffc58f88b955f7e36405ec95462b36aa2f186a6eb61a4a"
+  },
+  "frontend/assets/sprites/hardTimeUiIcons/increase.png": {
+    "bytes": 5468,
+    "sha256": "8ffb458bed9c08ea383bc1779d100ca2b9a32b69ee75ea0b2efe6da73a2dc4b5"
+  },
+  "frontend/assets/sprites/hardTimeUiIcons/turbo.png": {
+    "bytes": 4282,
+    "sha256": "f96759ac170198fa17acf95a0a8c3b8c7d8c1b5765e2d957a1b00081db3ec01a"
+  },
+  "frontend/assets/sprites/hardTimeUiIcons/menu.png": {
+    "bytes": 6509,
+    "sha256": "2dec8dbb6ca99591966e3575fb94e9413f5c41f04395b6806f59c3cd72abcab3"
+  },
+  "frontend/assets/sprites/hardTimeUiIcons/menuExit.png": {
+    "bytes": 6514,
+    "sha256": "bebf096cb8567525e5a7bb7ddc71d74e9504bd159d2d47116bc9cd2c047f413d"
+  },
+  "frontend/assets/sprites/hardTimeUiIcons/soundOn.png": {
+    "bytes": 11604,
+    "sha256": "6f61c60adccc7488c69ba3d3860d5508274dbe179144eb56f46baa48ff454772"
+  },
+  "frontend/assets/sprites/hardTimeUiIcons/autoSpin.png": {
+    "bytes": 17405,
+    "sha256": "a1291a5ffe0214735ab8e8eb1671c56fa1f5f581abac9e8872feb8b2da76e615"
+  },
+  "frontend/assets/sprites/hardTimeUiIcons/spin.png": {
+    "bytes": 9727,
+    "sha256": "0bf7a0a4561ffd530ce37d618b6010076c161b46f7c7b0dfbbb500dfb45d4346"
+  },
+  "frontend/assets/sprites/hardTimeUiIcons/payTable.png": {
+    "bytes": 6574,
+    "sha256": "c8eb772c429cefc939077382528add3026e6800653ad2d10283ad2b761de94b5"
+  },
+  "frontend/assets/sprites/hardTimeSplash/title_breakout.png": {
+    "bytes": 195520,
+    "sha256": "dc95747aaab5ec36cd69e0a61605d4132fd59dc22bd21502532df5cdaa67f155"
+  },
+  "frontend/assets/sprites/hardTimeSplash/title_riot.png": {
+    "bytes": 137877,
+    "sha256": "d2453b172598bcc8df5ce885c156708cf246e59fae175e3a73c2a3d7b4261270"
+  },
+  "frontend/assets/sprites/hardTimeSplash/title_lockdown.png": {
+    "bytes": 209181,
+    "sha256": "410b092b36f8094c41ca11e62934c647b39a5163c56b29aef5a562ae2d85f69c"
+  },
+  "frontend/assets/sprites/hardTimeFx/searchlight_beam.png": {
+    "bytes": 15816,
+    "sha256": "5b4070e4ccde818195c821c4b89fffdc32abccf0302fbccf37e2ac9289c739b6"
+  },
+  "frontend/assets/sprites/hardTimeFx/fx_glow.png": {
+    "bytes": 3836,
+    "sha256": "0e2f07d42f9f219afff58c93f826f155e627269e8548875a5748df110d9e790a"
+  },
+  "frontend/assets/sprites/hardTimeFx/fx_vignette.png": {
+    "bytes": 27412,
+    "sha256": "a980b92a39c834125ef18778e803b2a2fc1ce0fdd80148953cf19f4b26a21eae"
+  },
+  "frontend/assets/sprites/hardTimeFx/fx_ray.png": {
+    "bytes": 4417,
+    "sha256": "e3e3fa1ea8b72dea25ea1def4f734157a735641801ee0c2decb0678e23ef8bc7"
+  },
+  "frontend/assets/sprites/hardTimeFx/fx_streak.png": {
+    "bytes": 725,
+    "sha256": "e64e159c3fa343ba38225b935ef1c058ae3ef719bba7676ef72c6affbe14b8da"
+  },
+  "frontend/assets/sprites/hardTimeFx/lit_cell_frame.png": {
+    "bytes": 1090,
+    "sha256": "af0a4078397f07b4d20365d18f43eb8fde380c5a0224187e23f5d3c0616c8390"
+  },
+  "frontend/assets/sprites/hardTimeFx/fx_star.png": {
+    "bytes": 3588,
+    "sha256": "1111ebe0e1569e2edee3b930190c3c9cd284955e441f652a3c0b4494d96b60a1"
+  },
+  "frontend/assets/sprites/hardTimeBrand/logo.png": {
+    "bytes": 277209,
+    "sha256": "46692cadeda35f884389fbd9f075f2d6891d4dbba4a5102f9e418ec3f0844d7a"
+  },
+  "frontend/assets/sprites/coin/coin.png": {
+    "bytes": 97119,
+    "sha256": "155f2dfc73cf6c0f3ff2db6feecb3dc72c83d7fdd08060367d95e5473c868b5c"
+  },
+  "frontend/assets/sprites/coin/coin.json": {
+    "bytes": 3584,
+    "sha256": "3d2324c40b8f32d39b25ea933c0603707b71161dd5de824a17a457fbf53377f0"
+  },
+  "frontend/assets/sprites/hardTimeBackground/bg_base.jpg": {
+    "bytes": 477527,
+    "sha256": "f09934154c46fc12eacec4bfcd9193aa7d494526233d3ce5401baea7b5337893"
+  },
+  "frontend/assets/sprites/hardTimeBackground/bg_riot.jpg": {
+    "bytes": 534004,
+    "sha256": "32488169653764415c6a025271adbc2567841f6e21f1a0090fbce5fd31072e87"
+  },
+  "frontend/assets/sprites/hardTimeBackground/bg_lockdown.jpg": {
+    "bytes": 315441,
+    "sha256": "ffa6eda51da1aeaa9554e75e7d72e8d10d4604878d0956fc4b6fb404f6b3d48e"
+  },
+  "frontend/assets/sprites/hardTimeBackground/bg_breakout.jpg": {
+    "bytes": 426941,
+    "sha256": "5a7f0d20bacf060a45d1b1363e76a48d95818add50dc788ce5323f85d9940715"
+  },
+  "frontend/assets/sprites/hardTimeCast/prisoner_crossed.png": {
+    "bytes": 467612,
+    "sha256": "ec1ee15c7ad17281ececc6b84ebef45937a88b1cf594d6b9561e5f78cae90ade"
+  },
+  "frontend/assets/sprites/hardTimeCast/prisoner.png": {
+    "bytes": 451202,
+    "sha256": "51f8b574f6abe50bbf79c3844e9c936d27e3b29b98d91f4eef9bd3e9b13d4fc3"
+  },
+  "frontend/assets/sprites/hardTimeCast/prisoner_crossed_intro.png": {
+    "bytes": 467031,
+    "sha256": "cb9306ab96d70a51e7fe71440dc1f6b38e06f59b807a58e2dfd798fd9c2e9a24"
+  },
+  "frontend/_app/version.json": {
+    "bytes": 27,
+    "sha256": "446c65467878ee9808d920b118949342b7ef9eeb95674bc3f5a8358ed0e4ae05"
+  },
+  "frontend/_app/env.js": {
+    "bytes": 19,
+    "sha256": "3c588b75cde522990022a70ade17b3a6db7068f685ac4cb8b31a104f7e258706"
+  },
+  "frontend/_app/immutable/bundle.8l51sV_K.js": {
+    "bytes": 1570061,
+    "sha256": "71048c8c75c0a07f641ed19f80992e78cb2dff8bb5cf4f3fa272ec94d70ab7df"
+  },
+  "frontend/_app/immutable/assets/style.C_pntPTJ.css": {
+    "bytes": 46491,
+    "sha256": "8fb8b2182a0a9f97a2e624ef1be8e74f7f9d12e1d3af6779b6f059a3657c647e"
+  },
+  "frontend/_app/immutable/assets/style.CfwCVehl.css": {
+    "bytes": 46226,
+    "sha256": "7aaf4f06dce28a0d028a8e9273bb342cd6d2423ecdd6e0c89d88b1b1e7eb82bc"
+  },
+  "math/lookUpTable_base_0.csv": {
+    "bytes": 803244,
+    "sha256": "d21fbc5383a7bde52c079ae8afcc3c2b514d3b79fdd90c81f75e8984faa78036"
+  },
+  "math/books_bonus_epic.jsonl.zst": {
+    "bytes": 35524629,
+    "sha256": "c035e576be5b5a7d4742329d933cc79854653093678a29acd4dfea366549ba5b"
+  },
+  "math/lookUpTable_bonus_0.csv": {
+    "bytes": 452009,
+    "sha256": "438fa41ab78a6bac21fb93d7b3e5624e735e195cb5d4f755f94fcf97997a2af4"
+  },
+  "math/books_bonus_hits.jsonl.zst": {
+    "bytes": 32932539,
+    "sha256": "83eb04d12304db9fa80ef2c921702bf6532e57901d90cb576993c4872a82d96d"
+  },
+  "math/lookUpTable_bonus_hits_0.csv": {
+    "bytes": 464079,
+    "sha256": "a983238c783e0b4c8cc9bff5d8b210e16e5e586b8bf7c3489f0d5bb5ccf1cd6c"
+  },
+  "math/lookUpTable_bonus_epic_0.csv": {
+    "bytes": 464544,
+    "sha256": "07c84bf8a35fa709b6e12781d1132732353fa25bd5099dafc9b6dc4846cb4d1b"
+  },
+  "math/books_bonus.jsonl.zst": {
+    "bytes": 25660831,
+    "sha256": "30a4bc23ca43b7f370394e85e17f80bb42af049d5dc3f937a8f970c8748ce63f"
+  },
+  "math/books_base.jsonl.zst": {
+    "bytes": 10340612,
+    "sha256": "a6e057d8554c739d6ba54b07172ca479d6b291d1eeac1e029a06204a3c2319a0"
+  },
+  "math/index.json": {
+    "bytes": 740,
+    "sha256": "4aa9338ea16e7970cb17ffdff0c90ac2a4885543d5e896dc070eeb6372485587"
+  },
+  "thumbnail/HardTime-BG.png": {
+    "bytes": 1681554,
+    "sha256": "63da35dce9b7519c082a27b323a07d9e48a2914843c8a52917e321a7d7b4e005"
+  },
+  "thumbnail/HardTime-FG.png": {
+    "bytes": 550886,
+    "sha256": "d1c5c9ee909a1eeb2f9536794964b2969a4d517400d2211152976337a436e020"
+  },
+  "thumbnail/Silverstars-Logo.png": {
+    "bytes": 259792,
+    "sha256": "98c28678a16ed67390d1e7bdbd5956a673bdc62950889b6f5e6ae71b88e9d5ee"
+  },
+  "cover/HardTime-Cover-FG.png": {
+    "bytes": 1397575,
+    "sha256": "26f31271588109fff2d98ed61e56f152c0221bb6f94a96610c5c703b95db8566"
+  },
+  "cover/HardTime-Cover-BG.png": {
+    "bytes": 2956416,
+    "sha256": "1e43c61aabd46e3beaaaaded67b32e67fbfb7f0fe8cb53ce1b271a6605e05852"
+  }
+}

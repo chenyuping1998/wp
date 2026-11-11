@@ -1,0 +1,631 @@
+{
+ "copy": [],
+ "delete": [
+  {
+   "path": "/front/_app/immutable/bundle._974Hgdm.js",
+   "size": 1698001
+  }
+ ],
+ "plan_id": "9aef4486bce3425a02b7bba9c0ed3bceb9c5b14e67160154839d6a76e5759ca3",
+ "safety": null,
+ "target": {
+  "game": "turf-war",
+  "path": "/Users/stone/stake-engine/upload/TurfWar/frontend",
+  "team": "silver-stars",
+  "type": "front"
+ },
+ "total_actions": 10,
+ "total_upload_size": 6861538,
+ "unchanged": [
+  {
+   "path": "/front/_app/env.js",
+   "size": 19
+  },
+  {
+   "path": "/front/_app/immutable/assets/style.Bp0BK2oW.css",
+   "size": 50285
+  },
+  {
+   "path": "/front/_app/immutable/assets/style.y5iFBTPw.css",
+   "size": 49984
+  },
+  {
+   "path": "/front/assets/audio/sounds.json",
+   "size": 5088
+  },
+  {
+   "path": "/front/assets/audio/sounds.wav",
+   "size": 8864
+  },
+  {
+   "path": "/front/assets/audio/turf/bgm_base.m4a",
+   "size": 377355
+  },
+  {
+   "path": "/front/assets/audio/turf/bgm_feature.m4a",
+   "size": 339251
+  },
+  {
+   "path": "/front/assets/audio/turf/sfx/big_score_buildup.wav",
+   "size": 105884
+  },
+  {
+   "path": "/front/assets/audio/turf/sfx/bigwin_blast.wav",
+   "size": 167624
+  },
+  {
+   "path": "/front/assets/audio/turf/sfx/btn.wav",
+   "size": 15920
+  },
+  {
+   "path": "/front/assets/audio/turf/sfx/coin_shimmer.wav",
+   "size": 282284
+  },
+  {
+   "path": "/front/assets/audio/turf/sfx/frame_big_land.wav",
+   "size": 114704
+  },
+  {
+   "path": "/front/assets/audio/turf/sfx/fs_intro.wav",
+   "size": 352844
+  },
+  {
+   "path": "/front/assets/audio/turf/sfx/fs_outro.wav",
+   "size": 255824
+  },
+  {
+   "path": "/front/assets/audio/turf/sfx/gong_feature.wav",
+   "size": 388124
+  },
+  {
+   "path": "/front/assets/audio/turf/sfx/mult_update.wav",
+   "size": 123524
+  },
+  {
+   "path": "/front/assets/audio/turf/sfx/pluck_low.wav",
+   "size": 49436
+  },
+  {
+   "path": "/front/assets/audio/turf/sfx/reel_stop.wav",
+   "size": 21212
+  },
+  {
+   "path": "/front/assets/audio/turf/sfx/reel_tension.wav",
+   "size": 529244
+  },
+  {
+   "path": "/front/assets/audio/turf/sfx/scatter_1.wav",
+   "size": 61784
+  },
+  {
+   "path": "/front/assets/audio/turf/sfx/scatter_2.wav",
+   "size": 70604
+  },
+  {
+   "path": "/front/assets/audio/turf/sfx/scatter_3.wav",
+   "size": 79424
+  },
+  {
+   "path": "/front/assets/audio/turf/sfx/scatter_4.wav",
+   "size": 88244
+  },
+  {
+   "path": "/front/assets/audio/turf/sfx/scatter_5.wav",
+   "size": 97064
+  },
+  {
+   "path": "/front/assets/audio/turf/sfx/shutter_slam.wav",
+   "size": 70604
+  },
+  {
+   "path": "/front/assets/audio/turf/sfx/spin.wav",
+   "size": 91772
+  },
+  {
+   "path": "/front/assets/audio/turf/sfx/sw_bat_swing.wav",
+   "size": 61784
+  },
+  {
+   "path": "/front/assets/audio/turf/sfx/win_cap.wav",
+   "size": 635084
+  },
+  {
+   "path": "/front/assets/audio/turf/sfx/win_gliss.wav",
+   "size": 229364
+  },
+  {
+   "path": "/front/assets/audio/turf/sfx/win_gliss_big.wav",
+   "size": 370484
+  },
+  {
+   "path": "/front/assets/audio/turf/sfx/win_line_tick.wav",
+   "size": 21212
+  },
+  {
+   "path": "/front/assets/audio/turf/sfx/win_step_1.wav",
+   "size": 109412
+  },
+  {
+   "path": "/front/assets/audio/turf/sfx/win_step_2.wav",
+   "size": 144692
+  },
+  {
+   "path": "/front/assets/audio/turf/sfx/win_step_3.wav",
+   "size": 179972
+  },
+  {
+   "path": "/front/assets/audio/turf/sfx/win_step_4.wav",
+   "size": 218780
+  },
+  {
+   "path": "/front/assets/audio/turf/sfx/win_tier_big.wav",
+   "size": 285812
+  },
+  {
+   "path": "/front/assets/audio/turf/sfx/win_tier_epic.wav",
+   "size": 767384
+  },
+  {
+   "path": "/front/assets/audio/turf/sfx/win_tier_max.wav",
+   "size": 996704
+  },
+  {
+   "path": "/front/assets/audio/turf/sfx/win_tier_mega.wav",
+   "size": 538064
+  },
+  {
+   "path": "/front/assets/audio/turf/sfx/win_tier_super.wav",
+   "size": 405764
+  },
+  {
+   "path": "/front/assets/castLayers/turf/v5/base/arm_far.png",
+   "size": 100123
+  },
+  {
+   "path": "/front/assets/castLayers/turf/v5/base/arm_near.png",
+   "size": 155045
+  },
+  {
+   "path": "/front/assets/castLayers/turf/v5/base/head.png",
+   "size": 117222
+  },
+  {
+   "path": "/front/assets/castLayers/turf/v5/fg/arm_far.png",
+   "size": 120475
+  },
+  {
+   "path": "/front/assets/castLayers/turf/v5/fg/arm_near.png",
+   "size": 184606
+  },
+  {
+   "path": "/front/assets/castLayers/turf/v5/fg/head.png",
+   "size": 100221
+  },
+  {
+   "path": "/front/assets/sprites/coin/coin.json",
+   "size": 3584
+  },
+  {
+   "path": "/front/assets/sprites/coin/coin.png",
+   "size": 97119
+  },
+  {
+   "path": "/front/assets/sprites/turfBackground/bg_base.png",
+   "size": 3285375
+  },
+  {
+   "path": "/front/assets/sprites/turfBackground/bg_base_near.png",
+   "size": 260809
+  },
+  {
+   "path": "/front/assets/sprites/turfBackground/bg_epic.png",
+   "size": 2918991
+  },
+  {
+   "path": "/front/assets/sprites/turfBackground/bg_epic_near.png",
+   "size": 150934
+  },
+  {
+   "path": "/front/assets/sprites/turfBackground/bg_feature.png",
+   "size": 3137268
+  },
+  {
+   "path": "/front/assets/sprites/turfBackground/bg_feature_near.png",
+   "size": 209700
+  },
+  {
+   "path": "/front/assets/sprites/turfBoardFrame/frame_bg.png",
+   "size": 36827
+  },
+  {
+   "path": "/front/assets/sprites/turfBoardFrame/frame_edge.png",
+   "size": 797388
+  },
+  {
+   "path": "/front/assets/sprites/turfBoardFrame/fs_counter_panel.png",
+   "size": 683823
+  },
+  {
+   "path": "/front/assets/sprites/turfBoardFrame/fs_sign.png",
+   "size": 688500
+  },
+  {
+   "path": "/front/assets/sprites/turfBrand/logo.png",
+   "size": 22239
+  },
+  {
+   "path": "/front/assets/sprites/turfBrand/tile_background.png",
+   "size": 1444817
+  },
+  {
+   "path": "/front/assets/sprites/turfCast/guy.png",
+   "size": 247161
+  },
+  {
+   "path": "/front/assets/sprites/turfCast/guy_feature.png",
+   "size": 244913
+  },
+  {
+   "path": "/front/assets/sprites/turfCast/guy_kingpin.png",
+   "size": 244862
+  },
+  {
+   "path": "/front/assets/sprites/turfCoin/coin.json",
+   "size": 2538
+  },
+  {
+   "path": "/front/assets/sprites/turfCoin/coin.png",
+   "size": 11495
+  },
+  {
+   "path": "/front/assets/sprites/turfCoin/coin_sheet.png",
+   "size": 42309
+  },
+  {
+   "path": "/front/assets/sprites/turfFrames/frame_1x1.png",
+   "size": 36944
+  },
+  {
+   "path": "/front/assets/sprites/turfFrames/frame_2x2.png",
+   "size": 97498
+  },
+  {
+   "path": "/front/assets/sprites/turfFrames/frame_3x3.png",
+   "size": 171198
+  },
+  {
+   "path": "/front/assets/sprites/turfFrames/frame_edge_1x1.png",
+   "size": 8145
+  },
+  {
+   "path": "/front/assets/sprites/turfFrames/frame_edge_2x2.png",
+   "size": 14454
+  },
+  {
+   "path": "/front/assets/sprites/turfFrames/frame_edge_3x3.png",
+   "size": 30176
+  },
+  {
+   "path": "/front/assets/sprites/turfFrames/frame_full.png",
+   "size": 290088
+  },
+  {
+   "path": "/front/assets/sprites/turfFrames/frame_full_edge.png",
+   "size": 53960
+  },
+  {
+   "path": "/front/assets/sprites/turfFrames/frame_sticky.png",
+   "size": 2406
+  },
+  {
+   "path": "/front/assets/sprites/turfFx/fx_glow.png",
+   "size": 1018
+  },
+  {
+   "path": "/front/assets/sprites/turfFx/fx_ray.png",
+   "size": 638
+  },
+  {
+   "path": "/front/assets/sprites/turfFx/fx_star.png",
+   "size": 1018
+  },
+  {
+   "path": "/front/assets/sprites/turfFx/fx_streak.png",
+   "size": 374
+  },
+  {
+   "path": "/front/assets/sprites/turfFx/fx_vignette.png",
+   "size": 334
+  },
+  {
+   "path": "/front/assets/sprites/turfFx/lock.png",
+   "size": 1154785
+  },
+  {
+   "path": "/front/assets/sprites/turfFx/shutter_l.png",
+   "size": 1744386
+  },
+  {
+   "path": "/front/assets/sprites/turfFx/shutter_r.png",
+   "size": 1735150
+  },
+  {
+   "path": "/front/assets/sprites/turfFx/sw_bat_swing.png",
+   "size": 4849
+  },
+  {
+   "path": "/front/assets/sprites/turfFx/sw_column_beam.png",
+   "size": 3175
+  },
+  {
+   "path": "/front/assets/sprites/turfFx/sw_cracks.png",
+   "size": 4849
+  },
+  {
+   "path": "/front/assets/sprites/turfFx/sw_debris.png",
+   "size": 487
+  },
+  {
+   "path": "/front/assets/sprites/turfFx/sw_locked.png",
+   "size": 8073
+  },
+  {
+   "path": "/front/assets/sprites/turfSplash/title_kingpin.png",
+   "size": 345952
+  },
+  {
+   "path": "/front/assets/sprites/turfSplash/title_lookout.png",
+   "size": 345952
+  },
+  {
+   "path": "/front/assets/sprites/turfSplash/title_muscle.png",
+   "size": 345952
+  },
+  {
+   "path": "/front/assets/sprites/turfSymbols/fs.png",
+   "size": 302381
+  },
+  {
+   "path": "/front/assets/sprites/turfSymbols/h1.png",
+   "size": 244067
+  },
+  {
+   "path": "/front/assets/sprites/turfSymbols/h2.png",
+   "size": 326939
+  },
+  {
+   "path": "/front/assets/sprites/turfSymbols/h3.png",
+   "size": 338142
+  },
+  {
+   "path": "/front/assets/sprites/turfSymbols/h4.png",
+   "size": 174099
+  },
+  {
+   "path": "/front/assets/sprites/turfSymbols/h5.png",
+   "size": 151233
+  },
+  {
+   "path": "/front/assets/sprites/turfSymbols/l1.png",
+   "size": 38819
+  },
+  {
+   "path": "/front/assets/sprites/turfSymbols/l2.png",
+   "size": 51813
+  },
+  {
+   "path": "/front/assets/sprites/turfSymbols/l3.png",
+   "size": 46514
+  },
+  {
+   "path": "/front/assets/sprites/turfSymbols/l4.png",
+   "size": 32086
+  },
+  {
+   "path": "/front/assets/sprites/turfSymbols/sw.png",
+   "size": 287375
+  },
+  {
+   "path": "/front/assets/sprites/turfSymbols/w.png",
+   "size": 271577
+  },
+  {
+   "path": "/front/assets/sprites/turfUi/bar_plate.png",
+   "size": 528874
+  },
+  {
+   "path": "/front/assets/sprites/turfUi/bar_strip.png",
+   "size": 506099
+  },
+  {
+   "path": "/front/assets/sprites/turfUi/button_plate.png",
+   "size": 45430
+  },
+  {
+   "path": "/front/assets/sprites/turfUi/button_plate_active.png",
+   "size": 48379
+  },
+  {
+   "path": "/front/assets/sprites/turfUi/buy_card_frame.png",
+   "size": 12698
+  },
+  {
+   "path": "/front/assets/sprites/turfUi/buybonus_plate.png",
+   "size": 217314
+  },
+  {
+   "path": "/front/assets/sprites/turfUi/drawer_plate.png",
+   "size": 42551
+  },
+  {
+   "path": "/front/assets/sprites/turfUi/modal_frame.png",
+   "size": 5408
+  },
+  {
+   "path": "/front/assets/sprites/turfUi/panel_edge.png",
+   "size": 5408
+  },
+  {
+   "path": "/front/assets/sprites/turfUi/spin_plate.png",
+   "size": 51782
+  },
+  {
+   "path": "/front/assets/sprites/turfUi/ticker_plate.png",
+   "size": 4017
+  },
+  {
+   "path": "/front/assets/sprites/turfUiIcons/autoSpin.png",
+   "size": 4407
+  },
+  {
+   "path": "/front/assets/sprites/turfUiIcons/decrease.png",
+   "size": 866
+  },
+  {
+   "path": "/front/assets/sprites/turfUiIcons/increase.png",
+   "size": 1588
+  },
+  {
+   "path": "/front/assets/sprites/turfUiIcons/info.png",
+   "size": 4864
+  },
+  {
+   "path": "/front/assets/sprites/turfUiIcons/menu.png",
+   "size": 1794
+  },
+  {
+   "path": "/front/assets/sprites/turfUiIcons/menuExit.png",
+   "size": 2000
+  },
+  {
+   "path": "/front/assets/sprites/turfUiIcons/payTable.png",
+   "size": 1949
+  },
+  {
+   "path": "/front/assets/sprites/turfUiIcons/settings.png",
+   "size": 3669
+  },
+  {
+   "path": "/front/assets/sprites/turfUiIcons/soundOff.png",
+   "size": 2397
+  },
+  {
+   "path": "/front/assets/sprites/turfUiIcons/soundOn.png",
+   "size": 3354
+  },
+  {
+   "path": "/front/assets/sprites/turfUiIcons/spin.png",
+   "size": 5391
+  },
+  {
+   "path": "/front/assets/sprites/turfUiIcons/turbo.png",
+   "size": 2752
+  },
+  {
+   "path": "/front/assets/sprites/turfWinBanners/big.png",
+   "size": 481891
+  },
+  {
+   "path": "/front/assets/sprites/turfWinBanners/epic.png",
+   "size": 481891
+  },
+  {
+   "path": "/front/assets/sprites/turfWinBanners/max.png",
+   "size": 481891
+  },
+  {
+   "path": "/front/assets/sprites/turfWinBanners/mega.png",
+   "size": 481891
+  },
+  {
+   "path": "/front/assets/sprites/turfWinBanners/superwin.png",
+   "size": 481891
+  },
+  {
+   "path": "/front/build-version.txt",
+   "size": 35
+  },
+  {
+   "path": "/front/favicon.svg",
+   "size": 225
+  },
+  {
+   "path": "/front/fonts/Bungee-OFL.txt",
+   "size": 4473
+  },
+  {
+   "path": "/front/fonts/Bungee-Regular.ttf",
+   "size": 118996
+  },
+  {
+   "path": "/front/fonts/Oswald-OFL.txt",
+   "size": 4483
+  },
+  {
+   "path": "/front/fonts/Oswald.ttf",
+   "size": 172088
+  },
+  {
+   "path": "/front/fonts/PermanentMarker-LICENSE.txt",
+   "size": 11358
+  },
+  {
+   "path": "/front/fonts/PermanentMarker-Regular.ttf",
+   "size": 74632
+  },
+  {
+   "path": "/front/fonts/Saira-OFL.txt",
+   "size": 4386
+  },
+  {
+   "path": "/front/fonts/Saira-latin-ext.woff2",
+   "size": 25472
+  },
+  {
+   "path": "/front/fonts/Saira-latin.woff2",
+   "size": 32988
+  },
+  {
+   "path": "/front/licenses/spine-runtimes.txt",
+   "size": 1468
+  }
+ ],
+ "upload": [
+  {
+   "path": "/front/_app/immutable/bundle.BUKR41ey.js",
+   "size": 1697921
+  },
+  {
+   "path": "/front/_app/version.json",
+   "size": 27
+  },
+  {
+   "path": "/front/assets/castLayers/turf/loading.png",
+   "size": 340846
+  },
+  {
+   "path": "/front/assets/castLayers/turf/v5/base/body.png",
+   "size": 892822
+  },
+  {
+   "path": "/front/assets/castLayers/turf/v5/base/cast.spine.json",
+   "size": 372500
+  },
+  {
+   "path": "/front/assets/castLayers/turf/v5/fg/body.png",
+   "size": 665119
+  },
+  {
+   "path": "/front/assets/castLayers/turf/v5/fg/cast.spine.json",
+   "size": 323069
+  },
+  {
+   "path": "/front/assets/sprites/turfBrand/tile_foreground.png",
+   "size": 818499
+  },
+  {
+   "path": "/front/index.html",
+   "size": 1750735
+  }
+ ]
+}

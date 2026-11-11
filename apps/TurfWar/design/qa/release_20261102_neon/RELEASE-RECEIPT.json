@@ -1,0 +1,52 @@
+{
+  "date": "2026-11-02T21:37:01.618848+08:00",
+  "game": "turf-war",
+  "team": "silver-stars",
+  "platform_updated": true,
+  "published": true,
+  "front_version": 33,
+  "math_version": 7,
+  "upload": {
+    "actions": 4,
+    "plan_id": "a3ba45e12edd00ececa5322c4aee66e759e93710e40f159ed3de27be58b46a29",
+    "success": true,
+    "uploaded_bytes": 3411024
+  },
+  "publish_result": {
+    "published": true,
+    "result": {
+      "changed": true,
+      "code": "",
+      "message": "",
+      "version": 33
+    }
+  },
+  "post_upload_pending_actions": 0,
+  "math_pending_actions": 0,
+  "staged_frontend": "/Users/stone/stake-engine/upload/TurfWar/frontend",
+  "source_change": "Neon normal reel cadence scaled to118px Turf cells; 100ms start stagger, ~200ms stop gaps,0.12-cell bounce.",
+  "normal_spins_measured": 5,
+  "median_stop_gap_ms": 200,
+  "source_sha256": "37827cbd78e53146ca56fe9b10929599223def0e250ad446018b2846b7df79ca",
+  "build_passed": true,
+  "self_check": {
+    "AT RISK": 19,
+    "PASS": 26,
+    "NEEDS A HUMAN": 5,
+    "N/A": 1
+  },
+  "approval": {
+    "column": "new",
+    "locked": true,
+    "open": false
+  },
+  "approval_version_updated": false,
+  "platform_store_art_changed": false,
+  "thumbnail_and_cover_retained_in_staging": true,
+  "published_cdn": {
+    "url": "https://silver-stars.live.engine.io/turf-war/v33/index.html",
+    "verified": false,
+    "error": "HTTP Error 403: Forbidden"
+  },
+  "evidence_directory": "/Users/stone/stake-engine/wp/apps/TurfWar/design/qa/release_20261102_neon"
+}
