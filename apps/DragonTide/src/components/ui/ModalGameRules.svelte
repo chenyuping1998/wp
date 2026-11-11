@@ -1,4 +1,5 @@
 <script lang="ts">
+	import BarIcon from './BarIcon.svelte';
 	import { pearlRules } from '../../game/pearlRules';
 	import { Popup } from 'components-shared';
 	import { zIndex } from 'constants-shared/zIndex';
@@ -15,76 +16,75 @@
 	const T = socialTerms();
 	const social = T.social;
 
-	// Controls guide. Each row shows the button's own art from the bet bar, so a
-	// player matches what they read to what they see. This panel is DOM, so the
-	// icons come from static/ rather than the pixi asset pipeline. Every pressable
-	// control is listed — a guide that leaves one out fails the engine guideline.
-	const ICONS = `${base}/assets/sprites/dragonArt/icons`;
-	type Control = { icons: string[]; name: string; text: string; sign?: boolean; readout?: string; opens?: boolean };
+	// Controls guide, in the order the controls sit on the bet bar (bar v3,
+	// ui/MummyBar.svelte): the buy tile, then along the console the menu bars
+	// (and the menu panel's rows), BALANCE, the BET box and its arrows, Spin,
+	// and Auto Spin over Turbo at the right end. Each row shows the control as
+	// the bar draws it (ui/BarIcon.svelte), so a player matches what they read
+	// to what they see. Every pressable control is listed — a guide that leaves
+	// one out fails the engine guideline.
+	type Icon = { kind: 'buy' | 'menu' | 'info' | 'paytable' | 'settings' | 'sfx' | 'music' | 'readout' | 'bet' | 'step' | 'spin' | 'auto' | 'turbo'; label?: string };
+	type Control = { icons: Icon[]; name: string; text: string };
 	const controls: Control[] = [
 		{
-			icons: ['spin'],
-			name: 'Spin',
-			text: `Starts a round for the current ${T.bet}. The space bar does the same thing. While the board is moving it becomes Stop, which brings it to rest early.`,
-		},
-		{
-			icons: ['decrease', 'increase'],
-			name: 'Decrease / increase',
-			text: `Steps the ${T.bet} down or up one level per press, through the available ${T.betLevels}. They sit either side of the ${T.bet} readout.`,
-		},
-		{
-			icons: [],
-			readout: social ? 'AMOUNT' : 'BET',
-			opens: true,
-			name: social ? 'Amount' : 'Bet amount',
-			text: `Shows the current ${T.bet}. Tap it to open the ${T.betMenu} and choose any of the available ${T.betLevels} directly.`,
-		},
-		{
-			icons: [],
-			sign: true,
+			icons: [{ kind: 'buy' }],
 			name: T.buyBonusName,
-			text: `The ${social ? 'PLAY BONUS' : 'BUY BONUS'} plaque beside the board. Opens the feature menu, where Free Spins can be ${T.bought} outright for the stated multiple of your ${T.bet}; the amount is shown before you confirm. It is unlit while a round is playing and hidden during Free Spins.`,
+			text: `The yellow tile at the left end of the bar, marked with the Dragon Gate. Opens the feature menu, where Free Spins can be ${T.bought} outright for the stated multiple of your ${T.bet}; the amount is shown before you confirm, and the ${T.bet} can still be changed with the − and + keys at the top of that menu. It is unlit while a round is playing and hidden during Free Spins.`,
 		},
 		{
-			icons: ['autoSpin'],
-			name: 'Auto Spin',
-			text: 'Plays a chosen number of rounds automatically. Open it to set the count and any stop conditions; the remaining count shows on the button. Press it again to stop early.',
-		},
-		{
-			icons: ['turbo'],
-			name: 'Turbo',
-			text: "Press once for Turbo (one solid bolt): quicker drops and win presentations. Press again for Turbo 2 (two bolts): the board drops quicker still and each chain step is shorter. A third press turns turbo off. Dragon pearls are always shown at a readable speed.",
-		},
-		{
-			icons: ['menu'],
+			icons: [{ kind: 'menu' }],
 			name: 'Menu',
-			text: `Opens the ${T.payTable}, these rules, and the sound and settings controls.`,
+			text: `The three bars at the left of the console. Opens a panel with Info, the ${T.payTable} and Settings, and sliders for the sound and music volume. While the panel is open the bars show an X: press it again, or Esc, to close it.`,
 		},
 		{
-			icons: ['info'],
+			icons: [{ kind: 'info' }],
 			name: 'Info',
 			text: 'Opens these game rules.',
 		},
 		{
-			icons: ['settings'],
-			name: 'Settings',
-			text: 'Opens the volume controls: master volume, music and sound effects, each set separately.',
-		},
-		{
-			icons: [],
-			readout: 'WIN',
-			name: 'Balance and win',
-			text: `Balance shows what you have; Win shows what the current round has ${T.paid} so far, counted up as each chain and multiplier lands.`,
-		},
-		{
-			icons: ['payTable'],
+			icons: [{ kind: 'paytable' }],
 			name: T.payTableLabel,
 			text: `Lists every symbol and what each count of it ${T.pays}.`,
 		},
 		{
-			icons: ['soundOn'],
-			name: 'Sound',
-			text: 'Mutes and unmutes the game. Volume is adjusted under Settings.',
+			icons: [{ kind: 'settings' }],
+			name: 'Settings',
+			text: 'Opens the volume controls: master volume, music and sound effects, each set separately.',
+		},
+		{
+			icons: [{ kind: 'sfx' }, { kind: 'music' }],
+			name: 'Sound and music',
+			text: 'The two sliders in the menu panel: the speaker sets the volume of the sound effects, the note the music. Drag a slider all the way to the left to silence it.',
+		},
+		{
+			icons: [{ kind: 'readout', label: 'BALANCE' }],
+			name: 'Balance and win',
+			text: 'BALANCE, beside the menu bars, shows what you have. While a round has a win to show, WIN appears next to it in gold and counts up as each chain and multiplier lands.',
+		},
+		{
+			icons: [{ kind: 'bet', label: T.betPanel.toUpperCase() }],
+			name: social ? 'Amount' : 'Bet amount',
+			text: `The box on the console shows the current ${T.bet}; the line along its foot shows where it sits among the ${T.betLevels}. Press it to open the ${T.betMenu} beside it and choose any level directly.`,
+		},
+		{
+			icons: [{ kind: 'step' }],
+			name: 'Decrease / increase',
+			text: `The two arrows right of that box step the ${T.bet} up or down one level per press, through the available ${T.betLevels}.`,
+		},
+		{
+			icons: [{ kind: 'spin' }],
+			name: 'Spin',
+			text: `The large round button near the right end of the console. Starts a round for the current ${T.bet}; the space bar does the same. Its arrows turn while the board is moving — press it again then to play the rest of the round at Turbo speed.`,
+		},
+		{
+			icons: [{ kind: 'auto' }],
+			name: 'Auto Spin',
+			text: 'The upper small button at the right end of the console. Opens a panel to choose how many rounds to play automatically, from 10 up to 1000 or unlimited (∞); pick a number, then press START or Spin. While it runs, Spin counts down the rounds left. Press Auto Spin or Spin again to stop.',
+		},
+		{
+			icons: [{ kind: 'turbo' }],
+			name: 'Turbo',
+			text: "The lower small button at the right end of the console. Press once for Turbo (the button turns black with a gold bolt): quicker drops and win presentations. Press again for Turbo 2 (two gold bolts): the board drops quicker still and each chain step is shorter. A third press turns turbo off. Dragon pearls are always shown at a readable speed.",
 		},
 	];
 
@@ -174,19 +174,11 @@
 					{#each controls as control (control.name)}
 						<li>
 							<span class="wp-control-icons" aria-hidden="true">
-								{#if control.sign}
-									<img class="wp-sign" src={`${base}/assets/sprites/dragonArt/buybonus.png`} alt="" />
-								{:else if control.readout}
-									<span class="wp-readout"
-										>{control.readout}{#if control.opens}<svg viewBox="0 0 12 8"><polyline points="1.5,1.5 6,6 10.5,1.5" /></svg>{/if}</span
+								{#each control.icons as icon, i (i)}
+									<span class={icon.kind === 'readout' ? 'wp-bar-icon wp-bar-plate' : 'wp-bar-icon'}
+										><BarIcon kind={icon.kind} label={icon.label} /></span
 									>
-								{:else}
-									{#each control.icons as name (name)}
-										<span class="wp-icon-plate"
-											><img src={`${ICONS}/${name}.png`} alt="" /></span
-										>
-									{/each}
-								{/if}
+								{/each}
 							</span>
 							<div>
 								<span class="wp-control-name">{control.name}</span>
@@ -195,7 +187,7 @@
 						</li>
 					{/each}
 				</ul>
-				<p class="wp-modes-note">Where a win presentation is playing, tapping anywhere skips to the end of it.</p>
+				<p class="wp-modes-note">Where a win presentation is playing, tapping anywhere skips to the end of it. Esc closes the menu and Auto Spin panels.</p>
 			</section>
 
 			<section class="wp-card">
@@ -438,6 +430,20 @@
 		display: flex;
 		align-items: center;
 		gap: 0.3rem;
+	}
+
+	/* the bar's own controls (ui/BarIcon.svelte), drawn as the v3 bar draws them */
+	.wp-bar-icon {
+		width: 2.2rem;
+		height: 2.2rem;
+		flex: none;
+		/* nudge down so the glyph optically centres on the first line of text */
+		margin-top: -0.1rem;
+	}
+
+	/* the BALANCE readout is wider than it is tall: give it the whole column */
+	.wp-bar-plate {
+		width: 4.4rem;
 	}
 
 	/* Match the bar's single gold edge and red face, including the controls guide. */

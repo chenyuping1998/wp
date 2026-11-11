@@ -4,7 +4,8 @@
 	// Shared modals for everything except the pay table and game rules, which are
 	// this game's own content.
 	import ModalError from 'components-ui-html/src/components/ModalError.svelte';
-	import ModalBetMenu from 'components-ui-html/src/components/ModalBetMenu.svelte';
+	// bar v3: the stake list opens as a panel beside the BET box
+	import InlineBetMenu from './InlineBetMenu.svelte';
 	import ModalBuyBonus from './ModalBuyBonus.svelte';
 	import ModalBuyBonusConfirm from 'components-ui-html/src/components/ModalBuyBonusConfirm.svelte';
 	import ModalAutoSpin from 'components-ui-html/src/components/ModalAutoSpin.svelte';
@@ -26,7 +27,7 @@
 </script>
 
 <ModalError />
-<ModalBetMenu />
+<InlineBetMenu />
 <ModalBuyBonus />
 <ModalBuyBonusConfirm />
 <ModalAutoSpin />

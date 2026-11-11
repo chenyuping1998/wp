@@ -58,4 +58,13 @@ setFontKit(null);
 setLocalFonts([
 	`${GAME_FONT_WEIGHT} 16px "${FACES.number}"`,
 	`${GAME_FONT_WEIGHT} 16px "${FACES.title}"`,
+	// the bet bar (MummyBar, bar v3): the weights it actually draws, so each is resident
+	'600 16px "Nunito"',
+	'700 16px "Nunito"',
+	'800 16px "Nunito"',
+	'900 16px "Nunito"',
 ]);
+
+// The bet bar's face (bar v3, after Mummy Mayhem / Pickle Panic): a heavy rounded sans. Nunito
+// is SIL OFL (static/fonts/Nunito-OFL.txt), self-hosted like the two above.
+export const BAR_FONT = '"Nunito", "Arial Rounded MT Bold", "Segoe UI", Arial, sans-serif';

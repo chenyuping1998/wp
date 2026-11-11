@@ -1,4 +1,5 @@
 import { GAME_FONT, GAME_FONT_WEIGHT } from './fonts';
+import MummyBar from '../components/ui/MummyBar.svelte';
 import { setUiTheme } from 'components-ui-pixi';
 import { stateConfig } from 'state-shared';
 import geometry from './artGeometry.json';
@@ -175,3 +176,15 @@ setUiTheme({
 // A player who cannot afford the bet is told so, on every route into a bet (Bet
 // button, spacebar, Autoplay). Paired with <ModalMessage /> in ui/Modals.svelte.
 stateConfig.explainInsufficientBalance = true;
+
+// BET BAR V3 (2026-11-11, Stone: 「UI 改成新版的，像酸黃瓜那樣，以後 UI 都先預設那樣」): the
+// connected console (components/ui/MummyBar.svelte, taken from Hypno Monkey's copy, which
+// carries the template fixes listed in game-reskin house-rules D2) in Dragon Tide's jade, gold
+// and cream. uiTheme.customLayout replaces the shared layout in every orientation. To go back
+// to the old bar, delete this call.
+setUiTheme({
+	customLayout: MummyBar,
+	// replay links show this bar too, stripped of its bet controls (the template's replay stack sat on the board frame)
+	customLayoutOwnsReplay: true,
+	barHeight: 190,
+});

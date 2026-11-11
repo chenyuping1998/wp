@@ -1,3 +1,5 @@
+import type { Component } from 'svelte';
+import type { LayoutUiProps } from './types';
 // Shared bet-bar theme. The UI package is used by every game in the workspace,
 // so its colours and typeface live here instead of being hard-coded in each
 // button. Defaults are the plum/gold party palette (Wild Party); a game opts
@@ -562,6 +564,19 @@ export const uiTheme = $state({
 	betBarLayout: 'bottom' as 'bottom' | 'sideRail' | 'compactBottom',
 	// Opt in to landscape controls when a compact strip is too small in a popout.
 	compactBottomSmallFallback: false,
+
+	// A whole bar supplied by the game: a component taking the same snippets
+	// every built-in layout gets (LayoutUiProps). When set it replaces the
+	// layout in EVERY orientation, portrait included, so the game's component
+	// owns how it fits each one. Undefined for every game that does not set it,
+	// which keeps the built-in layouts exactly as they were.
+	customLayout: undefined as Component<LayoutUiProps> | undefined,
+	// With customLayout: the game's bar also serves a replay the game has NOT taken over
+	// (stateReplay.enabled false), instead of the template's centred WIN/BET stack — on a game
+	// whose board reaches low, that stack sits on the board frame (Dragon Tide, 2026-11-11).
+	// The component then hides its own bet controls when stateUi.config.mode is 'replay'.
+	// False for every game that does not set it.
+	customLayoutOwnsReplay: false,
 
 	// Portrait spin row: menu and Buy Bonus sit this far either side of centre
 	// (main-layout units). 470 was sized for the original round buttons; a larger
