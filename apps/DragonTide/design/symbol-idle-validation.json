@@ -3,7 +3,7 @@
   "scope": "Pure motion, actual painted bounds, wrap continuity; actual browser frames checked separately",
   "clockWrap": 120,
   "distinctCellPhases": 28,
-  "maxPaintedCellEdge": 0.49063038342170295,
+  "maxPaintedCellEdge": 0.4964457166658051,
   "symbols": {
     "H1": {
       "description": "Wave crown tile lifts and swells",

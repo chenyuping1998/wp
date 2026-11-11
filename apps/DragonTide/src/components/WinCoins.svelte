@@ -10,7 +10,7 @@
  type Coin={id:number;x:number;y:number;vx:number;vy:number;age:number;life:number;size:number;phase:number};
  let coins=$state.raw<Coin[]>([]);
  const tiers:Partial<Record<WinLevelAlias,number>>={substantial:4,big:6,superwin:8,mega:10,epic:12,max:15};
- // The polished painted Medusa medallion is also the celebration coin.
+ // The round gold-scale disc (L1) is the celebration coin; the Dragon Gate now carries its SCATTER ribbon (11-11) and would rain labels.
  // Horizontal foreshortening is evaluated in Pixi; no template coin atlas.
  onMount(()=>{
   let raf=0,last=0,spawn=0,id=0;const preference=matchMedia('(prefers-reduced-motion: reduce)');
@@ -32,7 +32,7 @@
   {#each coins as coin (coin.id)}
    <Container x={coin.x} y={coin.y} rotation={Math.sin(coin.phase)*coin.age*.8}
     scale={{x:.12+.88*Math.abs(Math.cos(coin.phase+coin.age*7)),y:1}} alpha={Math.min(1,(coin.life-coin.age)/.24)}>
-    <Sprite key="mgS" anchor={0.5} width={coin.size} height={coin.size}/>
+    <Sprite key="mgL1" anchor={0.5} width={coin.size} height={coin.size}/>
    </Container>
   {/each}
  </Container>
