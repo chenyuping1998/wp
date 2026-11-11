@@ -196,9 +196,10 @@
 	const ruleXs = $derived(
 		hasReplaySummary
 			? replaySummary.map((_, i) => DIV_1 + summaryCellW * i).concat(SUMMARY_END)
-			: flank
-				? [DIV_1, DIV_2, DIV_3]
-				: [DIV_1, DIV_2, DIV_3, dividerBeforeBet],
+			: (flank
+					? [DIV_1, DIV_2, DIV_3]
+					: [DIV_1, DIV_2, DIV_3, dividerBeforeBet]
+				).filter((x) => !(uiTheme.barHideCapRule && x === DIV_1)),
 	);
 
 	const replayCaptionStyle = $derived({

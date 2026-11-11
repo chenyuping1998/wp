@@ -204,7 +204,21 @@
 			/>
 		{/if}
 
-		{#if uiTheme.hoverHighlight && hovered && !buttonProps.disabled && !noHover && uiTheme.hoverPlateLight !== undefined && plate}
+		{#if uiTheme.hoverHighlight && uiTheme.hoverRimOnly && !noHover && uiTheme.hoverPlateLight !== undefined}
+			<!-- a lit ring on the rim only; mounted always and shown by alpha so it
+			     keeps its place under the icon instead of mounting on top of it -->
+			<Graphics
+				x={center.x}
+				y={center.y}
+				alpha={hovered && !buttonProps.disabled ? 1 : 0}
+				draw={(g) => {
+					const r = Math.min(buttonProps.sizes.width, buttonProps.sizes.height) / 2;
+					g.clear();
+					g.circle(0, 0, r * 0.97);
+					g.stroke({ width: Math.max(2.5, r * 0.09), color: uiTheme.hoverPlateLight ?? 0xffffff, alpha: 1 });
+				}}
+			/>
+		{:else if uiTheme.hoverHighlight && hovered && !buttonProps.disabled && !noHover && uiTheme.hoverPlateLight !== undefined && plate}
 			<!-- the plate itself, lit: drawn again additive in a warm tint -->
 			<UiSprite
 				{...center}

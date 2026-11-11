@@ -395,6 +395,13 @@ export const uiTheme = $state({
 	// (user rule, 2026-10-01 — ported from the main wp checkout).
 	hoverPlateLight: undefined as number | undefined,
 
+	// With a plate sprite, hoverPlateLight redraws the whole plate tinted - on a
+	// pale paper disc that reads as the button FILLED solid with the colour, and
+	// the hover layer mounts above the icon so the glyph disappears (Sumo Monkey,
+	// user 2026-11-03: "游標指到按鈕會把色填滿 怪"). true: light only a ring on
+	// the plate's rim instead, always mounted so it never lands over the icon.
+	hoverRimOnly: false,
+
 	// Push a control in while it is held down. `pressed` has always been handed to
 	// UiButton by Button, and nothing has ever drawn it — so a tap produced no
 	// acknowledgement at all until whatever it triggered began, which on a slow
@@ -677,6 +684,10 @@ export const uiTheme = $state({
 	//
 	// Ignored entirely unless sprites.bar is set, which no game does by default.
 	barSpriteSlice: 64,
+	// compactBottom only — skip the first section rule (menu | Balance). Set by
+	// a game whose bar art already draws an inked edge where the menu cap meets
+	// the strip, so the rule doubles it as a stray line (Pickle Panic 11-07).
+	barHideCapRule: undefined as boolean | undefined,
 
 	// compactBottom only — geometry, in standard-layout units (a 1920x1080 box on
 	// wide screens). All three were constants inside LayoutBottomBar; the defaults
