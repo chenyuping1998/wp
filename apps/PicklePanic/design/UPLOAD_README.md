@@ -1,4 +1,10 @@
-# Pickle Panic — 2026-11-01 release
+# Pickle Panic — ankle correction candidate
+
+The v13 ankle acceptance below is withdrawn. Current correction uses newly painted continuous thigh-to-shoe source and one weighted mesh per leg, on both characters. Bones, animation curves, physics and motion amplitude are unchanged; leg weights were rebuilt. Current evidence: design/qa/review_1101_ankles/. Platform store art updated: tile106674 / cover106675. Frontend correction published as v14 on 2026-11-02; math remains v2. Desktop1280×720 and portrait425×812 completed book74, payout330.4 and balance1329.4, no pageerrors. Source/build/stage hashes match; scratch replan0.
+
+---
+
+# Historical v13 release (character acceptance withdrawn)
 
 Current release candidate: final cast source/atlas repairs, complete prize-jar rules and centred amount example. Original bones, animation curves and amplitude retained. MG torso/hand/scarf fragments, FG shoulder caps, both characters’ leg silhouettes and raised flex arms repaired. Buy cards, thumbnail FG and cover FG rebuilt from current source. Built-in imagegen source/provenance: design/source/review_1101/PROMPTS.md. Prior revisions are preserved as history below and are not current acceptance evidence.
 
@@ -47,3 +53,10 @@ Platform: math v1 + front v1 published 2026-10-15 00:35 via stakecli; this UI up
 
 
 2026-10-21 chef revision: fuller red-vest FG chef, waist indentation removed; synchronized rig/atlas, buy card, animated cut-in, MAX plaque layers and cover foreground. Existing single-boss thumbnail included. See design/ART_REQUEST_2026-10-21.md and design/qa/review_1021/. Local staged package only; platform NOT updated.
+
+
+2026-11-02 Neon spin update: published frontend v15, math v2 retained. See RELEASE-RECEIPT-20261102-neon.json.
+
+2026-11-07 UI update: bar cap rule removed (black line), cap ghost discs cleaned, all bar icons re-inked in the relish/ink style. Frontend only; math v2 retained.
+
+2026-11-10 Bet bar v3: the connected console (jar buy tile, menu, BALANCE/WIN, BET box, steppers, Spin, Auto Spin over Turbo) in the game's print dress; board and cast re-placed for the room it leaves on every screen; rules page controls guide rewritten for it. Frontend only; math v2 retained.

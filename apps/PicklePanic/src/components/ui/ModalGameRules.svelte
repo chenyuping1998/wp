@@ -15,77 +15,94 @@
 	const T = getSocialTerms();
 	const social = stateUrlDerived.social();
 
-	// Controls guide. Each row shows the actual button art from the bet bar, so a
-	// player matches what they read to what they see rather than decoding a name.
-	// Icons come from static/, not the pixi asset pipeline — this panel is DOM.
+	// Controls guide. Each row shows the control as the bet bar draws it, so a
+	// player matches what they read to what they see rather than decoding a
+	// name. The bar is v3 (ui/MummyBar.svelte, 2026-11-10): the jar tile, then
+	// one console with the menu, BALANCE, the BET box, the ▲/▼ steppers, Spin,
+	// and Auto Spin over Turbo — listed in that order, with the menu's own rows
+	// after the menu. Engine guideline 235 fails a guide that leaves out any
+	// pressable control. Art comes from static/ (this panel is DOM): the relish
+	// icons are the *_v2 files the bar loads (the guide asked for icon_<name>.png,
+	// which never existed, until this rewrite).
 	const ICONS = `${base}/assets/pickle`;
-	// `icons` is a list because a control can be a pair — the stepper is two keys,
-	// and showing only one of them would misrepresent it. Two controls are not
-	// glyphs on the bar, so they are drawn as what the player sees instead: Buy
-	// Bonus is the lettered hanging plate (`sign`), and the bet readout is its
-	// caption with the chevron that opens the menu (`readout`). Engine guideline
-	// 235 fails a guide that leaves out any pressable control — the readout,
-	// Info and Settings were missing.
-	type Control = { icons: string[]; name: string; text: string; sign?: string; readout?: string };
+	type Control = {
+		kind: 'tile' | 'ring' | 'spin' | 'icon' | 'readout' | 'bet' | 'steps' | 'volume';
+		icon?: string;
+		label?: string;
+		name: string;
+		text: string;
+	};
 	const controls: Control[] = [
 		{
-			icons: ['spin'],
-			name: 'Spin',
-			text: `Starts a round for the current ${T.bet}. The space bar does the same thing. While the reels are turning it becomes Stop, which brings them to rest early.`,
-		},
-		{
-			icons: ['decrease', 'increase'],
-			name: 'Decrease / increase',
-			text: `Steps the ${T.bet} up or down through the available ${T.betLevels}.`,
-		},
-		{
-			icons: [],
-			// the bar's readout: caption, amount and the chevron that says it opens
-			readout: social ? 'AMOUNT' : 'BET',
-			name: social ? 'Amount' : 'Bet amount',
-			text: `Shows the current ${T.bet}. Tap it to open the ${T.betMenu} and choose any of the available ${T.betLevels} directly.`,
-		},
-		{
-			icons: [],
-			// the bar's own hanging plate, lettered as the bar letters it
-			sign: T.buyBonusName.toUpperCase(),
+			kind: 'tile',
 			name: T.buyBonusName,
-			text: `Opens the feature menu, where either Free Spins round can be ${T.bought} outright for the stated multiple of your ${T.bet}. The ${T.cost} is shown before you confirm.`,
+			text: `The jar at the left end of the bar. Opens the feature menu, where either Free Spins round can be ${T.bought} outright for the stated multiple of your ${T.bet}. The ${T.cost} is shown before you confirm. It is put away while Free Spins play.`,
 		},
 		{
-			icons: ['autoSpin'],
-			name: 'Auto Spin',
-			text: 'Plays a chosen number of rounds automatically. Open it to set the count and any stop conditions; press it again to stop early.',
-		},
-		{
-			icons: ['turbo'],
-			name: 'Turbo',
-			text: 'Shortens the spin and win presentations. Lit means turbo is on.',
-		},
-		{
-			icons: ['menu'],
+			kind: 'icon',
+			icon: 'menu',
 			name: 'Menu',
-			text: `Opens the ${T.payTable}, these rules, and the sound and settings controls.`,
+			text: `Opens the menu above it: Info, the ${T.payTable}, Settings, and the sound effects and music volume.`,
 		},
 		{
-			icons: ['info'],
+			kind: 'icon',
+			icon: 'info',
 			name: 'Info',
 			text: 'Opens these game rules.',
 		},
 		{
-			icons: ['settings'],
+			kind: 'icon',
+			icon: 'payTable',
+			get name() {
+				return T.payTableCaps;
+			},
+			text: `Lists every symbol and what it ${T.pays} for 3, 4 and 5 of a kind, and how the ${T.ways} are counted.`,
+		},
+		{
+			kind: 'icon',
+			icon: 'settings',
 			name: 'Settings',
 			text: 'Opens the volume controls: master volume, music and sound effects, each set separately.',
 		},
 		{
-			icons: ['payTable'],
-			get name() { return T.payTableCaps; },
-			text: `Lists every symbol and what it ${T.pays} for 3, 4 and 5 of a kind, and how the ${T.ways} are counted.`,
+			kind: 'volume',
+			name: 'Sound effects / music',
+			text: 'The two sliders at the foot of the menu. Drag one to its left end to silence it.',
 		},
 		{
-			icons: ['soundOn'],
-			name: 'Sound',
-			text: 'Mutes and unmutes the game. Volume is adjusted under Settings.',
+			kind: 'readout',
+			label: 'BALANCE',
+			name: 'Balance',
+			text: 'Your balance. While a win is showing, its amount appears beside it in red.',
+		},
+		{
+			kind: 'bet',
+			label: social ? 'AMOUNT' : 'BET',
+			name: social ? 'Amount' : 'Bet amount',
+			text: `Shows the current ${T.bet}; the line along its foot shows where it sits among the ${T.betLevels}. Tap it to open the ${T.betMenu} and choose any of them directly.`,
+		},
+		{
+			kind: 'steps',
+			name: 'Up / down',
+			text: `Step the ${T.bet} up or down through the available ${T.betLevels}, one level per press.`,
+		},
+		{
+			kind: 'spin',
+			icon: 'spin',
+			name: 'Spin',
+			text: `Starts a round for the current ${T.bet}. The space bar does the same thing. While the reels are turning it becomes Stop, which brings them to rest early.`,
+		},
+		{
+			kind: 'ring',
+			icon: 'autoSpin',
+			name: 'Auto Spin',
+			text: 'Opens the rounds panel: choose how many rounds, then press Start (or Spin). While a run plays, Spin shows the rounds left; press Auto Spin or Spin to stop it early.',
+		},
+		{
+			kind: 'ring',
+			icon: 'turbo',
+			name: 'Turbo',
+			text: 'Shortens the spin and win presentations. Lit means turbo is on.',
 		},
 	];
 
@@ -186,20 +203,30 @@
 				<h3 style="color: #c45240 !important"><span class="wp-accent-bar"></span>Controls</h3>
 				<ul class="wp-controls">
 					{#each controls as control (control.name)}
-						<li class:no-icon={control.icons.length === 0 && !control.sign && !control.readout}>
-							{#if control.sign}
-								<span class="wp-control-icons"><span class="wp-sign" style:background-image={`url('${base}/assets/pickle/buybonus.png')`}>{control.sign}</span></span>
-							{:else if control.readout}
-								<span class="wp-control-icons" aria-hidden="true">
-									<span class="wp-readout">{control.readout}<svg viewBox="0 0 12 8"><polyline points="1.5,1.5 6,6 10.5,1.5" /></svg></span>
-								</span>
-							{:else if control.icons.length}
-								<span class="wp-control-icons">
-									{#each control.icons as name (name)}
-										<img src={`${ICONS}/icon_${name}.png`} alt="" aria-hidden="true" />
-									{/each}
-								</span>
-							{/if}
+						<li>
+							<span class="wp-control-icons" aria-hidden="true">
+								{#if control.kind === 'tile'}
+									<span class="wp-tile"><img src={`${ICONS}/p.png`} alt="" /></span>
+								{:else if control.kind === 'ring'}
+									<span class="wp-ring" style:background-image={`url('${ICONS}/ui_button_rest.png')`}><img src={`${ICONS}/icon_${control.icon}_v2.png`} alt="" /></span>
+								{:else if control.kind === 'spin'}
+									<span class="wp-spin" style:background-image={`url('${ICONS}/ui_spin_rest.png')`}><img src={`${ICONS}/icon_spin_v2.png`} alt="" /></span>
+								{:else if control.kind === 'icon'}
+									<img class="wp-glyph" src={`${ICONS}/icon_${control.icon}_v2.png`} alt="" />
+								{:else if control.kind === 'volume'}
+									<span class="wp-volume"><img class="wp-glyph" src={`${ICONS}/icon_soundOn_v2.png`} alt="" /><i></i></span>
+								{:else if control.kind === 'readout'}
+									<span class="wp-readout">{control.label}</span>
+								{:else if control.kind === 'bet'}
+									<span class="wp-betbox">{control.label}<i></i></span>
+								{:else}
+									<svg class="wp-steps" viewBox="-30 -36 60 72">
+										{#each ['ink', 'relish'] as layer (layer)}
+											<g class={layer}><path d="M-18 -8 L0 -26 L18 -8" /><path d="M-18 8 L0 26 L18 8" /></g>
+										{/each}
+									</svg>
+								{/if}
+							</span>
 							<div>
 								<span class="wp-control-name">{control.name}</span>
 								<span class="wp-control-text">{control.text}</span>
@@ -480,64 +507,143 @@
 		gap: 0.7rem;
 	}
 
-	/* Buy Bonus is a labelled plate on the bar, not a glyph — with no icon to
-	   show, the text takes the whole row rather than leaving a gap. */
-	.wp-controls li.no-icon {
-		grid-template-columns: 1fr;
-	}
-
-	/* Buy Bonus: the bar's hanging plate in miniature, cropped to the board */
-	.wp-sign {
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		width: 4.4rem;
-		height: 1.9rem;
-		background-size: 4.6rem auto;
-		background-position: center 52%;
-		background-repeat: no-repeat;
-		color: #171c1a;
-		font: 400 0.62rem var(--gb-display-font, sans-serif);
-		letter-spacing: 0.04em;
-		white-space: nowrap;
-	}
-
-	/* the bet readout: caption plus the chevron the bar draws beside it */
-	.wp-readout {
-		position: relative;
-		width: 5rem;
-		justify-content: center;
+	/* the controls as the bar draws them, each in the same 4.6rem column */
+	.wp-tile {
 		display: inline-flex;
 		align-items: center;
-		gap: 0.3rem;
-		padding: 0.2rem 0.45rem;
-		border: 2px solid #4a4846;
-		background: #f5e6be;
-		color: #171c1a;
-		font: 400 0.7rem var(--gb-display-font, sans-serif);
+		justify-content: center;
+		width: 2.3rem;
+		height: 2.3rem;
+		border: 2px solid #171c1a;
+		border-radius: 0.4rem;
+		background: #f0b838;
+		box-shadow: 2px 2px 0 rgba(23, 28, 26, 0.42);
 	}
-	.wp-readout svg {
-		position: absolute;
-		right: 0.2rem;
-		width: 0.5rem;
-		height: 0.5rem;
-		fill: none;
-		stroke: #171c1a;
-		stroke-width: 2;
+	.wp-tile img {
+		width: 2.15rem;
+		height: 2.15rem;
+		margin: 0;
 	}
-
-	.wp-control-icons {
-		display: flex;
+	.wp-ring,
+	.wp-spin {
+		display: inline-flex;
 		align-items: center;
-		gap: 0.4rem;
+		justify-content: center;
+		background-size: contain;
+		background-repeat: no-repeat;
+		background-position: center;
 	}
-
-	.wp-controls img {
+	.wp-ring {
+		width: 2.3rem;
+		height: 2.3rem;
+	}
+	.wp-ring img {
+		width: 1.45rem;
+		height: 1.45rem;
+		margin: 0;
+	}
+	.wp-spin {
+		width: 2.9rem;
+		height: 2.9rem;
+	}
+	.wp-spin img {
+		width: 1.6rem;
+		height: 1.6rem;
+		margin: 0.2rem 0 0;
+	}
+	.wp-glyph {
 		width: 2.1rem;
 		height: 2.1rem;
 		object-fit: contain;
-		/* nudge down so the glyph optically centres on the first line of text */
-		margin-top: -0.15rem;
+	}
+	/* a speaker over a slider: the menu's volume rows */
+	.wp-volume {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.2rem;
+	}
+	.wp-volume .wp-glyph {
+		width: 1.6rem;
+		height: 1.6rem;
+	}
+	.wp-volume i {
+		position: relative;
+		width: 2.4rem;
+		height: 0.45rem;
+		border: 2px solid #171c1a;
+		border-radius: 0.3rem;
+		background: linear-gradient(90deg, #c45240 62%, #e8d4a2 62%);
+	}
+	.wp-volume i::after {
+		content: '';
+		position: absolute;
+		left: 58%;
+		top: 50%;
+		width: 0.7rem;
+		height: 0.7rem;
+		transform: translate(-50%, -50%);
+		border: 2px solid #171c1a;
+		border-radius: 50%;
+		background: #f0b838;
+	}
+	/* BALANCE: the caption on the console's paper */
+	.wp-readout {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		width: 4.4rem;
+		padding: 0.25rem 0.3rem;
+		border: 2px solid #171c1a;
+		border-radius: 0.3rem;
+		background: #f5e6be;
+		color: #4a4846;
+		font: 400 0.62rem var(--gb-display-font, sans-serif);
+		white-space: nowrap;
+	}
+	/* the BET box: an ink stamp, mustard caption, the level line along its foot */
+	.wp-betbox {
+		position: relative;
+		display: inline-flex;
+		align-items: flex-start;
+		justify-content: center;
+		width: 3.2rem;
+		height: 2.1rem;
+		padding-top: 0.32rem;
+		box-sizing: border-box;
+		border-radius: 0.3rem;
+		background: #171c1a;
+		color: #f0b838;
+		font: 400 0.66rem var(--gb-display-font, sans-serif);
+	}
+	.wp-betbox i {
+		position: absolute;
+		left: 0.25rem;
+		right: 0.25rem;
+		bottom: 0.3rem;
+		height: 0.22rem;
+		border-radius: 0.11rem;
+		background: linear-gradient(90deg, #f0b838 40%, #4a4846 40%);
+	}
+	/* ▲ / ▼: relish green over a fat ink line */
+	.wp-steps {
+		width: 1.9rem;
+		height: 2.3rem;
+		fill: none;
+		stroke-linecap: round;
+		stroke-linejoin: round;
+	}
+	.wp-steps .ink path {
+		stroke: #171c1a;
+		stroke-width: 13;
+	}
+	.wp-steps .relish path {
+		stroke: #6f9f32;
+		stroke-width: 6;
+	}
+	.wp-control-icons {
+		display: flex;
+		align-items: center;
+		min-height: 2.3rem;
 	}
 
 	.wp-control-name {

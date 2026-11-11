@@ -11,7 +11,8 @@
 	import { App, Container, Sprite } from 'pixi-svelte';
 	import { stateModal, stateBet } from 'state-shared';
 
-	import { UI } from 'components-ui-pixi';
+	// bar v3 (the connected console), mounted by the game: ui/PickleUI.svelte
+	import PickleUI from './ui/PickleUI.svelte';
 	import GameNameClock from './GameNameClock.svelte';
 	import ScatterDing from './ScatterDing.svelte';
 	import PickleLogo from './PickleLogo.svelte';
@@ -152,7 +153,7 @@
 
 		<EntryReveal />
 
-		<UI>
+		<PickleUI>
 			{#snippet gameName()}
 				<GameNameClock name="" />
 			{/snippet}
@@ -160,7 +161,7 @@
 			     second time beside the clock-and-name (review 2026-10-13). It stays
 			     empty until the drawn logo from the art request arrives. -->
 			{#snippet logo()}{#if logoScale > 0}<PickleLogo x={(-LOGO_W / 2) * logoScale} y={(LOGO_H / 2 + 1) * logoScale} width={LOGO_W * logoScale} base={false}/>{/if}{/snippet}
-		</UI>
+		</PickleUI>
 		<ScatterDing/>
 		<BarMessage />
 		<Win />

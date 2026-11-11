@@ -14,58 +14,22 @@
       "h": 390
     },
     {
-      "z": 10,
-      "name": "left_leg_0_thigh",
-      "file": "left_leg_0_thigh.png",
-      "x": 175,
-      "y": 575,
-      "w": 99,
-      "h": 170
-    },
-    {
       "z": 11,
       "name": "left_leg_1_calf",
-      "file": "left_leg_1_calf.png",
-      "x": 187,
-      "y": 650,
-      "w": 75,
-      "h": 160
-    },
-    {
-      "z": 12,
-      "name": "left_leg_2_foot",
-      "file": "left_leg_2_foot.png",
-      "x": 89,
-      "y": 760,
-      "w": 211,
-      "h": 101
-    },
-    {
-      "z": 14,
-      "name": "right_leg_0_thigh",
-      "file": "right_leg_0_thigh.png",
-      "x": 293,
+      "file": "left_leg_1_calf_foot.png",
+      "x": 62,
       "y": 575,
-      "w": 116,
-      "h": 170
+      "w": 211,
+      "h": 310
     },
     {
       "z": 15,
       "name": "right_leg_1_calf",
-      "file": "right_leg_1_calf.png",
-      "x": 321,
-      "y": 650,
-      "w": 88,
-      "h": 160
-    },
-    {
-      "z": 16,
-      "name": "right_leg_2_foot",
-      "file": "right_leg_2_foot.png",
-      "x": 327,
-      "y": 758,
-      "w": 161,
-      "h": 120
+      "file": "right_leg_1_calf_foot.png",
+      "x": 331,
+      "y": 575,
+      "w": 185,
+      "h": 310
     },
     {
       "z": 20,
@@ -112,5 +76,6 @@
       "w": 265,
       "h": 335
     }
-  ]
+  ],
+  "revision": "2026-11-01 connected calf/sock/shoe; old foot layers retired"
 }

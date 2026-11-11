@@ -5,12 +5,11 @@ import { stateBet } from 'state-shared';
 import { createEnhanceBoard, createReelForSpinning } from 'utils-slots';
 import { createGetWinLevelDataByWinLevelAlias } from 'utils-shared/winLevel';
 
-import { uiTheme } from 'components-ui-pixi';
-
 import type { GameType, RawSymbol, SymbolState } from './types';
 import { stateLayoutDerived } from './stateLayout';
 import { winLevelMap } from './winLevelMap';
 import { eventEmitter } from './eventEmitter';
+import { stageLayout, type Stage } from './stageLayout';
 import {
 	SYMBOL_SIZE,
 	BOARD_SIZES,
@@ -149,35 +148,33 @@ export const stateGame = $state({
 	mascotThrowOrigin: null as { x: number; y: number } | null,
 });
 
-// The reel housing fills 94% of the box height (BOARD_SIZES is 590 tall and
-// BoardFrame draws it at FRAME_SCALE 1.28 → 755 of 800), so a strip along the
-// bottom cannot simply be laid over it. Nor can the board just be pushed up: the
-// game box maps exactly onto the canvas, so anything past the top edge is
-// clipped rather than spilling into the background. It is scaled down instead,
-// and lifted by half of what the strip took so it stays centred in what is left.
-//
-// Measured rather than guessed: at 0.96 the housing landed within 2px of both
-// the canvas top and the strip — visually fine but no margin at all, and a
-// different viewport aspect would have pushed it under. Now that the strip is a
-// framed panel rather than a flat band it is taller, and the board gives up a
-// little more again. Raising this is what to try first if the board ever needs
-// to be bigger; the housing bottom against uiTheme.barHeight is the limit.
-const BOARD_SHRINK = 0.89;
+// Where the board stands: sized to the room the game's own bet bar (bar v3,
+// components/ui/MummyBar.svelte) leaves, with the cast placed beside it — see
+// stageLayout.ts. Before the bar it was centred above the shared strip at
+// 0.89 (BOARD_SHRINK); stageLayout's boardAtBase keeps that as the base every
+// size is measured from. Memoised per canvas size: everything that reads the
+// board (frame, reels, wins, cast, logo) asks for it every frame.
+let stageMemo: { key: string; stage: Stage } | null = null;
+const stage = (): Stage => {
+	const canvas = stateLayoutDerived.canvasSizes();
+	const key = `${canvas.width}x${canvas.height}`;
+	if (stageMemo?.key === key) return stageMemo.stage;
+	const value = stageLayout({
+		canvas,
+		main: stateLayoutDerived.mainLayout(),
+		standard: stateLayoutDerived.mainLayoutStandard(),
+		layoutType: stateLayoutDerived.layoutType(),
+	});
+	stageMemo = { key, stage: value };
+	return value;
+};
 
 const boardLayout = () => {
-	const layout = stateLayoutDerived.mainLayout();
-	const usesBar = uiTheme.betBarLayout === 'compactBottom';
-	// Derived from the bar's own height rather than duplicated, so the two cannot
-	// drift apart: the game box and the standard box cover the same screen, so the
-	// strip occupies the same fraction of each.
-	const barFraction = usesBar
-		? uiTheme.barHeight / stateLayoutDerived.mainLayoutStandard().height
-		: 0;
+	const { board } = stage();
 	return {
-		x: layout.width * 0.5,
-		// centred in the area above the strip, not in the whole box
-		y: layout.height * (0.5 - barFraction * 0.5),
-		scale: usesBar ? BOARD_SHRINK : 1,
+		x: board.x,
+		y: board.y,
+		scale: board.scale,
 		anchor: { x: 0.5, y: 0.5 },
 		pivot: { x: BOARD_SIZES.width / 2, y: BOARD_SIZES.height / 2 },
 		...BOARD_SIZES,
@@ -203,6 +200,7 @@ export const { getWinLevelDataByWinLevelAlias } = createGetWinLevelDataByWinLeve
 export const stateGameDerived = {
 	onSymbolLand,
 	boardLayout,
+	stage,
 	boardRaw,
 	scatterLandIndex,
 	enhancedBoard,

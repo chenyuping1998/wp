@@ -107,11 +107,16 @@ const SPIN_OPTIONS_SHARED = {
 	reelSpinDelay: 25,
 };
 
+// Go Bananeon's normal cadence; both games use 140px cells.
+// Keep Pickle's anticipation and turbo profiles; blur is measured per reel.
 export const SPIN_OPTIONS_DEFAULT = {
 	...SPIN_OPTIONS_SHARED,
-	reelPreSpinSpeed: 2,
-	reelSpinSpeed: 3,
-	// 0.12 cell, Iron Jaw's measured rebound (0.10-0.12); 0.3 read as rubber
+	reelPreSpinSpeed: 2.8,
+	reelSpinSpeed: 4.2,
+	reelSpinSpeedBeforeBounce: 2.8,
+	reelBounceBackSpeed: 0.22,
+	reelPaddingMultiplierNormal: 1,
+	reelSpinDelay: 100,
 	reelBounceSizeMulti: 0.12,
 };
 

@@ -5,6 +5,7 @@ import {createRequire} from 'node:module';
 const require=createRequire('/Users/stone/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/package.json');
 const sharp=require('sharp');
 const app=path.resolve(import.meta.dirname,'..'),work=app+'/design/source/review_1101';
+if(fs.existsSync(app+'/design/source/review_1101_ankles/mg-lower-leg-sheet.png'))throw Error('This exporter restores the rejected split-foot revision. Use design/apply_ankle_review_1101.mjs for the connected-ankle release.');
 const specs=[
  ['mg','left_arm_0_upper_arm','mg-left-upper-arm',0,0,130,163],
  ['mg','right_arm_0_upper_arm','mg-right-upper-arm',0,0,101,139],

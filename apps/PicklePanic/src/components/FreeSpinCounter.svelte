@@ -28,6 +28,7 @@
 	import { gameText } from '../game/i18nText';
 	import config from '../game/config';
 	import { removedLabelsAtLevel } from '../game/chefMeter';
+	import { COUNTER, FRAME_INK } from '../game/stageLayout';
 
 	const context = getContext();
 
@@ -54,22 +55,26 @@
 						H * 1.05,
 				}
 			: (() => {
-					// LEFT of the board, ABOVE the Buy Bonus plate (which the shared bar
-					// keeps on screen, dimmed, through the feature). It was moved right
-					// once to clear that plate, and then sat on the Lookout's head —
-					// she stands taller in the margin than the Cook does.
+					// LEFT of the board, near its top. It was moved right once to clear
+					// the Buy Bonus plate (now a tile in the bar, bar v3 2026-11-10),
+					// and then sat on the Lookout's head — she stands taller in the
+					// margin than the Cook does.
 					//
-					// Measured from the HOUSING, not the reels: BoardFrame draws it at
-					// 1.28x the board, and clearing only the reels left the ticket's
-					// right edge sitting on the frame's corner rivets. Where the margin
-					// is too narrow for the full ticket it shrinks rather than overlap.
+					// Measured from the HOUSING's drawn edge, not the reels: clearing
+					// only the reels left the ticket's right edge sitting on the frame's
+					// corner rivets. Where the margin is too narrow for the full ticket
+					// it shrinks rather than overlap; the board leaves it COUNTER_MIN of
+					// its size (game/stageLayout.ts). The margin runs to the SCREEN's
+					// edge, which on a wide or letterboxed screen is past the box's.
 					const board = context.stateGameDerived.boardLayout();
-					const frameLeft = board.x - (board.width * board.scale * 1.28) / 2;
-					const gap = SYMBOL_SIZE * 0.2;
-					const margin = SYMBOL_SIZE * 0.15;
-					const scale = Math.min(1, Math.max(0.5, (frameLeft - gap - margin) / (W + 6)));
+					const main = context.stateLayoutDerived.mainLayout();
+					const screenLeft = (main.width * main.scale - context.stateLayoutDerived.canvasSizes().width) / 2 / main.scale;
+					const frameLeft = board.x + FRAME_INK.left * board.scale;
+					const gap = COUNTER.gap;
+					const margin = COUNTER.margin;
+					const scale = Math.min(1, Math.max(0.5, (frameLeft - gap - margin - screenLeft) / COUNTER.width));
 					return {
-						x: frameLeft - gap - (W + 6) * scale,
+						x: frameLeft - gap - COUNTER.width * scale,
 						// Below the clock-and-name line, not on it: at 0.03 the ticket's
 						// top printed over "PICKLE PANIC" (review 2026-10-13).
 						y: context.stateLayoutDerived.mainLayout().height * 0.1,

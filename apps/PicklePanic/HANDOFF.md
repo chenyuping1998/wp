@@ -1,3 +1,19 @@
+## 2026-11-02 — 腳踝修正已發布 front14／math2
+
+v13的角色腳踝驗收已撤回：裁平鞋口與分開襪鞋造成使用者截圖的斷腳。兩角四條腿已重畫完整大腿至鞋底來源，改連續 weighted mesh；腿權重重建，骨骼／動畫曲線／physics／動作幅度不變。舊 apply_review_1101.mjs 已阻擋還原退役鞋層，後續使用 apply_ankle_review_1101.mjs。
+
+每角13 clips／837 runtime格、亮暗底／alpha移除差異／完整身形關鍵格及腳踝放大圖已檢視。手機補明確盤框後半身裁切，保留原角色尺寸，移除與mask衝突的portrait DropShadowFilter。最新production build已實跑桌機1280×720與直式425×812完整book74（派彩330.4、結餘1329.4、各9cut-in、pageerrors=[]），手機不再透腿／浮空／消失。來源、atlas、build及stage hash一致，數學不變。
+
+已打包 /Users/stone/stake-engine/upload/PicklePanic/，上傳12actions/5,494,948bytes、重排0；發布front14、math2，get_game確認。平台tile106674／cover106675已更新選用。正式證據：design/qa/review_1101_ankles/REPORT.md、SELF_CHECK.md、PLATFORM_RELEASE.json及studio-media-final.png。原始逐格runtime證據保留runtime-frames.tar.gz。v13與失敗mask原型不能作新版驗收依據。
+
+closed approval未更動；Engine藝術評分、真實RGS、實體舊手機／耳機仍屬既有人工範圍。Studio發布不等同casino正式上線。
+
+---
+
+## 2026-11-01 — v13 ankle acceptance withdrawn; corrective work in progress
+
+Stone supplied a screenshot showing disconnected/cut-flat shoes. The previous whole-body contact-sheet visual acceptance was wrong and must not be reused as proof of clean ankles. v13 is published but NOT accepted for character quality. Known defect: MG left shoe source is clipped through its collar, and separate sock/foot skinning makes the seam visible. Both roles must receive source and joint inspection at native scale. Original bone motions/amplitudes remain the baseline. Repair source anatomy and continuous ankle skinning, then inspect isolated ankle close-ups across all clips plus actual desktop/portrait gameplay. WORK_IN_PROGRESS blocks packaging until repaired. Prior math/UI/RGS evidence remains valid in its stated scope; prior character acceptance claims are superseded.
+
 ## 2026-11-01 06:55 Taipei — published front v13 / math v2, platform artwork updated
 
 The five-hour continuation finished source repairs and final rendered acceptance. Final script: design/apply_review_1101.mjs; source raw/backup/prompt provenance in design/source/review_1101/. Important: top/sock resize must use fit:fill, never default cover. Both leg crops have expanded vertical overlap, width/height changes update weighted rest positions, and the right green upper leg has native affine registration to tuck under the apron. No bone, animation, amplitude, UV topology or vertex-weight change. Old 1021 exporter and older source previews must not replace this revision.
@@ -50,3 +66,17 @@ Desktop and phone collections, three upgrade stages, entry/outro/return, generat
 Production source role: design/_template_reference is a recoverable archive of removed source material. Only explicitly registered new pickle assets and licensed fonts enter upload. Existing source book event identifiers are retained for protocol compatibility.
 
 Final rules modal opened in the running build: all DOM images loaded (zero broken/incomplete images); 96.00% RTP, base-bet cap units, jar ranges and maximum-spin limits rendered correctly. Menu clears Buy Bonus while open. Native mouse tools do not expose an isolated hover-only movement (dragging into CTA releases as a press); no claim of every control hover screenshot. Both CTA rest/hover PNGs are independent and their sprite hook remains wired. This remains a manual pointer/device spot-check before platform publishing.
+
+
+## 2026-11-02: Neon spinning-feel local trial
+
+Stone requested the same GoBananeon spin treatment on Pickle Panic after Turf's corrected v34. Existing BoardBase had fixed-state12px/3px/0px blur; replaced with GoBananeon's actual-displacement ReelMotion/reelMotion sampler, including padding-key rebasing and45ms build/24ms sharpen. Removed the remaining8% symbol stretch; plates and art retain their proportions. Both games use140px cells, so normal profile matches Neon directly: pre2.8px/ms, sweep4.2, brake2.8, settle0.22, normal padding1, start delay100ms, rebound0.12cells. Pickle's anticipation/Turbo profiles, audio and existing dirty character/ankle/art changes are preserved.
+
+Build/guards PASS; preexisting type guard remains at15 baseline errors (no new per-file diagnostics). Ported Neon check_reel_motion.mjs passes and is in build. Production preview Chrome measured3 complete normal spins: median stop gap200ms; first-to-last798–800ms. Viewed moving-reel frame, desktop settled and390x844 portrait play. Caught window errors empty. Explicit labelled-reel scene check after settling found5 stopped reels with empty filters. Generic whole-scene blur samples also include existing ambient filters and must not be quoted as reel-stop leakage. No complete bonus/real-device/platform QA in this trial.
+
+Preview: http://localhost:8019/?rgs_url=stub.local&sessionID=playtest&currency=USD&lang=en ; files `dist/picklepanic-neon-motion/`, actual clip `neon-motion-preview.gif`, logs/timing/screenshots/source hashes in `evidence/`. Local trial only: no upload staging, no platform upload/publication, no cover/thumbnail changes.
+
+
+## 2026-11-02: Neon motion uploaded and published
+
+Stone requested publication of all3 new trials. Uploaded the exact tested frontend to silver-stars/pickle-panic; publish success **front v15**, get_game confirmed **math v2** unchanged. Plan3 uploads +1 obsolete-bundle deletion; post-upload replan0 actions, math replan0 actions. Existing thumbnail/cover retained; no platform store-art replacement, approval-version update or new review submission. Build/source hashes and incremental official checklist (with inherited coverage gaps clearly marked) are in `design/qa/neon_release_20261102/`; release receipt and self-check copied to `upload/PicklePanic/`. No ZIP produced.

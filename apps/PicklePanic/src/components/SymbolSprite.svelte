@@ -12,10 +12,8 @@
 		x?: number;
 		y?: number;
 		symbolInfo: ReturnType<typeof getSymbolInfo>;
-		// How fast the reel is travelling, 0..1, driving a cheap motion blur
-		// (vertical stretch + ghosts). Continuous rather than a boolean so the
-		// blur eases off through the bounce instead of snapping away the instant
-		// the reel changes state.
+		// Moving-reel marker used to suppress idle breath. ReelMotion owns
+		// the velocity-based vertical blur for the whole strip.
 		blur?: number;
 		// symbol just landed: impact squash before settling to static
 		landing?: boolean;
@@ -39,7 +37,6 @@
 
 	const width = $derived(SYMBOL_SIZE * props.symbolInfo.sizeRatios.width);
 	const height = $derived(SYMBOL_SIZE * props.symbolInfo.sizeRatios.height);
-	const blur = $derived(Math.max(0, Math.min(1, props.blur ?? 0)));
 
 	// landing squash: hammer down, rebound, settle (~240ms). Amplitude scales with
 	// `impact`, timings do not — a lighter symbol should look lighter, not slower,
@@ -102,13 +99,12 @@
 	});
 </script>
 
-<!-- The smear itself is BoardBase's per-reel BlurFilter (plate and art blur
-     together). Translucent ghost copies here read as see-through cards. A small
-     stretch stays: it gives the blurred strip some speed without fading it. -->
+<!-- Neon blurs the plate and art as one strip. Keep their natural proportions
+     during travel; the measured reel velocity owns the entire smear. -->
 <Container
 	x={props.x ?? 0}
 	y={props.y ?? 0}
-	scale={{ x: sx.current * (1 - 0.004 * breath), y: blur > 0.01 ? 1 + 0.08 * blur : sy.current * (1 + 0.011 * breath) }}
+	scale={{ x: sx.current * (1 - 0.004 * breath), y: sy.current * (1 + 0.011 * breath) }}
 >
 	<Sprite anchor={0.5} key={props.symbolInfo.assetKey} {width} {height} />
 	{#if props.letter}

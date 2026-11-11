@@ -25,6 +25,8 @@
 	import { cubicInOut, cubicOut } from 'svelte/easing';
 
 	import { getContext } from '../game/context';
+	import { CAST_ART, CAST_THROW_REACH } from '../game/castRig';
+	import { FRAME_SCALE } from '../game/stageLayout';
 	import { GAME_FONT, GAME_FONT_WEIGHT } from '../game/fonts';
 	import laughTiming from '../game/laughTiming.json';
 
@@ -49,7 +51,7 @@
 	const CASTS = {
 		basegame: {
 			key: 'gbBandit',
-			art: { height: 862, width: 415 },
+			art: CAST_ART.basegame,
 			release: { x: -297, y: 492 },
 			impact: { right: { x: 44, y: 322 }, left: { x: -81, y: 306 } },
 			// his 'chestbeat' is a laugh (design/cast_motions.mjs): the beats pop
@@ -60,17 +62,17 @@
 			// the most negative x of skeleton.getBounds() over the whole clip,
 			// held jar included. Measured in the browser 2026-10-13 by stepping
 			// each animation at 60fps. Re-measure whenever a motion changes.
-			reach: { bigwin_cheer:271,bigwin_hold:254,fs_trigger:255,upgrade_slam:263,throwit: 400, cheer: 303, chestbeat: 258, flinch: 235, alert: 226, glance: 210, nod: 210, idle: 210 },
+			reach: { bigwin_cheer:271,bigwin_hold:254,fs_trigger:255,upgrade_slam:263,throwit: CAST_THROW_REACH.basegame, cheer: 303, chestbeat: 258, flinch: 235, alert: 226, glance: 210, nod: 210, idle: 210 },
 		},
 		freegame: {
 			key: 'gbLookout',
-			art: { height: 862, width: 406 },
+			art: CAST_ART.freegame,
 			release: { x: -305, y: 495 },
 			impact: { right: { x: -11, y: 329 }, left: { x: -53, y: 313 } },
 			// Apprentice laughs on the same six voice beats, with her own body motion.
 			beatFx: 'stars',
 			tease: { x: -6, y: 794, halfWidth: 65, halfHeight: 22 },
-			reach: { bigwin_cheer:243,bigwin_hold:173,fs_trigger:225,upgrade_slam:235,throwit: 406, cheer: 282, chestbeat: 224, flinch: 203, alert: 192, glance: 176, nod: 175, idle: 173 },
+			reach: { bigwin_cheer:243,bigwin_hold:173,fs_trigger:225,upgrade_slam:235,throwit: CAST_THROW_REACH.freegame, cheer: 282, chestbeat: 224, flinch: 203, alert: 192, glance: 176, nod: 175, idle: 173 },
 		},
 	} as const;
 
@@ -88,89 +90,33 @@
 	const RELEASE = $derived(cast.release);
 	const REACH = $derived(cast.reach);
 
-	// Below this there is no room to stand him next to the board without either
-	// overlapping the frame or shrinking him to a thumbnail. Tablet (1000x1000)
-	// and portrait (800x1422) both fall here, and he is simply absent — which is
-	// the honest answer for those layouts, and better than a 90px smudge in the
-	// margin.
-	const MIN_GAP = 260;
-
-	const placement = $derived.by(() => {
-		const layout = context.stateLayoutDerived.mainLayout();
+	// Portrait is intentionally waist-up above the housing. Blurred reels have
+	// transparent pixels, so drawing the housing later does not occlude the legs.
+	// Clip at the housing's top edge, while desktop keeps the complete figure.
+	const portraitClipBottom = $derived.by(() => {
+		if (context.stateLayoutDerived.layoutType() !== 'portrait') return null;
 		const board = context.stateGameDerived.boardLayout();
-		// BoardFrame draws the housing at 1.28x the board (its FRAME_SCALE).
-		const frameHalfWidth = (board.width * board.scale * 1.3375130616509927) / 2;
-		const frameHalfHeight = (board.height * board.scale * 1.3375130616509927) / 2;
-
-		// Portrait: waist-up behind the housing, the way the crime trilogy does it.
-		// He used to stand full-length ON the frame's top edge at ~230 units tall —
-		// a thumbnail in a sky that was otherwise empty (review 2026-10-13). Now the
-		// frame (drawn after him) hides everything below BURY of his height, and
-		// what shows fills the band between the clock line and the housing.
-		if (context.stateLayoutDerived.layoutType() === 'portrait') {
-			// TOP_CLEAR is in main-layout units, whose y = 0 already sits below the
-			// clock line on a phone (the standard area is centred in the canvas).
-			const BURY = 0.42;
-			const TOP_CLEAR = 0;
-			const frameTop = board.y - frameHalfHeight;
-			const height = Math.min(layout.width, Math.max(160, (frameTop - TOP_CLEAR) / (1 - BURY)));
-			return { x: layout.width * 0.76, inner: -Infinity, y: frameTop + height * BURY, scale: height / ART.height,
-				minX: -ART.width * .65, maxX: ART.width * .65 };
-		}
-
-		// The bet bar's height in this layout's units, recovered from where
-		// boardLayout has already centred the board above it, rather than by
-		// importing the bar's own theme and re-deriving the same fraction twice.
-		const barHeight = layout.height - board.y * 2;
-
-		const gapLeft = board.x + frameHalfWidth;
-		const gapWidth = layout.width - gapLeft;
-		if (gapWidth < MIN_GAP) return null;
-
-		// One scale, not a width and a height: setting both on a pixi container
-		// sets scale.x and scale.y independently, and any rounding between the two
-		// squashes him. Fit to whichever of the two limits bites first.
-		const maxWidth = gapWidth * 0.86;
-		const maxHeight = (layout.height - barHeight) * 0.94;
-		// HIS WIDEST POSES ARE NOT HIS STANCE. 'throwit' carries the jar ~400
-		// units boardward and 'cheer' ~300, against a stance half-width of ~200,
-		// so at the stance-fitted size and position both crossed the housing's
-		// right edge (review 2026-10-13; rule: no part of a performance on the
-		// board).
-		//
-		// Shrinking him to fit the throw cost a fifth of his height at every
-		// moment for the sake of one second. So he keeps the stance size and
-		// STEPS BACK for whichever motion needs the room (shiftFor, eased in on
-		// the motion's start — a weight shift onto the back foot, which is how a
-		// throw or a big cheer begins anyway). His far side may leave the screen
-		// by up to half his half-width while he does; only if even that is not
-		// enough does he shrink.
-		const FAR = ART.width / 2;
-		const inner = gapLeft + 16;
-		const outer = layout.width - 10;
-		const height = Math.min(
-			maxHeight,
-			(maxWidth * ART.height) / ART.width,
-			((outer - inner) * ART.height) / (REACH.throwit + FAR * 0.5),
-		);
-		const k = height / ART.height;
-		const x = Math.min(outer - FAR * k, gapLeft + gapWidth / 2);
-
-		return {
-			x,
-			inner,
-			// Standing on the same line the board frame sits on, so he shares its
-			// ground plane instead of floating at his own height. Clamped off the
-			// bet bar, which on a short layout the frame's own foot reaches into.
-			y: Math.min(board.y + frameHalfHeight, layout.height - barHeight - 6),
-			scale: height / ART.height,
-			// the strip he may perform in, in skeleton units about his origin:
-			// anything he draws (the laugh's HA!s) stays inside it, so no part of
-			// a performance ever lands on the board (user rule, 2026-10-04)
-			minX: (inner - x) / k,
-			maxX: (outer - x) / k,
-		};
+		const frameHeight = board.height * board.scale * FRAME_SCALE;
+		// frame.png has transparent top padding: the opaque housing band at
+		// y=110/1280 covers this cut, including the small frame-impact recoil.
+		return board.y - frameHeight / 2 + frameHeight * (110 / 1280);
 	});
+
+	// WHERE HE STANDS comes from game/stageLayout.ts (castSpot), which places the
+	// board and both casts together under the bet bar (bar v3, 2026-11-10): the
+	// rules are the ones this component used to apply itself — sized to the room
+	// right of the housing so his widest motion (the throw) fits there when he
+	// steps back, feet on the housing's ground line, waist-up behind the top beam
+	// in portrait, absent where there is no room (tablets) — plus his feet stay
+	// clear of the bar's controls under them, and the board only grows as far as
+	// he can still stand beside it at K_MIN of his old size.
+	//   x, y      his origin (ground between the boots), layout units
+	//   scale     skeleton → layout
+	//   inner     the housing's edge plus a margin: nothing he does crosses it
+	//   minX/maxX the strip he may perform in, skeleton units about his origin:
+	//             anything he draws (the laugh's HA!s) stays inside it, so no
+	//             part of a performance lands on the board (user rule, 2026-10-04)
+	const placement = $derived(context.stateGameDerived.stage().cast[context.stateGame.gameType === 'freegame' ? 'freegame' : 'basegame']);
 
 	// How far he steps back for a motion, in layout units (see placement).
 	const shiftFor = (name: string) =>
@@ -588,11 +534,20 @@
 {#if placement}
 	{#key cast.key}
 	<Container>
+	{#if portraitClipBottom !== null}
+		<Graphics isMask draw={(g) => {
+			g.clear();
+			g.rect(0, 0, context.stateLayoutDerived.mainLayout().width, portraitClipBottom);
+			g.fill(0xffffff);
+		}} />
+	{/if}
 	<!-- No paper spotlight behind either figure: it read as a pale slab stuck on
 	     the backdrop (user, 2026-10-04). The backdrops are knocked back toward
 	     the paper instead (design/print_finish.py) and the ink shadow below
 	     separates the figure. -->
-	<Container zIndex={-1} filters={castShadow}>
+	<!-- Pixi drop-shadow filter suppresses the graphic-masked portrait content.
+	     The portrait keeps its original ink outline; desktop retains the cast shadow. -->
+	<Container zIndex={-1} filters={portraitClipBottom === null ? castShadow : []}>
 	<SpineProvider
 		key={cast.key}
 		x={placement.x + lean.current}
