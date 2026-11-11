@@ -25,6 +25,7 @@ an entry when you want to know what a reviewer's one-line comment really meant.
 - [The oncomplete race — one shape, five places](#the-oncomplete-race--one-shape-five-places)
 - [Deadwood Express post-approval — ten issues, shared fixes](#deadwood-express-post-approval--ten-issues-shared-fixes)
 - [Sushi Monkey 2026-10-20 — three things every guard passed](#sushi-monkey-2026-10-20--three-things-every-guard-passed)
+- [Turf War guidelines pass 2026-11-11 — one overflow, three issues](#turf-war-guidelines-pass-2026-11-11--one-overflow-three-issues)
 - [Production bugs worth recognising again](#production-bugs-worth-recognising-again)
 - [Working with the reviewers](#working-with-the-reviewers)
 
@@ -42,10 +43,12 @@ Run this before the first upload. Each line maps to a round that was lost.
 - [ ] Opening stake comes from `defaultBetLevel`, so each currency opens where
       the server says (Gold Coins open at 10,000 GC, not 1).
 - [ ] Bet menu presents the server's levels in full — no index whitelist.
-- [ ] **Every selectable stake is one of the server's levels.** Affordability may
-      only pick a lower rung, never the balance itself, and every control that
-      sets a stake goes through the same clamp — a menu that assigns directly
-      skips it. Test with a balance that falls *between* two rungs.
+- [ ] **Every selectable stake is one of the server's levels, and the balance
+      does not hide or clamp any of them** (Deadwood 2026-10-04 reversed the
+      affordability clamp): only min/max + snap to `betLevels`; affordability is
+      checked when the bet is placed and answered with the insufficient-funds
+      notice, with no play request. Every control that sets a stake goes through
+      the same setter. Test with a balance *between* two rungs and with 0.
 - [ ] `?lang=` is validated against the catalogue before use; an unknown code
       falls back to English rather than being passed to `Intl`.
 
@@ -104,6 +107,12 @@ Run this before the first upload. Each line maps to a round that was lost.
 - [ ] A display face that is not a system default.
 - [ ] Spacebar bound to the bet button.
 - [ ] Every modal tested at the smallest supported size, including the popout.
+- [ ] **No text runs out of its box at desktop, popout S and 375×667**:
+      `scripts/ui_center_audit.js` → `__centerAudit.overflow()` per open modal at
+      each size. A `white-space: nowrap` value in a box whose width follows the
+      window fits one window only (Turf War 2026-11-11: the RTP range
+      "96.01%–96.05%" over its rules-header plate's rim, three issues — one per
+      device class).
 - [ ] Stake Engine's splash removed; your own studio logo kept.
 - [ ] **Every label sits optically centred in its button or plate — measured,
       not eyeballed** (`scripts/ui_center_audit.js`: `html()` per open modal,
@@ -119,6 +128,25 @@ Run this before the first upload. Each line maps to a round that was lost.
       down the arm (game-reskin `scripts/check_cast_underlay.py`), and the
       arm-swing motions are looked at frame by frame in the game, not only the
       idle loop. Pickle Panic FG 2026-10-16: a smeared second arm beside the body.
+
+- [ ] **Deadwood Express 2026-10-04 and Capo Nostra 2026-10-14, the ones that
+      never made it onto this list**: holding +/− does not keep stepping;
+      crossing win lines each show their own value plate; the rules say whether
+      free spins have a limit; the logo yields to the board at pop-out S; the
+      intro card can be passed at 400×225; labels of overlapping frames are
+      drawn above every frame; the replay bar shows what the replay card
+      showed; Balance and Bet show two decimals in every currency (JPY too).
+- [ ] **Rules and pay table are designed pages, not plain text**: themed cards,
+      the real symbol art, the game's fonts ("poor info tab", Deadwood
+      2026-09-26).
+- [ ] **Sound is the game's own**: no file byte-identical to a sibling game's,
+      a cue for every mechanic the source game did not have, music that is
+      music ("Bad sound design" + "Reused assets", Go Banandit 2026-10-04;
+      Static Shift shipped a 0.65 s four-note loop as BGM for seven versions).
+- [ ] **Motion is the game's own**: symbol and cast motion tables are not the
+      source game's files ("poor animation", Capo Nostra 2026-09-04: ~89%
+      byte-identical to Hot Miami), MG and FG do not share one table, and a
+      rewritten motion is not smaller than the one it replaced.
 
 **Cover art**
 
@@ -507,6 +535,12 @@ and `'wp-paytable'` have no spaces; a sentence does.
 
 ## Every stake must be one the server named
 
+> **Superseded in part (Deadwood Express, 2026-10-04):** the snap-to-ladder rule
+> below stands, the "affordability picks a lower rung" rule does not. Reviewers
+> then failed "bet levels restricted by balance", so the clamp was removed: every
+> server level is selectable, and a bet the balance cannot cover is refused at
+> bet time with the insufficient-funds notice. See the Deadwood table further down.
+
 > "when the player has, for example, a 1,120 GC balance and selects Max Bet, the
 > game sets the bet to 1,120 GC. This bet level is not provided by the RGS."
 
@@ -630,6 +664,35 @@ guard, and each was obvious the moment someone looked at the running game.
 
 Already-live games are not patched for findings like these (Stone, 2026-10-20) —
 port to games still in review only.
+
+## Turf War guidelines pass 2026-11-11 — one overflow, three issues
+
+Guidelines review (approval open, 9/51 checked) opened the same defect three
+times, once under each device item — "Game functions correctly on
+Desktop/Laptop", "…on Popout S/L", "…on Mobile" (iPhone SE 375×667):
+
+> the RTP value in Game Rules overflows its box and overlaps the surrounding
+> borders. Please adjust the font size and spacing so all values fit within
+> their boxes and remain clearly readable.
+
+| Cause | Fix | Check that now catches it |
+| :-- | :-- | :-- |
+| The rules header's four fact plates (grid / lines / RTP / max win) are each a quarter of the panel; values were `1rem` in the title face with `white-space: nowrap`. "96.01%–96.05%" is the one long value, and it was wider than its plate at every width the reviewer tried | `fitFacts` action (`apps/TurfWar/src/components/ui/fitFacts.ts`): measures each value against its plate's inner width and sets one shared size for all four (largest that fits, ×0.92 clear of the rim); below 0.8rem the RTP range breaks after its dash onto two lines and is measured again; re-runs on resize and when the title font loads | `__centerAudit.overflow()` in `scripts/ui_center_audit.js` — every visible HTML text vs its nearest bordered / border-image / filled box's content box |
+
+Worth knowing:
+
+- **One defect, one issue per device.** Expect the guidelines pass to file a
+  layout defect under each device item it reproduces on; fixing it once
+  resolves all three, but each has to be marked resolved.
+- **The internal pre-submission pass missed it** because the rules modal had
+  only been looked at, never measured, and at a glance the overflow reads as a
+  tight fit. `html()` checks centring, not containment.
+- **Run it in every language, not only English.** Checking the fix found a
+  second overflow the reviewer had not reported: German captions
+  "Gewinnlinien" / "Maximalgewinn" under the values ran 4–10 px past the plate
+  at 375 px. `fitFacts` now sizes the captions too (own scale, 0.66 → 0.45rem).
+- **The same RTP range appears in prose** in Capo Nostra / Hard Time / Wild
+  Alchemy, where it wraps; only Turf War had it in a fixed-width plate.
 
 ## Production bugs worth recognising again
 

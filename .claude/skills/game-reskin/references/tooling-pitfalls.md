@@ -50,6 +50,9 @@
 - stub 的押注階梯只到 100。要看大金額（K／M 縮寫、版面溢出）時，把 dist 的 `stub.js` 階梯暫時換成到 1,000,000 的版本，看完還原。
 - 做完就關掉自己開的 server 和背景程序，不要留著「以備不時之需」。
 
+- **`design/stage_frontend.py` 只會新增與更新，不會刪**：build 已經沒有的檔會一直留在 `upload/<Game>/frontend/assets/`。Wild Alchemy 換皮後第一次重新 stage，還帶著 `castLayers/` 和十個 `hardTime*` 資料夾（ship.sh 的舊資料夾檢查擋下）。Wild Alchemy 那份已加「build 沒有就刪」；從別款複製這支腳本時把這段一起帶走，stage 完看 `ls upload/<Game>/frontend/assets`。
+- 打包好的 bundle 沒有 dev 掛鉤（`window.__ef` 之類），`replay_cdp.mjs`／`shot_ui_cdp.mjs` 開不了選單。要看 build 出來的東西是不是真的能玩，用只送鍵盤與滑鼠的腳本對 playtest（`new-games/wild-alchemy/qa/built_play_cdp.mjs`：點掉開場卡、按空白鍵轉幾局、記錄例外、HTTP 錯誤與連到的主機）。
+
 ## 隱藏窗格會降速：量測與截圖一律用獨立 headless Chrome
 
 Browser 窗格被隱藏時：`requestAnimationFrame` 約 1 fps；約 5 分鐘後連鎖的 `setTimeout` 降到大約一分鐘一次、CSS 動畫停住（遊戲卡在 loading）、截圖與點擊失敗。`document.visibilityState` 仍然回報 `visible`，所以程式自己不知道。**在隱藏窗格量到的任何時間都不能用**，也不能據此判斷載入或效能有問題。
@@ -83,6 +86,7 @@ Browser 窗格被隱藏時：`requestAnimationFrame` 約 1 fps；約 5 分鐘後
 - **吃記憶體的工作先講再做，而且一次只跑一個**（Stone 10-03：三個 stub 產生器＋平行 build 把 swap 推到 19.7/20 GB，卡了一小時）。吃重的有：`build_playtest_stub_data.py`（整包 books 讀進記憶體，單次到 13 GB）、數學模擬與最佳化、同時 build 多個 app、headless Chrome 批次、角色網格工具（tri_scan、多程序渲染）。
 - 開始前 `sysctl vm.swapusage`；swap 已高就先回報，不要硬疊。
 - 省記憶體的路：數學沒變就 `SKIP_STUB=1 ./design/ship.sh`；stub 用串流寫法（只留抽樣到的 book id），不要整包載入；渲染工具單程序、貼圖先縮到輸出大小、只保留極值。
+- **數學模擬每個 worker 會把整批 books 留在記憶體到最後**（Dragon Tide 11-10：FG 購買 3 worker × 16,666 局，swap 18/18.4 GB，寫完檔後卡在 `write_library_events` 40 分鐘）。FG 重的模式用小批：`create_books(..., batch_size=1250, threads=4)`（50,000 局分 10 批），並設 `config.write_event_list = False`；這樣 50,000 局約 15 分鐘。卡住時先確認 `library/temp_multi_threaded_files/` 每個 worker 的 books／payouts／LUT 行數一致再停，可以接著合併（`output_lookup_and_force_files`），不用重跑；範例 `math-sdk/games/dragon_tide/resume_v2.py`。只重跑最佳化器前要先 `generate_configs`，不然 `math_config.json` 是空的、Rust 會 panic `betmode index not found`。
 
 ## 等待長時間工作
 

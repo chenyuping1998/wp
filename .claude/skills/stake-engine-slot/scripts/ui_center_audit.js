@@ -4,7 +4,8 @@
 // four more (autoplay-menu ∞, bet-menu ± signs, bar and portrait readouts 3-4px
 // low). None were visible at a glance at 1x; all were measurable.
 //
-// Three checks, each returns only the offenders:
+// Four checks, each returns only the offenders (overflow() = text running out
+// of its box, Turf War review 2026-11-11):
 //
 //   __centerAudit.html()          every HTML text inside a button/bordered box:
 //                                 ink centre vs box centre (px). Opens nothing —
@@ -131,6 +132,49 @@
 		return { plate: [y0 + pT, y0 + pB], ink: [y0 + iT, y0 + iB], lowBy: (iT + iB - (pT + pB)) / 2, rows: s };
 	};
 
-	window.__centerAudit = { html, glyphs, plate };
-	return 'window.__centerAudit ready: html(), glyphs(), plate(x0,x1,y0,y1[,isPlate])';
+	// Text that runs out of its box. Stake review of Turf War, 2026-11-11: the
+	// RTP range "96.01%–96.05%" in a rules-header plate overflowed onto the
+	// plate's drawn rim on desktop, popout S and 375×667 — nowrap text in a box
+	// whose width follows the window. Checks every visible HTML text against the
+	// nearest bordered / border-image / filled / button ancestor's CONTENT box
+	// (border excluded: a border-image rim is drawn there). Run per modal at the
+	// smallest sizes (375×667, popout S) and at desktop.
+	const overflow = (minPx = 1) => {
+		const out = [];
+		const tw = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);
+		while (tw.nextNode()) {
+			const n = tw.currentNode;
+			const txt = n.textContent.trim();
+			if (!txt) continue;
+			const el = n.parentElement;
+			const cs = getComputedStyle(el);
+			if (cs.visibility === 'hidden' || cs.display === 'none' || +cs.opacity === 0) continue;
+			if (el.closest('[inert],[aria-hidden="true"]')) continue;
+			const r = document.createRange();
+			r.selectNodeContents(n);
+			const rr = r.getBoundingClientRect();
+			if (!rr.width || rr.bottom < 0 || rr.top > innerHeight) continue;
+			let b = el;
+			while (b && b !== document.body) {
+				const s = getComputedStyle(b);
+				if (b.tagName === 'BUTTON' || b.getAttribute('role') === 'button' ||
+					(parseFloat(s.borderTopWidth) > 0 && s.borderTopStyle !== 'none') ||
+					s.borderImageSource !== 'none' || s.backgroundColor !== 'rgba(0, 0, 0, 0)') break;
+				b = b.parentElement;
+			}
+			if (!b || b === document.body) continue;
+			const s = getComputedStyle(b);
+			const br = b.getBoundingClientRect();
+			const box = {
+				l: br.left + parseFloat(s.borderLeftWidth), r: br.right - parseFloat(s.borderRightWidth),
+				t: br.top + parseFloat(s.borderTopWidth), b: br.bottom - parseFloat(s.borderBottomWidth),
+			};
+			const over = Math.max(box.l - rr.left, rr.right - box.r, box.t - rr.top, rr.bottom - box.b);
+			if (over >= minPx) out.push({ text: txt.slice(0, 40), overPx: +over.toFixed(1), box: b.className || b.tagName });
+		}
+		return out;
+	};
+
+	window.__centerAudit = { html, glyphs, plate, overflow };
+	return 'window.__centerAudit ready: html(), glyphs(), plate(x0,x1,y0,y1[,isPlate]), overflow()';
 })();

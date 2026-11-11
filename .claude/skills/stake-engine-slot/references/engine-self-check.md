@@ -373,6 +373,22 @@ Full guideline text and examples: https://studio.engine.io/docs/approval-guideli
 
 How this repo maps onto the self-check, so a run doesn't rediscover it:
 
+- **Run it before the FIRST publish of a game**, not when a review is due. Sumo
+  Monkey was published eleven times before its first full run, which found seven
+  items the same day the review scored it 5.3.
+- **[219] decided: every currency shows two decimals, JPY and KRW included**
+  (Stake's Capo Nostra review 2026-10-14: "Balance and Bet always two decimal
+  places"; Stone 2026-10-23: 「日圓也用兩位小數」). `¥1,000.00` is PASS here, not
+  AT RISK, whatever the currency table above says about 0 decimals, and
+  three-decimal currencies show two as well. Shared
+  `packages/utils-shared/amount.ts` already does this; check the worktree you
+  are in has that version, and do not "fix" it back.
+- **Capo Nostra 2026-10-14, the other two**: the intro card must be passable at
+  pop-out S (400×225), and when several frames or plates overlap on the board
+  their labels are drawn above all of them.
+- **"Live" means approved.** A published version with no approval is not live;
+  a live game is not changed unless Stone names it.
+
 - **Playtest = route B.** Each game's `design/playtest_stub.js` is the mock RGS
   (fetch override, real books via `build_playtest_stub_data.py`). Open with
   `?rgs_url=stub.local&sessionID=playtest`; it already supports `?resume=<mode>&ramt=<stake>`

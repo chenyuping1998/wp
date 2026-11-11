@@ -23,7 +23,7 @@ python design/cast_v6/build_v6.py && python design/cast_v6/assemble.py && node d
    - 反應：蓄力約 0.3 秒、出手約 0.1 秒、停頓、收回。
    - 出手時軀幹用 `drive` 先帶後到，手臂才用 `snap`，鎖骨跟手臂同一節奏。
 8. **播放**：idle 一直在 track 0 播，從頭到尾不重來；反應在 track 1，混入 0.12 秒、混出 0.25 秒，接回 idle 當下的相位。反應進行中又來新的反應時**排隊**，等收勢再接，不要半路切掉。
-9. **閘門** `check_spine_motion_cast.mjs`：用同一個 director 跑完整範圍：
+9. **閘門** `wp/apps/TurfWar/design/check_spine_motion_cast.mjs`（在 `design/`，不在 `cast_v6/`）：用同一個 director 跑完整範圍：
    - 全部動作；
    - 每種反應 × 被打斷 × 不同 idle 相位 × 1/2 倍速；
    - 24 秒連續 idle，物理開著。
@@ -64,4 +64,4 @@ python design/cast_v6/build_v6.py && python design/cast_v6/assemble.py && node d
 19. **檢查器漏報** → 我用 `grep -v arm_far` 濾掉被身體蓋住的翻折，結果連看得到的也一起濾掉了 → 不要濾掉；交給 `cast_occluded.py` 判斷到底看不看得到。
 20. **工具本身拖垮這台 8GB 的機器** → tri_scan 把每格每個三角形都存進陣列；渲染器用 fork 多程序，加上 OpenCV 執行緒會卡死 → 只保留每個三角形的極值；渲染改單程序、貼圖先縮到輸出大小。
 21. **Spine 4.3 API 差異** → `getCurrent` 改名 `getTrack`；`addEmptyAnimation(track, mix, 0)` 會自己算 delay，不要再手動覆寫。
-22. **上傳**：與上一版位元組相同的 PNG 直接沿用舊檔，平台會在伺服器端複製，不用重傳；`start_upload` 要同時給 plan_id 和 team／game／type／path。
+22. **上傳**：與上一版位元組相同的 PNG 直接沿用舊檔，平台會在伺服器端複製，不用重傳；`execute_upload`／`start_upload` 都要同時給 plan_id 和 team／game／type／path（流程見 `stake-engine-slot` SKILL.md）。
