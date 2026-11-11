@@ -1,6 +1,6 @@
 # Dragon Tide
 
-Published: front v3 + math v1 (2026-11-10; front v2 = final art, bigger board, 天使奧丁 timeline, big-win plaques; v3 adds the Dragon Tide audio, wordless character voices and the mix by role). Not submitted for approval yet; store art not yet set in Studio.
+Published: front v4 + math v2 (2026-11-11; front v2 = final art, bigger board, 天使奧丁 timeline, big-win plaques; v3 adds the Dragon Tide audio, wordless character voices and the mix by role; v4 adds the heavier x100+ pearl quake (board shake + quake sound). Math v2 = wider swings: base 1000x+ about 1 in 52,000 spins (v1 1 in 787,000), a x100+ pearl lands about every 12 base spins on spins with no win). Not submitted for approval yet; store art not yet set in Studio.
 
 Sea-dragon slot on the 天使奧丁 rule set, original art only. 6 reels x 5 rows, scatter pays (8+ of a symbol anywhere), tumbles. Dragon pearls (x2-x1000, any number per board) land on the board; in the base game a winning tumble sequence is multiplied by the sum of the pearls on the board, in Free Spins every pearl adds to a TOTAL multiplier that starts at 0 and never resets. Dragon Gate scatter: 4/5/6+ pay 3x/5x/100x (not multiplied); 4+ award 15 Free Spins, 3+ in Free Spins award +5. Max win 20,000x bet.
 
