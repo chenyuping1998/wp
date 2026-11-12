@@ -153,8 +153,6 @@
 	// house rule is that hover lights a control in the game's own colour and
 	// never greys it, so the disc warms to a pale gold instead.
 	const SMALL_HOVER = 0xf8e3a3;
-	// Hypno: how far a fallback-font ∞ is lifted, as a share of its font size
-	const INF_LIFT = 0.07;
 	const SMALL_PRESS = 0x4a4a4a;
 	const SMALL_PRESS_ICON = 0x6b6233;
 	const SPIN_GREY = 0x6f6f6f;
@@ -178,13 +176,18 @@
 	);
 	const showWin = $derived(stateBet.winBookEventAmount > 0);
 	let balanceWidth = $state(150);
+	let balanceLabelWidth = $state(0);
 	let winWidth = $state(0);
+	// WIN starts past the wider of BALANCE's caption and its amount: with a dash
+	// for the amount (replay) the template's WIN sat on the caption (fixed in
+	// Pickle Panic's copy first, 2026-11-10)
+	const winX = $derived(Math.max(balanceWidth, balanceLabelWidth) + 26);
 	// Certification has sent back "labels overlapping on large amounts" before: a
 	// nine-figure Gold Coin balance plus a win can outgrow the span up to the bet
 	// box, so both shrink together when they would.
 	const readoutRoom = $derived(BETBOX.x - 28 - BAL_X);
 	const readoutScale = $derived(
-		Math.min(1, readoutRoom / Math.max(1, balanceWidth + (stateBet.winBookEventAmount > 0 ? 26 + winWidth : 0))),
+		Math.min(1, readoutRoom / Math.max(1, stateBet.winBookEventAmount > 0 ? winX + winWidth : Math.max(balanceWidth, balanceLabelWidth))),
 	);
 
 	// bet level track: where the stake sits on the server's ladder
@@ -319,9 +322,13 @@
 		stateUi.menuOpen = false;
 		stateModal.modal = { name };
 	};
+	// on a phone held upright the template's pop-ups came out ~175px wide with
+	// ~20px rows, under a thumb's reach: there they are drawn 1.6x, still rising
+	// from the console (menu) and over the controls row (autoplay) — 2026-11-10
+	const POP = $derived(portrait ? 1.6 : 1);
 	const MENU = $derived({ x: G.MENU_X0, w: 380, row: 70 });
 	const MENU_ROWS = 5;
-	const menuTop = $derived(PANEL.y - 16 - MENU.row * MENU_ROWS - 24);
+	const menuTop = $derived(PANEL.y - 16 - (MENU.row * MENU_ROWS + 24) * POP);
 	// volume sliders: drag along the track, 0..100
 	let dragging = $state<'sfx' | 'music' | null>(null);
 	const SLIDER = { x0: 96, x1: 340 };
@@ -429,6 +436,22 @@
 		const p = [0.12, -1, 0.62, -1, 0.22, -0.18, 0.58, -0.18, -0.32, 1, -0.06, 0.14, -0.44, 0.14];
 		g.poly(p.map((v) => v * r));
 		g.fill({ color });
+	};
+
+	// ∞, drawn (2026-11-10): Nunito has no ∞ and the fallback face's sat small
+	// and low beside the figures (on the 1.6x portrait panel it read as a dot).
+	// A lemniscate `w` wide, as Pickle Panic's bar draws it.
+	const drawInfinity = (g: PixiGraphics, w: number, color: number) => {
+		g.clear();
+		const a = w / 2;
+		const pts: number[] = [];
+		for (let i = 0; i <= 64; i++) {
+			const t = (i / 64) * Math.PI * 2;
+			const d = 1 + Math.sin(t) ** 2;
+			pts.push((a * Math.cos(t)) / d, (a * 1.25 * Math.sin(t) * Math.cos(t)) / d);
+		}
+		g.poly(pts, true);
+		g.stroke({ width: w * 0.16, color, join: 'round' });
 	};
 
 	// A loudspeaker, `s` tall, centred: cone + two sound arcs (Hypno: replaces the
@@ -618,7 +641,13 @@
 
 		<!-- balance, and the win beside it while one is showing -->
 		<Container x={BAL_X} y={MID} scale={readoutScale}>
-			<Text y={-26} anchor={{ x: 0, y: 0.5 }} text={i18nDerived.balance()} style={text(22, GOLD, '700')} />
+			<Text
+				y={-26}
+				anchor={{ x: 0, y: 0.5 }}
+				text={i18nDerived.balance()}
+				style={text(22, GOLD, '700')}
+				onresize={({ width }) => (balanceLabelWidth = width)}
+			/>
 			<Text
 				y={12}
 				anchor={{ x: 0, y: 0.5 }}
@@ -627,9 +656,9 @@
 				onresize={({ width }) => (balanceWidth = width)}
 			/>
 			{#if showWin}
-				<Text x={balanceWidth + 26} y={-26} anchor={{ x: 0, y: 0.5 }} text={i18nDerived.win()} style={text(22, GOLD, '700')} />
+				<Text x={winX} y={-26} anchor={{ x: 0, y: 0.5 }} text={i18nDerived.win()} style={text(22, GOLD, '700')} />
 				<Text
-					x={balanceWidth + 26}
+					x={winX}
 					y={12}
 					anchor={{ x: 0, y: 0.5 }}
 					text={winText}
@@ -774,18 +803,25 @@
 									g.fill({ color: INK });
 								}}
 							/>
-							<Text
-								y={stateBet.autoSpinsCounter === Infinity ? -(stateBet.autoSpinsCounter > 99 ? SPIN.r * 0.4 : SPIN.r * 0.52) * INF_LIFT : 0}
-								anchor={0.5}
-								text={stateBet.autoSpinsCounter === Infinity ? '∞' : String(stateBet.autoSpinsCounter)}
-								style={text(stateBet.autoSpinsCounter > 99 ? SPIN.r * 0.4 : SPIN.r * 0.52, hover === 'spin' ? INK : WHITE, '900')}
-							/>
-							<Text
-								y={SPIN.r * 0.87}
-								anchor={0.5}
-								text={autoRunSize}
-								style={text(SPIN.r * 0.22, WHITE, '900')}
-							/>
+							{#if stateBet.autoSpinsCounter === Infinity}
+								<Graphics draw={(g: PixiGraphics) => drawInfinity(g, SPIN.r * 0.78, hover === 'spin' ? INK : WHITE)} />
+							{:else}
+								<Text
+									anchor={0.5}
+									text={String(stateBet.autoSpinsCounter)}
+									style={text(stateBet.autoSpinsCounter > 99 ? SPIN.r * 0.4 : SPIN.r * 0.52, hover === 'spin' ? INK : WHITE, '900')}
+								/>
+							{/if}
+							{#if autoRunSize === '∞'}
+								<Graphics y={SPIN.r * 0.87} draw={(g: PixiGraphics) => drawInfinity(g, SPIN.r * 0.3, WHITE)} />
+							{:else}
+								<Text
+									y={SPIN.r * 0.87}
+									anchor={0.5}
+									text={autoRunSize}
+									style={text(SPIN.r * 0.22, WHITE, '900')}
+								/>
+							{/if}
 						{:else}
 							<Container rotation={spinAngle}>
 								<Graphics
@@ -891,8 +927,8 @@
 
 		<!-- ── autoplay rounds panel ──────────────────────────────────────── -->
 		{#if autoPanel}
-			{@const P = { ...G.AUTOPANEL, w: 488, h: 288 }}
-			<Container x={P.x} y={P.y} eventMode="static" alpha={panelFade} onpointerup={(e)=>e.stopPropagation()}>
+			{@const P = { w: 488, h: 288, ...(portrait ? { x: G.W / 2 - 244 * POP, y: G.SPIN.y - G.SPIN.r - 24 - 288 * POP } : G.AUTOPANEL) }}
+			<Container x={P.x} y={P.y} scale={POP} eventMode="static" alpha={panelFade} onpointerup={(e)=>e.stopPropagation()}>
 				<Graphics
 					draw={(g: PixiGraphics) => {
 						g.clear();
@@ -922,9 +958,12 @@
 								g.fill({ color: sel ? GOLD : hover === `r${o}` ? 0x1a1c22 : CELL });
 							}}
 						/>
-						<!-- Hypno: Nunito has no ∞, so it falls back to a face whose ∞ sits
-						     ~7% of the size low (ui_center_audit glyphs) — lifted to the caps -->
-						<Text x={74} y={o === '∞' ? 28 - 22 * INF_LIFT : 28} anchor={0.5} text={o} style={text(22, sel ? INK : WHITE)} />
+						{#if o === '∞'}
+							<!-- drawn: Nunito has no ∞ (see drawInfinity) -->
+							<Graphics x={74} y={28} draw={(g: PixiGraphics) => drawInfinity(g, 34, sel ? INK : WHITE)} />
+						{:else}
+							<Text x={74} y={28} anchor={0.5} text={o} style={text(22, sel ? INK : WHITE)} />
+						{/if}
 					</Container>
 				{/each}
 				<Container x={328} y={216} eventMode="static" cursor="pointer" onpointertap={(e)=>{e.stopPropagation();startAuto();}}>
@@ -942,7 +981,7 @@
 	<Container zIndex={3}>
 	<MainContainer standard>
 		<Container x={gx} y={gy} scale={s}>
-			<Container x={MENU.x} y={menuTop} eventMode="static" alpha={panelFade}>
+			<Container x={MENU.x} y={menuTop} scale={POP} eventMode="static" alpha={panelFade}>
 				<Graphics
 					draw={(g: PixiGraphics) => {
 						g.clear();
