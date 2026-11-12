@@ -42,10 +42,12 @@ Run this before the first upload. Each line maps to a round that was lost.
 - [ ] Opening stake comes from `defaultBetLevel`, so each currency opens where
       the server says (Gold Coins open at 10,000 GC, not 1).
 - [ ] Bet menu presents the server's levels in full — no index whitelist.
-- [ ] **Every selectable stake is one of the server's levels.** Affordability may
-      only pick a lower rung, never the balance itself, and every control that
-      sets a stake goes through the same clamp — a menu that assigns directly
-      skips it. Test with a balance that falls *between* two rungs.
+- [ ] **Every selectable stake is one of the server's levels, and the balance
+      does not hide or clamp any of them** (Deadwood 2026-10-04 reversed the
+      affordability clamp): only min/max + snap to `betLevels`; affordability is
+      checked when the bet is placed and answered with the insufficient-funds
+      notice, with no play request. Every control that sets a stake goes through
+      the same setter. Test with a balance *between* two rungs and with 0.
 - [ ] `?lang=` is validated against the catalogue before use; an unknown code
       falls back to English rather than being passed to `Intl`.
 
@@ -119,6 +121,25 @@ Run this before the first upload. Each line maps to a round that was lost.
       down the arm (game-reskin `scripts/check_cast_underlay.py`), and the
       arm-swing motions are looked at frame by frame in the game, not only the
       idle loop. Pickle Panic FG 2026-10-16: a smeared second arm beside the body.
+
+- [ ] **Deadwood Express 2026-10-04 and Capo Nostra 2026-10-14, the ones that
+      never made it onto this list**: holding +/− does not keep stepping;
+      crossing win lines each show their own value plate; the rules say whether
+      free spins have a limit; the logo yields to the board at pop-out S; the
+      intro card can be passed at 400×225; labels of overlapping frames are
+      drawn above every frame; the replay bar shows what the replay card
+      showed; Balance and Bet show two decimals in every currency (JPY too).
+- [ ] **Rules and pay table are designed pages, not plain text**: themed cards,
+      the real symbol art, the game's fonts ("poor info tab", Deadwood
+      2026-09-26).
+- [ ] **Sound is the game's own**: no file byte-identical to a sibling game's,
+      a cue for every mechanic the source game did not have, music that is
+      music ("Bad sound design" + "Reused assets", Go Banandit 2026-10-04;
+      Static Shift shipped a 0.65 s four-note loop as BGM for seven versions).
+- [ ] **Motion is the game's own**: symbol and cast motion tables are not the
+      source game's files ("poor animation", Capo Nostra 2026-09-04: ~89%
+      byte-identical to Hot Miami), MG and FG do not share one table, and a
+      rewritten motion is not smaller than the one it replaced.
 
 **Cover art**
 
@@ -506,6 +527,12 @@ separates copy from identifiers without needing an exception list — `'payTable
 and `'wp-paytable'` have no spaces; a sentence does.
 
 ## Every stake must be one the server named
+
+> **Superseded in part (Deadwood Express, 2026-10-04):** the snap-to-ladder rule
+> below stands, the "affordability picks a lower rung" rule does not. Reviewers
+> then failed "bet levels restricted by balance", so the clamp was removed: every
+> server level is selectable, and a bet the balance cannot cover is refused at
+> bet time with the insufficient-funds notice. See the Deadwood table further down.
 
 > "when the player has, for example, a 1,120 GC balance and selects Max Bet, the
 > game sets the bet to 1,120 GC. This bet level is not provided by the RGS."

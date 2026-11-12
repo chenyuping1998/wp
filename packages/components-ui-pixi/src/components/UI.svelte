@@ -3,6 +3,7 @@
 
 	import { stateReplay, stateUi } from 'state-shared';
 
+	import { uiTheme } from '../theme.svelte';
 	import UIDefault from './UIDefault.svelte';
 	import UIReplay from './UIReplay.svelte';
 
@@ -24,7 +25,9 @@
 	// somewhere to live — UIReplay is a centred WIN/BET stack with no room for it.
 	// Games that have not opted in are unaffected; `enabled` stays false for them.
 	const UIComponent = $derived(
-		stateReplay.enabled ? UIDefault : UI_COMPONENT_MAP[stateUi.config.mode],
+		stateReplay.enabled || (uiTheme.customLayout && uiTheme.customLayoutOwnsReplay)
+			? UIDefault
+			: UI_COMPONENT_MAP[stateUi.config.mode],
 	);
 </script>
 

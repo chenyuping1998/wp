@@ -1,0 +1,574 @@
+<script lang="ts">
+	import { Popup } from 'components-shared';
+	import { zIndex } from 'constants-shared/zIndex';
+	import { stateModal, stateUrlDerived } from 'state-shared';
+
+	import { base } from '$app/paths';
+
+	import config from '../../game/config';
+	import { FEATURE_RULES } from '../../game/featureRules';
+	import { popupGhost } from './popupGhost';
+	import { getSocialTerms } from '../../game/socialTerms';
+	import {
+		CONTROL_ORDER,
+		commonText,
+		numberIn,
+		pctIn,
+		rulesLang,
+		type ControlKey,
+		type RulesVars,
+	} from '../../game/rulesCommon';
+	import { i18nDerived } from 'components-ui-pixi';
+	import BarIcon from './BarIcon.svelte';
+	import { AUTO_ROUNDS } from './mummyBarGeometry';
+	import { gameText } from '../../game/i18nText';
+	import { gameRulesText } from '../../game/rulesText';
+
+	// Social play forbids betting terminology in player-facing copy, and the rules
+	// page is the densest concentration of it in the game. The vocabulary lives in
+	// one module shared with the pay table — two panels with their own copies
+	// drift, and the drift is what gets flagged.
+	const T = getSocialTerms();
+	const social = stateUrlDerived.social();
+
+	// Every sentence comes from game/rulesCommon.ts (the sections all three games
+	// share) or game/rulesText.ts (this game's own), in the player's language
+	// (2026-10-13 — this page was English-only while the bar and the intro card
+	// followed ?lang=). English is built from T, so social play, which is
+	// English-only, reads word for word what it read before.
+	const lang = rulesLang();
+	const C = commonText(lang, T, social);
+	const G = gameRulesText(lang, T, social);
+
+	// Controls guide, in the order the controls sit on the bet bar (bar v3,
+	// ui/MummyBar.svelte, 2026-11-11): the buy tile, then along the console the
+	// menu bars and the menu panel's rows, BALANCE / WIN, the BET box and its
+	// arrows, Spin, and Auto Spin over Turbo. Each row shows the control as the
+	// bar draws it (ui/BarIcon.svelte), so a player matches what they read to
+	// what they see; every pressable control is listed (house-rules D2 item 9:
+	// the old guide still showed the shared bar's icons and promised autoplay
+	// stop conditions this bar does not have).
+	type BarKind = 'buy' | 'menu' | 'info' | 'paytable' | 'settings' | 'sfx' | 'music' | 'readout' | 'bet' | 'step' | 'spin' | 'auto' | 'turbo';
+	const balanceLabel = i18nDerived.balance();
+	const betLabel = i18nDerived.betAmount();
+	const CONTROL_ICONS: Record<ControlKey, { kind: BarKind; label?: string }[]> = {
+		buy: [{ kind: 'buy' }],
+		menu: [{ kind: 'menu' }],
+		info: [{ kind: 'info' }],
+		paytable: [{ kind: 'paytable' }],
+		settings: [{ kind: 'settings' }],
+		sound: [{ kind: 'sfx' }, { kind: 'music' }],
+		readout: [{ kind: 'readout', label: balanceLabel }],
+		amount: [{ kind: 'bet', label: betLabel }],
+		stepper: [{ kind: 'step' }],
+		spin: [{ kind: 'spin' }],
+		auto: [{ kind: 'auto' }],
+		turbo: [{ kind: 'turbo' }],
+	};
+	// The guide's texts name the bar's own labels and the autoplay panel's
+	// range ({balance} {win} {start} {info} {paytable} {settings} {min} {max}),
+	// read from where the bar reads them so the two cannot disagree.
+	const rounds = AUTO_ROUNDS.map(Number).filter((n) => Number.isFinite(n));
+	const fillIn: Record<string, string> = {
+		balance: balanceLabel,
+		win: i18nDerived.win(),
+		start: gameText('start'),
+		info: i18nDerived.info(),
+		paytable: i18nDerived.payTable(),
+		settings: i18nDerived.settings(),
+		min: String(Math.min(...rounds)),
+		max: String(Math.max(...rounds)),
+	};
+	const fill = (text: string) => text.replace(/\{(\w+)\}/g, (m, k) => fillIn[k] ?? m);
+	const controls = CONTROL_ORDER.map((key) => ({
+		key,
+		icons: CONTROL_ICONS[key],
+		name: C.controls[key][0],
+		text: fill(C.controls[key][1]),
+	}));
+
+	// The modes are not all on one number: they climb with the price ladder
+	// (maths game_config.py — 94.58 / 94.63 / 94.67 / 94.78 as of the
+	// 2026-09-03 retarget). Two sentences below used to assert they were
+	// identical, which certification reads as a claim about the game. Derive
+	// the span from the config instead, so it collapses back to a single figure
+	// by itself if the modes are ever levelled again, and tracks any future
+	// retarget without needing this comment updated again.
+	const modeRtpValues = Object.values(
+		(config.betModes ?? {}) as Record<string, { rtp?: number }>,
+	)
+		.map((mode) => mode?.rtp)
+		.filter((value): value is number => typeof value === 'number');
+	const rtpLow = modeRtpValues.length ? Math.min(...modeRtpValues) : config.rtp;
+	const rtpHigh = modeRtpValues.length ? Math.max(...modeRtpValues) : config.rtp;
+	// Numbers in the player's locale; English keeps exactly the formatting it had.
+	const pct = (value: number) => (lang === 'en' ? `${(value * 100).toFixed(2)}%` : pctIn(lang, value));
+	const num = (value: number) => (lang === 'en' ? value.toLocaleString() : numberIn(lang, value));
+	const rtpRangePct = rtpLow === rtpHigh ? pct(rtpLow) : `${pct(rtpLow)}\u2013${pct(rtpHigh)}`;
+	const lineCount = Object.keys(config.paylines).length;
+	// Fallback only if the config is missing; the maths cap is 20,000x.
+	const maxWin = config.betModes?.base?.max_win ?? 20000;
+	const buyCost = config.betModes?.bonus?.cost;
+	// FREE GAME's spin count, from the one module that states the feature's rules.
+	const baseFreeSpins = FEATURE_RULES.freeSpins;
+	const reelCount = config.numReels;
+	const rowCount = config.numRows?.[0] ?? 6;
+
+	const vars: RulesVars = {
+		game: 'Wild Alchemy',
+		reels: reelCount,
+		rows: rowCount,
+		lines: lineCount,
+		rtpRange: rtpRangePct,
+		rtpLow: pct(rtpLow),
+		rtpHigh: pct(rtpHigh),
+		maxWin: num(maxWin),
+		buyName: C.controls.buy[0],
+	};
+
+	// Feature names stay in English in every language, as on the intro card.
+
+	// Per-mode RTP and max win, read straight out of the maths config rather than
+	// written into the prose. Certification asks for both to be clearly stated for
+	// every mode available; spelling them out in one table is harder to miss than
+	// leaving them scattered through the sections, and taking the numbers from
+	// config means they cannot drift away from what the game actually pays.
+	type BetMode = { cost?: number; rtp?: number; max_win?: number };
+	const buyFor = (cost: number | undefined) =>
+		C.buyFor(lang === 'en' || cost === undefined ? String(cost) : num(cost));
+	const modeRows = (
+		[
+			[C.baseGame, 'base', C.everySpin],
+			['FREE GAME', 'bonus', buyFor(config.betModes.bonus.cost)],
+			['SUPER FREE GAME', 'super_bonus', buyFor(config.betModes.super_bonus.cost)],
+		] as const
+	).map(([label, key, entry]) => {
+		const mode = config.betModes?.[key] as BetMode | undefined;
+		return {
+			label,
+			entry,
+			rtp: pct(mode?.rtp ?? config.rtp),
+			maxWin: C.maxWinCell(num(mode?.max_win ?? maxWin)),
+		};
+	});
+</script>
+
+{#if stateModal.modal?.name === 'gameRules'}
+	<Popup zIndex={zIndex.modal} onclose={() => (stateModal.modal = null)}>
+		<div class="wp-rules" use:popupGhost dir={C.dir}>
+			<h2>WILD ALCHEMY — {C.gameRulesCaps}</h2>
+
+			<section class="wp-card">
+				<h3><span class="wp-accent-bar"></span>{C.howTitle}</h3>
+				<p>{C.how(vars)}</p>
+			</section>
+
+			<!-- Certification asked for a user interaction guide in the game
+			     information. Kept as a definition list of the actual on-screen
+			     controls, in the order they sit on the bar. -->
+			<section class="wp-card">
+				<h3><span class="wp-accent-bar"></span>{C.controlsTitle}</h3>
+				<ul class="wp-controls">
+					{#each controls as control (control.key)}
+						<li>
+							<span class="wp-control-icons" aria-hidden="true">
+								{#each control.icons as icon, i (i)}
+									<span class={icon.kind === 'readout' ? 'wp-bar-icon wp-bar-plate' : 'wp-bar-icon'}
+										><BarIcon kind={icon.kind} label={icon.label} /></span
+									>
+								{/each}
+							</span>
+							<div>
+								<span class="wp-control-name">{control.name}</span>
+								<span class="wp-control-text">{control.text}</span>
+							</div>
+						</li>
+					{/each}
+				</ul>
+				<p class="wp-modes-note">{C.skipNote}</p>
+			</section>
+
+			<section class="wp-card">
+				<h3><span class="wp-accent-bar"></span>{C.modesTitle}</h3>
+				<table class="wp-modes">
+					<thead>
+						<tr>
+							{#each C.modesHead as head (head)}
+								<th scope="col">{head}</th>
+							{/each}
+						</tr>
+					</thead>
+					<tbody>
+						{#each modeRows as row (row.label)}
+							<tr>
+								<th scope="row">{row.label}</th>
+								<td>{row.entry}</td>
+								<td>{row.rtp}</td>
+								<td>{row.maxWin}</td>
+							</tr>
+						{/each}
+					</tbody>
+				</table>
+				<p class="wp-modes-note">{C.modesNote}</p>
+			</section>
+
+			<section class="wp-card">
+				<h3><span class="wp-accent-bar"></span>{C.wildTitle}</h3>
+				<p>{G.wild}</p>
+			</section>
+
+			<section class="wp-card">
+				<h3><span class="wp-accent-bar"></span>{G.lightTitle}</h3>
+				<p>{@html G.light[0]}</p>
+				<p>{@html G.light[1]}</p>
+			</section>
+
+			<section class="wp-card">
+				<h3><span class="wp-accent-bar"></span>{G.beamsTitle}</h3>
+				<p>{@html G.beams}</p>
+			</section>
+
+			<section class="wp-card">
+				<h3><span class="wp-accent-bar"></span>{C.scatterTitle}</h3>
+				<p>{@html G.scatter(baseFreeSpins)}</p>
+				<ul class="wp-controls">
+					{#each G.tiers as text, i}
+						<li class="no-icon"><div>
+							<span class="wp-control-name">{i === 0 ? 'FREE GAME' : 'SUPER FREE GAME'}</span>
+							<span class="wp-control-text">{text}</span>
+						</div></li>
+					{/each}
+				</ul>
+			</section>
+
+			<section class="wp-card">
+				<h3 data-sec="ladder"><span class="wp-accent-bar"></span>{G.ladderTitle}</h3>
+				<p>{G.retrigger}</p>
+				<!-- Stake asked Deadwood Express for this after approval (2026-10-04): "if
+				     there is no limit to the number of free spins, clarify". -->
+				<p>{C.noLimit}</p>
+			</section>
+
+			{#if buyCost}
+				<section class="wp-card">
+					<h3><span class="wp-accent-bar"></span>{C.entryTitle}</h3>
+					<p>{C.entry(vars)}</p>
+				</section>
+			{/if}
+
+			<section class="wp-card">
+				<h3><span class="wp-accent-bar"></span>{C.maxTitle}</h3>
+				<p>{C.max(vars)}</p>
+			</section>
+
+			<div class="wp-divider"></div>
+			<p class="wp-foot">
+				{C.foot} TM and &copy; 2026 Engine.
+			</p>
+			<!--
+				"Engine." is DICTATED by review, not chosen. Do not "correct" it to a
+				studio name.
+
+				Hot Miami took two rounds on this exact line. 2026-09-04: "remove the
+				word Stake from the General Disclaimer" — the fix reasoned about it and
+				put the studio's name in. 2026-09-06 came back with the literal
+				instruction: "replace Silverstars Studio with Engine". It is not the
+				studio's line even though it reads like one.
+
+				Hard Time inherited "Silverstars Studio" through the scaffold copy and
+				would have shipped the already-rejected wording — which is precisely the
+				regression game-reskin/references/review-findings.md §1 predicted would
+				happen to the next person on perfectly sensible grounds.
+			-->
+			<!-- verify against the BUILD, not src: a shared component can reintroduce it
+			     grep -rl "Silverstars\|Stake Engine" apps/HardTime/build/ | wc -l  -> 0 -->
+		</div>
+	</Popup>
+{/if}
+
+<style lang="scss">
+	@keyframes slideUp {
+		from {
+			opacity: 0;
+			transform: translateY(18px);
+		}
+		to {
+			opacity: 1;
+			transform: translateY(0);
+		}
+	}
+
+	@keyframes cardFadeIn {
+		from {
+			opacity: 0;
+			transform: translateY(10px);
+		}
+		to {
+			opacity: 1;
+			transform: translateY(0);
+		}
+	}
+
+	@keyframes shimmer {
+		0% { background-position: -200% center; }
+		100% { background-position: 200% center; }
+	}
+
+	@keyframes accentPulse {
+		0%, 100% { opacity: 0.7; box-shadow: 0 0 6px rgba(var(--capo-gold-rgb), 0.3); }
+		50% { opacity: 1; box-shadow: 0 0 12px rgba(var(--capo-gold-rgb), 0.55); }
+	}
+
+	.wp-rules {
+		/* sit above the Popup's full-screen click-to-close layer (z-index 2),
+		   otherwise the overlay swallows wheel/touch events and blocks scrolling */
+		position: relative;
+		z-index: 100;
+		display: flex;
+		flex-direction: column;
+		gap: 0.75rem;
+		width: min(36rem, 90vw);
+		max-width: 36rem;
+		max-height: 80vh;
+		overflow-y: auto;
+		-webkit-overflow-scrolling: touch;
+		overscroll-behavior: contain;
+		padding: 1.5rem 1.75rem;
+		color: var(--capo-bone);
+		text-align: left;
+		/* Body copy in Saira.
+
+		   These two panels are NOT rendered inside .pop-up-wrap — verified in the
+		   running game, the parent chain is div > div > body — so every
+		   :global(.pop-up-wrap p) rule in Modals.svelte misses them and they
+		   inherited the font from <body>, which the shared template still sets to
+		   'proxima-nova'. That is a domain-locked Adobe Typekit face this app never
+		   loads, so it resolved to the browser's default sans and these panels ran
+		   in the operating system's UI font: the exact "standard fonts" finding
+		   game/fonts.ts records certification raising once already. Confirmed live
+		   with getComputedStyle before the fix, which reported proxima-nova on the
+		   paragraph under the PAY TABLE heading. */
+		font-family: var(--gb-body-font);
+		animation: slideUp 0.4s cubic-bezier(0.22, 1, 0.36, 1) both;
+
+		/* custom scrollbar */
+		&::-webkit-scrollbar {
+			width: 5px;
+		}
+		&::-webkit-scrollbar-track {
+			background: rgba(var(--capo-bone-rgb), 0.04);
+			border-radius: 4px;
+		}
+		&::-webkit-scrollbar-thumb {
+			background: linear-gradient(180deg, var(--capo-gold) 0%, var(--capo-gold-light) 100%);
+			border-radius: 4px;
+		}
+
+		h2 {
+			margin: 0 0 0.35rem;
+			text-align: center;
+			font-size: 1.65rem;
+			font-weight: 800;
+			letter-spacing: 0.08em;
+			font-family: var(--hm-title-font);
+			background: linear-gradient(135deg, var(--capo-gold-light) 0%, var(--capo-gold) 50%, var(--capo-gold-dark) 100%);
+			background-size: 200% auto;
+			-webkit-background-clip: text;
+			-webkit-text-fill-color: transparent;
+			background-clip: text;
+			animation: shimmer 4s linear infinite;
+			filter: drop-shadow(0 0 18px rgba(var(--capo-gold-rgb), 0.4));
+		}
+	}
+
+	/* Controls guide — each row pairs the button's own art with what it does, so
+	   the guide can be matched against the bar by sight rather than by name. */
+	.wp-controls {
+		list-style: none;
+		margin: 0.5rem 0 0;
+		padding: 0;
+		display: flex;
+		flex-direction: column;
+		gap: 0.55rem;
+	}
+
+	.wp-controls li {
+		display: grid;
+		/* wide enough for the two-key stepper; a single icon sits left-aligned in
+		   the same column so every row's text starts on one line */
+		grid-template-columns: 4.6rem 1fr;
+		align-items: start;
+		gap: 0.7rem;
+	}
+
+	/* Rows that are genuinely text-only (the mode table notes below) still take
+	   the whole width. Every Controls row has an icon (ui/BarIcon.svelte). */
+	.wp-controls li.no-icon {
+		grid-template-columns: 1fr;
+	}
+
+	.wp-control-icons {
+		display: flex;
+		align-items: center;
+		gap: 0.4rem;
+	}
+
+	/* the bar's own controls (ui/BarIcon.svelte), drawn as the v3 bar draws them */
+	.wp-bar-icon {
+		width: 2.1rem;
+		height: 2.1rem;
+		flex: none;
+		/* nudge down so the glyph optically centres on the first line of text */
+		margin-top: -0.1rem;
+	}
+
+	/* the BALANCE readout is wider than it is tall: it takes the whole column */
+	.wp-bar-plate {
+		width: 4.6rem;
+	}
+
+	.wp-control-name {
+		display: block;
+		color: var(--capo-bone);
+		font-weight: 700;
+		font-size: 0.86rem;
+		line-height: 1.3;
+	}
+
+	.wp-control-text {
+		display: block;
+		font-size: 0.8rem;
+		line-height: 1.35;
+		opacity: 0.88;
+	}
+
+	/* Mode comparison table — RTP and max win per mode, as certification asks
+	   these be clearly stated for every mode. Values come from the maths config
+	   (see modeRows), so the table cannot drift from what the game pays. */
+	.wp-modes {
+		width: 100%;
+		border-collapse: collapse;
+		font-size: 0.82rem;
+		margin-top: 0.35rem;
+	}
+
+	.wp-modes th,
+	.wp-modes td {
+		padding: 0.42rem 0.5rem;
+		text-align: left;
+		border-bottom: 1px solid rgba(var(--capo-bone-rgb), 0.07);
+	}
+
+	.wp-modes thead th {
+		color: rgba(var(--capo-gold-rgb), 0.9);
+		font-weight: 700;
+		text-transform: uppercase;
+		letter-spacing: 0.04em;
+		font-size: 0.72rem;
+		border-bottom-color: rgba(var(--capo-gold-rgb), 0.35);
+	}
+
+	.wp-modes tbody th {
+		color: var(--capo-bone);
+		font-weight: 700;
+		white-space: nowrap;
+	}
+
+	/* RTP and max win are the two numbers being certified — keep them legible
+	   rather than letting them sit in body-copy grey. And set them in the number
+	   face (Orbitron, --hm-number-font) with tabular figures, per ART_BRIEF §9.5:
+	   they are a column of values to be compared down the page, which is exactly
+	   what proportional running-text figures make harder. */
+	.wp-modes tbody td:nth-child(3),
+	.wp-modes tbody td:nth-child(4) {
+		color: var(--capo-bone);
+		font-family: var(--hm-number-font);
+		font-variant-numeric: tabular-nums;
+		font-weight: 600;
+		white-space: nowrap;
+	}
+
+	.wp-modes tbody tr:last-child th,
+	.wp-modes tbody tr:last-child td {
+		border-bottom: none;
+	}
+
+	.wp-modes-note {
+		margin-top: 0.5rem;
+		font-size: 0.76rem;
+		opacity: 0.75;
+	}
+
+	.wp-card {
+		padding: 0.85rem 1rem;
+		border: 8px solid transparent;
+		border-radius: 0.75rem;
+		background: rgba(var(--capo-bone-rgb), 0.03);
+		backdrop-filter: blur(6px);
+		-webkit-backdrop-filter: blur(6px);
+		border: 1px solid rgba(var(--capo-bone-rgb), 0.05);
+		transition: all 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+		animation: cardFadeIn 0.4s cubic-bezier(0.22, 1, 0.36, 1) both;
+
+		&:nth-child(2) { animation-delay: 0.05s; }
+		&:nth-child(3) { animation-delay: 0.1s; }
+		&:nth-child(4) { animation-delay: 0.15s; }
+		&:nth-child(5) { animation-delay: 0.2s; }
+		&:nth-child(6) { animation-delay: 0.25s; }
+		&:nth-child(7) { animation-delay: 0.3s; }
+		&:nth-child(8) { animation-delay: 0.35s; }
+		&:nth-child(9) { animation-delay: 0.4s; }
+		&:nth-child(10) { animation-delay: 0.45s; }
+		&:nth-child(11) { animation-delay: 0.5s; }
+
+		&:hover {
+			background: rgba(var(--capo-gold-rgb), 0.06);
+			border-color: rgba(var(--capo-gold-rgb), 0.18);
+			box-shadow: 0 0 16px rgba(var(--capo-gold-rgb), 0.1);
+		}
+
+		h3 {
+			display: flex;
+			align-items: center;
+			gap: 0.5rem;
+			margin: 0 0 0.35rem;
+			font-size: 1.05rem;
+			font-weight: 700;
+			color: var(--capo-gold);
+		}
+
+		p {
+			margin: 0;
+			font-size: 0.88rem;
+			line-height: 1.55;
+			opacity: 0.88;
+			padding-left: 0.9rem;
+		}
+	}
+
+	.wp-accent-bar {
+		display: inline-block;
+		width: 3px;
+		height: 1.1em;
+		border-radius: 2px;
+		background: linear-gradient(180deg, var(--capo-gold), var(--capo-gold-dark));
+		flex-shrink: 0;
+		animation: accentPulse 3s ease-in-out infinite;
+	}
+
+	.wp-divider {
+		width: 60%;
+		height: 1px;
+		margin: 0.25rem auto;
+		background: linear-gradient(90deg, transparent, rgba(var(--capo-gold-rgb), 0.3), rgba(var(--capo-gold-light-rgb), 0.2), transparent);
+	}
+
+	.wp-foot {
+		margin: 0;
+		font-size: 0.75rem;
+		opacity: 0.5;
+		text-align: center;
+		line-height: 1.45;
+		letter-spacing: 0.02em;
+	}
+</style>

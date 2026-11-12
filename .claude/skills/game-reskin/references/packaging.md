@@ -7,6 +7,31 @@ worth writing as a script per-game (`design/ship.sh` or similar) on the FIRST
 pass rather than retyping it each time. Paths below are the pattern; adjust
 the game/app names.
 
+**打包 = stage into `/Users/stone/stake-engine/upload/<Game>/` and stop.** Not
+`wp/upload/`, not the app's `build/`, and no zips unless Stone asks for them.
+
+## 0. What every game's `design/ship.sh` must do
+
+Each lineage grew its own script and each one had a different hole (Turf's did
+not deploy the playtest, had no `--check`, and did not copy store art; Sumo
+Monkey ran Sushi's script for weeks; Pickle's stage script did not copy the
+math). When scaffolding, make the new game's `ship.sh` do all of this, with its
+own paths, game name, win cap and contamination word list:
+
+- no arguments: math → build (with the guard chain) → stage frontend → store art
+  check → README → sanity checks. **No zips.**
+- `--zip`: the same, then the zips. `--check`: sanity checks only, no rebuild.
+- `SKIP_STUB=1` / `SKIP_MATH_CHECKS=1` skip the memory-heavy steps when the math
+  has not changed (the stub builder has used 13 GB on this 8 GB machine).
+- copies `thumbnail/` (three files) and `cover/` (BG + FG) and fails if any is
+  missing; writes the README with the platform state.
+- fails, never passes, when a tool it needs is missing: Sushi's `--check`
+  printed "all clean" while `rg` was not installed.
+- its contamination greps cover the whole `assets/` tree (audio too) and the
+  SOURCE game's theme words, not only its name.
+
+Then `scripts/preflight.py <app> --upload upload/<Game>` on the staged result.
+
 ## 1. Sync the math config into the frontend
 
 ```bash
@@ -35,7 +60,9 @@ cd wp/apps/<Game> && \
 This regenerates the sampled-book catalogue the local playtest shell serves
 in place of a real RGS. It reads whatever's in `library/publish_files/`, so
 it must run AFTER step 2, not before. Expect it to take a couple of minutes
-on a full library — background it.
+on a full library — background it. **It loads a whole books bundle into memory
+(one run reached 13 GB): tell Stone before starting it, never run two at once,
+and skip it (`SKIP_STUB=1`) when the math has not changed.**
 
 ## 4. Run the frontend build + guards
 
@@ -101,6 +128,25 @@ game's `design/export_upload_art.mjs` or equivalent) rather than copying from
 `build/`. Tell-tale that you got this wrong: `cmp` reports every PNG in
 `assets/<game>/` as changed when you only touched code.
 
+**Before writing anything into `upload/<Game>/`, look at what is there**
+(`ls -l`). On 2026-10-04 a cover script overwrote the cover Stone had placed in
+`upload/CapoNostra/cover` seven minutes earlier. A file newer than your own last
+output is somebody else's: stop and ask. Back up what you replace
+(`_upload_backups/<Game>-<part>-<MMDD-HHMM>.tgz`); the math library is not in
+git, so a LUT that is overwritten without a backup is gone.
+
+**Vite bundles every `new URL('…', import.meta.url)` in `assets.ts`
+unconditionally.** Turning `preload` off does not keep a file out of the build
+(Capo shipped 4.5 MB of Hot Miami parts that way, Hard Time 7.5 MB). Delete the
+registry entry and the file. Do not write `assets/…` paths in comments either:
+`check_assets_exist.mjs` reads comments too and fails the build on them. Move
+retired assets out of `static/` into `design/_legacy_assets/`, or the next
+staging uploads them again (Turf nearly re-uploaded 79 old cast files).
+
+**A SvelteKit build is not byte-reproducible**: comparing sha256 of two builds
+says nothing about whether the code changed. Compare sizes or normalise first.
+And a background job's "exit 0" is the wrapper's; write `$?` into the log.
+
 ## 6b. Cover art — every game ships one
 
 The game's Stake Engine page shows a wide **cover art** banner ("Change cover
@@ -122,6 +168,16 @@ user rejected on Go Banandit as a white slab behind the character. Reference imp
 `design/cover/<Game>-Cover-BG.png`, `-FG.png` + `_preview_overlays.png` with the
 two overlays drawn on — check that preview). Stage both as `upload/<Game>/cover/`.
 
+**Store art is not uploaded by stakecli.** Stone places the thumbnail and cover
+by hand in the studio. Every package README and every upload report states
+whether the platform's store art has been changed, and after any change to a
+character the thumbnail, cover, buy card, cut-in and win plaque are redone
+together (Sumo Monkey's store art still showed the old thin-limbed figures after
+the cast was redrawn). The provider logo file in `thumbnail/` is the studio's
+logo, identical in every game: Turf War's `Silverstars-Logo.png` was the game's
+own title for five weeks and was copied into three more games before anyone
+looked (`preflight.py` compares it against the other games' copies).
+
 **Not dark — thumbnail or cover.** Before staging, run
 
 ```bash
@@ -137,7 +193,7 @@ bright backdrop here — lift the plate (gamma + pale haze, strongest behind the
 cast) instead of darkening it; a lit backdrop also separates a dark figure
 better than a black one.
 
-## 7. Sanity checks BEFORE zipping — these are the actual gate, not the zip step
+## 7. Sanity checks on the staged package — these are the actual gate
 
 ```bash
 cd upload
@@ -147,9 +203,19 @@ ls <Game>/frontend | grep -iE "stub|playtest"                    # must be empty
 ```
 
 If any of these fail, the upload package still has playtest-only or
-old-game-name contamination — do not zip until they're clean.
+old-game-name contamination — it is not ready to upload.
 
-## 8. Zip
+Also confirm the staged build is the current one: staged later than the last
+change to `src/`, to the assets AND to the shared `packages/` (Capo was staged
+before a shared LabelWin fix and nobody noticed; Hard Time's rig fix waited
+three days for a restage). `preflight.py` compares `build/index.html` with the
+staged one and flags a `src/` newer than the build.
+
+## 8. Zip — only when Stone asks for zips (`ship.sh --zip`)
+
+The staged folder is the deliverable; uploading goes through stakecli, which
+reads the folder. A zip made "just in case" goes stale and becomes a second,
+wrong copy of the truth (Capo's zips were two weeks older than its staging).
 
 ```bash
 cd upload

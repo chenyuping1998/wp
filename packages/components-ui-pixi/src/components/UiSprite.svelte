@@ -35,7 +35,7 @@
 		{width}
 		{height}
 		alpha={props.alpha}
-		tint={props.tint}
+		tint={props.tint ?? 0xffffff}
 		blendMode={props.blendMode}
 	/>
 {:else}

@@ -14,14 +14,27 @@ question a green build cannot answer.
 - [Replay test harness](#replay-test-harness)
 - [Measuring instead of eyeballing](#measuring-instead-of-eyeballing)
 
+> **Two machines.** The paths and launch entries below were written on yuping's
+> Windows PC (`E:\stake`). On Stone's Mac the launch file is
+> `/Users/stone/stake-engine/.claude/launch.json`, `pnpm` is on PATH
+> (`"runtimeExecutable": "pnpm"`), and the usual target is the staged playtest
+> (`dist/<game>-playtest` behind `python3 -m http.server`, opened with
+> `?rgs_url=stub.local&sessionID=playtest&currency=USD&lang=en`) or, for the
+> Hypno-lineage games, the dev server's built-in mock RGS
+> (`?mock=1&sessionID=dev&rgs_url=mock.local`). Measuring and capturing there
+> goes through an isolated headless Chrome, because a hidden pane throttles
+> both rAF and timers: game-reskin `references/tooling-pitfalls.md`.
+
 ## When to bother
 
 Worth it: conditional rendering ("the button only shows in replay mode"), layout
 positions, whether a click path fires, whether a state flag is ever set.
 
 Not worth it: pure copy changes, refactors with no visible surface, anything the
-static guards already cover. The user does real gameplay verification by
-uploading to Stake Engine — do not duplicate that.
+static guards already cover. Real-RGS behaviour is verified by uploading to
+Stake Engine; everything the playtest stub or mock can reach (resume, zero
+balance, forced books, every size) is verified here first, because whatever
+is skipped here is found by the reviewer.
 
 ## Starting a dev server
 

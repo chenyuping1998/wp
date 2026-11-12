@@ -68,10 +68,14 @@
 
 	// Portrait keeps the full bottom bar whatever the theme asks for — there is no
 	// horizontal room for rails or a compact strip on a 1080x1920 box.
+	// A game's own bar (uiTheme.customLayout) replaces the layout in every
+	// orientation, portrait included.
 	const LayoutComponent = $derived(
-		stateLayoutDerived.layoutType() !== 'portrait' && requested in WIDE_LAYOUT_MAP
-			? WIDE_LAYOUT_MAP[requested as keyof typeof WIDE_LAYOUT_MAP]
-			: LAYOUT_COMPONENT_MAP[stateLayoutDerived.layoutType()],
+		uiTheme.customLayout
+			? uiTheme.customLayout
+			: stateLayoutDerived.layoutType() !== 'portrait' && requested in WIDE_LAYOUT_MAP
+				? WIDE_LAYOUT_MAP[requested as keyof typeof WIDE_LAYOUT_MAP]
+				: LAYOUT_COMPONENT_MAP[stateLayoutDerived.layoutType()],
 	);
 </script>
 

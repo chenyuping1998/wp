@@ -18,7 +18,7 @@
 	import { getContext } from '../context';
 	import { uiTheme } from '../theme.svelte';
 	import { i18nDerived } from '../i18n/i18nDerived';
-	import { UI_BASE_FONT_SIZE } from '../constants';
+	import { UI_BASE_FONT_SIZE, UI_BASE_SIZE } from '../constants';
 
 	const props: LayoutUiProps = $props();
 	const context = getContext();
@@ -279,9 +279,20 @@
 		oncomplete={drawerButtonFadeComplete}
 		y={drawerButtonTween.current}
 	>
+		<!-- Folded (free spins) the button rides DRAWER_BUTTON_Y.fold = 50 lower,
+		     which put its centre 55 above the standard box's floor: less than its
+		     own radius (75 at railButtonScale 1, 86 at 1.15), so about half of it
+		     hung off the bottom of a portrait screen (Wild Alchemy QA 11-11 B6).
+		     The fold offset is kept, but never past the floor less radius + 12. -->
 		<Container
 			x={context.stateLayoutDerived.mainLayoutStandard().width * 0.5 + 440}
-			y={context.stateLayoutDerived.mainLayoutStandard().height - 105}
+			y={Math.min(
+				context.stateLayoutDerived.mainLayoutStandard().height - 105,
+				context.stateLayoutDerived.mainLayoutStandard().height -
+					(UI_BASE_SIZE * uiTheme.railButtonScale) / 2 -
+					12 -
+					drawerButtonTween.current,
+			)}
 		>
 			<ButtonDrawer disabled={!stateUi.drawerButtonShow} anchor={0.5} />
 		</Container>

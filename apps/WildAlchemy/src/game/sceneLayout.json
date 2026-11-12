@@ -1,0 +1,505 @@
+{
+	"_doc": "Wild Alchemy backdrop composition (SPEC §3.1). Plate coordinates: both scenes are laid out on a 1920x1080 canvas (the FG plate is delivered at 1672x941 and drawn scaled to it). The objects were delivered without placement data; every x/y/s below was set by hand against the plates and the desktop / 4:3 / portrait screenshots. ax/ay = anchor (the pivot for swing/flicker). s = scale of the native PNG. only: 'land' | 'port' limits a layer to one orientation. Motions are implemented in components/SceneLife.svelte. edgeAnchor (scene): on a narrower-than-16:9 landscape screen the plate is cropped at both sides; with edgeAnchor the side objects slide in by the crop so they stay at the screen edges (FG: open sky, nothing on the plate to stay registered to). MG keeps its objects registered to the plate's niche and window. Cast band (landscape, 2026-11-11): nothing is placed where the cast stands — plate x > ~1470 below y ~270 (MG, cast close to the board) / x > ~1620 (FG, past the ladder); only the paper wash is there.",
+	"mg": {
+		"base": "waSceneMgBase",
+		"edgeAnchor": false,
+		"layers": [
+			{
+				"key": "waSceneMgMoon",
+				"x": 1786,
+				"y": 236,
+				"ax": 0.5,
+				"ay": 0.5,
+				"s": 0.3,
+				"only": "land",
+				"motion": {
+					"type": "glow",
+					"period": 4.2,
+					"tint": 16774616
+				}
+			},
+			{
+				"key": "waSceneMgHerbs",
+				"x": 40,
+				"y": 50,
+				"ax": 0.5,
+				"ay": 0,
+				"s": 0.36,
+				"only": "land",
+				"motion": {
+					"type": "swing",
+					"amp": 2.6,
+					"period": 2.4,
+					"phase": 0.3
+				}
+			},
+			{
+				"key": "waSceneMgLantern",
+				"x": 412,
+				"y": 40,
+				"ax": 0.5,
+				"ay": 0,
+				"s": 0.48,
+				"only": "land",
+				"motion": {
+					"type": "swing",
+					"amp": 3.2,
+					"period": 2.1,
+					"phase": 1.7,
+					"glowAt": [
+						0.5,
+						0.86
+					],
+					"glowSize": 110
+				}
+			},
+			{
+				"key": "waSceneMgPendulum",
+				"x": 1508,
+				"y": -74,
+				"ax": 0.5,
+				"ay": 0,
+				"s": 0.42,
+				"only": "land",
+				"motion": {
+					"type": "swing",
+					"amp": 7,
+					"period": 2.0,
+					"phase": 0
+				}
+			},
+			{
+				"key": "waSceneMgSteam",
+				"x": 118,
+				"y": 318,
+				"ax": 0.5,
+				"ay": 1,
+				"s": 0.17,
+				"only": "land",
+				"motion": {
+					"type": "rise",
+					"period": 3.6,
+					"dist": 60,
+					"copies": 2,
+					"alpha": 0.8
+				}
+			},
+			{
+				"key": "waSceneMgCauldron",
+				"x": 118,
+				"y": 421,
+				"ax": 0.5,
+				"ay": 1,
+				"s": 0.29,
+				"only": "land"
+			},
+			{
+				"key": "bubbles",
+				"x": 118,
+				"y": 322,
+				"only": "land",
+				"motion": {
+					"type": "bubbles",
+					"keys": [
+						"waSceneMgBubbleS",
+						"waSceneMgBubbleM",
+						"waSceneMgBubbleL"
+					],
+					"count": 4,
+					"period": 3.0,
+					"dist": 70,
+					"spread": 44,
+					"s": [
+						0.05,
+						0.1
+					]
+				}
+			},
+			{
+				"key": "waSceneMgCandlestick1",
+				"x": 282,
+				"y": 421,
+				"ax": 0.5,
+				"ay": 1,
+				"s": 0.34,
+				"only": "land"
+			},
+			{
+				"key": "waSceneMgFlame1",
+				"x": 283,
+				"y": 290,
+				"ax": 0.5,
+				"ay": 1,
+				"s": 0.22,
+				"only": "land",
+				"motion": {
+					"type": "flicker",
+					"period": 1.0,
+					"phase": 0
+				}
+			},
+			{
+				"key": "waSceneMgBooks",
+				"x": 118,
+				"y": 561,
+				"ax": 0.5,
+				"ay": 1,
+				"s": 0.38,
+				"only": "land"
+			},
+			{
+				"key": "waSceneMgCandlestick2",
+				"x": 282,
+				"y": 561,
+				"ax": 0.5,
+				"ay": 1,
+				"s": 0.34,
+				"only": "land"
+			},
+			{
+				"key": "waSceneMgFlame2",
+				"x": 283,
+				"y": 430,
+				"ax": 0.5,
+				"ay": 1,
+				"s": 0.22,
+				"only": "land",
+				"motion": {
+					"type": "flicker",
+					"period": 1.0,
+					"phase": 0.37
+				}
+			},
+			{
+				"key": "waSceneMgCandlestick1",
+				"x": 764,
+				"y": 845,
+				"ax": 0.5,
+				"ay": 1,
+				"s": 0.24,
+				"only": "port"
+			},
+			{
+				"key": "waSceneMgFlame1",
+				"x": 765,
+				"y": 752,
+				"ax": 0.5,
+				"ay": 1,
+				"s": 0.17,
+				"only": "port",
+				"motion": {
+					"type": "flicker",
+					"period": 1.0,
+					"phase": 0
+				}
+			},
+			{
+				"key": "waSceneMgCandlestick3",
+				"x": 1156,
+				"y": 845,
+				"ax": 0.5,
+				"ay": 1,
+				"s": 0.24,
+				"only": "port"
+			},
+			{
+				"key": "waSceneMgFlame3",
+				"x": 1157,
+				"y": 752,
+				"ax": 0.5,
+				"ay": 1,
+				"s": 0.17,
+				"only": "port",
+				"motion": {
+					"type": "flicker",
+					"period": 1.0,
+					"phase": 0.45
+				}
+			},
+			{
+				"key": "dust",
+				"only": "both",
+				"motion": {
+					"type": "dust",
+					"keys": [
+						"waSceneMgDustDot",
+						"waSceneMgDustFleck",
+						"waSceneMgDustDiamond",
+						"waSceneMgDustSpeck"
+					],
+					"count": 22,
+					"zones": [
+						[
+							0,
+							60,
+							470,
+							900
+						],
+						[
+							1460,
+							110,
+							1920,
+							250
+						],
+						[
+							720,
+							60,
+							950,
+							280
+						]
+					],
+					"s": [
+						0.32,
+						0.6
+					],
+					"speed": [
+						10,
+						22
+					],
+					"alpha": [
+						0.45,
+						0.85
+					]
+				}
+			}
+		]
+	},
+	"fg": {
+		"base": "waSceneFgBase",
+		"edgeAnchor": true,
+		"layers": [
+			{
+				"key": "meteor",
+				"only": "both",
+				"motion": {
+					"type": "meteor",
+					"keyName": "waSceneFgMeteor",
+					"every": [
+						8,
+						15
+					],
+					"dur": 0.9,
+					"s": 0.42,
+					"zones": [
+						[
+							260,
+							50,
+							470,
+							190
+						],
+						[
+							760,
+							60,
+							940,
+							150
+						]
+					]
+				}
+			},
+			{
+				"key": "waSceneFgMoon",
+				"x": 78,
+				"y": 142,
+				"ax": 0.5,
+				"ay": 0.5,
+				"s": 0.28,
+				"only": "land",
+				"motion": {
+					"type": "glow",
+					"period": 4.6,
+					"tint": 16774616
+				}
+			},
+			{
+				"key": "waSceneFgStar",
+				"x": 1810,
+				"y": 212,
+				"ax": 0.5,
+				"ay": 0.5,
+				"s": 0.34,
+				"only": "land",
+				"motion": {
+					"type": "twinkle",
+					"period": 2.6,
+					"phase": 0.2
+				}
+			},
+			{
+				"key": "waSceneFgChime",
+				"x": 212,
+				"y": 40,
+				"ax": 0.5,
+				"ay": 0,
+				"s": 0.28,
+				"only": "land",
+				"motion": {
+					"type": "swing",
+					"amp": 4.5,
+					"period": 1.8,
+					"phase": 0.9
+				}
+			},
+			{
+				"key": "waSceneFgPennant",
+				"x": -8,
+				"y": 250,
+				"ax": 0.06,
+				"ay": 0.14,
+				"s": 0.36,
+				"only": "land",
+				"motion": {
+					"type": "flutter",
+					"period": 2.2,
+					"phase": 0
+				}
+			},
+			{
+				"key": "waSceneFgBalustradeL",
+				"x": -10,
+				"y": 905,
+				"ax": 0,
+				"ay": 1,
+				"s": 0.55,
+				"only": "land"
+			},
+			{
+				"key": "waSceneFgBrazierFlameL",
+				"x": 338,
+				"y": 845,
+				"ax": 0.5,
+				"ay": 1,
+				"s": 0.26,
+				"only": "land",
+				"motion": {
+					"type": "flicker",
+					"period": 1.0,
+					"phase": 0.15
+				}
+			},
+			{
+				"key": "waSceneFgBrazierL",
+				"x": 338,
+				"y": 905,
+				"ax": 0.5,
+				"ay": 1,
+				"s": 0.3,
+				"only": "land"
+			},
+			{
+				"key": "waSceneFgRaven",
+				"x": 100,
+				"y": 748,
+				"ax": 0.5,
+				"ay": 1,
+				"s": 0.2,
+				"only": "land",
+				"motion": {
+					"type": "perch",
+					"every": [
+						7,
+						11
+					]
+				}
+			},
+			{
+				"key": "waSceneFgBrazierFlameL",
+				"x": 772,
+				"y": 790,
+				"ax": 0.5,
+				"ay": 1,
+				"s": 0.15,
+				"only": "port",
+				"motion": {
+					"type": "flicker",
+					"period": 1.0,
+					"phase": 0.15
+				}
+			},
+			{
+				"key": "waSceneFgBrazierL",
+				"x": 772,
+				"y": 845,
+				"ax": 0.5,
+				"ay": 1,
+				"s": 0.18,
+				"only": "port"
+			},
+			{
+				"key": "waSceneFgBrazierFlameR",
+				"x": 1148,
+				"y": 790,
+				"ax": 0.5,
+				"ay": 1,
+				"s": 0.15,
+				"only": "port",
+				"motion": {
+					"type": "flicker",
+					"period": 1.0,
+					"phase": 0.6
+				}
+			},
+			{
+				"key": "waSceneFgBrazierR",
+				"x": 1148,
+				"y": 845,
+				"ax": 0.5,
+				"ay": 1,
+				"s": 0.18,
+				"only": "port"
+			},
+			{
+				"key": "stars",
+				"only": "both",
+				"motion": {
+					"type": "dust",
+					"twinkle": true,
+					"keys": [
+						"waSceneFgStarDot",
+						"waSceneFgStar4",
+						"waSceneFgStarDash",
+						"waSceneFgStar8"
+					],
+					"count": 16,
+					"zones": [
+						[
+							0,
+							520,
+							170,
+							720
+						],
+						[
+							170,
+							50,
+							470,
+							220
+						],
+						[
+							1580,
+							130,
+							1920,
+							250
+						],
+						[
+							720,
+							60,
+							950,
+							280
+						]
+					],
+					"s": [
+						0.18,
+						0.38
+					],
+					"speed": [
+						4,
+						9
+					],
+					"alpha": [
+						0.55,
+						0.95
+					]
+				}
+			}
+		]
+	}
+}

@@ -1,0 +1,15 @@
+{
+  "about": "Where the prisoner's arms are, traced off prisoner.png's silhouette runs, in RIG px (the 512x1024 frame the texture is stretched into). Read by design/build_cast_guy_rig.py (--report, and it refuses to write a rig under own_floor) and by design/check_cast_motion.mjs rule 11. Belongs to the DRAWING: redraw the prisoner and these must be re-traced. Arm polygons stop at the seam with the jacket so they only ever contain sleeve and hand; the spill strips are torso beside each arm that should stay on the spine.",
+  "texture": "sprites/hardTimeCast/prisoner.png",
+  "own_floor": 0.5,
+  "arms": [
+    { "label": "left sleeve, upper", "side": "l", "poly": [[145, 200], [160, 205], [160, 345], [72, 345], [78, 300], [100, 245]] },
+    { "label": "left forearm + hand", "side": "l", "poly": [[70, 345], [160, 345], [162, 440], [148, 460], [148, 545], [72, 545], [66, 460]] },
+    { "label": "right sleeve, upper", "side": "r", "poly": [[375, 200], [395, 205], [420, 240], [440, 300], [446, 345], [372, 345], [370, 300], [372, 240]] },
+    { "label": "right forearm + hand", "side": "r", "poly": [[372, 345], [450, 345], [452, 445], [442, 460], [442, 545], [382, 545], [380, 460], [376, 440]] }
+  ],
+  "spill": [
+    { "label": "jacket beside left arm", "side": "l", "poly": [[190, 240], [235, 240], [235, 460], [190, 460]] },
+    { "label": "jacket beside right arm", "side": "r", "poly": [[300, 240], [345, 240], [345, 460], [300, 460]] }
+  ]
+}

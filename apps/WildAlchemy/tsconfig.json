@@ -1,0 +1,15 @@
+{
+  "extends": "config-ts/base.json",
+  "compilerOptions": { "resolveJsonModule": true },
+  "include": [
+    "src/**/*.ts",
+    "src/**/*.svelte",
+    ".svelte-kit/ambient.d.ts"
+  ],
+  "exclude": [
+    "dist",
+    "build",
+    "node_modules",
+    "src/stories"
+  ]
+}
